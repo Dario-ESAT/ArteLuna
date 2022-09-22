@@ -7,6 +7,12 @@
 *.o
 *.obj
 
+# Temp db
+*.idb
+*.pdb
+*.log
+*.tlog
+
 # Precompiled Headers
 *.gch
 *.pch
@@ -31,6 +37,11 @@
 *.out
 *.app
 
+# Visual Studio
+*.vcxproj
+*.sln
+*.vcxproj.filters
+*.vcxproj.user
 .vs
 .vscode
 .rider
