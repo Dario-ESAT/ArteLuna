@@ -42,6 +42,8 @@
 *.sln
 *.vcxproj.filters
 *.vcxproj.user
+*.recipe
+
 .vs
 .vscode
 .rider

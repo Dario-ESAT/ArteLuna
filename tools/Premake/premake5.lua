@@ -7,7 +7,7 @@ project "ArteLuna"
     location "../../ArteLuna/ArteLuna"
     kind "ConsoleApp"
     language "C++"
-    targetdir "../../bin/"
+    targetdir "../../bin/%{cfg.buildcfg}"
 
 
     -- Headers
@@ -18,8 +18,11 @@ project "ArteLuna"
     }
 
     -- Source
-
-    -- Linkeado
+    vpaths {
+        ["include"] = "**.h",
+        ["src"] = {"**.cc, **.cpp"}
+    }
+    -- Linkado
 
     links { 
         "opengl32.lib",
@@ -39,30 +42,8 @@ project "ArteLuna"
         "odbccp32.lib",
         "%(AdditionalDependencies)"
     }
-    libdirs { "../../deps/GLFW/lib-vc2019" }
+    libdirs { 
+        "../../deps/GLFW/lib-vc2019"
+    }
 
-    -- Filtros
---[[ 
-    filter "src"
-    defines {"src"}
-    files {"src/**.cpp"}
-
-    filter "include"
-    defines {"include"}
-    files {"include/**.h"}
-
-    filter "bin"
-    defines {"bin"}
-    files {"include/**.exe"}
-
-    filter "deps"
-    defines {"deps"}
-    files {"deps/GLFW/include/**.h"}
-
-    filter "tools"
-    defines {"tools"}
-
-    filter "examples"
-    defines {"examples"}
-
-    filter {} ]]
+   
