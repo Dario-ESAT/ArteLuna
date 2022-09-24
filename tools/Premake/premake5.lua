@@ -3,25 +3,40 @@ workspace "ArteLuna"
     location "../../ArteLuna"
 
 project "ArteLuna"
+    architecture "x64"
+    location "../../ArteLuna/ArteLuna"
     kind "ConsoleApp"
     language "C++"
     targetdir "../../bin/%{cfg.buildcfg}"
-    location "../../ArteLuna/ArteLuna"
-    architecture "x64"
 
+    -- Filter
+    filter {"configurations:Debug"}
+    --defines { "DEBUG" }
+    symbols "On"
 
+    filter {"configurations:Release"}
+    --defines { "NDEBUG" }
+    optimize "On"
+
+    filter{}
+    
     -- Headers
-
     includedirs { 
         "../../deps/GLFW/include",
         "../../include"
     }
 
     -- Source
-    vpaths {
-        ["include"] = { "**.h" },
-        ["src"] = {"**.cc, **.cpp"}
-    }
+    vpaths { ["include"] = "**.cc" }
+    --[[ vpaths {
+        ["include/"] = "**.h", ["src/"] = {"**.cc, **.cpp"}
+    } ]]
+    
+    files {
+        "../../src/*.cc", 
+        "../../src/*.cpp", 
+        "../../include/*.h"
+    } 
     -- Linkado
 
     links { 
@@ -45,5 +60,3 @@ project "ArteLuna"
     libdirs { 
         "../../deps/GLFW/lib-vc2019"
     }
-
-   
