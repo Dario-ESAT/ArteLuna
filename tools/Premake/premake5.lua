@@ -3,11 +3,11 @@ workspace "ArteLuna"
     location "../../ArteLuna"
 
 project "ArteLuna"
-    architecture "x64"
-    location "../../ArteLuna/ArteLuna"
     kind "ConsoleApp"
     language "C++"
     targetdir "../../bin/%{cfg.buildcfg}"
+    location "../../ArteLuna/ArteLuna"
+    architecture "x64"
 
 
     -- Headers
@@ -19,7 +19,7 @@ project "ArteLuna"
 
     -- Source
     vpaths {
-        ["include"] = "**.h",
+        ["include"] = { "**.h" },
         ["src"] = {"**.cc, **.cpp"}
     }
     -- Linkado
