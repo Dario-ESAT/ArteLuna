@@ -9,28 +9,17 @@ project "ArteLuna"
     language "C++"
     targetdir "../../bin/%{cfg.buildcfg}"
 
-    -- Filter
-    filter {"configurations:Debug"}
-    --defines { "DEBUG" }
-    symbols "On"
-
-    filter {"configurations:Release"}
-    --defines { "NDEBUG" }
-    optimize "On"
-
-    filter{}
-    
     -- Headers
     includedirs { 
-        "../../deps/GLFW/include",
+        "../../deps/glfw-3.3.8/include",
         "../../include"
     }
 
     -- Source
-    vpaths { ["include"] = "**.cc" }
-    --[[ vpaths {
-        ["include/"] = "**.h", ["src/"] = {"**.cc, **.cpp"}
-    } ]]
+    vpaths { 
+        ["include"] = "**.h",
+        ["src"] = {"**.cc, **.cpp"}
+    }
     
     files {
         "../../src/*.cc", 
@@ -60,3 +49,11 @@ project "ArteLuna"
     libdirs { 
         "../../deps/GLFW/lib-vc2019"
     }
+    -- Filter
+    filter {"configurations:Debug"}
+        defines { "DEBUG" }
+        symbols "On"
+
+    filter {"configurations:Release"}
+        defines { "NDEBUG" }
+        optimize "On"
