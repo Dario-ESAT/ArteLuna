@@ -12,6 +12,7 @@
 *.pdb
 *.log
 *.tlog
+*.ilk
 
 # Precompiled Headers
 *.gch

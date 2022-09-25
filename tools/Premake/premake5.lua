@@ -43,11 +43,10 @@ project "ArteLuna"
         "oleaut32.lib",
         "uuid.lib",
         "odbc32.lib",
-        "odbccp32.lib",
-        "%(AdditionalDependencies)"
+        "odbccp32.lib"
     }
     libdirs { 
-        "../../deps/GLFW/lib-vc2019"
+        "../../deps/glfw-3.3.8/lib-vc2019"
     }
     -- Filter
     filter {"configurations:Debug"}
