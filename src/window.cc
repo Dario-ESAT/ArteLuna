@@ -22,34 +22,31 @@ int16_t Window::width() {
 }
 
 void Window::set_width(int16_t width) {
-    
+    width_ = width;
+    if (windowed_) {
+        glfwSetWindowAspectRatio(window_,width_,height_);
+    }
 }
 
-int16_t Window::height()
-{
+int16_t Window::height() {
     return height_;
 }
 
-void Window::set_height(int16_t heigth)
+void Window::set_height(int16_t height)
 {
-}
-
-
-void Window::set_windowed()
-{
-}
-
-int Window::Init(const char* name, int16_t width, int16_t heigth,int posx , int posy, bool windowed, int monitor) {
-    
-    window_ = glfwCreateWindow(width, heigth, name, nullptr, nullptr);
-    if (!window_)
-    {
-        glfwTerminate();
-        return -1;
+    height_ = height;
+    if (windowed_) {
+        glfwSetWindowAspectRatio(window_,width_,height_);
     }
-    glfwSetWindowPos(window_, posx, posy);
-    glfwMakeContextCurrent(window_);
-    return 0;
+}
+
+
+void Window::set_windowed(bool windowed) {
+    
+}
+
+bool Window::windowed() {
+    return windowed_;
 }
 
 void Window::Clear() {
@@ -67,15 +64,27 @@ int Window::posx() const
 
 void Window::set_posx(int posx)
 {
-    this->posx_ = posx;
+    posx_ = posx;
 }
 
-int Window::posy1() const
-{
+int Window::posy() const {
     return posy_;
 }
 
 void Window::set_posy(int posy)
 {
-    this->posy_ = posy;
+    posy_ = posy;
+}
+
+int Window::Init(const char* name, int16_t width, int16_t heigth,int posx , int posy, bool windowed, int monitor) {
+    
+    window_ = glfwCreateWindow(width, heigth, name, nullptr, nullptr);
+    if (!window_)
+    {
+        glfwTerminate();
+        return -1;
+    }
+    glfwSetWindowPos(window_, posx, posy);
+    glfwMakeContextCurrent(window_);
+    return 0;
 }

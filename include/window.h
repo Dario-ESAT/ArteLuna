@@ -18,10 +18,11 @@ class Window{
     void set_width(int16_t width);
     int16_t height();
     void set_height(int16_t heigth);
-    void set_windowed();
+    void set_windowed(bool windowed);
+    bool windowed();
     int posx() const;
     void set_posx(int posx);
-    int posy1() const;
+    int posy() const;
     void set_posy(int posy);
 
     //Functions
