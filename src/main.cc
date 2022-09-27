@@ -1,6 +1,9 @@
+#define GLFW_INCLUDE_NONE
+#include "glad/gl.h"
 #include "GLFW/glfw3.h"
-#include "../include/window.h"
+#include "window.h"
 #include <stdio.h>
+
 
 
 int main() {
@@ -16,7 +19,7 @@ int main() {
         window.Swap();
     }
 
-    window.End();
+    //window.End();
     
     return 0;
 }

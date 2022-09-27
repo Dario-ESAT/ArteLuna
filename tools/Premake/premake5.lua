@@ -12,7 +12,8 @@ project "ArteLuna"
     -- Headers
     includedirs { 
         "../../deps/glfw-3.3.8/include",
-        "../../include"
+        "../../include",
+        "../../deps/glad2/include"
     }
 
     -- Source
@@ -31,7 +32,7 @@ project "ArteLuna"
     links { 
         "opengl32.lib",
         "glfw3.lib",
-        "glfw3dll.lib",
+        -- "glfw3dll.lib",
         "kernel32.lib",
         "user32.lib",
         "gdi32.lib",
