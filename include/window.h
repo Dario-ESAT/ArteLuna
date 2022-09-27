@@ -26,12 +26,24 @@ class Window{
     void set_posy(int posy);
 
     //Functions
-    int Init(const char* name, int16_t width = 1280, int16_t heigth = 720, int posx = 110, int posy = 110, bool windowed = true, int monitor = 0);
+    int Init(
+        const char* name,
+        int16_t width = 1280,
+        int16_t heigth = 720,
+        int posx = 110,
+        int posy = 110,
+        bool windowed = true,
+        int monitor = 0
+    );
   
     void Clear();
     
     void Swap();
 
+    bool ShouldClose();
+
+    void End();
+    
     private:
     int16_t width_;
     int16_t height_;

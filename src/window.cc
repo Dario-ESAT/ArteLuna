@@ -40,7 +40,6 @@ void Window::set_height(int16_t height)
     }
 }
 
-
 void Window::set_windowed(bool windowed) {
     
 }
@@ -57,13 +56,19 @@ void Window::Swap() {
     glfwSwapBuffers(window_);
 }
 
-int Window::posx() const
-{
+bool Window::ShouldClose() {
+    return glfwWindowShouldClose(window_);
+}
+
+void Window::End() {
+    glfwTerminate();
+}
+
+int Window::posx() const {
     return posx_;
 }
 
-void Window::set_posx(int posx)
-{
+void Window::set_posx(int posx){
     posx_ = posx;
 }
 
@@ -71,13 +76,15 @@ int Window::posy() const {
     return posy_;
 }
 
-void Window::set_posy(int posy)
-{
+void Window::set_posy(int posy) {
     posy_ = posy;
 }
 
 int Window::Init(const char* name, int16_t width, int16_t heigth,int posx , int posy, bool windowed, int monitor) {
-    
+
+    if (!glfwInit())
+        return -1;
+
     window_ = glfwCreateWindow(width, heigth, name, nullptr, nullptr);
     if (!window_)
     {

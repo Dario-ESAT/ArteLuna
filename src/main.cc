@@ -3,7 +3,26 @@
 #include <stdio.h>
 
 
-int main(void)
+int main() {
+    printf("Hello World");
+
+    Window window;
+    window.Init("Hello World");
+    
+    while (!window.ShouldClose()) {
+        glfwPollEvents();
+
+        window.Clear();
+        window.Swap();
+        
+    }
+
+    window.End();
+    
+    return 0;
+}
+
+int VIEJOmain(void)
 {
   printf("Hello World");
 
