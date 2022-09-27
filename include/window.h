@@ -1,16 +1,19 @@
 #ifndef __WINDOW_H__
 #define __WINDOW_H__ 1
 
-#include "GLFW/glfw3.h"
 #include "stdint.h"
-
-struct Vector2{
-    float x,y;
-};
 
 class Window{
     public:
-    Window();
+    Window(
+        const char* name,
+        int16_t width = 1280,
+        int16_t heigth = 720,
+        int posx = 110,
+        int posy = 110,
+        bool windowed = true,
+        int monitor = 0
+    );
     ~Window();
 
     //Parameters
@@ -51,7 +54,7 @@ class Window{
     int posy_;
     bool windowed_;
 
-    GLFWwindow* window_;
+    struct GLFWwindow* window_;
 };
 
 

@@ -14,13 +14,17 @@ int main() {
 
         window.Clear();
         window.Swap();
-        
     }
 
     window.End();
     
     return 0;
 }
+
+
+
+
+
 
 int VIEJOmain(void)
 {

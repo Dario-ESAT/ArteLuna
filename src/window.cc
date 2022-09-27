@@ -1,12 +1,30 @@
+#include "GLFW/glfw3.h"
 #include "window.h"
 
-Window::Window() {
+Window::Window(
+        const char* name,
+        int16_t width,
+        int16_t heigth,
+        int posx,
+        int posy,
+        bool windowed,
+        int monitor
+    ) {
     window_ = nullptr;
     width_ = 0;
     height_ = 0;
     posx_ = 0;
     posy_ = 0;
-    windowed_ = false;  
+    windowed_ = false;
+    if (!glfwInit())
+        
+    window_ = glfwCreateWindow(width, heigth, name, nullptr, nullptr);
+    if (!window_) {
+        glfwTerminate();
+    }
+    
+    glfwSetWindowPos(window_, posx, posy);
+    glfwMakeContextCurrent(window_);
 }
 
 Window::~Window() {
@@ -82,16 +100,5 @@ void Window::set_posy(int posy) {
 
 int Window::Init(const char* name, int16_t width, int16_t heigth,int posx , int posy, bool windowed, int monitor) {
 
-    if (!glfwInit())
-        return -1;
-
-    window_ = glfwCreateWindow(width, heigth, name, nullptr, nullptr);
-    if (!window_)
-    {
-        glfwTerminate();
-        return -1;
-    }
-    glfwSetWindowPos(window_, posx, posy);
-    glfwMakeContextCurrent(window_);
-    return 0;
+   
 }
