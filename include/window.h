@@ -1,7 +1,6 @@
 #ifndef __WINDOW_H__
 #define __WINDOW_H__ 1
 
-#include "GLFW/glfw3.h"
 #include "stdint.h"
 
 struct Vector2{
@@ -20,11 +19,12 @@ class Window{
     void set_height(int16_t heigth);
     void set_windowed(bool windowed);
     bool windowed();
+    /*
     int posx() const;
     void set_posx(int posx);
     int posy() const;
     void set_posy(int posy);
-
+    */
     //Functions
     int Init(
         const char* name,
@@ -51,7 +51,7 @@ class Window{
     int posy_;
     bool windowed_;
 
-    GLFWwindow* window_;
+    struct GLFWwindow* window_;
 };
 
 

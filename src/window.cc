@@ -1,3 +1,4 @@
+#include "GLFW/glfw3.h"
 #include "window.h"
 
 Window::Window() {
@@ -61,9 +62,9 @@ bool Window::ShouldClose() {
 }
 
 void Window::End() {
-    glfwTerminate();
+    //glfwTerminate();
 }
-
+/*
 int Window::posx() const {
     return posx_;
 }
@@ -79,7 +80,7 @@ int Window::posy() const {
 void Window::set_posy(int posy) {
     posy_ = posy;
 }
-
+*/
 int Window::Init(const char* name, int16_t width, int16_t heigth,int posx , int posy, bool windowed, int monitor) {
 
     if (!glfwInit())
