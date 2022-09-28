@@ -5,6 +5,7 @@
 
 class Window{
     public:
+    Window();
     Window(
         const char* name,
         int16_t width = 1280,
@@ -47,6 +48,8 @@ class Window{
     bool ShouldClose();
 
     void End();
+
+    void ProcessEvents();
     
     private:
     int16_t width_;
