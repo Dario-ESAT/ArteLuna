@@ -1,4 +1,5 @@
 #include "window.h"
+#include "GLFW/glfw3.h"
 #include "glad/gl.h"
 #include "structs.h"
 #include <stdio.h>
@@ -15,14 +16,15 @@ Vtx vertices[] = {
     {  0.0f, 1.0f, 0.0f,    1.0f, 0.0f, 1.0f}
 };
 
-int indices[] = { 0,1,2, 2,3,0 };
+int indices[] = { 0,1,2, 2,1,0 };
 
 
 void onInit()
 {
-    //gladLoadGL();
+    gladLoadGL(glfwGetProcAddress);
     // ---------------------------Shaders-------------------------------
     //char* vertex_shader = (char*)Slurp("./vertex.glslv"); Sustituir con lo de glfw 
+
     unsigned int vertex_ = glCreateShader(GL_VERTEX_SHADER);
     //glShaderSource(vertex_, 1, &vertex_shader, 0);
     glCompileShader(vertex_);
