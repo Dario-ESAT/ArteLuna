@@ -1,6 +1,6 @@
 #include "window.h"
-#include "GLFW/glfw3.h"
 #include "glad/gl.h"
+#include "GLFW/glfw3.h"
 #include "structs.h"
 #include <stdio.h>
 
@@ -78,9 +78,9 @@ void onFrame()
 int main() {
     printf("Hello World");
 
-    // Window window("Hello World");
-    Window window;
-    window.Init("AAA");
+    Window window("Hello World");
+    // Window window;
+    // window.Init("AAA");
 
     while (!window.ShouldClose()) {
         window.ProcessEvents();
