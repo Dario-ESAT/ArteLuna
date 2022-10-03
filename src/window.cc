@@ -1,12 +1,37 @@
+// #define GLFW_INCLUDE_NONE
+#include "glad/gl.h"
+#include "GLFW/glfw3.h"
 #include "window.h"
-
+#include "stdio.h"
 Window::Window() {
     window_ = nullptr;
     width_ = 0;
     height_ = 0;
     posx_ = 0;
     posy_ = 0;
-    windowed_ = false;  
+    windowed_ = false;
+}
+
+Window::Window(
+        const char* name,
+        int16_t width,
+        int16_t heigth,
+        int posx,
+        int posy,
+        bool windowed,
+        int monitor
+    ) {
+    if (!glfwInit())
+        
+    window_ = glfwCreateWindow(width, heigth, name, nullptr, nullptr);
+    if (!window_) {
+        printf("hoal");
+        glfwTerminate();
+    }
+    
+    glfwSetWindowPos(window_, posx, posy);
+    glfwMakeContextCurrent(window_);
+    gladLoadGL(glfwGetProcAddress);
 }
 
 Window::~Window() {
@@ -40,7 +65,6 @@ void Window::set_height(int16_t height)
     }
 }
 
-
 void Window::set_windowed(bool windowed) {
     
 }
@@ -57,13 +81,24 @@ void Window::Swap() {
     glfwSwapBuffers(window_);
 }
 
-int Window::posx() const
-{
+bool Window::ShouldClose() {
+    return glfwWindowShouldClose(window_);
+}
+
+void Window::End() {
+    //glfwTerminate();
+}
+
+void Window::ProcessEvents() {
+    glfwPollEvents();
+}
+
+/*
+int Window::posx() const {
     return posx_;
 }
 
-void Window::set_posx(int posx)
-{
+void Window::set_posx(int posx){
     posx_ = posx;
 }
 
@@ -71,13 +106,14 @@ int Window::posy() const {
     return posy_;
 }
 
-void Window::set_posy(int posy)
-{
+void Window::set_posy(int posy) {
     posy_ = posy;
 }
-
+*/
 int Window::Init(const char* name, int16_t width, int16_t heigth,int posx , int posy, bool windowed, int monitor) {
-    
+    if (!glfwInit())
+        return -1;
+
     window_ = glfwCreateWindow(width, heigth, name, nullptr, nullptr);
     if (!window_)
     {
@@ -86,5 +122,7 @@ int Window::Init(const char* name, int16_t width, int16_t heigth,int posx , int 
     }
     glfwSetWindowPos(window_, posx, posy);
     glfwMakeContextCurrent(window_);
+    gladLoadGL(glfwGetProcAddress);
     return 0;
+   
 }
