@@ -29,7 +29,7 @@ Window::Window(
     
     if (!glfwInit())
         printf("hoal");
-    
+   
     window_ = glfwCreateWindow(width, heigth, name, nullptr, nullptr);
     
     if (!window_) {
