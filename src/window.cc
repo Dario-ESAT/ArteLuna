@@ -1,4 +1,4 @@
-// #define GLFW_INCLUDE_NONE
+#define GLFW_INCLUDE_NONE
 #include "glad/gl.h"
 #include "GLFW/glfw3.h"
 #include "window.h"
@@ -21,9 +21,17 @@ Window::Window(
         bool windowed,
         int monitor
     ) {
+    width_ = width;
+    height_ = heigth;
+    posx_ = posx;
+    posy_ = posy;
+    windowed_ = windowed;
+    
     if (!glfwInit())
-        
+        printf("hoal");
+    
     window_ = glfwCreateWindow(width, heigth, name, nullptr, nullptr);
+    
     if (!window_) {
         printf("hoal");
         glfwTerminate();

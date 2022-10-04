@@ -1,5 +1,6 @@
 #include "window.h"
 #include "glad/gl.h"
+#include "GLFW/glfw3.h"
 #include "structs.h"
 #include <stdio.h>
 
@@ -15,26 +16,48 @@ Vtx vertices[] = {
     {  0.0f, 1.0f, 0.0f,    1.0f, 0.0f, 1.0f}
 };
 
-int indices[] = { 0,1,2, 2,3,0 };
+int indices[] = { 0,1,2, 2,1,0 };
+
+static const char* vertex_shader_text =
+    "#version 110\n"
+    "layout (location=0) in vec3 a_position;\n"
+    "layout (location=1) in vec3 a_normal;\n"
+    "out vec3 normal;\n"
+
+    "void main()\n"
+    "{\n"
+        "normal = a_normal;\n"
+    "    gl_Position = vec4(position, 0.0);\n"
+    "}\n";
+
+static const char* fragment_shader_text =
+    "#version 110\n"
+    "in vec3 normal;\n"
+    "void main()\n"
+    "{\n"
+    "    gl_FragColor = vec4(normal, 1.0);\n"
+    "}\n";
 
 
 void onInit()
 {
-    //gladLoadGL();
+    gladLoadGL(glfwGetProcAddress);
     // ---------------------------Shaders-------------------------------
     //char* vertex_shader = (char*)Slurp("./vertex.glslv"); Sustituir con lo de glfw 
+
     unsigned int vertex_ = glCreateShader(GL_VERTEX_SHADER);
-    //glShaderSource(vertex_, 1, &vertex_shader, 0);
+    glShaderSource(vertex_, 1, &vertex_shader_text, 0);
     glCompileShader(vertex_);
 
     //char* fragment_shader = (char*)Slurp("./fragment.glslf");
     unsigned int fragment_ = glCreateShader(GL_FRAGMENT_SHADER);
-    //glShaderSource(fragment_, 1, &fragment_shader, 0);
+    glShaderSource(fragment_, 1, &fragment_shader_text, 0);
     glCompileShader(fragment_);
     // -----------------------------------------------------------------
 
     // ---------------------------Program-------------------------------
     gShaderProgram = glCreateProgram();
+    
     glAttachShader(gShaderProgram, vertex_);
     glAttachShader(gShaderProgram, fragment_);
     glLinkProgram(gShaderProgram);
@@ -70,20 +93,24 @@ void onFrame()
 {
     glUseProgram(gShaderProgram);
     glBindVertexArray(gVAO);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    //glDrawElements(GL_TRIANGLES, 2, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
 int main() {
     printf("Hello World");
 
-    // Window window("Hello World");
-    Window window;
-    window.Init("AAA");
+    Window window("Hello World");
+    // Window window;
+    // window.Init("AAA");
 
+    onInit();
     while (!window.ShouldClose()) {
         window.ProcessEvents();
         window.Clear();
+        onFrame();
         window.Swap();
+
     }
 
     //window.End();

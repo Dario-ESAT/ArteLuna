@@ -4,6 +4,7 @@
 struct Vtx {
 	float x, y, z;
 	float r, g, b;
+	unsigned int u,v;
 };
 
 #endif
