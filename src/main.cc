@@ -19,7 +19,7 @@ Vtx vertices[] = {
 int indices[] = { 0,1,2, 2,1,0 };
 
 static const char* vertex_shader_text =
-    "#version 110\n"
+    "#version 330\n"
     "layout (location=0) in vec3 a_position;\n"
     "layout (location=1) in vec3 a_normal;\n"
     "out vec3 normal;\n"
@@ -27,11 +27,12 @@ static const char* vertex_shader_text =
     "void main()\n"
     "{\n"
         "normal = a_normal;\n"
-    "    gl_Position = vec4(position, 0.0);\n"
+    "    gl_Position = vec4(a_position, 1.0);\n"
     "}\n";
 
 static const char* fragment_shader_text =
-    "#version 110\n"
+    "#version 330\n"
+    "out vec4 gl_FragColor;\n"
     "in vec3 normal;\n"
     "void main()\n"
     "{\n"
