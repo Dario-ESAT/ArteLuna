@@ -3,6 +3,7 @@
 #include "GLFW/glfw3.h"
 #include "window.h"
 #include "stdio.h"
+#include "inputs.h"
 Window::Window() {
     window_ = nullptr;
     width_ = 0;
@@ -10,6 +11,7 @@ Window::Window() {
     posx_ = 0;
     posy_ = 0;
     windowed_ = false;
+    
 }
 
 Window::Window(
@@ -37,6 +39,13 @@ Window::Window(
         glfwTerminate();
     }
     
+    std::vector<int> keys;
+    for(int i = 0; i < 348; i++){
+        keys.push_back(i);
+    }
+    input_ = new Inputs(keys);
+    input_->setupKeyInputs(*this);
+
     glfwSetWindowPos(window_, posx, posy);
     glfwMakeContextCurrent(window_);
     gladLoadGL(glfwGetProcAddress);

@@ -24,6 +24,7 @@ class Window{
     void set_height(int16_t heigth);
     void set_windowed(bool windowed);
     bool windowed();
+    struct GLFWwindow* window_;
     /*
     int posx() const;
     void set_posx(int posx);
@@ -58,7 +59,8 @@ class Window{
     int posy_;
     bool windowed_;
 
-    struct GLFWwindow* window_;
+   
+    class Inputs* input_;
 };
 
 
