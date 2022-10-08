@@ -52,6 +52,7 @@ class Window{
 
     void ProcessEvents();
     
+    class Inputs* input_;
     private:
     int16_t width_;
     int16_t height_;
@@ -60,7 +61,6 @@ class Window{
     bool windowed_;
 
    
-    class Inputs* input_;
 };
 
 

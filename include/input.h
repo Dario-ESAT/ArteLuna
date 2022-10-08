@@ -2,17 +2,17 @@
 #define __INPUTS_H__ 1
 
 #include "stdint.h"
-#include "GLFW/glfw3.h"
 #include "window.h"
 #include <map>
 #include <vector>
-
+#include "glad/gl.h"
+#include "GLFW/glfw3.h"
 class Inputs {
 public:
 
 enum InputKey {
-    UNKNOWN = GLFW_KEY_UNKNOWN,
-    SPACE = GLFW_KEY_SPACE,
+    UNKNOWN = -1,
+    SPACE = 57,
     APOSTROPHE = GLFW_KEY_APOSTROPHE,
     COMMA = GLFW_KEY_COMMA,
     MINUS = GLFW_KEY_MINUS,
@@ -149,7 +149,7 @@ private:
    void setIsKeyDown(int key, bool is_down);
    std::map<int, bool> keys_;
    bool is_enabled_;
-   static void callback( GLFWwindow* window, int key, int scancode, int action, int mods);
+   static void callback(class GLFWwindow* window, int key, int scancode, int action, int mods);
    static std::vector<Inputs*> instances_;
 };
 

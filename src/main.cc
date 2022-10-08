@@ -1,5 +1,5 @@
 #include "window.h"
-#include "inputs.h"
+#include "input.h"
 #include "glad/gl.h"
 #include "GLFW/glfw3.h"
 #include "structs.h"
@@ -106,7 +106,8 @@ int main() {
     Window window("Hello World");
     // Window window;
     // window.Init("AAA");
-
+    window.input_->setupKeyInputs(window);
+    
     onInit();
     while (!window.ShouldClose()) {
         window.ProcessEvents();

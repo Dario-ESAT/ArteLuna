@@ -3,7 +3,7 @@
 #include "GLFW/glfw3.h"
 #include "window.h"
 #include "stdio.h"
-#include "inputs.h"
+#include "input.h"
 Window::Window() {
     window_ = nullptr;
     width_ = 0;
@@ -43,6 +43,7 @@ Window::Window(
     for(int i = 0; i < 348; i++){
         keys.push_back(i);
     }
+    
     input_ = new Inputs(keys);
     input_->setupKeyInputs(*this);
 

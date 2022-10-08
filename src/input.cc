@@ -1,7 +1,6 @@
 #define GLFW_INCLUDE_NONE
-#include "glad/gl.h"
-#include "GLFW/glfw3.h"
-#include "inputs.h"
+
+#include "input.h"
 #include "stdio.h"
 
 std::vector<Inputs*> Inputs::instances_;
@@ -43,7 +42,7 @@ void Inputs::setupKeyInputs(Window& window) {
 
 void Inputs::callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
   for (Inputs* keyInput : instances_) {
-    printf("%d %d %d %d\n", key, scancode, action, mods);
+    printf("\nk:%d s:%d a:%d m:%d", key, scancode, action, mods);
     keyInput->setIsKeyDown(key, action != GLFW_RELEASE);
   }
 }
