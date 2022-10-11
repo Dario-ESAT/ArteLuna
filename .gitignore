@@ -48,3 +48,32 @@
 .vs
 .vscode
 .idea
+.luarc.json
+## OSX artifacts
+.DS_Store
+
+## Dear ImGui artifacts
+imgui.ini
+
+## Visual Studio artifacts
+ipch
+*.opensdf
+*.user
+*.sdf
+*.suo
+*.VC.db
+*.VC.VC.opendb
+
+## Commonly used CMake directories
+/build*/
+
+## Xcode artifacts
+project.xcworkspace
+xcuserdata
+
+## Emscripten artifacts
+**/imgui/examples/
+**/imgui/docs/
+**/imgui/.github/
+
+cmake-build-*

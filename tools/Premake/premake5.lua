@@ -3,7 +3,7 @@ workspace "ArteLuna"
     location "../../ArteLuna"
 
 project "ArteLuna"
-    dependson {"glad2","mathlib"}
+    dependson {"glad2","mathlib","imgui"}
     architecture "x64"
     location "../../ArteLuna/ArteLuna"
     kind "ConsoleApp"
@@ -11,15 +11,14 @@ project "ArteLuna"
     cppdialect "C++17"
     targetdir "../../bin/%{cfg.buildcfg}"
 
-    -- Headers
     includedirs { 
         "../../deps/glfw-3.3.8/include",
         "../../include",
         "../../deps/glad2/include",
-        "../../deps/mathlib/include"
+        "../../deps/mathlib/include",
+        "../../deps/imgui"
     }
 
-    -- Source
     vpaths { 
         ["include"] = "**.h",
         ["src"] = {"**.cc, **.cpp"}
@@ -30,10 +29,10 @@ project "ArteLuna"
         "../../src/*.cpp", 
         "../../include/*.h"
     }
-    -- Linkado
 
     links {
         "mathlib.lib",
+        "imgui.lib",
         "glad2.lib",
         "opengl32.lib",
         "glfw3.lib",
@@ -57,7 +56,6 @@ project "ArteLuna"
         "../../bin/Debug",
         "../../bin/Release"
     }
-    -- Filter
     filter {"configurations:Debug"}
         defines { "DEBUG" }
         symbols "On"
@@ -80,7 +78,6 @@ project "glad2"
         "../../deps/glad2/include"
     }
 
-    -- Source
     vpaths { 
         ["include"] = "**.h",
         ["src"] = {"**.cc, **.cpp"}
@@ -103,7 +100,6 @@ project "mathlib"
         "../../deps/mathlib/include"
     }
 
-    -- Source
     vpaths { 
         ["include"] = "**.h",
         ["src"] = {"**.cc, **.cpp"}
@@ -112,4 +108,35 @@ project "mathlib"
     files {
         "../../deps/mathlib/src/*.cc", 
         "../../deps/mathlib/include/*.h"
+    }
+
+project "imgui"
+    architecture "x64"
+    location "../../ArteLuna/imgui"
+    kind "StaticLib"
+    language "C++"
+    cppdialect "C++17"
+    targetdir "../../bin/%{cfg.buildcfg}"
+
+    includedirs {
+        "../../deps/imgui",
+        "../../deps/glfw-3.3.8/include",
+    }
+
+    vpaths { 
+        ["include"] = "../../deps/imgui/**.h",
+        ["include/backends"] = "../../deps/imgui/backends/**.h",
+        ["src"] = {"../../deps/imgui/**.cc, ../../deps/imgui/**.cpp"},
+        ["src/backends"] = "../../deps/imgui/backends/**.cpp",
+    }
+    
+    files {
+        "../../deps/imgui/*.cpp",
+        "../../deps/imgui/*.h",
+        "../../deps/imgui/backends/imgui_impl_glfw.h",
+        "../../deps/imgui/backends/imgui_impl_glfw.cpp",
+        "../../deps/imgui/backends/imgui_impl_opengl3.h",
+        "../../deps/imgui/backends/imgui_impl_opengl3.cpp",
     } 
+
+    -- https://decovar.dev/blog/2019/08/04/glfw-dear-imgui/
