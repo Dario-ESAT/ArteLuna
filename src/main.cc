@@ -106,16 +106,36 @@ int main() {
     Window window("Hello World");
     window.input_->setupKeyInputs(window);
 
+    //IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
     ImGui_ImplGlfw_InitForOpenGL(window.window_,false);
+    ImGui_ImplOpenGL3_Init("#version 330");
     
-    
+    printf("%s \n", ImGui::GetVersion());
+
     onInit();
     while (!window.ShouldClose()) {
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
         window.ProcessEvents();
         window.Clear();
         onFrame();
+
+        // --------ImGui--------
+        ImGui::Begin("Demo window");
+        ImGui::Button("Hello!");
+        ImGui::End();
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        // ----------------------
+        
+
         window.Swap();
         // ImGui::ShowDemoWindow();
+       
     }
 
     //window.End();
