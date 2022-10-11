@@ -108,10 +108,11 @@ int main() {
 
     //IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGui_ImplGlfw_InitForOpenGL(window.window_,false);
+    ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
     ImGui_ImplOpenGL3_Init("#version 330");
-    
-    printf("%s \n", ImGui::GetVersion());
+    ImGuiWindowFlags window_flags;
+
+    window_flags &= ImGuiWindowFlags_NoMove;
 
     onInit();
     while (!window.ShouldClose()) {
@@ -124,10 +125,12 @@ int main() {
         onFrame();
 
         // --------ImGui--------
-        ImGui::Begin("Demo window");
+        ImGui::SetNextWindowSize(ImVec2(500, 500));
+        bool window_test = false;
+        ImGui::Begin("Demo window", &window_test, window_flags);
         ImGui::Button("Hello!");
         ImGui::End();
-
+        ImGui::ShowDemoWindow();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         // ----------------------
