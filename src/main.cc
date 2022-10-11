@@ -1,4 +1,5 @@
 #include "window.h"
+#include "input.h"
 #include "glad/gl.h"
 #include "GLFW/glfw3.h"
 #include "structs.h"
@@ -11,15 +12,15 @@ static GLuint gVBO = 0, gVAO = 0;
 static GLuint gEBO = 0;
 
 Vtx vertices[] = {
-    { -0.5f, 0.0f, 0.0f,    1.0f, 0.0f, 0.0f},
-    {  0.5f, 0.0f, 0.0f,    0.0f, 1.0f, 0.0f},
-    {  0.0f, 1.0f, 0.0f,    1.0f, 0.0f, 1.0f}
+    { -0.3f, 0.0f, 0.0f,    1.0f, 0.0f, 0.0f},
+    {  0.3f, 0.0f, 0.0f,    0.0f, 1.0f, 0.0f},
+    {  0.0f, 0.5f, 0.0f,    1.0f, 0.0f, 1.0f}
 };
 
 int indices[] = { 0,1,2, 2,1,0 };
 
 static const char* vertex_shader_text =
-    "#version 110\n"
+    "#version 330\n"
     "layout (location=0) in vec3 a_position;\n"
     "layout (location=1) in vec3 a_normal;\n"
     "out vec3 normal;\n"
@@ -27,11 +28,12 @@ static const char* vertex_shader_text =
     "void main()\n"
     "{\n"
         "normal = a_normal;\n"
-    "    gl_Position = vec4(position, 0.0);\n"
+    "    gl_Position = vec4(a_position, 1.0);\n"
     "}\n";
 
 static const char* fragment_shader_text =
-    "#version 110\n"
+    "#version 330\n"
+    "out vec4 gl_FragColor;\n"
     "in vec3 normal;\n"
     "void main()\n"
     "{\n"
@@ -92,6 +94,7 @@ void onInit()
 void onFrame()
 {
     glUseProgram(gShaderProgram);
+
     glBindVertexArray(gVAO);
     //glDrawElements(GL_TRIANGLES, 2, GL_UNSIGNED_INT, 0);
     glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -99,11 +102,12 @@ void onFrame()
 
 int main() {
     printf("Hello World");
-
+    
     Window window("Hello World");
     // Window window;
     // window.Init("AAA");
-
+    window.input_->setupKeyInputs(window);
+    
     onInit();
     while (!window.ShouldClose()) {
         window.ProcessEvents();
@@ -160,3 +164,51 @@ int VIEJOmain(void)
     glfwTerminate();
     return 0;
 }*/
+
+/*
+
+class Ventana{
+   public:
+    Ventana();
+}
+class Triangulo{
+public:
+    Triangulo();
+
+};
+
+enum Class Actions{
+    Up,
+    Down,
+    Left,
+    Right
+};
+ 
+int main(int argc, argv){
+    try{
+        auto v = Ventana::create(800,600)
+
+        Triangulo tri{posicion, escala, rotacion};
+        while(v.abierta()){
+            v.limpiar();
+         
+            if(v.keydown(Actions::Up)){
+                tri.translate({0.0f, 1.0f * v.deltaTime(), 0.0f});
+            }
+             if(v.keydown(Actions::Down)){
+                tri.translate({0.0f, -1.0f * v.deltaTime(), 0.0f});
+            }
+            if(v.keydown(Actions::Left)){
+                tri.translate({1.0f * v.deltaTime(), 0.0f,  0.0f});
+            }
+            if(v.keydown(Actions::Right)){
+                tri.translate({-1.0f * v.deltaTime(), 0.0f, 0.0f});
+            }
+            v.pintar(tri);
+            v.swap();
+        }
+    }catch(...)
+    
+}
+
+*/
