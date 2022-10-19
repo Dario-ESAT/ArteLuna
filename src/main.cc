@@ -147,6 +147,87 @@ int main() {
 }
 
 /*
+class Component{
+    Component();
+    void enable();
+    void disable();
+    bool isEnabled();
+    .
+    .
+    .
+}
+
+class Entity{
+public:
+    Entity(std::initializer_list<Component>);
+    int getid() const;
+    std::vector<Entity&> getChildren();
+
+  
+    std::optional<Component> getComponent();
+
+private:
+    int id;
+
+
+}
+
+class TransformComponent : public Component{
+
+}
+
+class MaterialComponent : public Component{
+
+}
+
+class TriangleTransformComponent : public TransformComponent{
+
+}
+
+class TriangleMaterialComponent : public MaterialComponent{
+
+}
+
+class Shader{
+
+}
+
+class Program{
+
+}
+
+class EntityManager{
+public:
+    Entity &root();
+    template<typename... Components>
+    Entity& createEntity(Components... components);
+
+private:
+    std::vector<RenderComponent> renderComponent;
+    std::vector<TransformComponent> transformComponent;
+    std::vector<MaterialComponent> materialComponent;
+
+
+}
+
+EntityManager em;
+
+auto triangle = em.createEntity(TriangleMaterialComponent{}, TriangleTransformComponent{});
+Shader vert{ vertex_shader_text};
+Shader frag{ fragment_shader_text};
+
+auto program = Program{vert,frag};
+auto& tri_mat = triangle.getComponent<TriangleMaterialComponent>();
+
+tri_mat.apply(program);
+
+MaterialComponent mc{vertex_shader_text, fragment_shader_text};
+
+
+*/
+
+
+/*
 
 class Ventana{
    public:
