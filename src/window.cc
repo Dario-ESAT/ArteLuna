@@ -111,13 +111,13 @@ void Window::ProcessEvents() {
     glfwPollEvents();
 }
 
-/*
 int Window::posx() const {
     return posx_;
 }
 
 void Window::set_posx(int posx){
     posx_ = posx;
+    glfwSetWindowPos(window_, posx_, posy_);
 }
 
 int Window::posy() const {
@@ -126,8 +126,9 @@ int Window::posy() const {
 
 void Window::set_posy(int posy) {
     posy_ = posy;
+    glfwSetWindowPos(window_, posx_, posy_);
 }
-*/
+
 int Window::Init(const char* name, int16_t width, int16_t heigth,int posx , int posy, bool windowed, int monitor) {
     if (!glfwInit())
         return -1;
