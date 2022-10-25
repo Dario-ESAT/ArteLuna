@@ -1,8 +1,11 @@
 #include "window.h"
+#include "input.h"
 #include "glad/gl.h"
 #include "GLFW/glfw3.h"
 #include "structs.h"
 #include <stdio.h>
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
 
 
 GLuint buffer_ = 0;
@@ -11,15 +14,15 @@ static GLuint gVBO = 0, gVAO = 0;
 static GLuint gEBO = 0;
 
 Vtx vertices[] = {
-    { -0.5f, 0.0f, 0.0f,    1.0f, 0.0f, 0.0f},
-    {  0.5f, 0.0f, 0.0f,    0.0f, 1.0f, 0.0f},
-    {  0.0f, 1.0f, 0.0f,    1.0f, 0.0f, 1.0f}
+    { -0.3f, 0.0f, 0.0f,    1.0f, 0.0f, 0.0f},
+    {  0.3f, 0.0f, 0.0f,    0.0f, 1.0f, 0.0f},
+    {  0.0f, 0.5f, 0.0f,    1.0f, 0.0f, 1.0f}
 };
 
 int indices[] = { 0,1,2, 2,1,0 };
 
 static const char* vertex_shader_text =
-    "#version 110\n"
+    "#version 330\n"
     "layout (location=0) in vec3 a_position;\n"
     "layout (location=1) in vec3 a_normal;\n"
     "out vec3 normal;\n"
@@ -27,11 +30,12 @@ static const char* vertex_shader_text =
     "void main()\n"
     "{\n"
         "normal = a_normal;\n"
-    "    gl_Position = vec4(position, 0.0);\n"
+    "    gl_Position = vec4(a_position, 1.0);\n"
     "}\n";
 
 static const char* fragment_shader_text =
-    "#version 110\n"
+    "#version 330\n"
+    "out vec4 gl_FragColor;\n"
     "in vec3 normal;\n"
     "void main()\n"
     "{\n"
@@ -92,25 +96,49 @@ void onInit()
 void onFrame()
 {
     glUseProgram(gShaderProgram);
+
     glBindVertexArray(gVAO);
     //glDrawElements(GL_TRIANGLES, 2, GL_UNSIGNED_INT, 0);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
 int main() {
-    printf("Hello World");
-
     Window window("Hello World");
-    // Window window;
-    // window.Init("AAA");
+    window.input_->setupKeyInputs(window);
+
+    //IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+    ImGuiWindowFlags window_flags;
+
+    window_flags &= ImGuiWindowFlags_NoMove;
 
     onInit();
     while (!window.ShouldClose()) {
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
         window.ProcessEvents();
         window.Clear();
         onFrame();
-        window.Swap();
 
+        // --------ImGui--------
+        ImGui::SetNextWindowSize(ImVec2(500, 500));
+        bool window_test = false;
+        ImGui::Begin("Demo window", &window_test, window_flags);
+        ImGui::Button("Hello!");
+        ImGui::End();
+        ImGui::ShowDemoWindow();
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        // ----------------------
+        
+
+        window.Swap();
+        // ImGui::ShowDemoWindow();
+       
     }
 
     //window.End();
@@ -118,45 +146,131 @@ int main() {
     return 0;
 }
 
+/*
+class Component{
+    Component();
+    void enable();
+    void disable();
+    bool isEnabled();
+    .
+    .
+    .
+}
+
+class Entity{
+public:
+    Entity(std::initializer_list<Component>);
+    int getid() const;
+    std::vector<Entity&> getChildren();
+
+  
+    std::optional<Component> getComponent();
+
+private:
+    int id;
 
 
+}
 
+class TransformComponent : public Component{
+
+}
+
+class MaterialComponent : public Component{
+
+}
+
+class TriangleTransformComponent : public TransformComponent{
+
+}
+
+class TriangleMaterialComponent : public MaterialComponent{
+
+}
+
+class Shader{
+
+}
+
+class Program{
+
+}
+
+class EntityManager{
+public:
+    Entity &root();
+    template<typename... Components>
+    Entity& createEntity(Components... components);
+
+private:
+    std::vector<RenderComponent> renderComponent;
+    std::vector<TransformComponent> transformComponent;
+    std::vector<MaterialComponent> materialComponent;
+
+
+}
+
+EntityManager em;
+
+auto triangle = em.createEntity(TriangleMaterialComponent{}, TriangleTransformComponent{});
+Shader vert{ vertex_shader_text};
+Shader frag{ fragment_shader_text};
+
+auto program = Program{vert,frag};
+auto& tri_mat = triangle.getComponent<TriangleMaterialComponent>();
+
+tri_mat.apply(program);
+
+MaterialComponent mc{vertex_shader_text, fragment_shader_text};
+
+
+*/
 
 
 /*
-int VIEJOmain(void)
-{
-  printf("Hello World");
 
-   // Initialize the library 
-    if (!glfwInit())
-        return -1;
+class Ventana{
+   public:
+    Ventana();
+}
+class Triangulo{
+public:
+    Triangulo();
 
-    // Create a windowed mode window and its OpenGL context
-    GLFWwindow* window = glfwCreateWindow(640, 480, "Hello World", nullptr, nullptr);
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
-    }
+};
 
-     // Make the window's context current 
-    glfwMakeContextCurrent(window);
+enum Class Actions{
+    Up,
+    Down,
+    Left,
+    Right
+};
+ 
+int main(int argc, argv){
+    try{
+        auto v = Ventana::create(800,600)
 
-     // Loop until the user closes the window 
-    while (!glfwWindowShouldClose(window))
-    {
-         // Poll for and process events 
-        glfwPollEvents();
+        Triangulo tri{posicion, escala, rotacion};
+        while(v.abierta()){
+            v.limpiar();
+         
+            if(v.keydown(Actions::Up)){
+                tri.translate({0.0f, 1.0f * v.deltaTime(), 0.0f});
+            }
+             if(v.keydown(Actions::Down)){
+                tri.translate({0.0f, -1.0f * v.deltaTime(), 0.0f});
+            }
+            if(v.keydown(Actions::Left)){
+                tri.translate({1.0f * v.deltaTime(), 0.0f,  0.0f});
+            }
+            if(v.keydown(Actions::Right)){
+                tri.translate({-1.0f * v.deltaTime(), 0.0f, 0.0f});
+            }
+            v.pintar(tri);
+            v.swap();
+        }
+    }catch(...)
+    
+}
 
-         // Render here 
-        glClear(GL_COLOR_BUFFER_BIT);
-
-         // Swap front and back buffers 
-        glfwSwapBuffers(window);
-
-    }
-
-    glfwTerminate();
-    return 0;
-}*/
+*/

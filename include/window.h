@@ -24,12 +24,13 @@ class Window{
     void set_height(int16_t heigth);
     void set_windowed(bool windowed);
     bool windowed();
-    /*
+    struct GLFWwindow* window_;
+    
     int posx() const;
     void set_posx(int posx);
     int posy() const;
     void set_posy(int posy);
-    */
+    
     //Functions
     int Init(
         const char* name,
@@ -51,6 +52,7 @@ class Window{
 
     void ProcessEvents();
     
+    class Inputs* input_;
     private:
     int16_t width_;
     int16_t height_;
@@ -58,7 +60,7 @@ class Window{
     int posy_;
     bool windowed_;
 
-    struct GLFWwindow* window_;
+   
 };
 
 
