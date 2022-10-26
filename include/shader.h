@@ -11,13 +11,16 @@
 class shader {
 public:
 
-    shader(const char* vertex, const char* fagment);
+    shader(const char* vertex, const char* fragment);
+    shader(const char* vertex, const char* fragment, const char* geometry);
     ~shader();
-
-
+    int vertex();
+    int fragment();
+    int geometry();
 private:
     int vertex_;
     int fragment_;
+    int geometry_;
 };
 
 
