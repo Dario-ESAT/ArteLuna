@@ -28,17 +28,27 @@ Window::Window(
     posx_ = posx;
     posy_ = posy;
     windowed_ = windowed;
-    
-    if (!glfwInit())
-        printf("hoal");
-   
-    window_ = glfwCreateWindow(width, heigth, name, nullptr, nullptr);
-    
-    if (!window_) {
-        printf("hoal");
-        glfwTerminate();
+    try {
+        if (!glfwInit());
     }
-    
+        catch (int e) {
+        printf("There was an erron on the window, the window couldn't be initialize");
+    }
+
+    try {
+        window_ = glfwCreateWindow(width, heigth, name, nullptr, nullptr);
+
+        if (!window_) {
+            printf("hoal");
+            glfwTerminate();
+
+        }
+    }
+    catch (int e) {
+        printf("There was an error on the window, the window couldn't be created");
+    }
+
+
     std::vector<int> keys;
     for(int i = 0; i < 348; i++){
         keys.push_back(i);

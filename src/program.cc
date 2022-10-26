@@ -18,7 +18,7 @@ program::program(int vertex_, int fragment_){
         glLinkProgram(id_);
     }
     catch(int e){
-        printf("%d",e);
+        printf("There was an error on the program, invalid shader");
     }
 }
 

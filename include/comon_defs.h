@@ -10,8 +10,8 @@ struct Vtx {
 };
 
 enum errors {
-	program_error = -1
-	shader_error = -2,
+	program_error = -1,
+	shader_error = -2
 };
 
 
