@@ -1,11 +1,9 @@
 #define GLFW_INCLUDE_NONE
 
-#include "shader.h"
-#include <string>
-#include "stdio.h"
+#include "Shader.h"
+#include "glad/gl.h"
 
-
-shader::shader(const char* vertex, const char* fragment){
+Shader::Shader(const char* vertex, const char* fragment){
     vertex_ = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_, 1, &vertex, 0);
     glCompileShader(vertex_);
@@ -17,7 +15,7 @@ shader::shader(const char* vertex, const char* fragment){
     geometry_ = 0;
 }
 
-shader::shader(const char* vertex, const char* fragment, const char* geometry) {
+Shader::Shader(const char* vertex, const char* fragment, const char* geometry) {
     vertex_ = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_, 1, &vertex, 0);
     glCompileShader(vertex_);
@@ -31,7 +29,7 @@ shader::shader(const char* vertex, const char* fragment, const char* geometry) {
     glCompileShader(geometry_);
 }
 
-shader::~shader() {
+Shader::~Shader() {
     glDeleteShader(vertex_);
     glDeleteShader(fragment_);
     if (geometry_ != 0) {
@@ -39,14 +37,14 @@ shader::~shader() {
     }
 }
 
-int shader::vertex() {
+int Shader::vertex() {
     return vertex_;
 }
 
-int shader::fragment() {
+int Shader::fragment() {
     return fragment_;
 }
 
-int shader::geometry() {
+int Shader::geometry() {
     return geometry_;
 }

@@ -1,12 +1,12 @@
 #define GLFW_INCLUDE_NONE
 
-#include "program.h"
+#include "Program.h"
 #include <string>
-#include "shader.h"
+#include "Shader.h"
 #include "stdio.h"
 
 
-program::program(int vertex_, int fragment_){
+Program::Program(int vertex_, int fragment_){
     try {
         if (vertex_ == 0 || fragment_ == 0) {
             throw -1;
@@ -22,7 +22,7 @@ program::program(int vertex_, int fragment_){
     }
 }
 
-program::~program() {
+Program::~Program() {
 	glDeleteProgram(id_);
 }
 /*
@@ -48,7 +48,7 @@ void program::attachShader()
 {
 }
 */
-void program::useProgram()
+void Program::useProgram()
 {
     glUseProgram(id_);
 }

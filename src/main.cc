@@ -4,7 +4,7 @@
 #include "GLFW/glfw3.h"
 #include "comon_defs.h"
 #include <stdio.h>
-#include "program.h"
+#include "Program.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
@@ -112,10 +112,14 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
     ImGui_ImplOpenGL3_Init("#version 330");
     ImGuiWindowFlags window_flags;
-    program p(0, 0);
+
+    
+    
+    Program p(0, 0);
     window_flags &= ImGuiWindowFlags_NoMove;
 
 
+    
     onInit();
     while (!window.ShouldClose()) {
         ImGui_ImplOpenGL3_NewFrame();
