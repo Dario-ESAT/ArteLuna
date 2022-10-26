@@ -7,19 +7,19 @@
 
 
 program::program(int vertex_, int fragment_){
-    /*
-     gShaderProgram = glCreateProgram();
-    
-    glAttachShader(gShaderProgram, vertex_);
-    glAttachShader(gShaderProgram, fragment_);
-    glLinkProgram(gShaderProgram);
-    */
-	id_ = glCreateProgram();
+    try {
+        if (vertex_ == 0 || fragment_ == 0) {
+            throw -1;
+        }
+        id_ = glCreateProgram();
 
-    glAttachShader(id_, vertex_);
-    glAttachShader(id_, fragment_);
-    glLinkProgram(id_);
-
+        glAttachShader(id_, vertex_);
+        glAttachShader(id_, fragment_);
+        glLinkProgram(id_);
+    }
+    catch(int e){
+        printf("%d",e);
+    }
 }
 
 program::~program() {
