@@ -2,8 +2,9 @@
 #include "input.h"
 #include "glad/gl.h"
 #include "GLFW/glfw3.h"
-#include "structs.h"
+#include "comon_defs.h"
 #include <stdio.h>
+#include "Program.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
@@ -110,9 +111,10 @@ int main() {
     ImGui::CreateContext();
     ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
     ImGui_ImplOpenGL3_Init("#version 330");
-    ImGuiWindowFlags window_flags;
 
-    window_flags &= ImGuiWindowFlags_NoMove;
+    Shader shaders(vertex_shader_text,fragment_shader_text);
+    
+    Program p(shaders.vertex(), shaders.fragment());
 
     onInit();
     while (!window.ShouldClose()) {
@@ -123,11 +125,12 @@ int main() {
         window.ProcessEvents();
         window.Clear();
         onFrame();
+       
 
         // --------ImGui--------
         ImGui::SetNextWindowSize(ImVec2(500, 500));
         bool window_test = false;
-        ImGui::Begin("Demo window", &window_test, window_flags);
+        ImGui::Begin("Demo window", &window_test, ImGuiWindowFlags_NoMove);
         ImGui::Button("Hello!");
         ImGui::End();
         ImGui::ShowDemoWindow();
