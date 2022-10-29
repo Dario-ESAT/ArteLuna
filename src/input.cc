@@ -22,6 +22,7 @@ bool Inputs::IsKeyDown(int key) {
   bool result = false;
   if (is_enabled_) {
     std::map<int,bool>::iterator it = keys_.find(key);
+    printf("key: %d\n", key);
     if (it != keys_.end()) {
       result = keys_[key];
     }

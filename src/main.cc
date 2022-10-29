@@ -2,8 +2,11 @@
 #include "input.h"
 #include "glad/gl.h"
 #include "GLFW/glfw3.h"
-#include "structs.h"
+#include "comon_defs.h"
 #include <stdio.h>
+#include "Program.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
 
 
 GLuint buffer_ = 0;
@@ -101,20 +104,44 @@ void onFrame()
 }
 
 int main() {
-    printf("Hello World");
-    
     Window window("Hello World");
-    // Window window;
-    // window.Init("AAA");
     window.input_->setupKeyInputs(window);
+
+    //IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+
+    Shader shaders(vertex_shader_text,fragment_shader_text);
     
+    Program p(shaders.vertex(), shaders.fragment());
+
     onInit();
     while (!window.ShouldClose()) {
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
         window.ProcessEvents();
         window.Clear();
         onFrame();
-        window.Swap();
+       
 
+        // --------ImGui--------
+        ImGui::SetNextWindowSize(ImVec2(500, 500));
+        bool window_test = false;
+        ImGui::Begin("Demo window", &window_test, ImGuiWindowFlags_NoMove);
+        ImGui::Button("Hello!");
+        ImGui::End();
+        ImGui::ShowDemoWindow();
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        // ----------------------
+        
+
+        window.Swap();
+        // ImGui::ShowDemoWindow();
+       
     }
 
     //window.End();
@@ -122,48 +149,86 @@ int main() {
     return 0;
 }
 
-
-
-
-
-
 /*
-int VIEJOmain(void)
-{
-  printf("Hello World");
+class Component{
+    Component();
+    void enable();
+    void disable();
+    bool isEnabled();
+    .
+    .
+    .
+}
 
-   // Initialize the library 
-    if (!glfwInit())
-        return -1;
+class Entity{
+public:
+    Entity(std::initializer_list<Component>);
+    int getid() const;
+    std::vector<Entity&> getChildren();
 
-    // Create a windowed mode window and its OpenGL context
-    GLFWwindow* window = glfwCreateWindow(640, 480, "Hello World", nullptr, nullptr);
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
-    }
+  
+    std::optional<Component> getComponent();
 
-     // Make the window's context current 
-    glfwMakeContextCurrent(window);
+private:
+    int id;
 
-     // Loop until the user closes the window 
-    while (!glfwWindowShouldClose(window))
-    {
-         // Poll for and process events 
-        glfwPollEvents();
 
-         // Render here 
-        glClear(GL_COLOR_BUFFER_BIT);
+}
 
-         // Swap front and back buffers 
-        glfwSwapBuffers(window);
+class TransformComponent : public Component{
 
-    }
+}
 
-    glfwTerminate();
-    return 0;
-}*/
+class MaterialComponent : public Component{
+
+}
+
+class TriangleTransformComponent : public TransformComponent{
+
+}
+
+class TriangleMaterialComponent : public MaterialComponent{
+
+}
+
+class Shader{
+
+}
+
+class Program{
+
+}
+
+class EntityManager{
+public:
+    Entity &root();
+    template<typename... Components>
+    Entity& createEntity(Components... components);
+
+private:
+    std::vector<RenderComponent> renderComponent;
+    std::vector<TransformComponent> transformComponent;
+    std::vector<MaterialComponent> materialComponent;
+
+
+}
+
+EntityManager em;
+
+auto triangle = em.createEntity(TriangleMaterialComponent{}, TriangleTransformComponent{});
+Shader vert{ vertex_shader_text};
+Shader frag{ fragment_shader_text};
+
+auto program = Program{vert,frag};
+auto& tri_mat = triangle.getComponent<TriangleMaterialComponent>();
+
+tri_mat.apply(program);
+
+MaterialComponent mc{vertex_shader_text, fragment_shader_text};
+
+
+*/
+
 
 /*
 

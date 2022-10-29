@@ -25,12 +25,12 @@ class Window{
     void set_windowed(bool windowed);
     bool windowed();
     struct GLFWwindow* window_;
-    /*
+    
     int posx() const;
     void set_posx(int posx);
     int posy() const;
     void set_posy(int posy);
-    */
+    
     //Functions
     int Init(
         const char* name,
