@@ -1,11 +1,8 @@
 #ifndef __RENDER_COMPONENT_H__
 #define __RENDER_COMPONENT_H__ 1
+#include <memory>
 
-#include "stdint.h"
-#include "vector_3.h"
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
-#include "matrix_3.h"
+#include "component.h"
 
 class CollisionComponent;
 class SoundComponent;
@@ -13,7 +10,7 @@ class SoundComponent;
 class Mesh;
 class Material;
 
-class RenderComponent {
+class RenderComponent : public Component {
 public:
     void enable();
     void disable();
@@ -24,9 +21,8 @@ public:
     virtual SoundComponent* asSoundComponent() override;
 
     virtual void ImguiTree();
-
-    Mesh meshComponent_;
-    Material materialComponent_;
+    std::shared_ptr<Mesh> meshComponent_;
+    std::shared_ptr<Material> materialComponent_;
 
 protected:
     RenderComponent();

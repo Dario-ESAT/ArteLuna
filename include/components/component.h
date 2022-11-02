@@ -1,12 +1,6 @@
 #ifndef __COMPONENT_H__
 #define __COMPONENT_H__ 1
 
-#include "stdint.h"
-#include "vector_3.h"
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
-#include "matrix_3.h"
-
 class RenderComponent;
 class CollisionComponent;
 class SoundComponent;

@@ -1,8 +1,6 @@
 #define GLFW_INCLUDE_NONE
 
-#include "components/RenderComponent.h"
-#include "stdio.h"
-#include "..\..\include\components\RenderComponent.h"
+#include "components/render_component.h"
 
 
 void RenderComponent::enable()
