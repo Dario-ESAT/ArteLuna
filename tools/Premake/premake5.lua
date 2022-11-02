@@ -25,9 +25,9 @@ project "ArteLuna"
     }
     
     files {
-        "../../src/*.cc", 
-        "../../src/*.cpp", 
-        "../../include/*.h"
+        "../../src/**.cc", 
+        "../../src/**.cpp", 
+        "../../include/**.h"
     }
 
     links {
