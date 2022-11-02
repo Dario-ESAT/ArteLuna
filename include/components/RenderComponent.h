@@ -10,6 +10,9 @@
 class CollisionComponent;
 class SoundComponent;
 
+class Mesh;
+class Material;
+
 class RenderComponent {
 public:
     void enable();
@@ -21,6 +24,10 @@ public:
     virtual SoundComponent* asSoundComponent() override;
 
     virtual void ImguiTree();
+
+    Mesh meshComponent_;
+    Material materialComponent_;
+
 protected:
     RenderComponent();
     virtual ~RenderComponent();
