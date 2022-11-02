@@ -4,6 +4,23 @@
 #include "stdio.h"
 
 
+void Component::enable()
+{
+}
+
+void Component::disable()
+{
+}
+
+bool Component::isEnable() const
+{
+	return enable_;
+}
+
+void Component::ImguiTree()
+{
+}
+
 Component::Component(){
 
 }
