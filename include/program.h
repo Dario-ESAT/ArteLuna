@@ -21,7 +21,7 @@ public:
     //void linkProgram(std::string link_log);
     //void attachShader();
     void useProgram();
-    //GLuint getProgram();
+    GLuint getProgram();
 
     // void attachShader()
 private:

@@ -44,34 +44,30 @@ static const char* fragment_shader_text =
     "}\n";
 
 
-void onInit()
+
+// -----------------------------------------------------------------------------------------------------------
+
+void onFrame(GLuint pro)
 {
-    gladLoadGL(glfwGetProcAddress);
-    // ---------------------------Shaders-------------------------------
-    //char* vertex_shader = (char*)Slurp("./vertex.glslv"); Sustituir con lo de glfw 
+    glUseProgram(pro);
 
-    unsigned int vertex_ = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_, 1, &vertex_shader_text, 0);
-    glCompileShader(vertex_);
+    glBindVertexArray(gVAO);
+    //glDrawElements(GL_TRIANGLES, 2, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+}
 
-    //char* fragment_shader = (char*)Slurp("./fragment.glslf");
-    unsigned int fragment_ = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_, 1, &fragment_shader_text, 0);
-    glCompileShader(fragment_);
-    // -----------------------------------------------------------------
+int main() {
+    Window window("Hello World");
+    window.input_->setupKeyInputs(window);
 
-    // ---------------------------Program-------------------------------
-    gShaderProgram = glCreateProgram();
-    
-    glAttachShader(gShaderProgram, vertex_);
-    glAttachShader(gShaderProgram, fragment_);
-    glLinkProgram(gShaderProgram);
+    //IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
+    ImGui_ImplOpenGL3_Init("#version 330");
 
-    glDeleteShader(vertex_);
-    glDeleteShader(fragment_);
-    // -----------------------------------------------------------------
+    Shader shaders(vertex_shader_text,fragment_shader_text);
 
-    // ----------------------------Mesh---------------------------------
+    Program p(shaders.vertex(), shaders.fragment());
     glGenVertexArrays(1, &gVAO);
     glGenBuffers(1, &gVBO);
     glGenBuffers(1, &gEBO);
@@ -89,34 +85,8 @@ void onInit()
     glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
-    // -----------------------------------------------------------------
-}
 
-// -----------------------------------------------------------------------------------------------------------
-
-void onFrame()
-{
-    glUseProgram(gShaderProgram);
-
-    glBindVertexArray(gVAO);
-    //glDrawElements(GL_TRIANGLES, 2, GL_UNSIGNED_INT, 0);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-}
-
-int main() {
-    Window window("Hello World");
-    window.input_->setupKeyInputs(window);
-
-    //IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
-    ImGui_ImplOpenGL3_Init("#version 330");
-
-    Shader shaders(vertex_shader_text,fragment_shader_text);
-    
-    Program p(shaders.vertex(), shaders.fragment());
-
-    onInit();
+    //onInit();
     while (!window.ShouldClose()) {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -124,7 +94,7 @@ int main() {
 
         window.ProcessEvents();
         window.Clear();
-        onFrame();
+        onFrame(p.getProgram());
        
 
         // --------ImGui--------

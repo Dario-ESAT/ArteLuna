@@ -53,6 +53,11 @@ void Program::useProgram()
     glUseProgram(id_);
 }
 
+GLuint Program::getProgram()
+{
+    return id_;
+}
+
 
 /*
 GLuint program::getProgram()

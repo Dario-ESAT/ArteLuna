@@ -8,7 +8,7 @@ Shader::Shader(const char* vertex, const char* fragment){
     glShaderSource(vertex_, 1, &vertex, 0);
     glCompileShader(vertex_);
 
-    fragment_ = glCreateShader(GL_VERTEX_SHADER);
+    fragment_ = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment_, 1, &fragment, 0);
     glCompileShader(fragment_);
 
@@ -20,7 +20,7 @@ Shader::Shader(const char* vertex, const char* fragment, const char* geometry) {
     glShaderSource(vertex_, 1, &vertex, 0);
     glCompileShader(vertex_);
 
-    fragment_ = glCreateShader(GL_VERTEX_SHADER);
+    fragment_ = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment_, 1, &fragment, 0);
     glCompileShader(fragment_);
 
@@ -37,14 +37,14 @@ Shader::~Shader() {
     }
 }
 
-int Shader::vertex() {
+unsigned int Shader::vertex() {
     return vertex_;
 }
 
-int Shader::fragment() {
+unsigned int Shader::fragment() {
     return fragment_;
 }
 
-int Shader::geometry() {
+unsigned int Shader::geometry() {
     return geometry_;
 }

@@ -7,13 +7,14 @@ public:
     Shader(const char* vertex, const char* fragment);
     Shader(const char* vertex, const char* fragment, const char* geometry);
     ~Shader();
-    int vertex();
-    int fragment();
-    int geometry();
+    unsigned int vertex();
+    unsigned int fragment();
+    unsigned int geometry();
+    unsigned int vertex_;
+    unsigned int fragment_;
 private:
-    int vertex_;
-    int fragment_;
-    int geometry_;
+
+    unsigned int geometry_;
 };
 
 
