@@ -6,6 +6,8 @@
 #include "matrix_3.h"
 
 
+// para las listas de los componentes hacerlas de std::optional<componente>
+
 class Entity {
 public:
 
