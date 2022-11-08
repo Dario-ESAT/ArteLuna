@@ -4,22 +4,21 @@
 
 #include "component.h"
 
-class Mesh;
-class Material;
+class RigidBodyComponent;
 
-class RenderComponent : public Component {
+
+class SoundListenerComponent : public Component {
 public:
+    
     virtual RenderComponent* asRenderComponent() override;
     virtual RigidBodyComponent* asRigidBodyComponent() override;
     virtual SoundListenerComponent* asSoundListenerComponent() override;
 
-    virtual void ImguiTree();
-    std::shared_ptr<Mesh> meshComponent_;
-    std::shared_ptr<Material> materialComponent_;
+    virtual void ImguiTree() override;
 
 protected:
-    RenderComponent();
-    virtual ~RenderComponent();
+    SoundListenerComponent();
+    virtual ~SoundListenerComponent();
 };
 
 

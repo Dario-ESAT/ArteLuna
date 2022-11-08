@@ -2,31 +2,17 @@
 
 #include "components/render_component.h"
 
-
-void RenderComponent::enable()
-{
-}
-
-void RenderComponent::disable()
-{
-}
-
-bool RenderComponent::isEnable() const
-{
-	return enable_;
-}
-
 RenderComponent* RenderComponent::asRenderComponent()
 {
 	return this;
 }
 
-CollisionComponent* RenderComponent::asCollisionComponent()
+RigidBodyComponent* RenderComponent::asRigidBodyComponent()
 {
 	return nullptr;
 }
 
-SoundComponent* RenderComponent::asSoundComponent()
+SoundListenerComponent* RenderComponent::asSoundListenerComponent()
 {
 	return nullptr;
 }

@@ -2,17 +2,17 @@
 
 #include "components/component.h"
 
-void Component::enable()
-{
+void Component::enable() {
+	enabled_ = true;
 }
 
-void Component::disable()
-{
+void Component::disable() {
+	enabled_ = false;
 }
 
-bool Component::isEnable() const
+bool Component::isEnabled() const
 {
-	return enable_;
+	return enabled_;
 }
 
 void Component::ImguiTree()
