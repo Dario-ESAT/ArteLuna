@@ -49,7 +49,7 @@ bool Entity::dirty() const {
 
 void Entity::set_components(
     const std::vector<std::optional<Component>>& components) {
-    components_ = components;
+    // components_ = components;
 }
 
 const mathlib::Matrix3x3& Entity::transform() {
