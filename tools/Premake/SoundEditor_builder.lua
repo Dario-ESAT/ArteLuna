@@ -30,7 +30,7 @@ project "SoundEditor"
         "../SoundEditor/src/*.cc",
         "../SoundEditor/examples/imnode/SDL/include/*.h",
         "../../deps/imgui/backends/imgui_impl_opengl3.h",
-        "../../deps/imgui/backends/imgui_impl_sdl.h",
+        "../../deps/imgui/backends/imgui_impl_glfw.h",
     }
     
     libdirs {
@@ -40,7 +40,6 @@ project "SoundEditor"
     }
 
     links {
-        "SDL2.lib",
         "kernel32.lib",
         "user32.lib",
         "gdi32.lib",
@@ -70,12 +69,11 @@ project "imgui"
     kind "StaticLib"
     language "C++"
     cppdialect "C++17"
-    targetdir "../SoundEditor/bin/%{cfg.buildcfg}"
+    targetdir "../../bin/%{cfg.buildcfg}"
 
     includedirs {
         "../../deps/imgui",
         "../../deps/glfw-3.3.8/include",
-        "../SoundEditor/deps/sdl2/include",
     }
 
     vpaths {
@@ -88,16 +86,8 @@ project "imgui"
     files {
         "../../deps/imgui/*.cpp",
         "../../deps/imgui/*.h",
+        "../../deps/imgui/backends/imgui_impl_glfw.h",
+        "../../deps/imgui/backends/imgui_impl_glfw.cpp",
         "../../deps/imgui/backends/imgui_impl_opengl3.h",
         "../../deps/imgui/backends/imgui_impl_opengl3.cpp",
-        "../../deps/imgui/backends/imgui_impl_sdl.h",
-        "../../deps/imgui/backends/imgui_impl_sdl.cpp",
-    }
-
-    libdirs {
-        "../SoundEditor/deps/sdl2/lib/x64",
-    }
-
-    links {
-        "SDL2.lib",
     }
