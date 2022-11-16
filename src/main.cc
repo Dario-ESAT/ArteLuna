@@ -5,7 +5,9 @@
 #include "comon_defs.h"
 #include <stdio.h>
 #include "program.h"
+#include "mathlib.h"
 #include "shader.h"
+#include "components/tranform_component.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
@@ -27,12 +29,13 @@ static const char* vertex_shader_text =
     "#version 330\n"
     "layout (location=0) in vec3 a_position;\n"
     "layout (location=1) in vec3 a_normal;\n"
+    "uniform mat4 t_matrix;"
     "out vec3 normal;\n"
 
     "void main()\n"
     "{\n"
         "normal = a_normal;\n"
-    "    gl_Position = vec4(a_position, 1.0);\n"
+    "    gl_Position = t_matrix * vec4(a_position, 1.0);\n"
     "}\n";
 
 static const char* fragment_shader_text =
@@ -69,6 +72,26 @@ int main() {
     Shader shaders(vertex_shader_text,fragment_shader_text);
 
     Program p(shaders.vertex(), shaders.fragment());
+
+   // GLuint program_ = p.getProgram();
+
+    TranformComponent t;
+  
+    mathlib::Vector3 position_ = { 0, 0, 0 };
+    mathlib::Vector3 scale_ = { 1, 1, 1 };
+    mathlib::Vector3 rotation_ = { 0, 0, 0 };
+
+    t.set_position(position_);
+    t.set_rotation(rotation_);
+    t.set_scale(scale_);
+    t.set_transform();
+
+    p.useProgram();
+    GLint myLoc = glGetUniformLocation(p.getProgram() , "t_matrix");
+    glUniformMatrix4fv(myLoc, 1, false, t.transform().m);
+
+    glGetError();
+
     glGenVertexArrays(1, &gVAO);
     glGenBuffers(1, &gVBO);
     glGenBuffers(1, &gEBO);
@@ -86,12 +109,21 @@ int main() {
     glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
-
+    float a = 0;
     //onInit();
     while (!window.ShouldClose()) {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+        
+        a -= 0.01f;
+        position_ = { 0, a, 0 };
+
+        t.set_position(position_);
+        t.set_rotation(rotation_);
+        t.set_scale(scale_);
+        t.set_transform();
+        glUniformMatrix4fv(myLoc, 1, false, t.transform().m);
 
         window.ProcessEvents();
         window.Clear();
