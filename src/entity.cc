@@ -1,7 +1,6 @@
 #define GLFW_INCLUDE_NONE
 
 #include "entity.h"
-#include "stdio.h"
 
 
 Entity::Entity(){
@@ -10,6 +9,14 @@ Entity::Entity(){
 
 Entity::~Entity() {
 
+}
+
+Entity& Entity::parent() const {
+    return *parent_;
+}
+
+std::vector<Entity*> Entity::children() const {
+    return children_;
 }
 
 uint32_t Entity::id() const {
@@ -47,12 +54,12 @@ bool Entity::dirty() const {
     return dirty_;
 }
 
-void Entity::set_components(
-    const std::vector<std::optional<Component>>& components) {
-    // components_ = components;
+void Entity::AddComponent(Component* component) {
+    components_.push_back(component);
 }
 
-const mathlib::Matrix3x3& Entity::transform() {
+
+const mathlib::Matrix4x4& Entity::transform() {
     return transform_;
 }
 

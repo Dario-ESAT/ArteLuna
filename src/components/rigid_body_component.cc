@@ -3,15 +3,7 @@
 #include "components/rigid_body_component.h"
 
 
-RenderComponent* RigidBodyComponent::asRenderComponent() {
-	return nullptr;
-}
-
 RigidBodyComponent* RigidBodyComponent::asRigidBodyComponent() {
-	return nullptr;
-}
-
-SoundListenerComponent* RigidBodyComponent::asSoundListenerComponent() {
 	return nullptr;
 }
 

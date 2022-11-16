@@ -1,7 +1,6 @@
 #ifndef __INPUTS_H__
 #define __INPUTS_H__ 1
 
-#include "stdint.h"
 #include "window.h"
 #include <map>
 #include <vector>

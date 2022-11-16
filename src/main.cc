@@ -4,7 +4,8 @@
 #include "GLFW/glfw3.h"
 #include "comon_defs.h"
 #include <stdio.h>
-#include "Program.h"
+#include "program.h"
+#include "shader.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
@@ -103,7 +104,6 @@ int main() {
         ImGui::Begin("Demo window", &window_test, ImGuiWindowFlags_NoMove);
         ImGui::Button("Hello!");
         ImGui::End();
-        ImGui::ShowDemoWindow();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         // ----------------------

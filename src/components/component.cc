@@ -15,8 +15,16 @@ bool Component::isEnabled() const
 	return enabled_;
 }
 
-void Component::ImguiTree()
-{
+RenderComponent* Component::asRenderComponent() {
+	return nullptr;
+}
+
+RigidBodyComponent* Component::asRigidBodyComponent() {
+	return nullptr;
+}
+
+SoundListenerComponent* Component::asSoundListenerComponent() {
+	return nullptr;
 }
 
 Component::Component(){

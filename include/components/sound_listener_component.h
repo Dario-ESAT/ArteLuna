@@ -4,14 +4,9 @@
 
 #include "component.h"
 
-class RigidBodyComponent;
-
-
 class SoundListenerComponent : public Component {
 public:
     
-    virtual RenderComponent* asRenderComponent() override;
-    virtual RigidBodyComponent* asRigidBodyComponent() override;
     virtual SoundListenerComponent* asSoundListenerComponent() override;
 
     virtual void ImguiTree() override;

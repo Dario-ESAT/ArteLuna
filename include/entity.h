@@ -6,7 +6,7 @@
 
 #include "stdint.h"
 #include "vector_3.h"
-#include "matrix_3.h"
+#include "matrix_4.h"
 #include "components/component.h"
 
 
@@ -17,6 +17,11 @@ public:
 
     Entity();
     ~Entity();
+
+    Entity& parent() const;
+    std::vector<Entity*> children() const;
+    
+    
     uint32_t id() const;
 
     const mathlib::Vector3& position() const;
@@ -30,27 +35,22 @@ public:
 
     bool dirty() const;
     
-    void set_components(const std::vector<std::optional<Component>>& components);
-    template <class T>
-    static std::optional<T&> get_component(Entity entity) {
-        for (unsigned int i = 0; components_.size(); i++)
-        
-            T aux = static_cast<T>(components_[i]); 
-            if (aux) {
-                
-            }
-    }
-    const mathlib::Matrix3x3& transform();
+    void AddComponent(Component* components);
+    
+
+    const mathlib::Matrix4x4& transform();
 
 protected:
     bool dirty_;
     uint32_t id_;
-    std::vector<std::optional<Component*>> components_;
-    
+    std::vector<Component*> components_;
+    std::vector<Entity*> children_;
+    Entity* parent_;
+
     mathlib::Vector3 position_;
     mathlib::Vector3 rotation_;
     mathlib::Vector3 scale_;
-    mathlib::Matrix3x3 transform_;
+    mathlib::Matrix4x4 transform_;
 };
 
 #endif

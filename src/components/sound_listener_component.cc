@@ -4,14 +4,6 @@
 
 
 
-RenderComponent* SoundListenerComponent::asRenderComponent() {
-	return nullptr;
-}
-
-RigidBodyComponent* SoundListenerComponent::asRigidBodyComponent() {
-	return nullptr;
-}
-
 SoundListenerComponent* SoundListenerComponent::asSoundListenerComponent() {
 	return this;
 }
