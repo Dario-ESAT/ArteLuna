@@ -1,11 +1,12 @@
+#include <memory>
+
 #include "comon_defs.h"
 
-class Mesh
-{
+class Mesh {
 public:
     Mesh();
     ~Mesh();
-    //hacerlo unique o shared pointer
-    Vtx* mesh_;
-    int* indices_;
+    std::unique_ptr<Vtx[]> mesh_;
+    std::unique_ptr<int[]> indices_;
+    
 };

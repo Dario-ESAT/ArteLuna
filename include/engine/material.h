@@ -1,6 +1,10 @@
-class Material
-{
-public:
+#include <memory>
 
-    float* texture;
+class Material {
+    
+public:
+    Material();
+    ~Material();
+    
+    std::unique_ptr<float[]> texture;
 };

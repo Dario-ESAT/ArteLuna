@@ -12,7 +12,7 @@ class EntityManager {
     static EntityManager& GetManager();
 
     template <class T>
-    static std::optional<T&> get_component(Entity& entity) {
+    inline std::optional<T&> get_component(Entity& entity) {
         for (unsigned int i = 0; components_.size(); i++)
         
             T* aux = dynamic_cast<T*>(&components_[i]); 
