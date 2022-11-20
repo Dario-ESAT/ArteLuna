@@ -7,6 +7,7 @@
 #include "program.h"
 #include "mathlib.h"
 #include "shader.h"
+#include "utils.h"
 #include "components/tranform_component.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
@@ -69,7 +70,10 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
-    Shader shaders(vertex_shader_text,fragment_shader_text);
+    char* vert_ = (char*)ReadFile("../../bin/vertex.glslv");
+    char* frag = (char*)ReadFile("../../bin/fragment.glslf");
+
+    Shader shaders(vert_, frag);
 
     Program p(shaders.vertex(), shaders.fragment());
 
