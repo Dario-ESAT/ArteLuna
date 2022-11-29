@@ -1,4 +1,4 @@
-#include "components/tranform_component.h"
+#include "components/transform_component.h"
 
 void TranformComponent::ImguiTree() {
     

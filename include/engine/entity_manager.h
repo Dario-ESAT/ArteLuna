@@ -5,7 +5,7 @@
 #include "entity.h"
 #include "components/render_component.h"
 #include "components/rigid_body_component.h"
-#include "components/tranform_component.h"
+#include "components/transform_component.h"
 #include "components/sound_emiter_component.h"
 #include "components/sound_listener_component.h"
 

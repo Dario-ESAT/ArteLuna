@@ -8,13 +8,14 @@
 #include "vector_3.h"
 #include "matrix_4.h"
 
+class TransformComponent;
 class Component;
 // para las listas de los componentes hacerlas de std::optional<componente>
 // olvida lo de arriba y hazlo en un entity manager :)
 class Entity {
 public:
-
     Entity();
+    Entity(TransformComponent* trans, int id, Entity* parent);
     ~Entity();
 
     Entity& parent() const;

@@ -13,7 +13,7 @@
 #include "mathlib.h"
 #include "shader.h"
 #include "utils.h"
-#include "components/tranform_component.h"
+#include "components/transform_component.h"
 
 
 GLuint buffer_ = 0;
