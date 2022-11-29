@@ -7,9 +7,10 @@
 
 class TranformComponent : public Component{
 public:
-    TranformComponent();
-    ~TranformComponent();
+    ~TranformComponent() override;
 
+    TranformComponent* asTranformComponent() override;
+    
     void ImguiTree() override;
 
     const mathlib::Vector3& position() const;
@@ -26,6 +27,7 @@ public:
     void set_transform();
     bool dirty() const;
 
+    TranformComponent();
 protected:
     
 

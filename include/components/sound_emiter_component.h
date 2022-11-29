@@ -5,15 +5,13 @@
 class SoundEmiterComponent : public Component {
 public:
     
-    virtual RenderComponent* asRenderComponent() override;
-    virtual RigidBodyComponent* asRigidBodyComponent() override;
-    virtual SoundListenerComponent* asSoundListenerComponent() override;
+    SoundEmiterComponent* asSoundEmiterComponent() override;
 
     void ImguiTree() override;
+    ~SoundEmiterComponent() override;
 
 protected:
     SoundEmiterComponent();
-    virtual ~SoundEmiterComponent();
 };
 
 

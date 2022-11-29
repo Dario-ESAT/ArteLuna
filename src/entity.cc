@@ -1,7 +1,7 @@
 #define GLFW_INCLUDE_NONE
 
 #include "entity.h"
-
+#include "components/component.h"
 
 Entity::Entity(){
 

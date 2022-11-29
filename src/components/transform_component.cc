@@ -13,6 +13,10 @@ TranformComponent::~TranformComponent() {
     
 }
 
+TranformComponent* TranformComponent::asTranformComponent() {
+    return this;
+}
+
 const mathlib::Vector3& TranformComponent::position() const {
     return position_;
 }

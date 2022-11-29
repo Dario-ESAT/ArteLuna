@@ -19,11 +19,19 @@ RenderComponent* Component::asRenderComponent() {
 	return nullptr;
 }
 
+TranformComponent* Component::asTranformComponent() {
+	return nullptr;
+}
+
 RigidBodyComponent* Component::asRigidBodyComponent() {
 	return nullptr;
 }
 
 SoundListenerComponent* Component::asSoundListenerComponent() {
+	return nullptr;
+}
+
+SoundEmiterComponent* Component::asSoundEmiterComponent() {
 	return nullptr;
 }
 

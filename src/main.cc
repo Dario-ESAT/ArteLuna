@@ -4,13 +4,16 @@
 #include "GLFW/glfw3.h"
 #include "comon_defs.h"
 #include <stdio.h>
+
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
+
+#include "entity.h"
 #include "program.h"
 #include "mathlib.h"
 #include "shader.h"
 #include "utils.h"
 #include "components/tranform_component.h"
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
 
 
 GLuint buffer_ = 0;
@@ -65,6 +68,8 @@ int main() {
     Window window("Hello World");
     window.input_->setupKeyInputs(window);
 
+
+    
     //IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
@@ -78,21 +83,26 @@ int main() {
     Program p(shaders.vertex(), shaders.fragment());
 
    // GLuint program_ = p.getProgram();
-
-    TranformComponent t;
-  
+    Entity entity;
+    TranformComponent transform_cmp;
+   
+    
     mathlib::Vector3 position_ = { 0, 0, 0 };
     mathlib::Vector3 scale_ = { 1, 1, 1 };
     mathlib::Vector3 rotation_ = { 0, 0, 0 };
 
-    t.set_position(position_);
-    t.set_rotation(rotation_);
-    t.set_scale(scale_);
-    t.set_transform();
+    transform_cmp.set_position(position_);
+    transform_cmp.set_scale(scale_);
+    transform_cmp.set_rotation(rotation_);
+    transform_cmp.set_transform();
+
+    entity.AddComponent(&transform_cmp);
+
+    auto component = entity.get_component<TranformComponent>();
 
     p.useProgram();
     GLint myLoc = glGetUniformLocation(p.getProgram() , "t_matrix");
-    glUniformMatrix4fv(myLoc, 1, false, t.transform().m);
+    glUniformMatrix4fv(myLoc, 1, false, transform_cmp.transform().m);
 
     glGetError();
 
@@ -123,11 +133,11 @@ int main() {
         a -= 0.01f;
         position_ = { 0, a, 0 };
 
-        t.set_position(position_);
-        t.set_rotation(rotation_);
-        t.set_scale(scale_);
-        t.set_transform();
-        glUniformMatrix4fv(myLoc, 1, false, t.transform().m);
+        transform_cmp.set_position(position_);
+        transform_cmp.set_rotation(rotation_);
+        transform_cmp.set_scale(scale_);
+        transform_cmp.set_transform();
+        glUniformMatrix4fv(myLoc, 1, false, transform_cmp.transform().m);
 
         window.ProcessEvents();
         window.Clear();

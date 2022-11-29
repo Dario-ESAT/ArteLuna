@@ -7,13 +7,13 @@
 class SoundListenerComponent : public Component {
 public:
     
-    virtual SoundListenerComponent* asSoundListenerComponent() override;
+    SoundListenerComponent* asSoundListenerComponent() override;
 
-    virtual void ImguiTree() override;
+    void ImguiTree() override;
 
-protected:
+    ~SoundListenerComponent() override;
     SoundListenerComponent();
-    virtual ~SoundListenerComponent();
+protected:
 };
 
 

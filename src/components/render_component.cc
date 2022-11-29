@@ -7,16 +7,6 @@ RenderComponent* RenderComponent::asRenderComponent()
 	return this;
 }
 
-RigidBodyComponent* RenderComponent::asRigidBodyComponent()
-{
-	return nullptr;
-}
-
-SoundListenerComponent* RenderComponent::asSoundListenerComponent()
-{
-	return nullptr;
-}
-
 void RenderComponent::ImguiTree()
 {
 }

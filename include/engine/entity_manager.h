@@ -3,7 +3,11 @@
 #include <optional>
 #include <vector>
 
-#include "components/component.h"
+#include "components/render_component.h"
+#include "components/rigid_body_component.h"
+#include "components/tranform_component.h"
+#include "components/sound_emiter_component.h"
+#include "components/sound_listener_component.h"
 
 class Entity;
 
@@ -11,18 +15,19 @@ class EntityManager {
     public:
     static EntityManager& GetManager();
 
-    template <class T>
-    inline std::optional<T&> get_component(Entity& entity) {
-        for (unsigned int i = 0; components_.size(); i++)
-        
-            T* aux = dynamic_cast<T*>(&components_[i]); 
-        if (aux) {
-                
-        }
-    }
+
     
 private:
-    std::vector<Component> components_; 
+    std::vector<Entity> entities_;
+    
+    std::vector<std::pair<std::optional<RenderComponent>,
+    std::optional<TranformComponent>>> hola;
+    std::vector<RenderComponent> render_components_;
+    // std::vector<RigidBodyComponent> rigid_body_components_;
+    // std::vector<SoundEmiterComponent> sound_emiter_components_;
+    // std::vector<SoundListenerComponent> sound_listener_components_;
+    std::vector<TranformComponent> tranform_components_;
+    
     EntityManager();
     ~EntityManager();
 };

@@ -15,9 +15,9 @@ public:
     virtual void ImguiTree();
     std::shared_ptr<Mesh> meshComponent_;
 
+    virtual ~RigidBodyComponent();
 protected:
     RigidBodyComponent();
-    virtual ~RigidBodyComponent();
 };
 
 

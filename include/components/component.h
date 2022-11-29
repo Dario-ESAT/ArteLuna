@@ -6,6 +6,7 @@
 class RenderComponent;
 class RigidBodyComponent;
 class SoundListenerComponent;
+class SoundEmiterComponent;
 class TranformComponent;
 
 
@@ -16,11 +17,13 @@ public:
     bool isEnabled() const;
     
     virtual RenderComponent* asRenderComponent();
+    virtual TranformComponent* asTranformComponent();
     virtual RigidBodyComponent* asRigidBodyComponent();
     virtual SoundListenerComponent* asSoundListenerComponent();
+    virtual SoundEmiterComponent* asSoundEmiterComponent();
 
     virtual void ImguiTree() = 0;
-    ~Component();
+    virtual ~Component();
 protected:
     Component();
 

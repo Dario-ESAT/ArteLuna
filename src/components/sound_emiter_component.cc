@@ -3,23 +3,12 @@
 #include "components/sound_emiter_component.h"
 
 
-RenderComponent* SoundEmiterComponent::asRenderComponent()
-{
-	return nullptr;
+SoundEmiterComponent* SoundEmiterComponent::asSoundEmiterComponent() {
+	return this;
 }
 
-RigidBodyComponent* SoundEmiterComponent::asRigidBodyComponent()
-{
-	return nullptr;
-}
-
-SoundListenerComponent* SoundEmiterComponent::asSoundListenerComponent()
-{
-	return nullptr;
-}
-
-void SoundEmiterComponent::ImguiTree()
-{
+void SoundEmiterComponent::ImguiTree() {
+	
 }
 
 SoundEmiterComponent::SoundEmiterComponent(){

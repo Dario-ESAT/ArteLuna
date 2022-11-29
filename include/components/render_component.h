@@ -10,16 +10,14 @@ class Material;
 class RenderComponent : public Component {
 public:
     virtual RenderComponent* asRenderComponent() override;
-    virtual RigidBodyComponent* asRigidBodyComponent() override;
-    virtual SoundListenerComponent* asSoundListenerComponent() override;
 
     virtual void ImguiTree();
     std::shared_ptr<Mesh> meshComponent_;
     std::shared_ptr<Material> materialComponent_;
 
+    ~RenderComponent() override;
 protected:
     RenderComponent();
-    virtual ~RenderComponent();
 };
 
 
