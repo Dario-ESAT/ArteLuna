@@ -14,19 +14,25 @@ class EntityManager {
     public:
     static EntityManager& GetManager();
 
-
+    Entity& CreateNewEntity(Entity* parent = nullptr ,bool add_render_component = 
+    true);
     
+    
+    ~EntityManager();
 private:
+    uint16_t last_entity_id_;
     std::vector<Entity> entities_;
-    
+    Entity* root_;
+    uint16_t last_render_component_id_;
     std::vector<std::optional<RenderComponent>> render_components_;
-    std::vector<std::optional<TranformComponent>> tranform_components_;
+
+    uint16_t last_transform_component_id_;
+    std::vector<TransformComponent> transform_components_;
     // std::vector<RigidBodyComponent> rigid_body_components_;
     // std::vector<SoundEmiterComponent> sound_emiter_components_;
     // std::vector<SoundListenerComponent> sound_listener_components_;
     
     EntityManager();
-    ~EntityManager();
 };
 
 #endif

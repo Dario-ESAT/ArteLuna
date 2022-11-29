@@ -14,6 +14,7 @@
 #include "shader.h"
 #include "utils.h"
 #include "components/transform_component.h"
+#include "engine/entity_manager.h"
 
 
 GLuint buffer_ = 0;
@@ -29,28 +30,6 @@ Vtx vertices[] = {
 
 int indices[] = { 0,1,2, 2,1,0 };
 
-static const char* vertex_shader_text =
-    "#version 330\n"
-    "layout (location=0) in vec3 a_position;\n"
-    "layout (location=1) in vec3 a_normal;\n"
-    "uniform mat4 t_matrix;"
-    "out vec3 normal;\n"
-
-    "void main()\n"
-    "{\n"
-        "normal = a_normal;\n"
-    "    gl_Position = t_matrix * vec4(a_position, 1.0);\n"
-    "}\n";
-
-static const char* fragment_shader_text =
-    "#version 330\n"
-    "out vec4 gl_FragColor;\n"
-    "in vec3 normal;\n"
-    "void main()\n"
-    "{\n"
-    "    gl_FragColor = vec4(normal, 1.0);\n"
-    "}\n";
-
 
 
 // -----------------------------------------------------------------------------------------------------------
@@ -63,6 +42,7 @@ void onFrame(GLuint pro)
     //glDrawElements(GL_TRIANGLES, 2, GL_UNSIGNED_INT, 0);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }
+
 
 int main() {
     Window window("Hello World");
@@ -83,8 +63,11 @@ int main() {
     Program p(shaders.vertex(), shaders.fragment());
 
    // GLuint program_ = p.getProgram();
-    Entity entity;
-    TranformComponent transform_cmp;
+    //Entity entity;
+    EntityManager manager_ = EntityManager::GetManager();
+    Entity m = manager_.CreateNewEntity(nullptr, false);
+    TransformComponent transform_cmp;
+    m.AddComponent(&transform_cmp);
    
     
     mathlib::Vector3 position_ = { 0, 0, 0 };
@@ -96,9 +79,9 @@ int main() {
     transform_cmp.set_rotation(rotation_);
     transform_cmp.set_transform();
 
-    entity.AddComponent(&transform_cmp);
+    //entity.AddComponent(&transform_cmp);
 
-    auto component = entity.get_component<TranformComponent>();
+    //auto component = entity.get_component<TransformComponent>();
 
     p.useProgram();
     GLint myLoc = glGetUniformLocation(p.getProgram() , "t_matrix");
@@ -132,16 +115,17 @@ int main() {
         
         a -= 0.01f;
         position_ = { 0, a, 0 };
-
+        /*
         transform_cmp.set_position(position_);
         transform_cmp.set_rotation(rotation_);
         transform_cmp.set_scale(scale_);
         transform_cmp.set_transform();
+        
         glUniformMatrix4fv(myLoc, 1, false, transform_cmp.transform().m);
-
+        */
         window.ProcessEvents();
         window.Clear();
-        onFrame(p.getProgram());
+        //onFrame(p.getProgram());
        
 
         // --------ImGui--------
@@ -165,6 +149,28 @@ int main() {
     return 0;
 }
 
+/*
+class tonto {
+public:
+    int hola;
+    tonto(){hola = 0;}
+};
+
+int main() {
+    std::vector<tonto> tontos;
+
+    tonto tontisimo;
+    tontos.push_back(tontisimo);
+
+    tontisimo.hola = 10;
+    tonto* el_otro = &tontos.back();
+
+    el_otro->hola = 9;
+    printf("%d ---- %d", tontisimo.hola,tontos.back().hola);
+
+    return 0;
+}
+*/
 /*
 class Component{
     Component();

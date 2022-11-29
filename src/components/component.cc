@@ -19,7 +19,7 @@ RenderComponent* Component::asRenderComponent() {
 	return nullptr;
 }
 
-TranformComponent* Component::asTranformComponent() {
+TransformComponent* Component::asTransformComponent() {
 	return nullptr;
 }
 

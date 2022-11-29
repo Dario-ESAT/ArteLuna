@@ -5,11 +5,11 @@
 #include "vector_3.h"
 #include "matrix_4.h"
 
-class TranformComponent : public Component{
+class TransformComponent : public Component{
 public:
-    ~TranformComponent() override;
+    ~TransformComponent() override;
 
-    TranformComponent* asTranformComponent() override;
+    TransformComponent* asTransformComponent() override;
     
     void ImguiTree() override;
 
@@ -27,7 +27,7 @@ public:
     void set_transform();
     bool dirty() const;
 
-    TranformComponent();
+    TransformComponent();
 protected:
     
 

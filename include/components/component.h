@@ -7,7 +7,7 @@ class RenderComponent;
 class RigidBodyComponent;
 class SoundListenerComponent;
 class SoundEmiterComponent;
-class TranformComponent;
+class TransformComponent;
 
 
 class Component {
@@ -17,7 +17,7 @@ public:
     bool isEnabled() const;
     
     virtual RenderComponent* asRenderComponent();
-    virtual TranformComponent* asTranformComponent();
+    virtual TransformComponent* asTransformComponent();
     virtual RigidBodyComponent* asRigidBodyComponent();
     virtual SoundListenerComponent* asSoundListenerComponent();
     virtual SoundEmiterComponent* asSoundEmiterComponent();
