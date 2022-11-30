@@ -6,7 +6,7 @@
 
 class Mesh;
 class Material;
-
+class program;
 class RenderComponent : public Component {
 public:
     virtual RenderComponent* asRenderComponent() override;
@@ -17,6 +17,7 @@ public:
 
     ~RenderComponent() override;
     RenderComponent();
+    //RenderComponent(Program p, );
 protected:
 };
 
