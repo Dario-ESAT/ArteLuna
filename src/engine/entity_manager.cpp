@@ -10,32 +10,31 @@ EntityManager& EntityManager::GetManager() {
     return  manager;
 }
 
-Entity& EntityManager::CreateNewEntity(Entity* parent,bool add_render_component) {
+Entity& EntityManager::CreateNewEntity(Entity* parent) {
     transform_components_.emplace_back(TransformComponent());
-    entities_.emplace_back(Entity(&transform_components_.back(),last_entity_id_,
+    entities_.emplace_back(Entity(&transform_components_.back(),last_id_,
         parent == nullptr ? root_ : parent));
     
-    
-    if (add_render_component) {
-        render_components_.emplace_back(RenderComponent());
-        entities_.back().AddComponent((Component*)(&render_components_.back()));
-    }
-    
-    last_entity_id_++;
+    render_components_.emplace_back();
+    last_id_++;
     return entities_.back();
 }
 
 EntityManager::EntityManager() {
-    last_entity_id_ = 0;
-    last_render_component_id_ = 0;
-    last_transform_component_id_ = 0;
+    mapa_vectores[typeid(Component).hash_code()] = std::vector<std::optional<Component> >();
+    last_id_ = 0;
 
     transform_components_.emplace_back(TransformComponent());
-    entities_.emplace_back(Entity(&transform_components_.back(),last_entity_id_,nullptr));
+    entities_.emplace_back(Entity(&transform_components_.back(),last_id_,nullptr));
     root_ = &entities_.back();
-    last_entity_id_++;
+    last_id_++;
 }
 
 EntityManager::~EntityManager() {
+    
+}
+
+template <class T>
+void EntityManager::AddComponentToEntity(Entity& entity, T* component) {
     
 }

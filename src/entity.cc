@@ -4,15 +4,13 @@
 #include "components/transform_component.h"
 #include "components/component.h"
 
-Entity::Entity()
-{
+Entity::Entity() {
 }
 
 Entity::Entity(TransformComponent* trans, int id, Entity* parent){
     id_ = id;
     parent_ = parent;
-    components_.push_back((Component*)trans);
-    
+    components_.push_back(trans);
 }
 
 Entity::~Entity() {
@@ -29,11 +27,6 @@ std::vector<Entity*> Entity::children() const {
 
 uint32_t Entity::id() const {
     return id_;
-}
-
-
-void Entity::AddComponent(Component* component) {
-    components_.push_back(component);
 }
 
 

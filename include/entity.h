@@ -14,8 +14,6 @@ class Component;
 // olvida lo de arriba y hazlo en un entity manager :)
 class Entity {
 public:
-    Entity();
-    Entity(TransformComponent* trans, int id, Entity* parent);
     ~Entity();
 
     Entity& parent() const;
@@ -33,16 +31,19 @@ public:
     }
     
     uint32_t id() const;
-    
-    void AddComponent(Component* component);
 
 protected:
+    Entity();
+    Entity(TransformComponent* trans, int id, Entity* parent);
+    
     uint32_t id_;
     std::vector<Component*> components_;
     std::vector<Entity*> children_;
     Entity* parent_;
 
-
+    friend class EntityManager;
 };
+
+
 
 #endif

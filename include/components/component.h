@@ -22,7 +22,7 @@ public:
     virtual SoundListenerComponent* asSoundListenerComponent();
     virtual SoundEmiterComponent* asSoundEmiterComponent();
 
-    virtual void ImguiTree() = 0;
+    virtual void ImguiTree();
     virtual ~Component();
 protected:
     Component();

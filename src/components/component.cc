@@ -35,6 +35,10 @@ SoundEmiterComponent* Component::asSoundEmiterComponent() {
 	return nullptr;
 }
 
+void Component::ImguiTree() {
+	
+}
+
 Component::Component(){
 
 }
