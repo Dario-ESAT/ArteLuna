@@ -13,6 +13,7 @@
 #include "mathlib.h"
 #include "shader.h"
 #include "utils.h"
+#include "engine/material.h"
 #include "components/transform_component.h"
 #include "engine/entity_manager.h"
 
@@ -21,14 +22,16 @@ GLuint buffer_ = 0;
 static GLuint gShaderProgram = 0;
 static GLuint gVBO = 0, gVAO = 0;
 static GLuint gEBO = 0;
-
+/*
+auto vertices = std::make_unique<Vtx[]>;
+*/
 Vtx vertices[] = {
     { -0.3f, 0.0f, 0.0f,    1.0f, 0.0f, 0.0f},
     {  0.3f, 0.0f, 0.0f,    0.0f, 1.0f, 0.0f},
     {  0.0f, 0.5f, 0.0f,    1.0f, 0.0f, 1.0f}
 };
 
-int indices[] = { 0,1,2, 2,1,0 };
+
 
 
 
@@ -43,7 +46,7 @@ void onFrame(GLuint pro)
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
-
+/*
 int main() {
     Window window("Hello World");
     window.input_->setupKeyInputs(window);
@@ -122,7 +125,7 @@ int main() {
         transform_cmp.set_transform();
         
         glUniformMatrix4fv(myLoc, 1, false, transform_cmp.transform().m);
-        */
+        *
         window.ProcessEvents();
         window.Clear();
         //onFrame(p.getProgram());
@@ -148,8 +151,9 @@ int main() {
     
     return 0;
 }
+*/
 
-/*
+Material m();
 class tonto {
 public:
     int hola;
@@ -158,7 +162,11 @@ public:
 
 int main() {
     std::vector<tonto> tontos;
-
+    auto indices = std::make_unique<int[]>(5);
+    auto vertices_ = std::make_unique<Vtx[]>(3);
+    std::copy(vertices, vertices + 3, vertices_.get());
+   
+    //indices = 
     tonto tontisimo;
     tontos.push_back(tontisimo);
 
@@ -170,7 +178,7 @@ int main() {
 
     return 0;
 }
-*/
+
 /*
 class Component{
     Component();
