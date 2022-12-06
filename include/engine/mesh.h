@@ -9,12 +9,12 @@ public:
     ~Mesh();
     std::unique_ptr<Vtx[]> mesh_;
     std::unique_ptr<int[]> indices_;
-    GLuint gVBO() { return gVBO_; }
-    GLuint gVAO() { return gVAO_; }
-    GLuint gEBO() { return gEBO_; }
+    unsigned int gVBO() { return gVBO_; }
+    unsigned int gVAO() { return gVAO_; }
+    unsigned int gEBO() { return gEBO_; }
 
 private:
-    GLuint gVBO_;
-    GLuint gVAO_;
-    GLuint gEBO_;
+    unsigned int gVBO_;
+    unsigned int gVAO_;
+    unsigned int gEBO_;
 };
