@@ -29,8 +29,8 @@ private:
     std::vector<TransformComponent> transform_components_;
     
     std::vector<std::optional<RenderComponent> > render_components_;
-    template<class T>
-    std::map<size_t,std::vector<std::optional<T> > > mapa_vectores;
+    // template<class T>
+    // std::map<size_t,std::vector<std::optional<T> > > mapa_vectores;
     // std::vector<std::optional<RigidBodyComponent> > rigid_body_components_;
     // std::vector<std::optional<SoundEmiterComponent> > sound_emiter_components_;
     // std::vector<std::optional<SoundListenerComponent> > sound_listener_components_;

@@ -46,8 +46,7 @@ void onFrame(GLuint pro)
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
-/*
-int main() {
+/*int main() {
     Window window("Hello World");
     window.input_->setupKeyInputs(window);
 
@@ -115,17 +114,15 @@ int main() {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        
+
         a -= 0.01f;
         position_ = { 0, a, 0 };
-        /*
         transform_cmp.set_position(position_);
         transform_cmp.set_rotation(rotation_);
         transform_cmp.set_scale(scale_);
         transform_cmp.set_transform();
         
         glUniformMatrix4fv(myLoc, 1, false, transform_cmp.transform().m);
-        *
         window.ProcessEvents();
         window.Clear();
         //onFrame(p.getProgram());
@@ -150,9 +147,7 @@ int main() {
     //window.End();
     
     return 0;
-}
-*/
-
+}*/
 Material m();
 class tonto {
 public:
@@ -178,7 +173,6 @@ int main() {
 
     return 0;
 }
-
 /*
 class Component{
     Component();

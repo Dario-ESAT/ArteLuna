@@ -21,7 +21,7 @@ Entity& EntityManager::CreateNewEntity(Entity* parent) {
 }
 
 EntityManager::EntityManager() {
-    mapa_vectores[typeid(Component).hash_code()] = std::vector<std::optional<Component> >();
+    // mapa_vectores[typeid(Component).hash_code()] = std::vector<std::optional<Component> >();
     last_id_ = 0;
 
     transform_components_.emplace_back(TransformComponent());
