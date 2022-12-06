@@ -11,13 +11,19 @@ EntityManager& EntityManager::GetManager() {
 }
 
 Entity& EntityManager::CreateNewEntity(Entity* parent) {
-    transform_components_.emplace_back(TransformComponent());
+    transform_components_.emplace_back(TransformComponent(last_id_));
+    render_components_.emplace_back(RenderComponent(last_id_));
+
+    
     entities_.emplace_back(Entity(&transform_components_.back(),last_id_,
         parent == nullptr ? root_ : parent));
     
-    render_components_.emplace_back();
+    Entity& new_entity = entities_.back();
+    
+    new_entity.components_.push_back(&render_components_.back().value());
+    
     last_id_++;
-    return entities_.back();
+    return new_entity;
 }
 
 EntityManager::EntityManager() {
@@ -34,7 +40,6 @@ EntityManager::~EntityManager() {
     
 }
 
-template <class T>
-void EntityManager::AddComponentToEntity(Entity& entity, T* component) {
-    
-}
+// Pendiente para añadir junto el mapa de componentes
+// template <class T>
+// void EntityManager::AddComponentToEntity(Entity& entity, T* component) {}

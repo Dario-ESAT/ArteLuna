@@ -22,15 +22,13 @@ GLuint buffer_ = 0;
 static GLuint gShaderProgram = 0;
 static GLuint gVBO = 0, gVAO = 0;
 static GLuint gEBO = 0;
-/*
-auto vertices = std::make_unique<Vtx[]>;
-*/
+/*auto vertices = std::make_unique<Vtx[]>;*/
 Vtx vertices[] = {
     { -0.3f, 0.0f, 0.0f,    1.0f, 0.0f, 0.0f},
     {  0.3f, 0.0f, 0.0f,    0.0f, 1.0f, 0.0f},
     {  0.0f, 0.5f, 0.0f,    1.0f, 0.0f, 1.0f}
 };
-
+int indices[] = {0,1,2,2,0,1};
 
 
 
@@ -44,9 +42,37 @@ void onFrame(GLuint pro)
     glBindVertexArray(gVAO);
     //glDrawElements(GL_TRIANGLES, 2, GL_UNSIGNED_INT, 0);
     glDrawArrays(GL_TRIANGLES, 0, 3);
+    
 }
 
-/*int main() {
+#if 1
+
+/*class tonto {
+public:
+    int hola;
+    tonto(){hola = 0;}
+};
+
+int main() {
+    std::vector<tonto> tontos;
+    auto indices = std::make_unique<int[]>(5);
+    auto vertices_ = std::make_unique<Vtx[]>(3);
+    std::copy(vertices, vertices + 3, vertices_.get());
+   
+    //indices = 
+    tonto tontisimo;
+    tontos.push_back(tontisimo);
+
+    tontisimo.hola = 10;
+    tonto* el_otro = &tontos.back();
+
+    el_otro->hola = 9;
+    printf("%d ---- %d", tontisimo.hola,tontos.back().hola);
+
+    return 0;
+}*/
+
+int main() {
     Window window("Hello World");
     window.input_->setupKeyInputs(window);
 
@@ -67,19 +93,17 @@ void onFrame(GLuint pro)
    // GLuint program_ = p.getProgram();
     //Entity entity;
     EntityManager manager_ = EntityManager::GetManager();
-    Entity m = manager_.CreateNewEntity(nullptr, false);
-    TransformComponent transform_cmp;
-    m.AddComponent(&transform_cmp);
-   
+    Entity m = manager_.CreateNewEntity(nullptr);
+    TransformComponent* transform_cmp =  m.get_component<TransformComponent>();   
     
     mathlib::Vector3 position_ = { 0, 0, 0 };
     mathlib::Vector3 scale_ = { 1, 1, 1 };
     mathlib::Vector3 rotation_ = { 0, 0, 0 };
 
-    transform_cmp.set_position(position_);
-    transform_cmp.set_scale(scale_);
-    transform_cmp.set_rotation(rotation_);
-    transform_cmp.set_transform();
+    transform_cmp->set_position(position_);
+    transform_cmp->set_scale(scale_);
+    transform_cmp->set_rotation(rotation_);
+    transform_cmp->set_transform();
 
     //entity.AddComponent(&transform_cmp);
 
@@ -87,7 +111,7 @@ void onFrame(GLuint pro)
 
     p.useProgram();
     GLint myLoc = glGetUniformLocation(p.getProgram() , "t_matrix");
-    glUniformMatrix4fv(myLoc, 1, false, transform_cmp.transform().m);
+    glUniformMatrix4fv(myLoc, 1, false, transform_cmp->transform().m);
 
     glGetError();
 
@@ -117,12 +141,12 @@ void onFrame(GLuint pro)
 
         a -= 0.01f;
         position_ = { 0, a, 0 };
-        transform_cmp.set_position(position_);
-        transform_cmp.set_rotation(rotation_);
-        transform_cmp.set_scale(scale_);
-        transform_cmp.set_transform();
+        transform_cmp->set_position(position_);
+        transform_cmp->set_rotation(rotation_);
+        transform_cmp->set_scale(scale_);
+        transform_cmp->set_transform();
         
-        glUniformMatrix4fv(myLoc, 1, false, transform_cmp.transform().m);
+        glUniformMatrix4fv(myLoc, 1, false, transform_cmp->transform().m);
         window.ProcessEvents();
         window.Clear();
         //onFrame(p.getProgram());
@@ -147,32 +171,18 @@ void onFrame(GLuint pro)
     //window.End();
     
     return 0;
-}*/
-Material m();
-class tonto {
-public:
-    int hola;
-    tonto(){hola = 0;}
-};
+}
+
+
+#else
 
 int main() {
-    std::vector<tonto> tontos;
-    auto indices = std::make_unique<int[]>(5);
-    auto vertices_ = std::make_unique<Vtx[]>(3);
-    std::copy(vertices, vertices + 3, vertices_.get());
-   
-    //indices = 
-    tonto tontisimo;
-    tontos.push_back(tontisimo);
-
-    tontisimo.hola = 10;
-    tonto* el_otro = &tontos.back();
-
-    el_otro->hola = 9;
-    printf("%d ---- %d", tontisimo.hola,tontos.back().hola);
-
-    return 0;
+    
 }
+#endif
+
+
+
 /*
 class Component{
     Component();
@@ -252,7 +262,6 @@ MaterialComponent mc{vertex_shader_text, fragment_shader_text};
 
 
 */
-
 
 /*
 

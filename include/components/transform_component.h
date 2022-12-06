@@ -28,6 +28,7 @@ public:
     bool dirty() const;
 
     TransformComponent();
+    TransformComponent(uint16_t id);
 protected:
     
 

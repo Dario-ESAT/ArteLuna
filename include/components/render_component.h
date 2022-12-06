@@ -17,6 +17,7 @@ public:
 
     ~RenderComponent() override;
     RenderComponent();
+    RenderComponent(uint16_t id);
     //RenderComponent(Program p, );
 protected:
 };

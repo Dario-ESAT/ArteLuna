@@ -17,8 +17,9 @@ class EntityManager {
 
     Entity& CreateNewEntity(Entity* parent = nullptr);
 
-    template<class T>
-    void AddComponentToEntity(Entity& entity,T* component);
+    // Pendiente para añadir junto el mapa de componentes
+    // template<class T>
+    // void AddComponentToEntity(Entity& entity,T* component);
     
     ~EntityManager();
 private:

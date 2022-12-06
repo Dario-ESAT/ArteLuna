@@ -3,7 +3,8 @@ workspace "SoundEditor"
     location "../SoundEditor/SoundEditor"
 
 project "SoundEditor"
-    dependson {"imgui"}
+    
+    dependson {"imgui","glad2","soloud"}
     architecture "x64"
     location "../SoundEditor/SoundEditor/SoundEditor"
     kind "ConsoleApp"
@@ -12,34 +13,32 @@ project "SoundEditor"
     targetdir "../SoundEditor/bin/%{cfg.buildcfg}"
 
     includedirs {
+        "../../deps/glfw-3.3.8/include",
+        "../../deps/glad2/include",
         "../../deps/imgui",
-        "../../deps/imgui/backends/",
+        "../../deps/miniaudio/include",
         "../SoundEditor/include",
-        "../SoundEditor/deps/sdl2/include",
-    }
-
-    
-    vpaths {
-        ["include"] = "**.h",
-        ["src"] = {"**.cc, **.cpp"}
+        "../SoundEditor/deps/soloud/include",
+        "../SoundEditor/deps/soloud/src/miniaudio"
     }
     
     files {
-        "../SoundEditor/include/*.h",
-        "../SoundEditor/src/*.cpp",
-        "../SoundEditor/src/*.cc",
-        "../SoundEditor/examples/imnode/SDL/include/*.h",
-        "../../deps/imgui/backends/imgui_impl_opengl3.h",
-        "../../deps/imgui/backends/imgui_impl_glfw.h",
+        "../SoundEditor/include/**.h",
+        "../SoundEditor/src/**.cpp",
+        "../SoundEditor/src/**.cc",
     }
     
     libdirs {
+        "../../deps/glfw-3.3.8/lib-vc2019",
         "../SoundEditor/bin/Debug",
         "../SoundEditor/bin/Release",
-        "../SoundEditor/deps/sdl2/lib/x64",
     }
-
+--   ignoredefaultlibraries { "MSVCRT" }
     links {
+        "imgui.lib",
+        "glad2.lib",
+        "opengl32.lib",
+        "glfw3.lib",
         "kernel32.lib",
         "user32.lib",
         "gdi32.lib",
@@ -54,14 +53,38 @@ project "SoundEditor"
         "odbccp32.lib"
     }
 
-    filter { "configurations:Debug"}
-    defines {"DEBUG"}
-    symbols "On"
+    -- filter "system:windows"
+	-- 	systemversion "latest"
 
-    filter { "configurations:Release"}
-    defines {"NDEBUG"}
-    symbols "On"
+    filter "configurations:Debug"
+        defines {"DEBUG"}
+        symbols "On"
+		staticruntime "Off"
+        runtime "Release"
+    
+    filter "configurations:Release"
+        defines {"NDEBUG"}
+        runtime "Release"
+        optimize "Speed"
+		staticruntime "Off"
+        filter {}
 
+project "glad2"
+    architecture "x64"
+    location "../SoundEditor/SoundEditor/glad2"
+    kind "StaticLib"
+    language "C++"
+    cppdialect "C++17"
+    targetdir "../SoundEditor/bin/%{cfg.buildcfg}"
+
+    includedirs { 
+        "../../deps/glad2/include"
+    }
+
+    files {
+        "../../deps/glad2/src/gl.c", 
+        "../../deps/glad2/include/glad/gl.h"
+    }
 
 project "imgui"
     architecture "x64"
@@ -69,18 +92,11 @@ project "imgui"
     kind "StaticLib"
     language "C++"
     cppdialect "C++17"
-    targetdir "../../bin/%{cfg.buildcfg}"
+    targetdir "../SoundEditor/bin/%{cfg.buildcfg}"
 
     includedirs {
         "../../deps/imgui",
         "../../deps/glfw-3.3.8/include",
-    }
-
-    vpaths {
-        ["include"] = "../../deps/imgui/**.h",
-        ["include/backends"] = "../../deps/imgui/backends/**.h",
-        ["src"] = "../../deps/imgui/**.cc, ../../deps/imgui/**.cpp",
-        ["src/backends"] = "../../deps/imgui/backends/**.cpp",
     }
 
     files {
@@ -90,4 +106,22 @@ project "imgui"
         "../../deps/imgui/backends/imgui_impl_glfw.cpp",
         "../../deps/imgui/backends/imgui_impl_opengl3.h",
         "../../deps/imgui/backends/imgui_impl_opengl3.cpp",
+    }
+
+project "soloud"
+    architecture "x64"
+    location "../SoundEditor/SoundEditor/soloud"
+    kind "StaticLib"
+    language "C++"
+    cppdialect "C++17"
+    targetdir "../SoundEditor/bin/%{cfg.buildcfg}"
+
+    includedirs {
+        "../SoundEditor/deps/soloud/include",
+        "../SoundEditor/deps/soloud/src/miniaudio"
+    }
+
+    files {
+        "../SoundEditor/deps/soloud/**.cpp",
+        "../SoundEditor/deps/soloud/**.h",
     }

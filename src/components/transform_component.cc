@@ -9,9 +9,12 @@ TransformComponent::TransformComponent() {
     scale_ = {1.0f,1.0f,1.0f};
 }
 
-TransformComponent::~TransformComponent() {
-    
+TransformComponent::TransformComponent(uint16_t id) {
+    scale_ = {1.0f,1.0f,1.0f};
+    id_ = id;
 }
+
+TransformComponent::~TransformComponent() {}
 
 TransformComponent* TransformComponent::asTransformComponent() {
     return this;

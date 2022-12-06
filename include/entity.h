@@ -20,7 +20,7 @@ public:
     std::vector<Entity*> children() const;
     
     template <class T>
-    inline Component* get_component() {
+    inline T* get_component() {
         for (unsigned int i = 0; components_.size(); i++) {
             T* aux = dynamic_cast<T*>(components_[i]); 
             if (aux) {
