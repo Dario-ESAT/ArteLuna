@@ -7,10 +7,10 @@ class Shader;
 
 class Program {
 public:
-
+    Program();
     Program(int vertex_, int fragment_);
     ~Program();
-
+    void Init(int vertex_, int fragment_);
     //void linkProgram(std::string link_log);
     //void attachShader();
     void useProgram();

@@ -47,12 +47,12 @@ void onFrame(GLuint pro)
 
 #if 1
 
-/*class tonto {
+class tonto {
 public:
     int hola;
     tonto(){hola = 0;}
 };
-
+/*
 int main() {
     std::vector<tonto> tontos;
     auto indices = std::make_unique<int[]>(5);
@@ -70,8 +70,8 @@ int main() {
     printf("%d ---- %d", tontisimo.hola,tontos.back().hola);
 
     return 0;
-}*/
-
+}
+*/
 int main() {
     Window window("Hello World");
     window.input_->setupKeyInputs(window);

@@ -6,6 +6,10 @@
 #include "stdio.h"
 
 
+Program::Program()
+{
+}
+
 Program::Program(int vertex_, int fragment_){
     try {
         if (vertex_ == 0 || fragment_ == 0) {
@@ -24,6 +28,22 @@ Program::Program(int vertex_, int fragment_){
 
 Program::~Program() {
 	glDeleteProgram(id_);
+}
+void Program::Init(int vertex_, int fragment_)
+{
+    try {
+        if (vertex_ == 0 || fragment_ == 0) {
+            throw - 1;
+        }
+        id_ = glCreateProgram();
+
+        glAttachShader(id_, vertex_);
+        glAttachShader(id_, fragment_);
+        glLinkProgram(id_);
+    }
+    catch (int e) {
+        printf("There was an error on the program, invalid shader");
+    }
 }
 /*
 void program::linkProgram(std::string link_log)

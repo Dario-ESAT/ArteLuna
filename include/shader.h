@@ -3,10 +3,12 @@
 
 class Shader {
 public:
-
+    Shader();
     Shader(const char* vertex, const char* fragment);
     Shader(const char* vertex, const char* fragment, const char* geometry);
     ~Shader();
+    void Init(const char* vertex, const char* fragment);
+    void Init(const char* vertex, const char* fragment, const char* geometry);
     unsigned int vertex();
     unsigned int fragment();
     unsigned int geometry();
