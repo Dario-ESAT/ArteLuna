@@ -12,6 +12,7 @@
 #include "program.h"
 #include "mathlib.h"
 #include "shader.h"
+#include "engine/mesh.h"
 #include "utils.h"
 #include "engine/material.h"
 #include "components/transform_component.h"
@@ -46,13 +47,13 @@ void onFrame(GLuint pro)
 }
 
 #if 1
-
+/*
 class tonto {
 public:
     int hola;
     tonto(){hola = 0;}
 };
-/*
+
 int main() {
     std::vector<tonto> tontos;
     auto indices = std::make_unique<int[]>(5);
@@ -84,17 +85,18 @@ int main() {
     ImGui_ImplOpenGL3_Init("#version 330");
 
     char* vert_ = (char*)ReadFile("../../bin/vertex.glslv");
-    char* frag = (char*)ReadFile("../../bin/fragment.glslf");
+    char* frag_ = (char*)ReadFile("../../bin/fragment.glslf");
 
-    Shader shaders(vert_, frag);
+    //Shader shaders(vert_, frag);
 
-    Program p(shaders.vertex(), shaders.fragment());
+    //Program p(shaders.vertex(), shaders.fragment());
 
    // GLuint program_ = p.getProgram();
     //Entity entity;
     EntityManager manager_ = EntityManager::GetManager();
     Entity m = manager_.CreateNewEntity(nullptr);
-    TransformComponent* transform_cmp =  m.get_component<TransformComponent>();   
+    TransformComponent* transform_cmp = m.get_component<TransformComponent>();
+    RenderComponent* render_cmp =  m.get_component<RenderComponent>();
     
     mathlib::Vector3 position_ = { 0, 0, 0 };
     mathlib::Vector3 scale_ = { 1, 1, 1 };
@@ -104,11 +106,16 @@ int main() {
     transform_cmp->set_scale(scale_);
     transform_cmp->set_rotation(rotation_);
     transform_cmp->set_transform();
+    
+    render_cmp->meshComponent_.get()->Init(6, &indices[0], 3, vertices);
+    render_cmp->materialComponent_.get()->Init(vert_, frag_);
+    render_cmp->materialComponent_.get()->set_uniform_value(transform_cmp->transform().m, 4, 0);
+
 
     //entity.AddComponent(&transform_cmp);
 
     //auto component = entity.get_component<TransformComponent>();
-
+    /*
     p.useProgram();
     GLint myLoc = glGetUniformLocation(p.getProgram() , "t_matrix");
     glUniformMatrix4fv(myLoc, 1, false, transform_cmp->transform().m);
@@ -132,21 +139,22 @@ int main() {
     glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
+    */
     float a = 0;
     //onInit();
     while (!window.ShouldClose()) {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-
+        /*
         a -= 0.01f;
         position_ = { 0, a, 0 };
         transform_cmp->set_position(position_);
         transform_cmp->set_rotation(rotation_);
         transform_cmp->set_scale(scale_);
         transform_cmp->set_transform();
-        
-        glUniformMatrix4fv(myLoc, 1, false, transform_cmp->transform().m);
+        */
+        //glUniformMatrix4fv(myLoc, 1, false, transform_cmp->transform().m);
         window.ProcessEvents();
         window.Clear();
         //onFrame(p.getProgram());
