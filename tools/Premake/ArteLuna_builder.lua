@@ -118,23 +118,23 @@ project "imgui"
         "../../deps/imgui/backends/imgui_impl_opengl3.cpp",
     }
     
-project "soloud"
-    architecture "x64"
-    location "../../ArteLuna/soloud"
-    kind "StaticLib"
-    language "C++"
-    cppdialect "C++17"
-    targetdir "../../bin/%{cfg.buildcfg}"
+-- project "soloud"
+--     architecture "x64"
+--     location "../../ArteLuna/soloud"
+--     kind "StaticLib"
+--     language "C++"
+--     cppdialect "C++17"
+--     targetdir "../../bin/%{cfg.buildcfg}"
 
-    includedirs {
-        "../../deps/soloud/include",
-        "../../deps/soloud/backend/openal",
-    }
+--     includedirs {
+--         "../../deps/soloud/include",
+--         "../../deps/soloud/backend/openal",
+--     }
 
-    files {
-        "../../deps/soloud/src/**.cpp",
-        "../../deps/soloud/src/**.c",
-        "../../deps/soloud/include/**.h",
-    }
+--     files {
+--         "../../deps/soloud/src/**.cpp",
+--         "../../deps/soloud/src/**.c",
+--         "../../deps/soloud/include/**.h",
+--     }
     
     -- https://decovar.dev/blog/2019/08/04/glfw-dear-imgui/

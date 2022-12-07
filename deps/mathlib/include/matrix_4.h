@@ -26,7 +26,6 @@ class Matrix4x4{
   Matrix4x4 Adjoint() const;
   bool GetInverse(Matrix4x4& out) const;
   bool Inverse();
-
   Matrix4x4 Transpose() const;
 
   static Matrix4x4 Proyection();
@@ -37,6 +36,7 @@ class Matrix4x4{
   static Matrix4x4 Scale(const Vector3& scale);
   static Matrix4x4 Scale(float x, float y, float z);
 
+  Matrix3x3 Rotation();
   static Matrix4x4 RotateX(float radians);
   static Matrix4x4 RotateY(float radians);
   static Matrix4x4 RotateZ(float radians);
@@ -57,6 +57,7 @@ class Matrix4x4{
   Vector3 TransformVector3(const Vector4& in);
 
   Vector4 ToVector4(const Vector4& in);
+  Vector3 ToVector3(const Vector3& in);
 
   Vector4 GetColum(int colum) const;
   Vector4 GetLine(int line) const;
@@ -618,6 +619,14 @@ inline Matrix4x4 Matrix4x4::Scale(float x, float y, float z) {
 	return result;
 }
 
+inline Matrix3x3 Matrix4x4::Rotation() {
+    Vector3 r1{ m[0], m[1], m[2] };
+    Vector3 r2{ m[4], m[5], m[6] };
+    Vector3 r3{ m[8], m[9], m[10]};
+    Matrix3x3 result(r1,r2,r3);
+    return result;
+}
+    
 /**
  * @brief Rotates the Matrix on x axis
  * 

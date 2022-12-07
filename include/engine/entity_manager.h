@@ -20,7 +20,7 @@ class EntityManager {
     // Pendiente para añadir junto el mapa de componentes
     // template<class T>
     // void AddComponentToEntity(Entity& entity,T* component);
-    
+
     ~EntityManager();
 private:
     Entity* root_;
@@ -37,6 +37,8 @@ private:
     // std::vector<std::optional<SoundListenerComponent> > sound_listener_components_;
     
     EntityManager();
+
+    friend class Camera;
 };
 
 

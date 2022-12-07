@@ -1,8 +1,6 @@
 #define GLFW_INCLUDE_NONE
 
-#include "Program.h"
-#include <string>
-#include "Shader.h"
+#include "engine/Program.h"
 #include "stdio.h"
 
 

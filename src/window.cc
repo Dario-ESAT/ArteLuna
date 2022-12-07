@@ -4,6 +4,8 @@
 #include "window.h"
 #include "stdio.h"
 #include "input.h"
+#include "comon_defs.h"
+
 Window::Window() {
     window_ = nullptr;
     width_ = 0;
@@ -29,23 +31,25 @@ Window::Window(
     posy_ = posy;
     windowed_ = windowed;
     try {
-        if (!glfwInit());
+        if (!glfwInit())
+            throw 14;
     }
         catch (int e) {
-        printf("There was an erron on the window, the window couldn't be initialize");
+        printf("There was an error on glfw, the window couldn't be initialize %d",e);
     }
 
     try {
         window_ = glfwCreateWindow(width, heigth, name, nullptr, nullptr);
 
         if (!window_) {
-            printf("hoal");
+            printf("There was an error on the window, the window couldn't be initialize");
             glfwTerminate();
 
         }
     }
     catch (int e) {
-        printf("There was an error on the window, the window couldn't be created");
+        printf("There was an error on the window, the window couldn't be created %d",e);
+        
     }
 
 
@@ -54,7 +58,7 @@ Window::Window(
         keys.push_back(i);
     }
     
-    input_ = new Inputs(keys);
+    input_ = new Input(keys);
     input_->setupKeyInputs(*this);
 
     glfwSetWindowPos(window_, posx, posy);
@@ -105,8 +109,13 @@ void Window::Clear() {
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
+void Window::RenderScene() {
+    camera.RenderScene();
+}
+
 void Window::Swap() {
     glfwSwapBuffers(window_);
+    
 }
 
 bool Window::ShouldClose() {
@@ -114,11 +123,45 @@ bool Window::ShouldClose() {
 }
 
 void Window::End() {
-    //glfwTerminate();
+    glfwTerminate();
 }
 
-void Window::ProcessEvents() {
+void Window::InputLogic() {
+    
+    if (input_->IsKeyDown(Input::RIGHT) ||
+        input_->IsKeyDown(Input::D)) {
+        
+    }
+
+    if (input_->IsKeyDown(Input::LEFT) ||
+    input_->IsKeyDown(Input::W)) {
+        
+    }
+
+    if (input_->IsKeyDown(Input::UP) ||
+    input_->IsKeyDown(Input::W)) {
+        
+    }
+
+    if (input_->IsKeyDown(Input::DOWN) ||
+    input_->IsKeyDown(Input::S)) {
+        
+    }
+
+    if (input_->IsKeyDown(Input::E)) {
+        
+    }
+
+    if (input_->IsKeyDown(Input::Q)) {
+        
+    }
+    
+}
+
+void Window::ProcessInput() {
     glfwPollEvents();
+    
+    InputLogic();
 }
 
 int Window::posx() const {
