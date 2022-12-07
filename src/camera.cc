@@ -1,5 +1,5 @@
 #include "camera.h"
-
+#include "glad/gl.h"
 #include "input.h"
 #include "engine/entity_manager.h"
 
@@ -97,7 +97,7 @@ void Camera::RenderScene() {
         if (entity_manager.render_components_[i].has_value()) {
             TransformComponent& transform_component = entity_manager.transform_components_[i];
             RenderComponent& render_component = entity_manager.render_components_[i].value();
-            
+            GL_PROJECTION_MATRIX;
 
             
         }

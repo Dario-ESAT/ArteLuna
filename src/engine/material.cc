@@ -31,7 +31,7 @@ void Material::set_uniform_value(const float* unif, int type, const int uniform_
 	program_.useProgram();
 	switch (type) {
 	case 1:
-		//GLint myLoc = glGetUniformLocation(program_.getProgram(), "t_matrix");
+		
 		glUniform1f(uniform_pos, unif[0]);
 		break;
 

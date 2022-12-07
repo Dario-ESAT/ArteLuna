@@ -166,14 +166,15 @@ int main() {
         //onFrame(p_entity->materialComponent_->program_.getProgram());
         glUseProgram(p_entity->materialComponent_->program_.getProgram());
         glBindVertexArray(p_entity->meshComponent_->gVAO());
-
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, p_entity->meshComponent_.get()->indices_.data());
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        GLint myLoc = glGetUniformLocation(p_entity->materialComponent_->program_.getProgram(), "t_matrix");
+        render_cmp->materialComponent_.get()->set_uniform_value(transform_cmp->transform().m, 4, myLoc);
+        
+        glDrawElements(GL_TRIANGLES, p_entity->meshComponent_.get()->indices_
+        .size(),GL_UNSIGNED_INT, 0);
 
        
 
         // --------ImGui--------
-        ImGui::SetNextWindowSize(ImVec2(500, 500));
         bool window_test = false;
         ImGui::Begin("Demo window", &window_test, ImGuiWindowFlags_NoMove);
         ImGui::Button("Hello!");
