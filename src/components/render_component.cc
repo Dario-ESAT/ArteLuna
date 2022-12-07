@@ -1,8 +1,8 @@
 #define GLFW_INCLUDE_NONE
 
 #include "components/render_component.h"
-#include "shader.h"
-#include "program.h"
+#include "engine/shader.h"
+#include "engine/program.h"
 #include <GLFW/glfw3native.h>
 
 RenderComponent* RenderComponent::asRenderComponent()

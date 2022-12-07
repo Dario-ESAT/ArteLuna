@@ -9,9 +9,9 @@
 #include "backends/imgui_impl_opengl3.h"
 
 #include "entity.h"
-#include "program.h"
+#include "engine/program.h"
 #include "mathlib.h"
-#include "shader.h"
+#include "engine/shader.h"
 #include "engine/mesh.h"
 #include "utils.h"
 #include "engine/material.h"
@@ -41,7 +41,7 @@ void onFrame(GLuint pro)
     glUseProgram(pro);
 
     glBindVertexArray(gVAO);
-    //glDrawElements(GL_TRIANGLES, 2, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, 2, GL_UNSIGNED_INT, 0);
     glDrawArrays(GL_TRIANGLES, 0, 3);
     
 }
@@ -107,8 +107,12 @@ int main() {
     transform_cmp->set_rotation(rotation_);
     transform_cmp->set_transform();
     
-    render_cmp->meshComponent_.get()->Init(6, &indices[0], 3, vertices);
-    render_cmp->materialComponent_.get()->Init(vert_, frag_);
+    std::shared_ptr<Mesh> mesh_ = std::make_shared<Mesh>(6, indices, 3, vertices);
+    std::shared_ptr<Material> material_ = std::make_shared<Material>(vert_, frag_);
+
+    //(6, indices, 3, vertices)
+    render_cmp->meshComponent_ = mesh_;
+    render_cmp->materialComponent_ = material_;
     render_cmp->materialComponent_.get()->set_uniform_value(transform_cmp->transform().m, 4, 0);
 
 
@@ -155,9 +159,17 @@ int main() {
         transform_cmp->set_transform();
         */
         //glUniformMatrix4fv(myLoc, 1, false, transform_cmp->transform().m);
-        window.ProcessEvents();
+        window.ProcessInput();
+
         window.Clear();
-        //onFrame(p.getProgram());
+        RenderComponent* p_entity = m.get_component<RenderComponent>();
+        //onFrame(p_entity->materialComponent_->program_.getProgram());
+        glUseProgram(p_entity->materialComponent_->program_.getProgram());
+        glBindVertexArray(p_entity->meshComponent_->gVAO());
+
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, p_entity->meshComponent_.get()->indices_.data());
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+
        
 
         // --------ImGui--------
