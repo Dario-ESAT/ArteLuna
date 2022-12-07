@@ -16,7 +16,8 @@ project "ArteLuna"
         "../../include",
         "../../deps/glad2/include",
         "../../deps/mathlib/include",
-        "../../deps/imgui"
+        "../../deps/imgui",
+        "../../deps/tinyobjloader"
     }
 
     files {
@@ -33,6 +34,7 @@ project "ArteLuna"
     }
     
     links {
+        "tinyobjloader.lib",
         "mathlib.lib",
         "OpenAL32.lib",
         "imgui.lib",
@@ -117,6 +119,25 @@ project "imgui"
         "../../deps/imgui/backends/imgui_impl_opengl3.h",
         "../../deps/imgui/backends/imgui_impl_opengl3.cpp",
     }
+    
+
+
+project "tinyobjloader"
+    architecture "x64"
+    location "../../ArteLuna/tinyobjloader"
+    kind "StaticLib"
+    language "C++"
+    cppdialect "C++17"
+    targetdir "../../bin/%{cfg.buildcfg}"
+
+    includedirs {
+        "../../deps/tinyobjloader",
+    }
+
+    files {
+        "../../deps/tinyobjloader/*.cc",
+        "../../deps/tinyobjloader/*.h",
+        }
     
 -- project "soloud"
 --     architecture "x64"

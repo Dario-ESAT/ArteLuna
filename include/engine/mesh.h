@@ -2,12 +2,20 @@
 #include <vector>
 #include "comon_defs.h"
 
+
 class Mesh {
 public:
     Mesh(int amount_indices, int* i, int amount_vertices, Vtx* p);
     Mesh();
     ~Mesh();
     void Init(int amount_indices, int* i, int amount_vertices, Vtx* p);
+
+    /*
+    std::vector<float> vertices_;
+    std::vector<float> normal_;
+    std::vector<uint32_t> indices_;
+    std::vector<float> uv_;
+    */
 
     std::vector<Vtx> mesh_;
     std::vector<int> indices_;
