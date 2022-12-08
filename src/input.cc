@@ -22,7 +22,7 @@ bool Input::IsKeyDown(int key) {
   bool result = false;
   if (is_enabled_) {
     std::map<int,bool>::iterator it = keys_.find(key);
-    printf("key: %d\n", key);
+    // printf("key: %d\n", key);
     if (it != keys_.end()) {
       result = keys_[key];
     }
@@ -43,7 +43,7 @@ void Input::setupKeyInputs(Window& window) {
 
 void Input::callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
   for (Input* keyInput : instances_) {
-    printf("\nk:%d s:%d a:%d m:%d", key, scancode, action, mods);
+    // printf("\nk:%d s:%d a:%d m:%d", key, scancode, action, mods);
     keyInput->setIsKeyDown(key, action != GLFW_RELEASE);
   }
 }

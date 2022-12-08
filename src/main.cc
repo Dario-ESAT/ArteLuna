@@ -46,7 +46,7 @@ void onFrame(GLuint pro)
     
 }
 
-#if 1
+#if 0
 /*
 class tonto {
 public:
@@ -110,55 +110,16 @@ int main() {
     std::shared_ptr<Mesh> mesh_ = std::make_shared<Mesh>(6, indices, 3, vertices);
     std::shared_ptr<Material> material_ = std::make_shared<Material>(vert_, frag_);
 
-    //(6, indices, 3, vertices)
     render_cmp->meshComponent_ = mesh_;
     render_cmp->materialComponent_ = material_;
     render_cmp->materialComponent_.get()->set_uniform_value(transform_cmp->transform().m, 4, 0);
 
-
-    //entity.AddComponent(&transform_cmp);
-
-    //auto component = entity.get_component<TransformComponent>();
-    /*
-    p.useProgram();
-    GLint myLoc = glGetUniformLocation(p.getProgram() , "t_matrix");
-    glUniformMatrix4fv(myLoc, 1, false, transform_cmp->transform().m);
-
-    glGetError();
-
-    glGenVertexArrays(1, &gVAO);
-    glGenBuffers(1, &gVBO);
-    glGenBuffers(1, &gEBO);
-
-    glBindVertexArray(gVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, gVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gEBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vtx), 0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vtx), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glBindVertexArray(0);
-    */
     float a = 0;
-    //onInit();
     while (!window.ShouldClose()) {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        /*
-        a -= 0.01f;
-        position_ = { 0, a, 0 };
-        transform_cmp->set_position(position_);
-        transform_cmp->set_rotation(rotation_);
-        transform_cmp->set_scale(scale_);
-        transform_cmp->set_transform();
-        */
-        //glUniformMatrix4fv(myLoc, 1, false, transform_cmp->transform().m);
+
         window.ProcessInput();
 
         window.Clear();
@@ -185,11 +146,10 @@ int main() {
         
 
         window.Swap();
-        // ImGui::ShowDemoWindow();
        
     }
 
-    //window.End();
+    window.End();
     
     return 0;
 }
@@ -198,8 +158,49 @@ int main() {
 #else
 
 int main() {
+    Window window("Hello World");
+    window.input_->setupKeyInputs(window);
+
+    //IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+
+    //Shader shaders(vert_, frag);
+
+    //Program p(shaders.vertex(), shaders.fragment());
+
+   // GLuint program_ = p.getProgram();
+    //Entity entity;
+    while (!window.ShouldClose()) {
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        window.ProcessInput();
+
+        window.Clear();
+
+        // --------ImGui--------
+        bool window_test = false;
+        ImGui::Begin("Demo window", &window_test, ImGuiWindowFlags_NoMove);
+        ImGui::Button("Hello!");
+        ImGui::End();
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        // ----------------------
+        
+
+        window.Swap();
+       
+    }
+
+    window.End();
     
+    return 0;
 }
+}
+
 #endif
 
 
