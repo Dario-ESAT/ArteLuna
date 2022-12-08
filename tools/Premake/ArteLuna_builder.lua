@@ -3,9 +3,10 @@ workspace "ArteLuna"
     location "../../ArteLuna"
 
 project "ArteLuna"
-    dependson {"glad2","mathlib","imgui", "tinyobjloader"}
+    dependson {"glad2","mathlib","imgui", "tinyobjloader","soloud"}
     architecture "x64"
     location "../../ArteLuna/ArteLuna"
+    debugdir "../../bin/Debug"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
@@ -17,7 +18,8 @@ project "ArteLuna"
         "../../deps/glad2/include",
         "../../deps/mathlib/include",
         "../../deps/imgui",
-        "../../deps/tinyobjloader"
+        "../../deps/tinyobjloader",
+        "../../deps/soloud/include",
     }
 
     files {
@@ -34,6 +36,7 @@ project "ArteLuna"
     }
     
     links {
+        "soloud.lib",
         "tinyobjloader.lib",
         "mathlib.lib",
         "OpenAL32.lib",
@@ -139,23 +142,23 @@ project "tinyobjloader"
         "../../deps/tinyobjloader/*.h",
         }
     
--- project "soloud"
---     architecture "x64"
---     location "../../ArteLuna/soloud"
---     kind "StaticLib"
---     language "C++"
---     cppdialect "C++17"
---     targetdir "../../bin/%{cfg.buildcfg}"
+project "soloud"
+    architecture "x64"
+    location "../../ArteLuna/soloud"
+    kind "StaticLib"
+    language "C++"
+    cppdialect "C++17"
+    targetdir "../../bin/%{cfg.buildcfg}"
 
---     includedirs {
---         "../../deps/soloud/include",
---         "../../deps/soloud/backend/openal",
---     }
+    includedirs {
+        "../../deps/soloud/include",
+        "../../deps/soloud/backend/openal",
+    }
 
---     files {
---         "../../deps/soloud/src/**.cpp",
---         "../../deps/soloud/src/**.c",
---         "../../deps/soloud/include/**.h",
---     }
+    files {
+        "../../deps/soloud/src/**.cpp",
+        "../../deps/soloud/src/**.c",
+        "../../deps/soloud/include/**.h",
+    }
     
     -- https://decovar.dev/blog/2019/08/04/glfw-dear-imgui/
