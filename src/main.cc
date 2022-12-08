@@ -157,6 +157,8 @@ int main() {
 
 #else
 
+#include "soloud_queue.h"
+
 int main() {
     Window window("Hello World");
     window.input_->setupKeyInputs(window);
@@ -165,13 +167,11 @@ int main() {
     ImGui::CreateContext();
     ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
     ImGui_ImplOpenGL3_Init("#version 330");
+    const char* items[] = {"GoForward","GoBackward","TurnRight90","TurnLeft90","SelectRandomDir","Stop"};
 
-    //Shader shaders(vert_, frag);
 
-    //Program p(shaders.vertex(), shaders.fragment());
+    SoLoud::Queue queue;
 
-   // GLuint program_ = p.getProgram();
-    //Entity entity;
     while (!window.ShouldClose()) {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -184,7 +184,9 @@ int main() {
         // --------ImGui--------
         bool window_test = false;
         ImGui::Begin("Demo window", &window_test, ImGuiWindowFlags_NoMove);
-        ImGui::Button("Hello!");
+        if(ImGui::Button("Hello!")) {
+            
+        }
         ImGui::End();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
