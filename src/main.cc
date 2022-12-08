@@ -24,11 +24,11 @@ static GLuint gShaderProgram = 0;
 static GLuint gVBO = 0, gVAO = 0;
 static GLuint gEBO = 0;
 /*auto vertices = std::make_unique<Vtx[]>;*/
-Vtx vertices[] = {
-    { -0.3f, 0.0f, 0.0f,    1.0f, 0.0f, 0.0f},
-    {  0.3f, 0.0f, 0.0f,    0.0f, 1.0f, 0.0f},
-    {  0.0f, 0.5f, 0.0f,    1.0f, 0.0f, 1.0f}
-};
+float vertices[] = {
+     -0.3f, 0.0f, 0.0f,
+      0.3f, 0.0f, 0.0f,
+      0.0f, 0.5f, 0.0f};
+
 int indices[] = {0,1,2,2,0,1};
 
 
@@ -46,7 +46,7 @@ void onFrame(GLuint pro)
     
 }
 
-#if 0
+#if 1
 /*
 class tonto {
 public:
@@ -107,7 +107,7 @@ int main() {
     transform_cmp->set_rotation(rotation_);
     transform_cmp->set_transform();
     
-    std::shared_ptr<Mesh> mesh_ = std::make_shared<Mesh>(6, indices, 3, vertices);
+    std::shared_ptr<Mesh> mesh_ = std::make_shared<Mesh>();
     std::shared_ptr<Material> material_ = std::make_shared<Material>(vert_, frag_);
 
     render_cmp->meshComponent_ = mesh_;
@@ -126,12 +126,11 @@ int main() {
         RenderComponent* p_entity = m.get_component<RenderComponent>();
         //onFrame(p_entity->materialComponent_->program_.getProgram());
         glUseProgram(p_entity->materialComponent_->program_.getProgram());
-        glBindVertexArray(p_entity->meshComponent_->gVAO());
+        glBindVertexArray(p_entity->meshComponent_->mesh_buffer());
         GLint myLoc = glGetUniformLocation(p_entity->materialComponent_->program_.getProgram(), "t_matrix");
         render_cmp->materialComponent_.get()->set_uniform_value(transform_cmp->transform().m, 4, myLoc);
         
-        glDrawElements(GL_TRIANGLES, p_entity->meshComponent_.get()->indices_
-        .size(),GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, p_entity->meshComponent_.get()->indices_.size(),GL_UNSIGNED_INT, 0);
 
        
 
