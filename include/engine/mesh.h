@@ -5,26 +5,30 @@
 
 class Mesh {
 public:
-    Mesh(int amount_indices, int* i, int amount_vertices, Vtx* p);
+    Mesh(int amount_indices, int* i, int amount_vertices, float* vertices);
     Mesh();
     ~Mesh();
-    void Init(int amount_indices, int* i, int amount_vertices, Vtx* p);
+    void Init(int amount_indices, int* i, int amount_vertices, float* vertices);
 
-    /*
+    
     std::vector<float> vertices_;
     std::vector<float> normal_;
-    std::vector<uint32_t> indices_;
-    std::vector<float> uv_;
-    */
-
-    std::vector<Vtx> mesh_;
     std::vector<int> indices_;
-    unsigned int gVBO() { return gVBO_; }
-    unsigned int gVAO() { return gVAO_; }
-    unsigned int gEBO() { return gEBO_; }
+    std::vector<float> uv_;
+    
+    /*
+    std::vector<Vtx> mesh_;
+    
+    */
+    unsigned int mesh_buffer() { return mesh_buffer_; }
+    unsigned int vertex_array() { return vertex_array_; }
+    unsigned int u_v_array() { return u_v_array_; }
+    unsigned int normals_array() { return normals_array_; }
     
 private:
-    unsigned int gVBO_;
-    unsigned int gVAO_;
-    unsigned int gEBO_;
+    unsigned int mesh_buffer_;
+    unsigned int vertex_array_;
+    unsigned int u_v_array_;
+    unsigned int normals_array_;
+    unsigned int indices_array_;
 };
