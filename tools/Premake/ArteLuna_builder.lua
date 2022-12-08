@@ -3,7 +3,7 @@ workspace "ArteLuna"
     location "../../ArteLuna"
 
 project "ArteLuna"
-    dependson {"glad2","mathlib","imgui"}
+    dependson {"glad2","mathlib","imgui", "tinyobjloader"}
     architecture "x64"
     location "../../ArteLuna/ArteLuna"
     kind "ConsoleApp"
