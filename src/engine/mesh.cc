@@ -7,7 +7,7 @@
 
 
 Mesh::Mesh() {
-    std::string inputfile = "../../data/teapot.obj";  // El path en el que tenemos el .obj. Esto se eliminara de aqui y se pondrá como un parametro al constructor.
+    std::string inputfile = "../../data/ugandan_sonic.obj";  // El path en el que tenemos el .obj. Esto se eliminara de aqui y se pondrá como un parametro al constructor.
     tinyobj::ObjReaderConfig reader_config;
     reader_config.mtl_search_path = "./"; // Path to material files
 
@@ -44,9 +44,9 @@ Mesh::Mesh() {
 
                 indices_.push_back(idx.normal_index);
 
-                indices_.push_back(attrib.vertices[3 * size_t(idx.vertex_index) + 0]);
-                indices_.push_back(attrib.vertices[3 * size_t(idx.vertex_index) + 1]);
-                indices_.push_back(attrib.vertices[3 * size_t(idx.vertex_index) + 2]);
+                vertices_.push_back(attrib.vertices[3 * size_t(idx.vertex_index) + 0]);
+                vertices_.push_back(attrib.vertices[3 * size_t(idx.vertex_index) + 1]);
+                vertices_.push_back(attrib.vertices[3 * size_t(idx.vertex_index) + 2]);
 
                 if (idx.normal_index >= 0) {
                     
@@ -58,8 +58,8 @@ Mesh::Mesh() {
 
                 // Check if `texcoord_index` is zero or positive. negative = no texcoord data
                 if (idx.texcoord_index >= 0) {
-                    uv_.push_back(attrib.texcoords[2 *size_t(idx.vertex_index)] +0);
-                    uv_.push_back(attrib.texcoords[2 *size_t(idx.vertex_index)] +1);
+                    uv_.push_back(attrib.texcoords[2 *size_t(idx.texcoord_index)] +0);
+                    uv_.push_back(attrib.texcoords[2 *size_t(idx.texcoord_index)] +1);
                     
                 }
 
@@ -97,13 +97,13 @@ Mesh::Mesh() {
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * uv_.size(), uv_.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_array_);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * indices_.size(), indices_.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices_.size(), indices_.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float), 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float), 0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float), 0);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
     glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
