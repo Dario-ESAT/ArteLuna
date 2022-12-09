@@ -18,6 +18,9 @@
 #include "engine/material.h"
 #include "components/transform_component.h"
 #include "engine/entity_manager.h"
+#include "soloud.h"
+#include "soloud_wav.h"
+#include "soloud_queue.h"
 
 
 GLuint buffer_ = 0;
@@ -87,8 +90,8 @@ int main() {
     char* frag_ = (char*)ReadFile("../../bin/fragment.glslf");
 
     //Entity entity;
-    EntityManager manager_ = EntityManager::GetManager();
-    Entity m = manager_.CreateNewEntity(nullptr);
+    EntityManager& manager_ref = EntityManager::GetManager();
+    Entity m = manager_ref.CreateNewEntity(nullptr);
     TransformComponent* transform_cmp = m.get_component<TransformComponent>();
     RenderComponent* render_cmp =  m.get_component<RenderComponent>();
     
@@ -151,8 +154,6 @@ int main() {
 
 #else
 
-#include "soloud_queue.h"
-#include "soloud_wav.h"
 
 int main() {
     Window window("Hello World");

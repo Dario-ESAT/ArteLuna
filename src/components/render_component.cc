@@ -13,16 +13,14 @@ RenderComponent* RenderComponent::asRenderComponent()
 	return this;
 }
 
-void RenderComponent::ImguiTree()
-{
+void RenderComponent::ImguiTree() {
 }
 
-RenderComponent::RenderComponent(){
+RenderComponent::RenderComponent() {
 	
 }
 
-RenderComponent::RenderComponent(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material)
-{
+RenderComponent::RenderComponent(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material) {
 	mesh_ = mesh;
 	material_ = material;
 }

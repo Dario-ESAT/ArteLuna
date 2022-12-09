@@ -123,7 +123,7 @@ project "imgui"
         "../../deps/imgui/backends/imgui_impl_opengl3.cpp",
     }
     
-
+    -- https://decovar.dev/blog/2019/08/04/glfw-dear-imgui/
 
 project "tinyobjloader"
     architecture "x64"
@@ -149,16 +149,23 @@ project "soloud"
     language "C++"
     cppdialect "C++17"
     targetdir "../../bin/%{cfg.buildcfg}"
-
+	defines {"WITH_WINMM"}
+    
     includedirs {
         "../../deps/soloud/include",
         "../../deps/soloud/backend/openal",
+        "../../deps/openal-1.1/include",
+    }
+    libdirs { 
+        "../../deps/openal-1.1/libs/Win64",
     }
 
     files {
-        "../../deps/soloud/src/**.cpp",
-        "../../deps/soloud/src/**.c",
+        "../../deps/soloud/src/backend/winmm/**.c",
+        "../../deps/soloud/src/backend/winmm/**.cpp",
+        "../../deps/soloud/src/audiosource/wav/**.c",
+        "../../deps/soloud/src/audiosource/wav/**.h",
+        "../../deps/soloud/src/audiosource/sfxr/*.c",
+        "../../deps/soloud/src/core/**.cpp",
         "../../deps/soloud/include/**.h",
     }
-    
-    -- https://decovar.dev/blog/2019/08/04/glfw-dear-imgui/
