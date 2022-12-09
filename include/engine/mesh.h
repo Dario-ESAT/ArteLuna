@@ -13,7 +13,7 @@ public:
     
     std::vector<float> vertices_;
     std::vector<float> normal_;
-    std::vector<int> indices_;
+    std::vector<unsigned int> indices_;
     std::vector<float> uv_;
     
     /*

@@ -93,8 +93,8 @@ int main() {
     RenderComponent* render_cmp =  m.get_component<RenderComponent>();
     
     mathlib::Vector3 position_ = { 0, 0, 0 };
-    mathlib::Vector3 scale_ = { 1, 1, 1 };
-    mathlib::Vector3 rotation_ = { 0, 0, 0 };
+    mathlib::Vector3 scale_ = { 0.1, 0.1, 0.1 };
+    mathlib::Vector3 rotation_ = { 1, 0, 0 };
 
     transform_cmp->set_position(position_);
     transform_cmp->set_scale(scale_);
@@ -126,7 +126,7 @@ int main() {
         
         glDrawElements(GL_TRIANGLES, p_entity->mesh_.get()->indices_.size(),GL_UNSIGNED_INT, 0);
 
-       
+        
 
         // --------ImGui--------
         bool window_test = false;
