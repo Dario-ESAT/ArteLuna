@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "component.h"
+#include "matrix_4.h"
 
 class Mesh;
 class Material;
@@ -11,12 +12,15 @@ class Shader;
 
 class RenderComponent : public Component {
 public:
-    virtual RenderComponent* asRenderComponent() override;
+    RenderComponent* asRenderComponent() override;
 
     void ImguiTree() override;
-    std::shared_ptr<Mesh> meshComponent_;
-    std::shared_ptr<Material> materialComponent_;
-    
+    std::shared_ptr<Mesh> mesh_;
+    std::shared_ptr<Material> material_;
+    void RenderObject(
+        const mathlib::Matrix4x4& transform,
+        const mathlib::Matrix4x4& pers_view_matrix
+    );
     ~RenderComponent() override;
     RenderComponent();
     RenderComponent(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);

@@ -25,6 +25,7 @@ public:
 private:
     mathlib::Vector2 mouse_pos_buffer_;
     bool is_rotating_;
+    mathlib::Matrix4x4 view_matrix_;
 };
 
 

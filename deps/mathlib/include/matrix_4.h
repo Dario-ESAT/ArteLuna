@@ -28,7 +28,7 @@ class Matrix4x4{
   bool Inverse();
   Matrix4x4 Transpose() const;
 
-  static Matrix4x4 Proyection();
+  static Matrix4x4 Projection();
 
   static Matrix4x4 Translate(const Vector3& distance);
   static Matrix4x4 Translate(float x, float y, float z);
@@ -48,11 +48,11 @@ class Matrix4x4{
                       float scale_x, float scale_y, float scale_z,
                       float rotateX, float rotateY, float rotateZ);
 
-  Matrix4x4 PerspectiveMatrix(float fov, float aspect,
-	  float near, float far) const;
+  static Matrix4x4 PerspectiveMatrix(float fov, float aspect,
+	  float near, float far);
 
-  Matrix4x4 OrthoMatrix(float right, float left, float top, float bottom,
-	  float near, float far) const;
+  static Matrix4x4 OrthoMatrix(float right, float left, float top, float bottom,
+	  float near, float far);
 
   Vector3 TransformVector3(const Vector4& in);
 
@@ -232,7 +232,7 @@ inline Matrix4x4 Matrix4x4::Identity() {
  * 
  * @return result
  */
-inline Matrix4x4 Matrix4x4::Proyection() {
+inline Matrix4x4 Matrix4x4::Projection() {
   Matrix4x4 result;
 
   result.m[0] = 1.0f;
@@ -775,7 +775,7 @@ inline Matrix4x4 Matrix4x4::GetTransform(float trans_x, float trans_y, float tra
  * @return result
  */
 inline Matrix4x4 Matrix4x4::PerspectiveMatrix(float fov, float aspect,
-	float near, float far) const {
+	float near, float far) {
 
 	Matrix4x4 result;
 
@@ -804,7 +804,7 @@ inline Matrix4x4 Matrix4x4::PerspectiveMatrix(float fov, float aspect,
  * @return result
  */
 inline Matrix4x4 Matrix4x4::OrthoMatrix(float right, float left, float top, float bottom,
-	float near, float far) const {
+	float near, float far) {
 	Matrix4x4 result = result.Identity();
 	result.m[0] = ( 2/(right - left) );
   

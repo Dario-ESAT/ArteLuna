@@ -7,7 +7,7 @@
 
 
 Mesh::Mesh() {
-    std::string inputfile = "../../data/ugandan_sonic.obj";  // El path en el que tenemos el .obj. Esto se eliminara de aqui y se pondrá como un parametro al constructor.
+    std::string inputfile = "../../data/models/ugandan_sonic.obj";  // El path en el que tenemos el .obj. Esto se eliminara de aqui y se pondrá como un parametro al constructor.
     tinyobj::ObjReaderConfig reader_config;
     reader_config.mtl_search_path = "./"; // Path to material files
 

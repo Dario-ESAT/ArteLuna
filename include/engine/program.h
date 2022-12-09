@@ -8,13 +8,17 @@ class Shader;
 class Program {
 public:
     Program();
-    Program(int vertex_, int fragment_);
+    Program(unsigned int vertex_,unsigned int fragment_);
     ~Program();
-    void Init(int vertex_, int fragment_);
+    void Init(unsigned int vertex_,unsigned int fragment_);
     //void linkProgram(std::string link_log);
     //void attachShader();
-    void useProgram();
-    GLuint getProgram();
+    void useProgram() const{
+        glUseProgram(id_);
+    }
+    GLuint program() const{
+        return id_;
+    }
 
     // void attachShader()
 private:

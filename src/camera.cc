@@ -11,6 +11,7 @@ Camera::Camera() {
     is_rotating_ = false;
     rotate_horizontal_ = 0;
     rotate_vertical_ = 0;
+    mathlib::Vector3 pos = transform_component_.position();
     
     mathlib::Matrix4x4 transform = mathlib::Matrix4x4::GetTransform(
             transform_component_.position(),
@@ -28,7 +29,7 @@ Camera::Camera() {
     right_ = rotation.ToVector3(mathlib::Vector3::right);
     up_ = rotation.ToVector3(mathlib::Vector3::up);
 
-
+    // Para acordarse de cosas
     // set_local_transform(transform.m);
     // transform.Inverse();
     // camera->set_view_matrix(transform.m);
@@ -93,12 +94,17 @@ void Camera::Update(float deltatime) {
 void Camera::RenderScene() {
     static EntityManager& entity_manager = EntityManager::GetManager();
 
-    for (uint16_t i = 0; i <= entity_manager.last_id_; i++) {
+    mathlib::Matrix4x4 projection = mathlib::Matrix4x4::PerspectiveMatrix(90.f,3.0f/4.0f,0.1f,10000.0f);
+    mathlib::Matrix4x4 view;
+    transform_component_.transform().GetInverse(view);
+    mathlib::Matrix4x4 vp_matrix = projection.Multiply(view);
+    
+    for (uint16_t i = 1; i < entity_manager.last_id_; i++) {
         if (entity_manager.render_components_[i].has_value()) {
             TransformComponent& transform_component = entity_manager.transform_components_[i];
             RenderComponent& render_component = entity_manager.render_components_[i].value();
-            GL_PROJECTION_MATRIX;
 
+            render_component.RenderObject(transform_component.transform(), vp_matrix);
             
         }
     }

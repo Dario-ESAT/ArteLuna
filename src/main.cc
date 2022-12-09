@@ -92,14 +92,15 @@ int main() {
     TransformComponent* transform_cmp = m.get_component<TransformComponent>();
     RenderComponent* render_cmp =  m.get_component<RenderComponent>();
     
-    mathlib::Vector3 position_ = { 0, 0, 0 };
-    mathlib::Vector3 scale_ = { 0.1, 0.1, 0.1 };
+    mathlib::Vector3 position_ = { 0, 0, -1 };
+    mathlib::Vector3 scale_ = { 1, 1, 1 };
     mathlib::Vector3 rotation_ = { 1, 0, 0 };
 
     transform_cmp->set_position(position_);
     transform_cmp->set_scale(scale_);
     transform_cmp->set_rotation(rotation_);
     transform_cmp->set_transform();
+    Camera camera;
     
     std::shared_ptr<Material> material_ = std::make_shared<Material>(vert_, frag_);
 
@@ -117,16 +118,16 @@ int main() {
         window.ProcessInput();
 
         window.Clear();
-        RenderComponent* p_entity = m.get_component<RenderComponent>();
-        //onFrame(p_entity->materialComponent_->program_.getProgram());
-        glUseProgram(p_entity->material_->program_.program());
-        glBindVertexArray(p_entity->mesh_->mesh_buffer());
-        GLint myLoc = glGetUniformLocation(p_entity->material_->program_.program(), "t_matrix");
-        render_cmp->material_.get()->set_uniform_value(transform_cmp->transform().m, 4, myLoc);
-        
-        glDrawElements(GL_TRIANGLES, p_entity->mesh_.get()->indices_.size(),GL_UNSIGNED_INT, 0);
+        // RenderComponent* p_entity = m.get_component<RenderComponent>();
+        // //onFrame(p_entity->materialComponent_->program_.getProgram());
+        // glUseProgram(p_entity->material_->program_.program());
+        // glBindVertexArray(p_entity->mesh_->mesh_buffer());
+        // GLint myLoc = glGetUniformLocation(p_entity->material_->program_.program(), "t_matrix");
+        // render_cmp->material_.get()->set_uniform_value(transform_cmp->transform().m, 4, myLoc);
+        //
+        // glDrawElements(GL_TRIANGLES, p_entity->mesh_.get()->indices_.size(),GL_UNSIGNED_INT, 0);
 
-        
+        camera.RenderScene();
 
         // --------ImGui--------
         bool window_test = false;

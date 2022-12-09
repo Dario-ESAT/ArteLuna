@@ -4,11 +4,10 @@
 #include "stdio.h"
 
 
-Program::Program()
-{
+Program::Program() {
 }
 
-Program::Program(int vertex_, int fragment_){
+Program::Program(unsigned int vertex_,unsigned int fragment_) {
     try {
         if (vertex_ == 0 || fragment_ == 0) {
             throw -1;
@@ -27,8 +26,7 @@ Program::Program(int vertex_, int fragment_){
 Program::~Program() {
 	glDeleteProgram(id_);
 }
-void Program::Init(int vertex_, int fragment_)
-{
+void Program::Init(unsigned int vertex_,unsigned int fragment_) {
     try {
         if (vertex_ == 0 || fragment_ == 0) {
             throw - 1;
@@ -64,22 +62,5 @@ void program::linkProgram(std::string link_log)
 
 void program::attachShader()
 {
-}
-*/
-void Program::useProgram()
-{
-    glUseProgram(id_);
-}
-
-GLuint Program::getProgram()
-{
-    return id_;
-}
-
-
-/*
-GLuint program::getProgram()
-{
-	return id_;
 }
 */

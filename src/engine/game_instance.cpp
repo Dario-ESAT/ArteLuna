@@ -5,10 +5,6 @@ GameInstance& GameInstance::GetGameInstance() {
     return  game_instance;
 }
 
-void GameInstance::DoRender() {
-    
-}
-
 GameInstance::GameInstance() {
     
 }

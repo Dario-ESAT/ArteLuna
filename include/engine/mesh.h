@@ -16,10 +16,6 @@ public:
     std::vector<unsigned int> indices_;
     std::vector<float> uv_;
     
-    /*
-    std::vector<Vtx> mesh_;
-    
-    */
     unsigned int mesh_buffer() { return mesh_buffer_; }
     unsigned int vertex_array() { return vertex_array_; }
     unsigned int u_v_array() { return u_v_array_; }
