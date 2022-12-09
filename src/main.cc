@@ -11,6 +11,7 @@
 #include "entity.h"
 #include "engine/program.h"
 #include "mathlib.h"
+#include "soloud_wav.h"
 #include "engine/shader.h"
 #include "engine/mesh.h"
 #include "utils.h"
@@ -76,8 +77,6 @@ int main() {
 int main() {
     Window window("Hello World");
     window.input_->setupKeyInputs(window);
-
-
     
     //IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -87,11 +86,6 @@ int main() {
     char* vert_ = (char*)ReadFile("../../bin/vertex.glslv");
     char* frag_ = (char*)ReadFile("../../bin/fragment.glslf");
 
-    //Shader shaders(vert_, frag);
-
-    //Program p(shaders.vertex(), shaders.fragment());
-
-   // GLuint program_ = p.getProgram();
     //Entity entity;
     EntityManager manager_ = EntityManager::GetManager();
     Entity m = manager_.CreateNewEntity(nullptr);
@@ -107,12 +101,12 @@ int main() {
     transform_cmp->set_rotation(rotation_);
     transform_cmp->set_transform();
     
-    std::shared_ptr<Mesh> mesh_ = std::make_shared<Mesh>();
     std::shared_ptr<Material> material_ = std::make_shared<Material>(vert_, frag_);
 
-    render_cmp->meshComponent_ = mesh_;
-    render_cmp->materialComponent_ = material_;
-    render_cmp->materialComponent_.get()->set_uniform_value(transform_cmp->transform().m, 4, 0);
+    std::shared_ptr<Mesh> mesh_ = std::make_shared<Mesh>();
+    render_cmp->mesh_ = mesh_;
+    render_cmp->material_ = material_;
+    render_cmp->material_.get()->set_uniform_value(transform_cmp->transform().m, 4, 0);
 
     float a = 0;
     while (!window.ShouldClose()) {
@@ -125,12 +119,12 @@ int main() {
         window.Clear();
         RenderComponent* p_entity = m.get_component<RenderComponent>();
         //onFrame(p_entity->materialComponent_->program_.getProgram());
-        glUseProgram(p_entity->materialComponent_->program_.getProgram());
-        glBindVertexArray(p_entity->meshComponent_->mesh_buffer());
-        GLint myLoc = glGetUniformLocation(p_entity->materialComponent_->program_.getProgram(), "t_matrix");
-        render_cmp->materialComponent_.get()->set_uniform_value(transform_cmp->transform().m, 4, myLoc);
+        glUseProgram(p_entity->material_->program_.program());
+        glBindVertexArray(p_entity->mesh_->mesh_buffer());
+        GLint myLoc = glGetUniformLocation(p_entity->material_->program_.program(), "t_matrix");
+        render_cmp->material_.get()->set_uniform_value(transform_cmp->transform().m, 4, myLoc);
         
-        glDrawElements(GL_TRIANGLES, p_entity->meshComponent_.get()->indices_.size(),GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, p_entity->mesh_.get()->indices_.size(),GL_UNSIGNED_INT, 0);
 
        
 
@@ -157,6 +151,7 @@ int main() {
 #else
 
 #include "soloud_queue.h"
+#include "soloud_wav.h"
 
 int main() {
     Window window("Hello World");
@@ -166,11 +161,20 @@ int main() {
     ImGui::CreateContext();
     ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
     ImGui_ImplOpenGL3_Init("#version 330");
-    const char* items[] = {"GoForward","GoBackward","TurnRight90","TurnLeft90","SelectRandomDir","Stop"};
-
-
+    const char* song_names[] = {
+        "../../data/songs/branching/slbgm_forest_A-01.ogg",
+        "../../data/songs/branching/slbgm_forest_A-02.ogg",
+        "../../data/songs/branching/slbgm_forest_A-03.ogg",
+        "../../data/songs/branching/slbgm_forest_A-04.ogg",
+        "../../data/songs/branching/slbgm_forest_A-05.ogg",
+    };
+    std::vector<SoLoud::Wav> songs;
+    for (int i = 0; i < 0; i++) {
+        songs.push_back(SoLoud::Wav());
+        songs.back().load(song_names[i]);
+    }
     SoLoud::Queue queue;
-
+    int current_song = 0;
     while (!window.ShouldClose()) {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -184,6 +188,12 @@ int main() {
         bool window_test = false;
         ImGui::Begin("Demo window", &window_test, ImGuiWindowFlags_NoMove);
         if(ImGui::Button("Hello!")) {
+            SoLoud::Wav waw_ogg;
+            waw_ogg.load(song_names[current_song]);
+            queue.play(waw_ogg);
+            current_song = 0;
+        }
+        if (queue.getQueueCount() < 2) {
             
         }
         ImGui::End();
