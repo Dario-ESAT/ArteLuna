@@ -105,7 +105,7 @@ void Camera::RenderScene() {
     
     mathlib::Matrix4x4 view;
     transform_component_.transform().GetInverse(view);
-    mathlib::Matrix4x4 vp_matrix = view.Multiply(projection);
+    mathlib::Matrix4x4 vp_matrix = projection.Multiply(view);
     for (uint16_t i = 1; i < entity_manager.last_id_; i++) {
         if (entity_manager.render_components_[i].has_value()) {
             TransformComponent& transform_component = entity_manager.transform_components_[i];
@@ -120,17 +120,52 @@ void Camera::MenuImgui() {
     ImGui::Begin("Camera controls");
     mathlib::Vector3 position_aux(transform_component_.position());
     ImGui::Text("Transform");
-    ImGui::DragFloat("X##P",&position_aux.x,0.1f);
-    ImGui::DragFloat("Y##P",&position_aux.y,0.1f);
-    ImGui::DragFloat("Z##P",&position_aux.z,0.1f);
+    ImGui::DragFloat("X##PC",&position_aux.x,0.1f);
+    ImGui::DragFloat("Y##PC",&position_aux.y,0.1f);
+    ImGui::DragFloat("Z##PC",&position_aux.z,0.1f);
     transform_component_.set_position(position_aux);
     
     mathlib::Vector3 rotation_aux(transform_component_.rotation());
     ImGui::Text("Rotation");
-    ImGui::DragFloat("X##R",&rotation_aux.x,0.01f);
-    ImGui::DragFloat("Y##R",&rotation_aux.y,0.01f);
-    ImGui::DragFloat("Z##R",&rotation_aux.z,0.01f);
+    ImGui::DragFloat("X##RC",&rotation_aux.x,0.01f);
+    ImGui::DragFloat("Y##RC",&rotation_aux.y,0.01f);
+    ImGui::DragFloat("Z##RC",&rotation_aux.z,0.01f);
     transform_component_.set_rotation(rotation_aux);
     
     ImGui::End();
+
+    ImGui::Begin("Entities");
+    EntityManager& e_m = EntityManager::GetManager();
+    char label[10] = {'\n'};
+    
+    for (unsigned long long i = 0; i < e_m.transform_components_.size(); i++) {
+        if (ImGui::TreeNode((void*)(intptr_t)i, "Entity %d", i)) {
+            auto& t_comp = e_m.transform_components_[i];
+            mathlib::Vector3 position_aux(t_comp.position());
+            ImGui::Text("Transform");
+            sprintf(label, "X##P%d", i);
+            ImGui::DragFloat("X##P",&position_aux.x,0.1f);
+            sprintf(label, "Y##P%d", i);
+            ImGui::DragFloat("Y##P",&position_aux.y,0.1f);
+            sprintf(label, "Z##P%d", i);
+            ImGui::DragFloat("Z##P",&position_aux.z,0.1f);
+            t_comp.set_position(position_aux);
+        
+            mathlib::Vector3 rotation_aux(t_comp.rotation());
+            ImGui::Text("Rotation");
+            sprintf(label, "X##R%d", i);
+            ImGui::DragFloat("X##R",&rotation_aux.x,0.01f);
+            sprintf(label, "Y##R%d", i);
+            ImGui::DragFloat("Y##R",&rotation_aux.y,0.01f);
+            sprintf(label, "Z##R%d", i);
+            ImGui::DragFloat("Z##R",&rotation_aux.z,0.01f);
+            t_comp.set_rotation(rotation_aux);
+            ImGui::TreePop();
+
+        }
+    }
+    
+        
+    ImGui::End();
+        
 }
