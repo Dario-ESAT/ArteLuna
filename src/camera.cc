@@ -1,8 +1,11 @@
 #include "camera.h"
+
+#include "imgui.h"
 #include "glad/gl.h"
 #include "input.h"
 #include "engine/entity_manager.h"
-
+#include "ext.hpp"
+#include "gtc/type_ptr.hpp"
 Camera::Camera() {
     translate_speed_ = 1000.0f;
     turn_speed_ = 0.20f;
@@ -94,18 +97,40 @@ void Camera::Update(float deltatime) {
 void Camera::RenderScene() {
     static EntityManager& entity_manager = EntityManager::GetManager();
 
-    mathlib::Matrix4x4 projection = mathlib::Matrix4x4::PerspectiveMatrix(90.f,3.0f/4.0f,0.1f,10000.0f);
+    
+    // mathlib::Matrix4x4 projection = mathlib::Matrix4x4::PerspectiveMatrix(90.f,1280.f/720.f,0.1f,10000.0f);
+    mathlib::Matrix4x4 projection(glm::value_ptr(glm::perspective(90.f,1280.f/720.f,0.1f,10000.0f)));
+    
+    // auto projection_glm = ;
+    
     mathlib::Matrix4x4 view;
     transform_component_.transform().GetInverse(view);
-    mathlib::Matrix4x4 vp_matrix = projection.Multiply(view);
-    
+    mathlib::Matrix4x4 vp_matrix = view.Multiply(projection);
     for (uint16_t i = 1; i < entity_manager.last_id_; i++) {
         if (entity_manager.render_components_[i].has_value()) {
             TransformComponent& transform_component = entity_manager.transform_components_[i];
             RenderComponent& render_component = entity_manager.render_components_[i].value();
 
             render_component.RenderObject(transform_component.transform(), vp_matrix);
-            
         }
     }
+}
+
+void Camera::MenuImgui() {
+    ImGui::Begin("Camera controls");
+    mathlib::Vector3 position_aux(transform_component_.position());
+    ImGui::Text("Transform");
+    ImGui::DragFloat("X##P",&position_aux.x,0.1f);
+    ImGui::DragFloat("Y##P",&position_aux.y,0.1f);
+    ImGui::DragFloat("Z##P",&position_aux.z,0.1f);
+    transform_component_.set_position(position_aux);
+    
+    mathlib::Vector3 rotation_aux(transform_component_.rotation());
+    ImGui::Text("Rotation");
+    ImGui::DragFloat("X##R",&rotation_aux.x,0.01f);
+    ImGui::DragFloat("Y##R",&rotation_aux.y,0.01f);
+    ImGui::DragFloat("Z##R",&rotation_aux.z,0.01f);
+    transform_component_.set_rotation(rotation_aux);
+    
+    ImGui::End();
 }

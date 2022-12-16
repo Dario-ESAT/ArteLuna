@@ -20,6 +20,7 @@ project "ArteLuna"
         "../../deps/imgui",
         "../../deps/tinyobjloader",
         "../../deps/soloud/include",
+        "../../deps/glm/",
     }
 
     files {

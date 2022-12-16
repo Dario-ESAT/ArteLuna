@@ -121,22 +121,19 @@ int main() {
         window.ProcessInput();
 
         window.Clear();
-        // RenderComponent* p_entity = m.get_component<RenderComponent>();
-        // //onFrame(p_entity->materialComponent_->program_.getProgram());
-        // glUseProgram(p_entity->material_->program_.program());
-        // glBindVertexArray(p_entity->mesh_->mesh_buffer());
-        // GLint myLoc = glGetUniformLocation(p_entity->material_->program_.program(), "t_matrix");
-        // render_cmp->material_.get()->set_uniform_value(transform_cmp->transform().m, 4, myLoc);
-        //
-        // glDrawElements(GL_TRIANGLES, p_entity->mesh_.get()->indices_.size(),GL_UNSIGNED_INT, 0);
+        RenderComponent* p_entity = m.get_component<RenderComponent>();
+        //onFrame(p_entity->materialComponent_->program_.getProgram());
+        glUseProgram(p_entity->material_->program_.program());
+        glBindVertexArray(p_entity->mesh_->mesh_buffer());
+        GLint myLoc = glGetUniformLocation(p_entity->material_->program_.program(), "t_matrix");
+        render_cmp->material_.get()->set_uniform_value(transform_cmp->transform().m, 4, myLoc);
+        
+        glDrawElements(GL_TRIANGLES, p_entity->mesh_.get()->indices_.size(),GL_UNSIGNED_INT, 0);
 
         camera.RenderScene();
 
         // --------ImGui--------
-        bool window_test = false;
-        ImGui::Begin("Demo window", &window_test, ImGuiWindowFlags_NoMove);
-        ImGui::Button("Hello!");
-        ImGui::End();
+        camera.MenuImgui();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         // ----------------------

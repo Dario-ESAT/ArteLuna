@@ -14,7 +14,7 @@ class Matrix4x4{
  public:
 
   Matrix4x4();
-  Matrix4x4(float values_array[16]);
+  Matrix4x4(const float* values_array);
   Matrix4x4(float value);
   Matrix4x4(const Matrix4x4& copy);
   ~Matrix4x4();
@@ -114,7 +114,7 @@ inline Matrix4x4::Matrix4x4() {
  * 
  * @param values_array The values to set in the matrix
  */
-inline Matrix4x4::Matrix4x4(float values_array[16]) {
+inline Matrix4x4::Matrix4x4(const float* values_array) {
   m[0] = values_array[0];
   m[1] = values_array[4];
   m[2] = values_array[8];
@@ -778,10 +778,11 @@ inline Matrix4x4 Matrix4x4::PerspectiveMatrix(float fov, float aspect,
 	float near, float far) {
 
 	Matrix4x4 result;
+    const float tanHalfFov = tan(fov / 2);
 
-	result.m[0] = ( 1 / (aspect * tanf(fov/2) ) );
+	result.m[0] = ( 1 / (aspect * tanHalfFov ) );
 
-	result.m[5] = ( 1 / tanf(fov/2) );
+	result.m[5] = ( 1 / tanHalfFov);
 
 	result.m[10] = -( (far + near) / (far - near) );
 

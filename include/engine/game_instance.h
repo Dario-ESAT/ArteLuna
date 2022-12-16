@@ -1,11 +1,13 @@
 #pragma once
 #include <vector>
 
-class GameInstance
-{
+class GameInstance {
+    
 public:
-    static GameInstance& GetGameInstance();
-
+    GameInstance& GameInstance::GetGameInstance() {
+        static GameInstance game_instance;
+        return  game_instance;
+    }
     
 protected:
 

@@ -12,6 +12,9 @@ public:
     void Update(float deltatime);
 
     void RenderScene();
+
+    void MenuImgui();
+    
     TransformComponent transform_component_;
     float translate_speed_;
     float turn_speed_;
