@@ -96,7 +96,7 @@ void Camera::Update(float deltatime) {
 
 void Camera::RenderScene() {
     static EntityManager& entity_manager = EntityManager::GetManager();
-
+    transform_component_.set_transform();
     
     // mathlib::Matrix4x4 projection = mathlib::Matrix4x4::PerspectiveMatrix(90.f,1280.f/720.f,0.1f,10000.0f);
     mathlib::Matrix4x4 projection(glm::value_ptr(glm::perspective(90.f,1280.f/720.f,0.1f,10000.0f)));
@@ -109,6 +109,7 @@ void Camera::RenderScene() {
     for (uint16_t i = 1; i < entity_manager.last_id_; i++) {
         if (entity_manager.render_components_[i].has_value()) {
             TransformComponent& transform_component = entity_manager.transform_components_[i];
+            transform_component.set_transform();
             RenderComponent& render_component = entity_manager.render_components_[i].value();
 
             render_component.RenderObject(transform_component.transform(), vp_matrix);
@@ -162,6 +163,15 @@ void Camera::MenuImgui() {
             t_comp.set_rotation(rotation_aux);
             ImGui::TreePop();
 
+            const float* transform = t_comp.transform().m;
+
+            ImGui::Text("%.3f  %.3f  %.3f  %.3f\n %.3f  %.3f  %.3f  %.3f\n  %.3f  %.3f  %.3f  %.3f\n   %.3f  %.3f  %.3f  %.3f",
+                transform[0],transform[1],transform[2],transform[3],
+                transform[4],transform[5],transform[6],transform[7],
+                transform[8],transform[9],transform[10],transform[11],
+                transform[12],transform[13],transform[14],transform[15]
+                );
+            
         }
     }
     
