@@ -30,29 +30,24 @@ RenderComponent::RenderComponent(uint16_t id) {
 }
 
 void RenderComponent::RenderObject(
-	const mathlib::Matrix4x4& transform,
-	const mathlib::Matrix4x4& pers_view_matrix) {
+	const glm::mat4x4& transform,
+	const glm::mat4x4& pers_view_matrix) {
 
 	const Material* material = material_.get();
 
 	const unsigned int uniform_pos = material->get_uniform_position("u_m_matrix");
-	if (uniform_pos) {
-		material->set_uniform_value(transform.m,GL_FLOAT_MAT4,uniform_pos);
-	}
+	material->set_uniform_value( glm::value_ptr(transform) ,GL_FLOAT_MAT4,uniform_pos);
 	const unsigned int uniform_pos_2 = material->get_uniform_position("u_vp_matrix");
-	if (uniform_pos_2)
-	{
-	material->set_uniform_value(pers_view_matrix.m,GL_FLOAT_MAT4,uniform_pos_2);
-		
-	}
+	material->set_uniform_value(glm::value_ptr(pers_view_matrix),GL_FLOAT_MAT4,uniform_pos_2);
 
-	// Ver como pillar info y ponerla aquí automágicamente (probablemente alún map)
+	// Ver como pillar info y ponerla aquï¿½ automï¿½gicamente (probablemente alï¿½n map)
 	// for (unsigned int i = 0; i < material->uniforms_names_types_.size(); i++) {
 	// 	auto uniforms = material->uniforms_names_types_[i];
 	// 	unsigned int uniform_pos = material->get_uniform_position(
 	// 		uniforms.first.c_str());
 	// 	material->set_uniform_value(info que pasar,uniforms.second,uniform_pos);
 	// }
+	
 	material->program_.useProgram();
 	glBindVertexArray(mesh_->mesh_buffer());
 	glDrawElements(GL_TRIANGLES, mesh_.get()->indices_.size(),GL_UNSIGNED_INT, 0);

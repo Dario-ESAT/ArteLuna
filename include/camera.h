@@ -2,6 +2,7 @@
 #define __CAMERA_H__ 1
 
 #include "components/transform_component.h"
+#include "glm.hpp"
 class Camera {
 public:
     Camera();
@@ -22,13 +23,13 @@ public:
     float rotate_horizontal_;
     float rotate_vertical_;
 
-    mathlib::Vector3 forward_;
-    mathlib::Vector3 right_;
-    mathlib::Vector3 up_;
+    glm::vec3 forward_;
+    glm::vec3 right_;
+    glm::vec3 up_;
 private:
-    mathlib::Vector2 mouse_pos_buffer_;
+    glm::vec2 mouse_pos_buffer_;
     bool is_rotating_;
-    mathlib::Matrix4x4 view_matrix_;
+    glm::mat4x4 view_matrix_;
 };
 
 

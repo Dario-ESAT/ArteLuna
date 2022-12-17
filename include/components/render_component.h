@@ -3,7 +3,8 @@
 #include <memory>
 
 #include "component.h"
-#include "matrix_4.h"
+#include "glm.hpp"
+#include "gtc/type_ptr.hpp"
 
 class Mesh;
 class Material;
@@ -18,8 +19,8 @@ public:
     std::shared_ptr<Mesh> mesh_;
     std::shared_ptr<Material> material_;
     void RenderObject(
-        const mathlib::Matrix4x4& transform,
-        const mathlib::Matrix4x4& pers_view_matrix
+        const glm::mat4x4& transform,
+        const glm::mat4x4& pers_view_matrix
     );
     ~RenderComponent() override;
     RenderComponent();
