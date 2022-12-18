@@ -42,14 +42,14 @@ public:
     const glm::mat4x4& transform() const {return transform_;}
 
     void set_transform() {
-
+        
         transform_ = glm::mat4x4(1.0f);
-        transform_ = glm::scale(transform_, scale_);
-        transform_ = glm::rotate(transform_,rotation_.x, glm::vec3(1.0f, 0.0f, 0.0f));
-        transform_ = glm::rotate(transform_,rotation_.y, glm::vec3(0.0f, 1.0f, 0.0f));
-        transform_ = glm::rotate(transform_,rotation_.z, glm::vec3(0.0f, 0.0f, 1.0f));
         transform_ = glm::translate(transform_, position_);
-        transform_ = glm::transpose(transform_);
+        transform_ = glm::scale(transform_, scale_);
+        transform_ = glm::rotate(transform_,rotation_.z, glm::vec3(0.0f, 0.0f, 1.0f));
+        transform_ = glm::rotate(transform_,rotation_.y, glm::vec3(0.0f, 1.0f, 0.0f));
+        transform_ = glm::rotate(transform_,rotation_.x, glm::vec3(1.0f, 0.0f, 0.0f));
+
     }
     
     void set_transform(glm::mat4x4 transform) {

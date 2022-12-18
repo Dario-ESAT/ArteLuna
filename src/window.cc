@@ -64,6 +64,11 @@ Window::Window(
     glfwSetWindowPos(window_, posx, posy);
     glfwMakeContextCurrent(window_);
     gladLoadGL(glfwGetProcAddress);
+
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glEnable(GL_DEPTH_TEST);
 }
 
 Window::~Window() {
@@ -106,7 +111,8 @@ bool Window::windowed() {
 }
 
 void Window::Clear() {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void Window::RenderScene() {

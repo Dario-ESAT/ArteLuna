@@ -98,10 +98,11 @@ void Camera::RenderScene() {
     static EntityManager& entity_manager = EntityManager::GetManager();
     
     transform_component_.set_transform();
-    auto perspective = glm::perspective(90.f,1280.f/720.f,0.1f,10000.0f);
+    static auto perspective = glm::perspective(90.f,1280.f/720.f,0.01f,15000.0f);
     
     auto view =  glm::inverse(transform_component_.transform());
     glm::mat4x4 vp_matrix = glm::matrixCompMult(perspective,view);
+    // perspective = glm::transpose(perspective);
 
     for (uint16_t i = 1; i < entity_manager.last_id_; i++) {
         if (entity_manager.render_components_[i].has_value()) {
@@ -109,7 +110,7 @@ void Camera::RenderScene() {
             transform_component.set_transform();
             RenderComponent& render_component = entity_manager.render_components_[i].value();
 
-            render_component.RenderObject(transform_component.transform(), vp_matrix);
+            render_component.RenderObject(transform_component.transform(), perspective);
         }
     }
 }
@@ -117,7 +118,7 @@ void Camera::RenderScene() {
 void Camera::MenuImgui() {
     ImGui::Begin("Camera controls");
     glm::vec3 position_aux(transform_component_.position());
-    ImGui::Text("Transform");
+    ImGui::Text("Position");
     ImGui::DragFloat("X##PC",&position_aux.x,0.1f);
     ImGui::DragFloat("Y##PC",&position_aux.y,0.1f);
     ImGui::DragFloat("Z##PC",&position_aux.z,0.1f);
