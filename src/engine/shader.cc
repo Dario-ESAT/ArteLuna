@@ -19,18 +19,39 @@ Shader::Shader(const char* vertex, const char* fragment){
     geometry_ = 0;
 }
 
+#include<string>
+#include <iostream>
+
+bool check_shader(GLuint shader) {
+    GLint success;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+    if (success == GL_TRUE) return true;
+    GLsizei length = -1;
+    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
+    std::string buf;
+    buf.resize(length);
+    glGetShaderInfoLog(shader, length, nullptr, buf.data());
+    std::cerr << buf << std::endl;
+    return false;
+}
+
 Shader::Shader(const char* vertex, const char* fragment, const char* geometry) {
     vertex_ = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_, 1, &vertex, 0);
     glCompileShader(vertex_);
+    check_shader(vertex_);
+
 
     fragment_ = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment_, 1, &fragment, 0);
     glCompileShader(fragment_);
+    check_shader(fragment_);
 
     geometry_ = glCreateShader(GL_GEOMETRY_SHADER);
     glShaderSource(geometry_, 1, &geometry, 0);
     glCompileShader(geometry_);
+    check_shader(geometry_);
+
 }
 
 Shader::~Shader() {
@@ -46,10 +67,12 @@ void Shader::Init(const char* vertex, const char* fragment)
     vertex_ = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_, 1, &vertex, 0);
     glCompileShader(vertex_);
+    check_shader(vertex_);
 
     fragment_ = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment_, 1, &fragment, 0);
     glCompileShader(fragment_);
+    check_shader(fragment_);
 
     geometry_ = 0;
 }
