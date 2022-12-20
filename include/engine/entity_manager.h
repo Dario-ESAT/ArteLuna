@@ -22,12 +22,13 @@ class EntityManager {
     // void AddComponentToEntity(Entity& entity,T* component);
     Entity& GetEntity(int pos);
     ~EntityManager();
+    std::vector<TransformComponent> transform_components_;
 private:
     Entity* root_;
 
     uint16_t last_id_;
     std::vector<Entity> entities_;
-    std::vector<TransformComponent> transform_components_;
+    
     
     std::vector<std::optional<RenderComponent> > render_components_;
     // template<class T>
