@@ -143,31 +143,31 @@ void Camera::MenuImgui() {
             auto& t_comp = e_m.transform_components_[i];
             glm::vec3 position_aux(t_comp.position());
             ImGui::Text("Transform");
-            sprintf(label, "X##P%d", i);
+            sprintf_s(label, "X##P%d", (int)i);
             ImGui::DragFloat(label,&position_aux.x,0.1f);
-            sprintf(label, "Y##P%d", i);
+            sprintf_s(label, "Y##P%d", (int)i);
             ImGui::DragFloat(label,&position_aux.y,0.1f);
-            sprintf(label, "Z##P%d", i);
+            sprintf_s(label, "Z##P%d", (int)i);
             ImGui::DragFloat(label,&position_aux.z,0.1f);
             t_comp.set_position(position_aux);
         
             glm::vec3 rotation_aux(t_comp.rotation());
             ImGui::Text("Rotation");
-            sprintf(label, "X##R%d", i);
+            sprintf_s(label, "X##R%d", (int)i);
             ImGui::DragFloat(label,&rotation_aux.x,0.01f);
-            sprintf(label, "Y##R%d", i);
+            sprintf_s(label, "Y##R%d", (int)i);
             ImGui::DragFloat(label,&rotation_aux.y,0.01f);
-            sprintf(label, "Z##R%d", i);
+            sprintf_s(label, "Z##R%d", (int)i);
             ImGui::DragFloat(label,&rotation_aux.z,0.01f);
             t_comp.set_rotation(rotation_aux);
 
             glm::vec3 scale_aux(t_comp.scale());
             ImGui::Text("Scale");
-            sprintf(label, "X##S%d", i);
+            sprintf_s(label, "X##S%d", (int)i);
             ImGui::DragFloat(label,&scale_aux.x,0.01f);
-            sprintf(label, "Y##S%d", i);
+            sprintf_s(label, "Y##S%d", (int)i);
             ImGui::DragFloat(label,&scale_aux.y,0.01f);
-            sprintf(label, "Z##S%d", i);
+            sprintf_s(label, "Z##S%d", (int)i);
             ImGui::DragFloat(label,&scale_aux.z,0.01f);
             t_comp.set_scale(scale_aux);
             

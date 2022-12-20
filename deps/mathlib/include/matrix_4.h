@@ -778,7 +778,7 @@ inline Matrix4x4 Matrix4x4::PerspectiveMatrix(float fov, float aspect,
 	float near, float far) {
 
 	Matrix4x4 result;
-    const float tanHalfFov = tan(fov / 2);
+    const float tanHalfFov = tanf(fov / 2);
 
 	result.m[0] = ( 1 / (aspect * tanHalfFov ) );
 
