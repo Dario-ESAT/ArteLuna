@@ -50,7 +50,7 @@ void RenderComponent::RenderObject(
 	
 	material->program_.useProgram();
 	glBindVertexArray(mesh_->mesh_buffer());
-	glDrawElements(GL_TRIANGLES, mesh_.get()->indices_.size()/3,GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, mesh_.get()->indices_.size(),GL_UNSIGNED_INT, 0);
 
 }
 

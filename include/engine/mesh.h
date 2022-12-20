@@ -1,14 +1,14 @@
 #include <memory>
+#include <string>
 #include <vector>
 #include "comon_defs.h"
 
 
 class Mesh {
 public:
-    Mesh(int amount_indices, int* i, int amount_vertices, float* vertices);
     Mesh();
+    Mesh(std::string inputfile);
     ~Mesh();
-    void Init(int amount_indices, int* i, int amount_vertices, float* vertices);
 
     
     std::vector<float> vertices_;

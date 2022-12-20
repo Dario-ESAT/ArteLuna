@@ -2,53 +2,19 @@
 #include "input.h"
 #include "glad/gl.h"
 #include "GLFW/glfw3.h"
-#include "comon_defs.h"
-#include <stdio.h>
 
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
 #include "entity.h"
-#include "engine/program.h"
-#include "mathlib.h"
-#include "soloud_wav.h"
-#include "engine/shader.h"
 #include "engine/mesh.h"
 #include "utils.h"
 #include "engine/material.h"
 #include "components/transform_component.h"
 #include "engine/entity_manager.h"
-#include "soloud.h"
-#include "soloud_wav.h"
-#include "soloud_queue.h"
-
-
-GLuint buffer_ = 0;
-static GLuint gShaderProgram = 0;
-static GLuint gVBO = 0, gVAO = 0;
-static GLuint gEBO = 0;
-/*auto vertices = std::make_unique<Vtx[]>;*/
-float vertices[] = {
-     -0.3f, 0.0f, 0.0f,
-      0.3f, 0.0f, 0.0f,
-      0.0f, 0.5f, 0.0f};
-
-int indices[] = {0,1,2,2,0,1};
-
-
 
 
 // -----------------------------------------------------------------------------------------------------------
-
-void onFrame(GLuint pro)
-{
-    glUseProgram(pro);
-
-    glBindVertexArray(gVAO);
-    glDrawElements(GL_TRIANGLES, 2, GL_UNSIGNED_INT, 0);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-    
-}
 
 #if 1
 /*
@@ -88,31 +54,46 @@ int main() {
 
     char* vert_ = (char*)ReadFile("../../bin/vertex.glslv");
     char* frag_ = (char*)ReadFile("../../bin/fragment.glslf");
-
+    int number_of_entities = 20;
+    float offset = 10.0f;
     //Entity entity;
-    EntityManager& manager_ref = EntityManager::GetManager();
-    Entity m = manager_ref.CreateNewEntity(nullptr);
-    TransformComponent* transform_cmp = m.get_component<TransformComponent>();
-    RenderComponent* render_cmp =  m.get_component<RenderComponent>();
-    
-    glm::vec3 position_ = { 0, 0, -1 };
-    glm::vec3 scale_ = { 1, 1, 1 };
-    glm::vec3 rotation_ = { 1, 0, 0 };
+    glm::vec3 position_ = { (-offset * number_of_entities) / 2.0f, 0.0f, -10.0f };
+    glm::vec3 scale_ = { 1.0f, 1.0f, 1.0f };
+    glm::vec3 rotation_ = { 0.0f, 0.0f, 0.0f };
 
+    std::shared_ptr<Material> material_ = std::make_shared<Material>(vert_, frag_);
+    std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("../../data/models/ugandan_sonic.obj");
+    std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../data/models/sponza.obj");
+    EntityManager& manager_ref = EntityManager::GetManager();
+    
+    Entity entity = manager_ref.CreateNewEntity(nullptr);
+    TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
+    RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
     transform_cmp->set_position(position_);
     transform_cmp->set_scale(scale_);
     transform_cmp->set_rotation(rotation_);
     transform_cmp->set_transform();
+    render_cmp->mesh_ = mesh_sponza;
+    render_cmp->material_ = material_;
+    position_.x += offset;
+    
+    for (int i = 0; i < 20; i++) {
+        Entity entity = manager_ref.CreateNewEntity(nullptr);
+        TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
+        RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
+        transform_cmp->set_position(position_);
+        transform_cmp->set_scale(scale_);
+        transform_cmp->set_rotation(rotation_);
+        transform_cmp->set_transform();
+        render_cmp->mesh_ = mesh;
+        render_cmp->material_ = material_;
+        position_.x += offset;
+    }
+    
+
     Camera camera;
     
-    std::shared_ptr<Material> material_ = std::make_shared<Material>(vert_, frag_);
 
-    std::shared_ptr<Mesh> mesh_ = std::make_shared<Mesh>();
-    render_cmp->mesh_ = mesh_;
-    render_cmp->material_ = material_;
-    //render_cmp->material_.get()->set_uniform_value(transform_cmp->transform().m, 4, 0);
-
-    float a = 0;
     while (!window.ShouldClose()) {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -121,14 +102,6 @@ int main() {
         window.ProcessInput();
 
         window.Clear();
-        // RenderComponent* p_entity = m.get_component<RenderComponent>();
-        // //onFrame(p_entity->materialComponent_->program_.getProgram());
-        // glUseProgram(p_entity->material_->program_.program());
-        // glBindVertexArray(p_entity->mesh_->mesh_buffer());
-        // GLint myLoc = glGetUniformLocation(p_entity->material_->program_.program(), "t_matrix");
-        // render_cmp->material_.get()->set_uniform_value(transform_cmp->transform().m, 4, myLoc);
-        
-        // glDrawElements(GL_TRIANGLES, p_entity->mesh_.get()->indices_.size(),GL_UNSIGNED_INT, 0);
 
         camera.RenderScene();
 
@@ -150,7 +123,9 @@ int main() {
 
 
 #else
-
+#include "soloud.h"
+#include "soloud_wav.h"
+#include "soloud_queue.h"
 
 int main() {
     Window window("Hello World");
