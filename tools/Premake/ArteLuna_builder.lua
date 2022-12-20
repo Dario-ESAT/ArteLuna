@@ -11,7 +11,7 @@ project "ArteLuna"
     language "C++"
     cppdialect "C++17"
     targetdir "../../bin/%{cfg.buildcfg}"
-    ignoredefaultlibraries { "MSVCRT" }
+    -- ignoredefaultlibraries { "MSVCRT" }
     includedirs { 
         "../../deps/glfw-3.3.8/include",
         "../../include",
