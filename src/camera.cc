@@ -46,7 +46,7 @@ Camera::~Camera() {
 void Camera::UpdateFromInput(float deltatime, Input* input) {
     if (input->IsKeyDown(Input::RIGHT) ||
         input->IsKeyDown(Input::D)) {
-        
+        printf("Estoy pulsando la D");
     }
 
     if (input->IsKeyDown(Input::LEFT) ||
@@ -68,8 +68,8 @@ void Camera::UpdateFromInput(float deltatime, Input* input) {
         
     }
 
-    if (input->IsKeyDown(Input::Q)) {
-        
+    if (input->IsKeyDown(Input::SPACE)) {
+        printf("Estoy pulsando el espacio");
     }
 
     if (input->IsKeyDown(Input::Q)) {
@@ -116,6 +116,7 @@ void Camera::RenderScene() {
 }
 
 void Camera::MenuImgui() {
+    /*
     ImGui::Begin("Camera controls");
     glm::vec3 position_aux(transform_component_.position());
     ImGui::Text("Position");
@@ -132,7 +133,7 @@ void Camera::MenuImgui() {
     transform_component_.set_rotation(rotation_aux);
     
     ImGui::End();
-
+    */
     ImGui::Begin("Entities");
     EntityManager& e_m = EntityManager::GetManager();
     char label[10] = {'\n'};
@@ -186,3 +187,4 @@ void Camera::MenuImgui() {
     ImGui::End();
         
 }
+

@@ -78,7 +78,7 @@ int main() {
     render_cmp->material_ = material_;
     position_.x += offset;
     
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < number_of_entities; i++) {
         Entity entity = manager_ref.CreateNewEntity(nullptr);
         TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
         RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
@@ -98,14 +98,21 @@ int main() {
     while (!window.ShouldClose()) {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+        ImGui::NewFrame();  
 
         window.ProcessInput();
-
+         
         window.Clear();
 
         camera.RenderScene();
-
+        if(window.input_->IsKeyDown(32)) {
+            for (int i = 2; i < number_of_entities; i++) {
+                Entity& entities = manager_ref.GetEntity(i);
+                TransformComponent* transform_cmp = entities.get_component<TransformComponent>();
+                position_.y = sin(glfwGetTime() * 0.001f);
+                transform_cmp->set_position(position_);
+            }
+        }
         // --------ImGui--------
         camera.MenuImgui();
         ImGui::Render();

@@ -37,6 +37,11 @@ EntityManager::EntityManager() {
     last_id_++;
 }
 
+Entity& EntityManager::GetEntity(int pos)
+{
+    return entities_.at(pos);
+}
+
 EntityManager::~EntityManager() {
     
 }
