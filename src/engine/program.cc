@@ -7,6 +7,24 @@
 Program::Program() {
 }
 
+#include<string>
+#include<iostream>
+
+bool check_program(GLuint program) {
+    GLint success;
+    glGetProgramiv(program, GL_LINK_STATUS, &success);
+    if (success == GL_TRUE) return true;
+    GLsizei length = 0;
+    std::string buf;
+    glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length);
+    buf.resize(length);
+    glGetProgramInfoLog(program, length, &length, buf.data());
+    std::cerr << buf << std::endl;
+    return false;
+
+}
+
+
 Program::Program(unsigned int vertex_,unsigned int fragment_) {
     try {
         if (vertex_ == 0 || fragment_ == 0) {
@@ -17,6 +35,7 @@ Program::Program(unsigned int vertex_,unsigned int fragment_) {
         glAttachShader(id_, vertex_);
         glAttachShader(id_, fragment_);
         glLinkProgram(id_);
+        check_program(id_);
     }
     catch(int e){
         printf("There was an error on the program, invalid shader");
@@ -36,6 +55,7 @@ void Program::Init(unsigned int vertex_,unsigned int fragment_) {
         glAttachShader(id_, vertex_);
         glAttachShader(id_, fragment_);
         glLinkProgram(id_);
+        check_program(id_);
     }
     catch (int e) {
         printf("There was an error on the program, invalid shader");
