@@ -20,7 +20,7 @@ class EntityManager {
     // Pendiente para añadir junto el mapa de componentes
     // template<class T>
     // void AddComponentToEntity(Entity& entity,T* component);
-
+    Entity& GetEntity(int pos);
     ~EntityManager();
 private:
     Entity* root_;

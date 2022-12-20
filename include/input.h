@@ -11,7 +11,7 @@ public:
 
 enum InputKey {
     UNKNOWN = -1,
-    SPACE = 57,
+    SPACE = 32,
     APOSTROPHE = 26,
     COMMA = 51,
     MINUS = 53,

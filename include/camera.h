@@ -16,6 +16,8 @@ public:
 
     void MenuImgui();
     
+    void Inputs();
+
     TransformComponent transform_component_;
     float translate_speed_;
     float turn_speed_;
