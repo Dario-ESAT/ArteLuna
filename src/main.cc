@@ -107,10 +107,12 @@ int main() {
         camera.RenderScene();
         if(window.input_->IsKeyDown(32)) {
             for (int i = 2; i < number_of_entities; i++) {
-                Entity& entities = manager_ref.GetEntity(i);
-                TransformComponent* transform_cmp = entities.get_component<TransformComponent>();
-                position_.y = sin(glfwGetTime() * 0.001f);
-                transform_cmp->set_position(position_);
+                //Entity& entities = manager_ref.GetEntity(i);
+                auto& t_comp = manager_ref.transform_components_[i];
+                glm::vec3 position_aux(t_comp.position());
+                //TransformComponent* transform_cmp = entities.get_component<TransformComponent>();
+                position_aux.y = abs(sin(glfwGetTime() * 2) * 10);
+                t_comp.set_position(position_aux);
             }
         }
         // --------ImGui--------
