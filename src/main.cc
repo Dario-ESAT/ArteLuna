@@ -52,8 +52,8 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
-    char* vert_ = (char*)ReadFile("../../bin/vertex.glslv");
-    char* frag_ = (char*)ReadFile("../../bin/fragment.glslf");
+    std::unique_ptr<char[]> vert_ = ReadFile("../../bin/vertex.glslv");
+    std::unique_ptr<char[]> frag_ = ReadFile("../../bin/fragment.glslf");
     int number_of_entities = 20;
     float offset = 10.0f;
     //Entity entity;
@@ -61,7 +61,8 @@ int main() {
     glm::vec3 scale_ = { 1.0f, 1.0f, 1.0f };
     glm::vec3 rotation_ = { 0.0f, 0.0f, 0.0f };
 
-    std::shared_ptr<Material> material_ = std::make_shared<Material>(vert_, frag_);
+    std::shared_ptr<Material> material_ = std::make_shared<Material>(vert_.get(),
+     frag_.get());
     std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("../../data/models/ugandan_sonic.obj");
     std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../data/models/sponza.obj");
     EntityManager& manager_ref = EntityManager::GetManager();
