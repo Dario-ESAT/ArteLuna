@@ -137,8 +137,52 @@ void Camera::MenuImgui() {
     ImGui::Begin("Entities");
     EntityManager& e_m = EntityManager::GetManager();
     char label[10] = {'\n'};
+
+
+    if (ImGui::TreeNode((void*)(intptr_t)0, "Root")) {
+            auto& t_comp = e_m.transform_components_[0];
+            glm::vec3 position_aux(t_comp.position());
+            ImGui::Text("Transform");
+            sprintf_s(label, "X##P%d", 0);
+            ImGui::DragFloat(label,&position_aux.x,0.1f);
+            sprintf_s(label, "Y##P%d", 0);
+            ImGui::DragFloat(label,&position_aux.y,0.1f);
+            sprintf_s(label, "Z##P%d", 0);
+            ImGui::DragFloat(label,&position_aux.z,0.1f);
+            t_comp.set_position(position_aux);
+        
+            glm::vec3 rotation_aux(t_comp.rotation());
+            ImGui::Text("Rotation");
+            sprintf_s(label, "X##R%d", 0);
+            ImGui::DragFloat(label,&rotation_aux.x,0.01f);
+            sprintf_s(label, "Y##R%d", 0);
+            ImGui::DragFloat(label,&rotation_aux.y,0.01f);
+            sprintf_s(label, "Z##R%d", 0);
+            ImGui::DragFloat(label,&rotation_aux.z,0.01f);
+            t_comp.set_rotation(rotation_aux);
+
+            glm::vec3 scale_aux(t_comp.scale());
+            ImGui::Text("Scale");
+            sprintf_s(label, "X##S%d", 0);
+            ImGui::DragFloat(label,&scale_aux.x,0.01f);
+            sprintf_s(label, "Y##S%d", 0);
+            ImGui::DragFloat(label,&scale_aux.y,0.01f);
+            sprintf_s(label, "Z##S%d", 0);
+            ImGui::DragFloat(label,&scale_aux.z,0.01f);
+            t_comp.set_scale(scale_aux);
+            
+            const float* transform = glm::value_ptr(t_comp.transform());
+
+            ImGui::Text("%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f",
+                transform[0],transform[1],transform[2],transform[3],
+                transform[4],transform[5],transform[6],transform[7],
+                transform[8],transform[9],transform[10],transform[11],
+                transform[12],transform[13],transform[14],transform[15]
+            );
+            ImGui::TreePop();
+        }
     
-    for (unsigned long long i = 0; i < e_m.transform_components_.size(); i++) {
+    for (unsigned long long i = 1; i < e_m.transform_components_.size(); i++) {
         if (ImGui::TreeNode((void*)(intptr_t)i, "Entity %d", i)) {
             auto& t_comp = e_m.transform_components_[i];
             glm::vec3 position_aux(t_comp.position());
