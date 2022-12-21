@@ -3,8 +3,10 @@
 #include "engine/Shader.h"
 #include "glad/gl.h"
 
-Shader::Shader()
-{
+Shader::Shader() {
+    geometry_ = 0;
+    fragment_ = 0;
+    vertex_ = 0;
 }
 
 Shader::Shader(const char* vertex, const char* fragment){

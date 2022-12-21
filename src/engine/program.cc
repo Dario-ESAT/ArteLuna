@@ -38,7 +38,7 @@ Program::Program(unsigned int vertex_,unsigned int fragment_) {
         check_program(id_);
     }
     catch(int e){
-        printf("There was an error on the program, invalid shader");
+        printf("There was an error on the program, invalid shader %d", e);
     }
 }
 
@@ -58,7 +58,7 @@ void Program::Init(unsigned int vertex_,unsigned int fragment_) {
         check_program(id_);
     }
     catch (int e) {
-        printf("There was an error on the program, invalid shader");
+        printf("There was an error on the program, invalid shader %d", e);
     }
 }
 /*

@@ -3,8 +3,6 @@
 
 #include "glad/gl.h"
 
-class Shader;
-
 class Program {
 public:
     Program();

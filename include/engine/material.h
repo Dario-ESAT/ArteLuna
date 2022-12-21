@@ -13,7 +13,6 @@ public:
     Material();
     Material(char* vert, char* frag);
     ~Material();
-    void Init(char* vert, char* frag);
 
     Shader shader_;
     Program program_;

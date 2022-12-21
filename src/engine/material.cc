@@ -5,7 +5,7 @@
 
 
 Material::Material() {
-
+	
 }
 
 Material::Material(char* vert, char* frag) {
@@ -29,11 +29,6 @@ Material::Material(char* vert, char* frag) {
 }
 
 Material::~Material() {
-}
-
-void Material::Init(char* vert, char* frag) {
-	shader_.Init(vert, frag);
-	program_.Init(shader_.vertex_, shader_.fragment_);
 }
 
 void Material::set_uniform_value(const float* unif, GLenum type,unsigned int 

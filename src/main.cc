@@ -111,7 +111,7 @@ int main() {
                 auto& t_comp = manager_ref.transform_components_[i];
                 glm::vec3 position_aux(t_comp.position());
                 //TransformComponent* transform_cmp = entities.get_component<TransformComponent>();
-                position_aux.y = abs(sin(glfwGetTime() * 2) * 10);
+                position_aux.y = fabsf(sinf((float)glfwGetTime() * 2.f) * 10.f);
                 t_comp.set_position(position_aux);
             }
         }

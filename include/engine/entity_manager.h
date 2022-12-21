@@ -23,11 +23,11 @@ class EntityManager {
     Entity& GetEntity(int pos);
     ~EntityManager();
     std::vector<TransformComponent> transform_components_;
+    std::vector<Entity> entities_;
 private:
     Entity* root_;
 
     uint16_t last_id_;
-    std::vector<Entity> entities_;
     
     
     std::vector<std::optional<RenderComponent> > render_components_;
