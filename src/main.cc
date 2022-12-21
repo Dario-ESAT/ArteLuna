@@ -2,105 +2,140 @@
 #include "input.h"
 #include "glad/gl.h"
 #include "GLFW/glfw3.h"
-#include "structs.h"
-#include <stdio.h>
+
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
+#include "entity.h"
+#include "engine/mesh.h"
+#include "utils.h"
+#include "engine/material.h"
+#include "components/transform_component.h"
+#include "engine/entity_manager.h"
 
-GLuint buffer_ = 0;
-static GLuint gShaderProgram = 0;
-static GLuint gVBO = 0, gVAO = 0;
-static GLuint gEBO = 0;
-
-Vtx vertices[] = {
-    { -0.3f, 0.0f, 0.0f,    1.0f, 0.0f, 0.0f},
-    {  0.3f, 0.0f, 0.0f,    0.0f, 1.0f, 0.0f},
-    {  0.0f, 0.5f, 0.0f,    1.0f, 0.0f, 1.0f}
-};
-
-int indices[] = { 0,1,2, 2,1,0 };
-
-static const char* vertex_shader_text =
-    "#version 330\n"
-    "layout (location=0) in vec3 a_position;\n"
-    "layout (location=1) in vec3 a_normal;\n"
-    "out vec3 normal;\n"
-
-    "void main()\n"
-    "{\n"
-        "normal = a_normal;\n"
-    "    gl_Position = vec4(a_position, 1.0);\n"
-    "}\n";
-
-static const char* fragment_shader_text =
-    "#version 330\n"
-    "out vec4 gl_FragColor;\n"
-    "in vec3 normal;\n"
-    "void main()\n"
-    "{\n"
-    "    gl_FragColor = vec4(normal, 1.0);\n"
-    "}\n";
-
-
-void onInit()
-{
-    gladLoadGL(glfwGetProcAddress);
-    // ---------------------------Shaders-------------------------------
-    //char* vertex_shader = (char*)Slurp("./vertex.glslv"); Sustituir con lo de glfw 
-
-    unsigned int vertex_ = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_, 1, &vertex_shader_text, 0);
-    glCompileShader(vertex_);
-
-    //char* fragment_shader = (char*)Slurp("./fragment.glslf");
-    unsigned int fragment_ = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_, 1, &fragment_shader_text, 0);
-    glCompileShader(fragment_);
-    // -----------------------------------------------------------------
-
-    // ---------------------------Program-------------------------------
-    gShaderProgram = glCreateProgram();
-    
-    glAttachShader(gShaderProgram, vertex_);
-    glAttachShader(gShaderProgram, fragment_);
-    glLinkProgram(gShaderProgram);
-
-    glDeleteShader(vertex_);
-    glDeleteShader(fragment_);
-    // -----------------------------------------------------------------
-
-    // ----------------------------Mesh---------------------------------
-    glGenVertexArrays(1, &gVAO);
-    glGenBuffers(1, &gVBO);
-    glGenBuffers(1, &gEBO);
-
-    glBindVertexArray(gVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, gVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gEBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vtx), 0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vtx), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glBindVertexArray(0);
-    // -----------------------------------------------------------------
-}
 
 // -----------------------------------------------------------------------------------------------------------
 
-void onFrame()
-{
-    glUseProgram(gShaderProgram);
+#if 1
+/*
+class tonto {
+public:
+    int hola;
+    tonto(){hola = 0;}
+};
 
-    glBindVertexArray(gVAO);
-    //glDrawElements(GL_TRIANGLES, 2, GL_UNSIGNED_INT, 0);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+int main() {
+    std::vector<tonto> tontos;
+    auto indices = std::make_unique<int[]>(5);
+    auto vertices_ = std::make_unique<Vtx[]>(3);
+    std::copy(vertices, vertices + 3, vertices_.get());
+   
+    //indices = 
+    tonto tontisimo;
+    tontos.push_back(tontisimo);
+
+    tontisimo.hola = 10;
+    tonto* el_otro = &tontos.back();
+
+    el_otro->hola = 9;
+    printf("%d ---- %d", tontisimo.hola,tontos.back().hola);
+
+    return 0;
 }
+*/
+int main() {
+    Window window("Hello World");
+    window.input_->setupKeyInputs(window);
+    
+    //IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+
+    std::unique_ptr<char[]> vert_ = ReadFile("../../bin/vertex.glslv");
+    std::unique_ptr<char[]> frag_ = ReadFile("../../bin/fragment.glslf");
+    int number_of_entities = 20;
+    float offset = 10.0f;
+    //Entity entity;
+    glm::vec3 position_ = { (-offset * number_of_entities) / 2.0f, 0.0f, -10.0f };
+    glm::vec3 scale_ = { 1.0f, 1.0f, 1.0f };
+    glm::vec3 rotation_ = { 0.0f, 0.0f, 0.0f };
+
+    std::shared_ptr<Material> material_ = std::make_shared<Material>(vert_.get(),
+     frag_.get());
+    std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("../../data/models/ugandan_sonic.obj");
+    std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../data/models/sponza.obj");
+    EntityManager& manager_ref = EntityManager::GetManager();
+    
+    Entity entity = manager_ref.CreateNewEntity(nullptr);
+    TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
+    RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
+    transform_cmp->set_position(position_);
+    transform_cmp->set_scale(scale_);
+    transform_cmp->set_rotation(rotation_);
+    transform_cmp->set_transform();
+    render_cmp->mesh_ = mesh_sponza;
+    render_cmp->material_ = material_;
+    position_.x += offset;
+    
+    for (int i = 0; i < number_of_entities; i++) {
+        Entity entity = manager_ref.CreateNewEntity(nullptr);
+        TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
+        RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
+        transform_cmp->set_position(position_);
+        transform_cmp->set_scale(scale_);
+        transform_cmp->set_rotation(rotation_);
+        transform_cmp->set_transform();
+        render_cmp->mesh_ = mesh;
+        render_cmp->material_ = material_;
+        position_.x += offset;
+    }
+    
+
+    Camera camera;
+    
+
+    while (!window.ShouldClose()) {
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();  
+
+        window.ProcessInput();
+         
+        window.Clear();
+
+        camera.RenderScene();
+        if(window.input_->IsKeyDown(32)) {
+            for (int i = 2; i < number_of_entities; i++) {
+                //Entity& entities = manager_ref.GetEntity(i);
+                auto& t_comp = manager_ref.transform_components_[i];
+                glm::vec3 position_aux(t_comp.position());
+                //TransformComponent* transform_cmp = entities.get_component<TransformComponent>();
+                position_aux.y = fabsf(sinf((float)glfwGetTime() * 2.f) * 10.f);
+                t_comp.set_position(position_aux);
+            }
+        }
+        // --------ImGui--------
+        camera.MenuImgui();
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        // ----------------------
+        
+
+        window.Swap();
+       
+    }
+
+    window.End();
+    
+    return 0;
+}
+
+
+#else
+#include "soloud.h"
+#include "soloud_wav.h"
+#include "soloud_queue.h"
 
 int main() {
     Window window("Hello World");
@@ -110,41 +145,60 @@ int main() {
     ImGui::CreateContext();
     ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
     ImGui_ImplOpenGL3_Init("#version 330");
-    ImGuiWindowFlags window_flags;
-
-    window_flags &= ImGuiWindowFlags_NoMove;
-
-    onInit();
+    const char* song_names[] = {
+        "../../data/songs/branching/slbgm_forest_A-01.ogg",
+        "../../data/songs/branching/slbgm_forest_A-02.ogg",
+        "../../data/songs/branching/slbgm_forest_A-03.ogg",
+        "../../data/songs/branching/slbgm_forest_A-04.ogg",
+        "../../data/songs/branching/slbgm_forest_A-05.ogg",
+    };
+    std::vector<SoLoud::Wav> songs;
+    for (int i = 0; i < 0; i++) {
+        songs.push_back(SoLoud::Wav());
+        songs.back().load(song_names[i]);
+    }
+    SoLoud::Queue queue;
+    int current_song = 0;
     while (!window.ShouldClose()) {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        window.ProcessEvents();
+        window.ProcessInput();
+
         window.Clear();
-        onFrame();
 
         // --------ImGui--------
-        ImGui::SetNextWindowSize(ImVec2(500, 500));
         bool window_test = false;
-        ImGui::Begin("Demo window", &window_test, window_flags);
-        ImGui::Button("Hello!");
+        ImGui::Begin("Demo window", &window_test, ImGuiWindowFlags_NoMove);
+        if(ImGui::Button("Hello!")) {
+            SoLoud::Wav waw_ogg;
+            waw_ogg.load(song_names[current_song]);
+            queue.play(waw_ogg);
+            current_song = 0;
+        }
+        if (queue.getQueueCount() < 2) {
+            
+        }
         ImGui::End();
-        ImGui::ShowDemoWindow();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         // ----------------------
         
 
         window.Swap();
-        // ImGui::ShowDemoWindow();
        
     }
 
-    //window.End();
+    window.End();
     
     return 0;
 }
+
+
+#endif
+
+
 
 /*
 class Component{
@@ -225,7 +279,6 @@ MaterialComponent mc{vertex_shader_text, fragment_shader_text};
 
 
 */
-
 
 /*
 

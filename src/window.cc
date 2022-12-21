@@ -4,6 +4,8 @@
 #include "window.h"
 #include "stdio.h"
 #include "input.h"
+#include "comon_defs.h"
+
 Window::Window() {
     window_ = nullptr;
     width_ = 0;
@@ -28,28 +30,45 @@ Window::Window(
     posx_ = posx;
     posy_ = posy;
     windowed_ = windowed;
-    
-    if (!glfwInit())
-        printf("hoal");
-   
-    window_ = glfwCreateWindow(width, heigth, name, nullptr, nullptr);
-    
-    if (!window_) {
-        printf("hoal");
-        glfwTerminate();
+    try {
+        if (!glfwInit())
+            throw 14;
     }
-    
+        catch (int e) {
+        printf("There was an error on glfw, the window couldn't be initialize %d",e);
+    }
+
+    try {
+        window_ = glfwCreateWindow(width, heigth, name, nullptr, nullptr);
+
+        if (!window_) {
+            printf("There was an error on the window, the window couldn't be initialize");
+            glfwTerminate();
+
+        }
+    }
+    catch (int e) {
+        printf("There was an error on the window, the window couldn't be created %d",e);
+        
+    }
+
+
     std::vector<int> keys;
     for(int i = 0; i < 348; i++){
         keys.push_back(i);
     }
     
-    input_ = new Inputs(keys);
+    input_ = new Input(keys);
     input_->setupKeyInputs(*this);
 
     glfwSetWindowPos(window_, posx, posy);
     glfwMakeContextCurrent(window_);
     gladLoadGL(glfwGetProcAddress);
+
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glEnable(GL_DEPTH_TEST);
 }
 
 Window::~Window() {
@@ -92,11 +111,17 @@ bool Window::windowed() {
 }
 
 void Window::Clear() {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void Window::RenderScene() {
+    camera.RenderScene();
 }
 
 void Window::Swap() {
     glfwSwapBuffers(window_);
+    
 }
 
 bool Window::ShouldClose() {
@@ -104,11 +129,45 @@ bool Window::ShouldClose() {
 }
 
 void Window::End() {
-    //glfwTerminate();
+    glfwTerminate();
 }
 
-void Window::ProcessEvents() {
+void Window::InputLogic() {
+    
+    if (input_->IsKeyDown(Input::RIGHT) ||
+        input_->IsKeyDown(Input::D)) {
+        
+    }
+
+    if (input_->IsKeyDown(Input::LEFT) ||
+    input_->IsKeyDown(Input::W)) {
+        
+    }
+
+    if (input_->IsKeyDown(Input::UP) ||
+    input_->IsKeyDown(Input::W)) {
+        
+    }
+
+    if (input_->IsKeyDown(Input::DOWN) ||
+    input_->IsKeyDown(Input::S)) {
+        
+    }
+
+    if (input_->IsKeyDown(Input::E)) {
+        
+    }
+
+    if (input_->IsKeyDown(Input::Q)) {
+        
+    }
+    
+}
+
+void Window::ProcessInput() {
     glfwPollEvents();
+    
+    InputLogic();
 }
 
 int Window::posx() const {

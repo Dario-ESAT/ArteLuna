@@ -14,7 +14,7 @@ class Matrix4x4{
  public:
 
   Matrix4x4();
-  Matrix4x4(float values_array[16]);
+  Matrix4x4(const float* values_array);
   Matrix4x4(float value);
   Matrix4x4(const Matrix4x4& copy);
   ~Matrix4x4();
@@ -26,10 +26,9 @@ class Matrix4x4{
   Matrix4x4 Adjoint() const;
   bool GetInverse(Matrix4x4& out) const;
   bool Inverse();
-
   Matrix4x4 Transpose() const;
 
-  static Matrix4x4 Proyection();
+  static Matrix4x4 Projection();
 
   static Matrix4x4 Translate(const Vector3& distance);
   static Matrix4x4 Translate(float x, float y, float z);
@@ -37,6 +36,7 @@ class Matrix4x4{
   static Matrix4x4 Scale(const Vector3& scale);
   static Matrix4x4 Scale(float x, float y, float z);
 
+  Matrix3x3 Rotation();
   static Matrix4x4 RotateX(float radians);
   static Matrix4x4 RotateY(float radians);
   static Matrix4x4 RotateZ(float radians);
@@ -48,15 +48,16 @@ class Matrix4x4{
                       float scale_x, float scale_y, float scale_z,
                       float rotateX, float rotateY, float rotateZ);
 
-  Matrix4x4 PerspectiveMatrix(float fov, float aspect,
-	  float near, float far) const;
+  static Matrix4x4 PerspectiveMatrix(float fov, float aspect,
+	  float near, float far);
 
-  Matrix4x4 OrthoMatrix(float right, float left, float top, float bottom,
-	  float near, float far) const;
+  static Matrix4x4 OrthoMatrix(float right, float left, float top, float bottom,
+	  float near, float far);
 
   Vector3 TransformVector3(const Vector4& in);
 
   Vector4 ToVector4(const Vector4& in);
+  Vector3 ToVector3(const Vector3& in);
 
   Vector4 GetColum(int colum) const;
   Vector4 GetLine(int line) const;
@@ -113,7 +114,7 @@ inline Matrix4x4::Matrix4x4() {
  * 
  * @param values_array The values to set in the matrix
  */
-inline Matrix4x4::Matrix4x4(float values_array[16]) {
+inline Matrix4x4::Matrix4x4(const float* values_array) {
   m[0] = values_array[0];
   m[1] = values_array[4];
   m[2] = values_array[8];
@@ -231,7 +232,7 @@ inline Matrix4x4 Matrix4x4::Identity() {
  * 
  * @return result
  */
-inline Matrix4x4 Matrix4x4::Proyection() {
+inline Matrix4x4 Matrix4x4::Projection() {
   Matrix4x4 result;
 
   result.m[0] = 1.0f;
@@ -618,6 +619,14 @@ inline Matrix4x4 Matrix4x4::Scale(float x, float y, float z) {
 	return result;
 }
 
+inline Matrix3x3 Matrix4x4::Rotation() {
+    Vector3 r1{ m[0], m[1], m[2] };
+    Vector3 r2{ m[4], m[5], m[6] };
+    Vector3 r3{ m[8], m[9], m[10]};
+    Matrix3x3 result(r1,r2,r3);
+    return result;
+}
+    
 /**
  * @brief Rotates the Matrix on x axis
  * 
@@ -766,13 +775,14 @@ inline Matrix4x4 Matrix4x4::GetTransform(float trans_x, float trans_y, float tra
  * @return result
  */
 inline Matrix4x4 Matrix4x4::PerspectiveMatrix(float fov, float aspect,
-	float near, float far) const {
+	float near, float far) {
 
 	Matrix4x4 result;
+    const float tanHalfFov = tanf(fov / 2);
 
-	result.m[0] = ( 1 / (aspect * tanf(fov/2) ) );
+	result.m[0] = ( 1 / (aspect * tanHalfFov ) );
 
-	result.m[5] = ( 1 / tanf(fov/2) );
+	result.m[5] = ( 1 / tanHalfFov);
 
 	result.m[10] = -( (far + near) / (far - near) );
 
@@ -795,7 +805,7 @@ inline Matrix4x4 Matrix4x4::PerspectiveMatrix(float fov, float aspect,
  * @return result
  */
 inline Matrix4x4 Matrix4x4::OrthoMatrix(float right, float left, float top, float bottom,
-	float near, float far) const {
+	float near, float far) {
 	Matrix4x4 result = result.Identity();
 	result.m[0] = ( 2/(right - left) );
   

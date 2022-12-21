@@ -1,32 +1,49 @@
 #ifndef __ENTITY_H__
 #define __ENTITY_H__ 1
 
+#include <optional>
+#include <vector>
+
 #include "stdint.h"
-#include "window.h"
-#include "glad/gl.h"
 #include "vector_3.h"
-#include "matrix_3.h"
-#include "GLFW/glfw3.h"
+#include "matrix_4.h"
 
-
+class TransformComponent;
+class Component;
+// para las listas de los componentes hacerlas de std::optional<componente>
+// olvida lo de arriba y hazlo en un entity manager :)
 class Entity {
 public:
-
-    Entity();
     ~Entity();
-    uint32_t getId() const;
 
-    mathlib::Vector3 position_;
-    mathlib::Vector3 rotation_;
-    mathlib::Vector3 scale_;
+    Entity& parent() const;
+    std::vector<Entity*> children() const;
+    
+    template <class T>
+    inline T* get_component() {
+        for (unsigned int i = 0; components_.size(); i++) {
+            T* aux = dynamic_cast<T*>(components_[i]); 
+            if (aux) {
+                return aux;
+            }
+        }
+        return nullptr;
+    }
+    
+    uint32_t id() const;
 
-    const mathlib::Matrix3x3& transform();
-private:
-    bool dirty_;
-    mathlib::Matrix3x3 transform_;
+protected:
+    Entity();
+    Entity(TransformComponent* trans, int id, Entity* parent);
+    
     uint32_t id_;
-  
+    std::vector<Component*> components_;
+    std::vector<Entity*> children_;
+    Entity* parent_;
+
+    friend class EntityManager;
 };
+
 
 
 #endif
