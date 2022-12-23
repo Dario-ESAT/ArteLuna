@@ -8,7 +8,9 @@
 #include "vector_3.h"
 #include "matrix_4.h"
 
+class EntityManager;
 class TransformComponent;
+class RenderComponent;
 class Component;
 // para las listas de los componentes hacerlas de std::optional<componente>
 // olvida lo de arriba y hazlo en un entity manager :)
@@ -19,17 +21,9 @@ public:
     Entity& parent() const;
     std::vector<Entity*> children() const;
     
-    template <class T>
-    inline T* get_component() {
-        for (unsigned int i = 0; components_.size(); i++) {
-            T* aux = dynamic_cast<T*>(components_[i]); 
-            if (aux) {
-                return aux;
-            }
-        }
-        return nullptr;
-    }
-    
+    TransformComponent* get_transform_component();
+    RenderComponent* get_render_component();
+
     uint32_t id() const;
 
 protected:
@@ -40,10 +34,14 @@ protected:
     std::vector<Component*> components_;
     std::vector<Entity*> children_;
     Entity* parent_;
-
+    EntityManager* entity_manager;
     friend class EntityManager;
 };
 
-
+//template <>
+//inline TransformComponent* Entity::get_component();
+//
+//template <>
+//inline RenderComponent* Entity::get_component();
 
 #endif

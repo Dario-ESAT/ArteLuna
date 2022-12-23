@@ -11,6 +11,7 @@
 #include "utils.h"
 #include "engine/material.h"
 #include "components/transform_component.h"
+#include "components/render_component.h"
 #include "engine/entity_manager.h"
 
 
@@ -35,7 +36,7 @@ int main() {
     glm::vec3 position_ = { (-offset * number_of_entities) / 2.0f, 0.0f, -10.0f };
     glm::vec3 scale_ = { 1.0f, 1.0f, 1.0f };
     glm::vec3 rotation_ = { 0.0f, 0.0f, 0.0f };
-
+    
     std::shared_ptr<Material> material_ = std::make_shared<Material>(vert_.get(),
      frag_.get());
     std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("../../data/models/ugandan_sonic.obj");
@@ -43,8 +44,8 @@ int main() {
     EntityManager& manager_ref = EntityManager::GetManager();
     
     Entity entity = manager_ref.CreateNewEntity(nullptr);
-    TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
-    RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
+    TransformComponent* transform_cmp = entity.get_transform_component();
+    RenderComponent* render_cmp =  entity.get_render_component();
     transform_cmp->set_position(position_);
     transform_cmp->set_scale(scale_);
     transform_cmp->set_rotation(rotation_);
@@ -55,8 +56,8 @@ int main() {
     
     for (int i = 0; i < number_of_entities; i++) {
         Entity entity = manager_ref.CreateNewEntity(nullptr);
-        TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
-        RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
+        TransformComponent* transform_cmp = entity.get_transform_component();
+        RenderComponent* render_cmp =  entity.get_render_component();
         transform_cmp->set_position(position_);
         transform_cmp->set_scale(scale_);
         transform_cmp->set_rotation(rotation_);
@@ -81,13 +82,14 @@ int main() {
 
         camera.RenderScene();
         if(window.input_->IsKeyDown(32)) {
-            for (int i = 2; i < number_of_entities; i++) {
-                //Entity& entities = manager_ref.GetEntity(i);
-                auto& t_comp = manager_ref.transform_components_[i];
-                glm::vec3 position_aux(t_comp.position());
-                //TransformComponent* transform_cmp = entities.get_component<TransformComponent>();
+            for (int i = 2; i < number_of_entities + 2; i++) {
+                Entity& entities = manager_ref.GetEntity(i);
+                //auto& t_comp = manager_ref.transform_components_[i]; 
+                
+                TransformComponent* transform_cmp = entities.get_transform_component();
+                glm::vec3 position_aux(transform_cmp->position());
                 position_aux.y = fabsf(sinf((float)glfwGetTime() * 2.f) * 10.f);
-                t_comp.set_position(position_aux);
+                transform_cmp->set_position(position_aux);
             }
         }
         // --------ImGui--------

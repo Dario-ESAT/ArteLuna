@@ -37,6 +37,7 @@ private:
     EntityManager();
 
     friend class Camera;
+    friend class Entity;
 };
 
 
