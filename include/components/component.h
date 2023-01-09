@@ -24,8 +24,8 @@ public:
 
     virtual void ImguiTree();
     virtual ~Component();
-protected:
     Component();
+protected:
 
     bool enabled_;
     uint16_t id_;

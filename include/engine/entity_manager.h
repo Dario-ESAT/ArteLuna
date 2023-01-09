@@ -12,33 +12,35 @@
 
 
 class EntityManager {
-    public:
-    static EntityManager& GetManager();
+  public:
+  static EntityManager& GetManager();
 
-    Entity& CreateNewEntity(Entity* parent = nullptr);
+  Entity& CreateNewEntity(Entity* parent = nullptr);
 
-    // Pendiente para añadir junto el mapa de componentes
-    // template<class T>
-    // void AddComponentToEntity(Entity& entity,T* component);
-    Entity& GetEntity(int pos);
-    ~EntityManager();
-    std::vector<TransformComponent> transform_components_;
-    std::vector<Entity> entities_;
+  // Pendiente para añadir junto el mapa de componentes
+  template<class T>
+  T& GetComponentFromEntity(int pos);
+
+  Entity& GetEntity(int pos);
+  ~EntityManager();
 private:
-    Entity* root_;
+  Entity* root_;
 
-    uint16_t last_id_;
-    
-    
-    std::vector<std::optional<RenderComponent> > render_components_;
-    // template<class T>
-    // std::map<size_t,std::vector<std::optional<T> > > mapa_vectores;
-    
-    EntityManager();
+  uint16_t last_id_;
+  
+  
+  std::vector<Entity> entities_;
+  std::vector<TransformComponent> transform_components_;
+  std::vector<std::optional<RenderComponent> > render_components_;
+  template<class T>
+  std::map<size_t,std::vector<std::optional<T> > > mapa_vectores_;
+  
+  EntityManager();
 
-    friend class Camera;
-    friend class Entity;
+  friend class Camera;
+  friend class Entity;
 };
+
 
 
 
