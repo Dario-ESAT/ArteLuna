@@ -7,7 +7,7 @@
 
 EntityManager& EntityManager::GetManager() {
   static EntityManager manager;
-  return  manager;
+  return manager;
 }
 
 Entity& EntityManager::CreateNewEntity(Entity* parent) {
@@ -27,8 +27,8 @@ Entity& EntityManager::CreateNewEntity(Entity* parent) {
 }
 
 EntityManager::EntityManager() {
-  mapa_vectores_[typeid(TransformComponent).hash_code()] = std::vector<std::optional<TransformComponent> >();
-  mapa_vectores_[typeid(RenderComponent).hash_code()] = std::vector<std::optional<RenderComponent> >();
+  mapa_vectores_[typeid(TransformComponent).hash_code()] = std::make_unique<ComponentVector_Implementation<TransformComponent> >();
+  mapa_vectores_[typeid(RenderComponent).hash_code()] = std::make_unique<ComponentVector_Implementation<RenderComponent> >();
 
   last_id_ = 0;
 
@@ -39,9 +39,13 @@ EntityManager::EntityManager() {
   last_id_++;
 }
 
-template <class T>
+template <typename T>
 T& EntityManager::GetComponentFromEntity(int pos) {
 
+  auto comp_vector = mapa_vectores_.find(typeid(T).hash_code());
+  auto casted_comp_vector = static_cast<ComponentVector_Implementation<T>*>(comp_vector->second.get());
+  
+  return casted_comp_vector->vector.at(pos);
     
 }
 

@@ -10,6 +10,14 @@
 #include "components/sound_emiter_component.h"
 #include "components/sound_listener_component.h"
 
+class ComponentVector {};
+template<typename T>
+class ComponentVector_Implementation : public ComponentVector
+{
+public:
+  std::vector<std::optional<T>> vector;
+};
+
 
 class EntityManager {
   public:
@@ -18,9 +26,10 @@ class EntityManager {
   Entity& CreateNewEntity(Entity* parent = nullptr);
 
   // Pendiente para añadir junto el mapa de componentes
+  // AddComponentToEntity(Entity& entity, T* component)
   template<class T>
   T& GetComponentFromEntity(int pos);
-
+  
   Entity& GetEntity(int pos);
   ~EntityManager();
 private:
@@ -32,8 +41,8 @@ private:
   std::vector<Entity> entities_;
   std::vector<TransformComponent> transform_components_;
   std::vector<std::optional<RenderComponent> > render_components_;
-  template<class T>
-  std::map<size_t,std::vector<std::optional<T> > > mapa_vectores_;
+
+  std::map<size_t, std::unique_ptr<ComponentVector> > mapa_vectores_;
   
   EntityManager();
 

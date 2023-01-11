@@ -96,21 +96,24 @@ void Camera::Update(float deltatime) {
 
 void Camera::RenderScene() {
     static EntityManager& entity_manager = EntityManager::GetManager();
-    
+    auto render_components = static_cast<ComponentVector_Implementation<RenderComponent>*>(entity_manager.mapa_vectores_.find(typeid(RenderComponent).hash_code())->second.get());
+    auto transform_components = static_cast<ComponentVector_Implementation<TransformComponent>*>(entity_manager.mapa_vectores_.find(typeid(TransformComponent).hash_code())->second.get());
+
     transform_component_.set_transform();
     static auto perspective = glm::perspective(90.f,1280.f/720.f,0.01f,15000.0f);
     
     auto view =  glm::inverse(transform_component_.transform());
     glm::mat4x4 vp_matrix = glm::matrixCompMult(perspective,view);
-    // perspective = glm::transpose(perspective);
+
+    
 
     for (uint16_t i = 1; i < entity_manager.last_id_; i++) {
         if (entity_manager.render_components_[i].has_value()) {
-            TransformComponent& transform_component = entity_manager.transform_components_[i];
+            TransformComponent& transform_component = transform_components->vector[i].value();
             transform_component.set_transform();
-            RenderComponent& render_component = entity_manager.render_components_[i].value();
+            RenderComponent& render_component = render_components->vector[i].value();
 
-            render_component.RenderObject(transform_component.transform(), perspective);
+            render_component.RenderObject(transform_component.transform(), vp_matrix);
         }
     }
 }
