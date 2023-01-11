@@ -100,7 +100,8 @@ void Camera::RenderScene() {
     transform_component_.set_transform();
     static auto perspective = glm::perspective(90.f,1280.f/720.f,0.01f,15000.0f);
     
-    auto view =  glm::inverse(transform_component_.transform());
+    //auto view =  glm::inverse(transform_component_.transform());
+    auto view = glm::inverse(glm::identity<glm::mat4x4>());
     glm::mat4x4 vp_matrix = glm::matrixCompMult(perspective,view);
     // perspective = glm::transpose(perspective);
 
@@ -110,7 +111,7 @@ void Camera::RenderScene() {
             transform_component.set_transform();
             RenderComponent& render_component = entity_manager.render_components_[i].value();
 
-            render_component.RenderObject(transform_component.transform(), perspective);
+            render_component.RenderObject(transform_component.transform(), vp_matrix);
         }
     }
 }
