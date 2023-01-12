@@ -19,12 +19,9 @@ Entity& EntityManager::CreateNewEntity(Entity* parent) {
   GetComponentVector<RenderComponent>()->emplace_back(RenderComponent(last_id_));
 
   
-  entities_.emplace_back(Entity(last_id_,
-    parent == nullptr ? root_ : parent));
+  entities_.emplace_back(Entity(last_id_, parent == nullptr ? root_ : parent));
   
   Entity& new_entity = entities_.back();
-  
-  // new_entity.components_.push_back(&render_components_.back().value());
   
   last_id_++;
   return new_entity;
@@ -52,14 +49,13 @@ Entity* EntityManager::GetEntity(int pos) {
 EntityManager::EntityManager() {
   mapa_vectores_[typeid(TransformComponent).hash_code()] = std::make_unique<ComponentVector_Implementation<TransformComponent> >();
   mapa_vectores_[typeid(RenderComponent).hash_code()] = std::make_unique<ComponentVector_Implementation<RenderComponent> >();
-
-  
   
   last_id_ = 0;
 
   GetComponentVector<RenderComponent>()->emplace_back();
   GetComponentVector<TransformComponent>()->emplace_back(TransformComponent());
   entities_.emplace_back(Entity(last_id_,nullptr));
+  
   root_ = &entities_.back();
   last_id_++;
 }

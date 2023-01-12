@@ -43,7 +43,7 @@ int main() {
   std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../data/models/sponza.obj");
   EntityManager& manager_ref = EntityManager::GetManager();
   
-  Entity entity = manager_ref.CreateNewEntity(nullptr);
+  Entity& entity = manager_ref.CreateNewEntity(nullptr);
   TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
   RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
   transform_cmp->set_position(position_);
