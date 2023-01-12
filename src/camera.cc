@@ -7,7 +7,8 @@
 #include "ext.hpp"
 #include "glm.hpp"
 #include "gtc/type_ptr.hpp"
-
+#include "components/render_component.h"
+#include "components/transform_component.h"
 
 Camera::Camera() {
     translate_speed_ = 1000.0f;
@@ -96,8 +97,8 @@ void Camera::Update(float deltatime) {
 
 void Camera::RenderScene() {
     static EntityManager& entity_manager = EntityManager::GetManager();
-    auto render_components = static_cast<ComponentVector_Implementation<RenderComponent>*>(entity_manager.mapa_vectores_.find(typeid(RenderComponent).hash_code())->second.get());
-    auto transform_components = static_cast<ComponentVector_Implementation<TransformComponent>*>(entity_manager.mapa_vectores_.find(typeid(TransformComponent).hash_code())->second.get());
+    auto render_components = entity_manager.GetComponentVector<RenderComponent>();
+    auto transform_components = entity_manager.GetComponentVector<TransformComponent>();
 
     transform_component_.set_transform();
     static auto perspective = glm::perspective(90.f,1280.f/720.f,0.01f,15000.0f);
@@ -108,10 +109,10 @@ void Camera::RenderScene() {
     
 
     for (uint16_t i = 1; i < entity_manager.last_id_; i++) {
-        if (entity_manager.render_components_[i].has_value()) {
-            TransformComponent& transform_component = transform_components->vector[i].value();
+        if (render_components->at(i).has_value()) {
+            TransformComponent& transform_component = transform_components->at(i).value();
             transform_component.set_transform();
-            RenderComponent& render_component = render_components->vector[i].value();
+            RenderComponent& render_component = render_components->at(i).value();
 
             render_component.RenderObject(transform_component.transform(), vp_matrix);
         }
@@ -141,9 +142,10 @@ void Camera::MenuImgui() {
     EntityManager& e_m = EntityManager::GetManager();
     char label[10] = {'\n'};
 
-
+    auto render_components = e_m.GetComponentVector<RenderComponent>();
+    auto transform_components = e_m.GetComponentVector<TransformComponent>();
     if (ImGui::TreeNode((void*)(intptr_t)0, "Root")) {
-            auto& t_comp = e_m.transform_components_[0];
+            auto& t_comp = transform_components->at(0).value();
             glm::vec3 position_aux(t_comp.position());
             ImGui::Text("Transform");
             sprintf_s(label, "X##P%d", 0);
@@ -185,9 +187,9 @@ void Camera::MenuImgui() {
             ImGui::TreePop();
         }
     
-    for (unsigned long long i = 1; i < e_m.transform_components_.size(); i++) {
+    for (unsigned long long i = 1; i < transform_components->size(); i++) {
         if (ImGui::TreeNode((void*)(intptr_t)i, "Entity %d", i)) {
-            auto& t_comp = e_m.transform_components_[i];
+            auto& t_comp = transform_components->at(i).value();
             glm::vec3 position_aux(t_comp.position());
             ImGui::Text("Transform");
             sprintf_s(label, "X##P%d", (int)i);

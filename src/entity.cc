@@ -1,6 +1,5 @@
 #include "entity.h"
 #include "engine/entity_manager.h"
-
 Entity::Entity() {
 }
 
@@ -32,23 +31,11 @@ void Entity::set_component(T* component) {
 
 template <class T>
 T* Entity::get_component() {
-  auto vector = EntityManager::GetManager().mapa_vectores_[typeid(T).hash_code()];
+  auto vector = EntityManager::GetManager().GetComponentVector<T>();
   auto component = vector.at(id_);
 
   if(component.has_value()) return &(component.value());
 
   return nullptr;
-}
-
-TransformComponent* Entity::get_transform_component() {
-    return & EntityManager::GetManager().transform_components_[id_];
-}
-
-
-RenderComponent* Entity::get_render_component() {
-    if (EntityManager::GetManager().render_components_[id_].has_value()) {
-        return & EntityManager::GetManager().render_components_[id_].value();
-    }
-    return nullptr;
 }
 

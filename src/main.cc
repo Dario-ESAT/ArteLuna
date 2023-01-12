@@ -44,8 +44,8 @@ int main() {
   EntityManager& manager_ref = EntityManager::GetManager();
   
   Entity entity = manager_ref.CreateNewEntity(nullptr);
-  TransformComponent* transform_cmp = entity.get_transform_component();
-  RenderComponent* render_cmp =  entity.get_render_component();
+  TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
+  RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
   transform_cmp->set_position(position_);
   transform_cmp->set_scale(scale_);
   transform_cmp->set_rotation(rotation_);
@@ -56,8 +56,8 @@ int main() {
   
   for (int i = 0; i < number_of_entities; i++) {
     Entity entity = manager_ref.CreateNewEntity(nullptr);
-    TransformComponent* transform_cmp = entity.get_transform_component();
-    RenderComponent* render_cmp =  entity.get_render_component();
+    TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
+    RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
     transform_cmp->set_position(position_);
     transform_cmp->set_scale(scale_);
     transform_cmp->set_rotation(rotation_);
@@ -83,10 +83,10 @@ int main() {
     camera.RenderScene();
     if(window.input_->IsKeyDown(32)) {
       for (int i = 2; i < number_of_entities + 2; i++) {
-        Entity& entities = manager_ref.GetEntity(i);
+        Entity* entities = manager_ref.GetEntity(i);
         //auto& t_comp = manager_ref.transform_components_[i]; 
         
-        TransformComponent* transform_cmp = entities.get_transform_component();
+        TransformComponent* transform_cmp = entities->get_component<TransformComponent>();
         glm::vec3 position_aux(transform_cmp->position());
         position_aux.y = fabsf(sinf((float)glfwGetTime() * 2.f) * 10.f);
         transform_cmp->set_position(position_aux);

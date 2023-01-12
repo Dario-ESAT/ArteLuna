@@ -4,12 +4,7 @@
 #include <optional>
 #include <vector>
 #include "entity.h"
-#include "components/render_component.h"
-#include "components/rigid_body_component.h"
-#include "components/transform_component.h"
-#include "components/sound_emiter_component.h"
-#include "components/sound_listener_component.h"
-
+#include <memory>
 class ComponentVector {};
 template<typename T>
 class ComponentVector_Implementation : public ComponentVector
@@ -21,6 +16,8 @@ public:
 
 class EntityManager {
   public:
+  ~EntityManager();
+
   static EntityManager& GetManager();
 
   Entity& CreateNewEntity(Entity* parent = nullptr);
@@ -28,24 +25,23 @@ class EntityManager {
   // Pendiente para añadir junto el mapa de componentes
   // AddComponentToEntity(Entity& entity, T* component)
   template<class T>
-  T& GetComponentFromEntity(int pos);
+  T* GetComponentFromEntity(int pos);
   
-  Entity& GetEntity(int pos);
-  ~EntityManager();
+  Entity* GetEntity(int pos);
 private:
+  EntityManager();
+  template<class T>
+  std::vector<std::optional<T>>* GetComponentVector();
+  
   Entity* root_;
 
   uint16_t last_id_;
-  
-  
+
   std::vector<Entity> entities_;
-  std::vector<TransformComponent> transform_components_;
-  std::vector<std::optional<RenderComponent> > render_components_;
 
   std::map<size_t, std::unique_ptr<ComponentVector> > mapa_vectores_;
-  
-  EntityManager();
 
+  
   friend class Camera;
   friend class Entity;
 };
