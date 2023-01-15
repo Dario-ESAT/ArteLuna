@@ -2,8 +2,6 @@
 #include <vector>
 
 
-
-
 class Texture {
   
 public:
@@ -74,5 +72,5 @@ private:
     Format format_;
     Type type_;
 
-    GLuint id_texture_;
+    uint32_t id_texture_;
 };

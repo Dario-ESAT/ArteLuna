@@ -38,10 +38,4 @@ protected:
     friend class EntityManager;
 };
 
-//template <>
-//inline TransformComponent* Entity::get_component();
-//
-//template <>
-//inline RenderComponent* Entity::get_component();
-
 #endif
