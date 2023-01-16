@@ -13,8 +13,8 @@
 Camera::Camera() {
   movement_speed_ = 100.0f;
   turn_speed_ = 10.0f;
-  mouse_pos_buffer_.x = 1280 / 2;
-  mouse_pos_buffer_.y = 720 / 2;
+  mouse_pos_buffer_.x = 1280.f / 2.f;
+  mouse_pos_buffer_.y = 720.f / 2.f;
   is_rotating_ = false;
   rotate_x_ = 0;
   rotate_y_ = 0;
@@ -94,9 +94,9 @@ void Camera::RenderScene(float aspect) {
   UpdateTransform();
   static auto perspective = glm::perspective(fov_,aspect,0.01f,15000.0f);
   
-  auto view = glm::lookAt(position_,position_+forward_,glm::vec3(0.f,1.f,0.f));
-  glm::mat4x4 vp_matrix = glm::matrixCompMult(view,perspective);
-
+  auto view = glm::lookAt(position_,position_ + forward_,glm::vec3(0.f,1.f,0.f));
+  glm::mat4x4 vp_matrix = perspective * view;
+  
   for (uint16_t i = 1; i < entity_manager.last_id_; i++) {
     if (entity_manager.render_components_[i].has_value()) {
       TransformComponent& transform_component = entity_manager.transform_components_[i];
