@@ -2,6 +2,8 @@
 
 #include "engine/Shader.h"
 #include "glad/gl.h"
+#include<string>
+#include <iostream>
 
 Shader::Shader() {
     geometry_ = 0;
@@ -21,8 +23,6 @@ Shader::Shader(const char* vertex, const char* fragment){
     geometry_ = 0;
 }
 
-#include<string>
-#include <iostream>
 
 bool check_shader(GLuint shader) {
     GLint success;
