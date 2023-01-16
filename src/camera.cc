@@ -1,18 +1,14 @@
 #include "camera.h"
 
 #include "imgui.h"
-#include "glad/gl.h"
 #include "input.h"
 #include "engine/entity_manager.h"
 #include "ext.hpp"
-#include "glm.hpp"
 #include "gtc/type_ptr.hpp"
-
-
 
 Camera::Camera() {
   movement_speed_ = 100.0f;
-  turn_speed_ = 10.0f;
+  turn_speed_ = 1.50f;
   mouse_pos_buffer_.x = 1280.f / 2.f;
   mouse_pos_buffer_.y = 720.f / 2.f;
   is_rotating_ = false;
@@ -38,16 +34,17 @@ void Camera::UpdateFromInput(double deltatime, Input* input) {
   if (input->IsKeyDown(Input::LEFT_SHIFT)) {
     speed = speed * 2;
   }
-  if (input->IsKeyDown(Input::RIGHT) ||
-    input->IsKeyDown(Input::D)) {
-    position_ += right_ * speed * delta_time;
-  }
 
   if (input->IsKeyDown(Input::LEFT) ||
     input->IsKeyDown(Input::A)) {
-    position_ -= right_ * speed * delta_time;
+    position_ += right_ * speed * delta_time;
   }
 
+  if (input->IsKeyDown(Input::RIGHT) ||
+    input->IsKeyDown(Input::D)) {
+    position_ -= right_ * speed * delta_time;
+  }
+  
   if (input->IsKeyDown(Input::UP) ||
     input->IsKeyDown(Input::W)) {
     position_ += (forward_) * speed * delta_time;
@@ -67,16 +64,22 @@ void Camera::UpdateFromInput(double deltatime, Input* input) {
   }
   
   if (input->IsKeyDown(Input::I)) {
-    rotate_y_ += turn_speed_ * delta_time;
+    rotate_x_ -= turn_speed_ * delta_time;
+    if (rotate_x_ < -1.5f) {
+      rotate_x_ = -1.5f;
+    }
   }
   if (input->IsKeyDown(Input::K)) {
-    rotate_y_ -= turn_speed_ * delta_time;
+    rotate_x_ += turn_speed_ * delta_time;
+    if (rotate_x_ > 1.5f) {
+      rotate_x_ = 1.5f;
+    }
   }
   if (input->IsKeyDown(Input::L)) {
-    rotate_x_ += turn_speed_ * delta_time;
+    rotate_y_ += turn_speed_ * delta_time;
   }
   if (input->IsKeyDown(Input::J)) {
-    rotate_x_ -= turn_speed_ * delta_time;
+    rotate_y_ -= turn_speed_ * delta_time;
   }
 }
 
