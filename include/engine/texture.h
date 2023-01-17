@@ -48,7 +48,7 @@ public:
     };
 
     Texture();
-    Texture(int d, Filter mag_filter, Filter min_filter, Format format, Type type, char* texture_src, Wrap ws, Wrap wt, Wrap wr );
+    Texture(int d, Filter mag_filter, Filter min_filter, Type type, char* texture_src, Wrap ws, Wrap wt, Wrap wr );
     ~Texture();
 
     void set_texture(char* texture_src, int d, Filter mag_filter, Filter min_filter, Format format, Type type);

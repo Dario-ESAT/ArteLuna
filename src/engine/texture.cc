@@ -12,50 +12,34 @@ Texture::Texture() {
 	min_filter_ = Linear;
 	mag_filter_ = Linear;
 	type_ = T_2D;
-	try {
-		glGenTextures(1, &id_texture_);
-		//throw 10;
-		glActiveTexture(GL_TEXTURE0 + id());
-		//throw 11;
-		switch (type_) {
-		case Type::T_1D:
-			glBindTexture(GL_TEXTURE_1D, id());
-			break;
-		case Type::T_2D:
-			glBindTexture(GL_TEXTURE_2D, id());
-			break;
-		case Type::T_3D:
-			glBindTexture(GL_TEXTURE_3D, id());
-			break;
-		}
-		//throw 12;
-	}
-	catch (int e) {
-		if (e == 10) {
-			printf("There was an error on the textue, %d", e);
-		}
-		if (e == 11) {
-			printf("There was an error on the textue, %d", e);
-		}
-		if (e == 12) {
-			printf("There was an error on the textue, %d", e);
-		}
-	}
 }
 
-Texture::Texture(int d, Filter mag_filter, Filter min_filter, Format format, Type type, char* texture_src, Wrap ws, Wrap wt, Wrap wr )
+Texture::Texture(int d, Filter mag_filter, Filter min_filter, Type type, char* texture_src, Wrap ws, Wrap wt, Wrap wr )
 {
 	//width_ = w;
 	//height_ = h;
 	depth_ = d;
 	min_filter_ = min_filter;
 	mag_filter_ = mag_filter;
-	format_ = format;
 	wrap_s_ = ws;
 	wrap_t_ = wt;
 	wrap_r_ = wr;
 	texture_ = stbi_load(texture_src, &width_, &height_, &channels_, 0);
 	//texture_ = texture_data;
+	switch (channels_) {
+	case 1:
+		format_ = R;
+		break;
+	case 2:
+		format_ = RG;
+		break;
+	case 3:
+		format_ = RGB;
+		break;
+	case 4:
+		format_ = RGBA;
+		break;
+	}
 	type_ = type;
 	//if (id() != 0)
 	glGenTextures(1, &id_texture_);
@@ -72,7 +56,30 @@ Texture::~Texture() {
 void Texture::set_texture(char* texture_src, int d, Filter mag_filter, Filter min_filter, Format format, Type type)
 {
 	texture_ = stbi_load(texture_src, &width_, &height_, &channels_, 0);
+	min_filter_ = min_filter;
+	mag_filter_ = mag_filter;
+	type_ = type;
+	depth_ = d;
+
+	switch (channels_) {
+	case 1:
+		format_ = R;
+		break;
+	case 2:
+		format_ = RG;
+		break;
+	case 3:
+		format_ = RGB;
+		break;
+	case 4:
+		format_ = RGBA;
+		break;
+	}
 	
+	//if (id() != 0)
+	glGenTextures(1, &id_texture_);
+	glBindTexture(GL_TEXTURE_2D, id());
+	glActiveTexture(GL_TEXTURE0 + id());
 }
 
 void Texture::Bind()
