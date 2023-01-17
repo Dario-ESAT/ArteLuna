@@ -2,7 +2,8 @@
 #include "comon_defs.h"
 #include <glad/gl.h>
 #include <memory>
-
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 Texture::Texture() {
 	width_ = 0;
@@ -11,25 +12,11 @@ Texture::Texture() {
 	min_filter_ = Linear;
 	mag_filter_ = Linear;
 	type_ = T_2D;
-
-	
-}
-
-Texture::Texture(int w, int h, int d, Filter mag_filter, Filter min_filter, Format format, Type type)
-{
-	width_ = w;
-	height_ = h;
-	depth_ = d;
-	min_filter_ = min_filter;
-	mag_filter_ = mag_filter;
-	format_ = format;
-	
-	type_ = type;
 	try {
 		glGenTextures(1, &id_texture_);
-		throw 10;
+		//throw 10;
 		glActiveTexture(GL_TEXTURE0 + id());
-		throw 11;
+		//throw 11;
 		switch (type_) {
 		case Type::T_1D:
 			glBindTexture(GL_TEXTURE_1D, id());
@@ -41,9 +28,9 @@ Texture::Texture(int w, int h, int d, Filter mag_filter, Filter min_filter, Form
 			glBindTexture(GL_TEXTURE_3D, id());
 			break;
 		}
-		throw 12;
+		//throw 12;
 	}
-	catch(int e){
+	catch (int e) {
 		if (e == 10) {
 			printf("There was an error on the textue, %d", e);
 		}
@@ -56,18 +43,39 @@ Texture::Texture(int w, int h, int d, Filter mag_filter, Filter min_filter, Form
 	}
 }
 
+Texture::Texture(int d, Filter mag_filter, Filter min_filter, Format format, Type type, char* texture_src, Wrap ws, Wrap wt, Wrap wr )
+{
+	//width_ = w;
+	//height_ = h;
+	depth_ = d;
+	min_filter_ = min_filter;
+	mag_filter_ = mag_filter;
+	format_ = format;
+	wrap_s_ = ws;
+	wrap_t_ = wt;
+	wrap_r_ = wr;
+	texture_ = stbi_load(texture_src, &width_, &height_, &channels_, 0);
+	//texture_ = texture_data;
+	type_ = type;
+	
+}
+
 
 
 Texture::~Texture() {
 
 }
 
-void Texture::set_texture(std::vector<uint8_t> data_texture, int w, int h, int d, Filter mag_filter, Filter min_filter, Format format, Type type)
+void Texture::set_texture(char* texture_src, int d, Filter mag_filter, Filter min_filter, Format format, Type type)
 {
-	texture_ = data_texture;
+	texture_ = stbi_load(texture_src, &width_, &height_, &channels_, 0);
+	
+}
 
+void Texture::Bind()
+{
 	try {
-		if(id() != 0)
+		if (id() != 0)
 			glGenTextures(1, &id_texture_);
 
 		glActiveTexture(GL_TEXTURE0 + id());
@@ -97,10 +105,10 @@ void Texture::set_texture(std::vector<uint8_t> data_texture, int w, int h, int d
 	}
 }
 
-void Texture::SetData(Filter mag_filter, Filter min_filter, Format format, Wrap ws, Wrap wt, Wrap wr, DataType d_type, unsigned int mip_map_LOD)
+void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */DataType d_type, unsigned int mip_map_LOD)
 {
 	GLenum mg_filter;
-	switch (mag_filter)
+	switch (mag_filter_)
 	{
 	case Linear:
 		mg_filter = GL_LINEAR;
@@ -125,7 +133,7 @@ void Texture::SetData(Filter mag_filter, Filter min_filter, Format format, Wrap 
 	}
 
 	GLenum mn_filter;
-	switch (min_filter)
+	switch (min_filter_)
 	{
 	case Linear:
 		mn_filter = GL_LINEAR;
@@ -150,7 +158,7 @@ void Texture::SetData(Filter mag_filter, Filter min_filter, Format format, Wrap 
 	}
 
 	GLenum wrap_s;
-	switch (ws)
+	switch (wrap_s_)
 	{
 	case Repeat:
 		wrap_s = GL_REPEAT;
@@ -166,7 +174,7 @@ void Texture::SetData(Filter mag_filter, Filter min_filter, Format format, Wrap 
 	}
 
 	GLenum wrap_t;
-	switch (wt)
+	switch (wrap_t_)
 	{
 	case Repeat:
 		wrap_t = GL_REPEAT;
@@ -182,7 +190,7 @@ void Texture::SetData(Filter mag_filter, Filter min_filter, Format format, Wrap 
 	}
 
 	GLenum wrap_r;
-	switch (wr)
+	switch (wrap_r_)
 	{
 	case Repeat:
 		wrap_r = GL_REPEAT;
@@ -198,7 +206,7 @@ void Texture::SetData(Filter mag_filter, Filter min_filter, Format format, Wrap 
 	}
 
 	GLenum f = GL_RGB;
-	switch (format)
+	switch (format_)
 	{
 	case R:
 		f = GL_R;
@@ -256,7 +264,7 @@ void Texture::SetData(Filter mag_filter, Filter min_filter, Format format, Wrap 
 		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_T, wrap_t);
 		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_R, wrap_r);
 
-		glTexImage1D(GL_TEXTURE_1D, mip_map_LOD, f, width(), 0, format_, type, texture_.data());
+		glTexImage1D(GL_TEXTURE_1D, mip_map_LOD, f, width(), 0, format_, type, texture_);
 		glGenerateMipmap(GL_TEXTURE_1D);
 		break;
 	case T_2D:
@@ -268,7 +276,7 @@ void Texture::SetData(Filter mag_filter, Filter min_filter, Format format, Wrap 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrap_r);
 
-		glTexImage2D(GL_TEXTURE_2D, mip_map_LOD, f, width(), height(), 0, format_, type, texture_.data());
+		glTexImage2D(GL_TEXTURE_2D, mip_map_LOD, f, width(), height(), 0, format_, type, texture_);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		break;
 	case T_3D:
@@ -280,10 +288,11 @@ void Texture::SetData(Filter mag_filter, Filter min_filter, Format format, Wrap 
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, wrap_t);
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, wrap_r);
 
-        glTexImage3D(GL_TEXTURE_3D, mip_map_LOD, f, width(), height(), depth(), 0, format_, type, texture_.data());
+        glTexImage3D(GL_TEXTURE_3D, mip_map_LOD, f, width(), height(), depth(), 0, format_, type, texture_);
         glGenerateMipmap(GL_TEXTURE_3D);
         break;
 	default:
 		break;
 	}
+	stbi_image_free(texture_);
 }

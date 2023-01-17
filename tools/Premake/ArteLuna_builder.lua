@@ -21,6 +21,7 @@ project "ArteLuna"
         "../../deps/tinyobjloader",
         "../../deps/soloud/include",
         "../../deps/glm/",
+        "../../deps/stb/"
     }
 
     files {
