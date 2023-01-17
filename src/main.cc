@@ -25,8 +25,13 @@ int main() {
   
   //IMGUI_CHECKVERSION();
   ImGui::CreateContext();
+
+   //---------- Texture ---------
   Texture t(0, Texture::Linear, Texture::Linear, Texture::RGB, Texture::T_2D, "../../data/muse.jpg", Texture::Clamp_to_edge, Texture::Clamp_to_edge, Texture::Clamp_to_edge);
+ 
   t.SetData(Texture::UNSIGNED_BYTE, 0);
+  
+
   ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
   ImGui_ImplOpenGL3_Init("#version 330");
 
@@ -82,6 +87,8 @@ int main() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();  
+
+    t.Bind();
 
     window.ProcessInput(delta_time);
     if(window.input_->IsKeyDown(32)) {

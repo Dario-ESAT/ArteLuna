@@ -57,7 +57,10 @@ Texture::Texture(int d, Filter mag_filter, Filter min_filter, Format format, Typ
 	texture_ = stbi_load(texture_src, &width_, &height_, &channels_, 0);
 	//texture_ = texture_data;
 	type_ = type;
-	
+	//if (id() != 0)
+	glGenTextures(1, &id_texture_);
+	glBindTexture(GL_TEXTURE_2D, id());
+	glActiveTexture(GL_TEXTURE0);
 }
 
 
@@ -75,11 +78,6 @@ void Texture::set_texture(char* texture_src, int d, Filter mag_filter, Filter mi
 void Texture::Bind()
 {
 	try {
-		if (id() != 0)
-			glGenTextures(1, &id_texture_);
-
-		glActiveTexture(GL_TEXTURE0 + id());
-
 		switch (type_) {
 		case Type::T_1D:
 			glBindTexture(GL_TEXTURE_1D, id());
@@ -129,7 +127,7 @@ void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */D
 		mg_filter = GL_LINEAR_MIPMAP_LINEAR;
 		break;
 	default:
-		break;
+		throw 79;
 	}
 
 	GLenum mn_filter;
@@ -154,7 +152,7 @@ void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */D
 		mn_filter = GL_LINEAR_MIPMAP_LINEAR;
 		break;
 	default:
-		break;
+		throw 80;
 	}
 
 	GLenum wrap_s;
@@ -170,7 +168,7 @@ void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */D
 		wrap_s = GL_CLAMP_TO_EDGE;
 		break;
 	default:
-		break;
+		throw 81;
 	}
 
 	GLenum wrap_t;
@@ -186,7 +184,7 @@ void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */D
 		wrap_t = GL_CLAMP_TO_EDGE;
 		break;
 	default:
-		break;
+		throw 82;
 	}
 
 	GLenum wrap_r;
@@ -202,7 +200,7 @@ void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */D
 		wrap_r = GL_CLAMP_TO_EDGE;
 		break;
 	default:
-		break;
+		throw 83;
 	}
 
 	GLenum f = GL_RGB;
@@ -226,10 +224,10 @@ void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */D
 		f = GL_DEPTH_COMPONENT32F;
 		break;
 	default:
-		break;
+		throw 84;
 	}
 
-	GLenum type = GL_BYTE;
+	GLenum type;
 	switch (d_type) {
 	case BYTE:
 		type = GL_BYTE;
@@ -252,6 +250,8 @@ void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */D
 	case UNSIGNED_SHORT:
 		type = GL_UNSIGNED_SHORT;
 		break;
+	default:
+		throw 85;
 	}
 	switch (type_)
 	{
@@ -276,8 +276,13 @@ void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */D
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrap_r);
 
-		glTexImage2D(GL_TEXTURE_2D, mip_map_LOD, f, width(), height(), 0, format_, type, texture_);
-		glGenerateMipmap(GL_TEXTURE_2D);
+		if (texture_) {
+			glTexImage2D(GL_TEXTURE_2D, mip_map_LOD, f, width(), height(), 0, f, type, texture_);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		else {
+			printf("Error loading the texture");
+		}
 		break;
 	case T_3D:
 		glBindTexture(GL_TEXTURE_3D, id());
@@ -292,7 +297,7 @@ void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */D
         glGenerateMipmap(GL_TEXTURE_3D);
         break;
 	default:
-		break;
+		throw 86;
 	}
 	stbi_image_free(texture_);
 }
