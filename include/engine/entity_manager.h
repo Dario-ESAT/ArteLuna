@@ -7,12 +7,10 @@
 #include <memory>
 class ComponentVector {};
 template<typename T>
-class ComponentVector_Implementation : public ComponentVector
-{
+class ComponentVector_Implementation : public ComponentVector{
 public:
   std::vector<std::optional<T>> vector;
 };
-
 
 class EntityManager {
   public:

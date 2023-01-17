@@ -20,7 +20,14 @@ public:
   void set_component(T* component);
   
   template<class T>
-  T* get_component();
+  T* get_component() {
+    auto vector = EntityManager::GetManager().GetComponentVector<T>();
+    auto component = vector->at(id_);
+  
+    if(component.has_value()) return &(component.value());
+  
+    return nullptr;
+  }
   
   uint32_t id() const;
 
@@ -34,9 +41,6 @@ protected:
 
   friend class EntityManager;
 };
-
-
-
 
 //template <>
 //inline TransformComponent* Entity::get_component();

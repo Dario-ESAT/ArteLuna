@@ -52,7 +52,7 @@ EntityManager::EntityManager() {
   
   last_id_ = 0;
 
-  GetComponentVector<RenderComponent>()->emplace_back();
+  GetComponentVector<RenderComponent>()->emplace_back(RenderComponent());
   GetComponentVector<TransformComponent>()->emplace_back(TransformComponent());
   entities_.emplace_back(Entity(last_id_,nullptr));
   

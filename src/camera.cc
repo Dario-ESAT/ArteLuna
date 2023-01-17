@@ -18,26 +18,6 @@ Camera::Camera() {
     is_rotating_ = false;
     rotate_horizontal_ = 0;
     rotate_vertical_ = 0;
-    // glm::mat4x4 transform_aux(1.0f);
-    // transform_aux = glm::scale(transform_aux, transform_component_.scale());
-    // transform_aux = glm::rotate(transform_aux,rotate_horizontal_, glm::vec3(0.0f, 1.0f, 0.0f));
-    // transform_aux = glm::translate(transform_aux, transform_component_.position());
-    // transform_aux = glm::transpose(transform_aux);
-    //
-    // transform_aux = glm::rotate(transform_aux,rotate_vertical_, glm::vec3(1.0f, 0.0f, 0.0f));
-    // transform_component_.set_transform(transform_aux);
-
-    //mathlib::Matrix3x3 rotation = transform.Rotation();
-    
-    // forward_ = rotation.ToVector3(glm::vec3::forward);
-    // right_ = rotation.ToVector3(glm::vec3::right);
-    // up_ = rotation.ToVector3(glm::vec3::up);
-
-    // Para acordarse de cosas
-    // set_local_transform(transform.m);
-    // transform.Inverse();
-    // camera->set_view_matrix(transform.m);
-
 }
 
 Camera::~Camera() {

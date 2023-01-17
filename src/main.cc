@@ -37,8 +37,7 @@ int main() {
   glm::vec3 scale_ = { 1.0f, 1.0f, 1.0f };
   glm::vec3 rotation_ = { 0.0f, 0.0f, 0.0f };
   
-  std::shared_ptr<Material> material_ = std::make_shared<Material>(vert_.get(),
-   frag_.get());
+  std::shared_ptr<Material> material = std::make_shared<Material>(vert_.get(),frag_.get());
   std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("../../data/models/ugandan_sonic.obj");
   std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../data/models/sponza.obj");
   EntityManager& manager_ref = EntityManager::GetManager();
@@ -46,16 +45,19 @@ int main() {
   Entity& entity = manager_ref.CreateNewEntity(nullptr);
   TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
   RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
+  if (render_cmp == nullptr) {
+    
+  }
   transform_cmp->set_position(position_);
   transform_cmp->set_scale(scale_);
   transform_cmp->set_rotation(rotation_);
   transform_cmp->set_transform();
   render_cmp->mesh_ = mesh_sponza;
-  render_cmp->material_ = material_;
+  render_cmp->material_ = material;
   position_.x += offset;
   
   for (int i = 0; i < number_of_entities; i++) {
-    Entity entity = manager_ref.CreateNewEntity(nullptr);
+    Entity& entity = manager_ref.CreateNewEntity(nullptr);
     TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
     RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
     transform_cmp->set_position(position_);
@@ -63,7 +65,7 @@ int main() {
     transform_cmp->set_rotation(rotation_);
     transform_cmp->set_transform();
     render_cmp->mesh_ = mesh;
-    render_cmp->material_ = material_;
+    render_cmp->material_ = material;
     position_.x += offset;
   }
   
