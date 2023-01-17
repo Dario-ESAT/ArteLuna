@@ -9,13 +9,13 @@ public:
     ~Shader();
     void Init(const char* vertex, const char* fragment);
     void Init(const char* vertex, const char* fragment, const char* geometry);
-    unsigned int vertex();
-    unsigned int fragment();
-    unsigned int geometry();
-    unsigned int vertex_;
-    unsigned int fragment_;
+    unsigned int vertex() const;
+    unsigned int fragment() const;
+    unsigned int geometry() const;
 private:
 
+    unsigned int vertex_;
+    unsigned int fragment_;
     unsigned int geometry_;
 };
 

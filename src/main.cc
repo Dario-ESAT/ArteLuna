@@ -45,16 +45,13 @@ int main() {
   Entity& entity = manager_ref.CreateNewEntity(nullptr);
   TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
   RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
-  if (render_cmp == nullptr) {
-    
-  }
   transform_cmp->set_position(position_);
   transform_cmp->set_scale(scale_);
   transform_cmp->set_rotation(rotation_);
   transform_cmp->set_transform();
+  position_.x += offset;
   render_cmp->mesh_ = mesh_sponza;
   render_cmp->material_ = material;
-  position_.x += offset;
   
   for (int i = 0; i < number_of_entities; i++) {
     Entity& entity = manager_ref.CreateNewEntity(nullptr);

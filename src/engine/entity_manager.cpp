@@ -28,17 +28,6 @@ Entity& EntityManager::CreateNewEntity(Entity* parent) {
 }
 
 
-template <typename T>
-T* EntityManager::GetComponentFromEntity(int pos) {
-  auto comp_vector = mapa_vectores_.find(typeid(T).hash_code());
-  auto casted_comp_vector = static_cast<ComponentVector_Implementation<T>*>(comp_vector->second.get());
-  auto component = casted_comp_vector->vector.at(pos);
-  
-  if (!component.has_value()) return nullptr;
-
-  return component.value();
-}
-
 Entity* EntityManager::GetEntity(int pos) {
   if (pos < 0 || pos >= last_id_) return nullptr;
   
@@ -52,8 +41,8 @@ EntityManager::EntityManager() {
   
   last_id_ = 0;
 
-  GetComponentVector<RenderComponent>()->emplace_back(RenderComponent());
-  GetComponentVector<TransformComponent>()->emplace_back(TransformComponent());
+  GetComponentVector<RenderComponent>()->emplace_back();
+  GetComponentVector<TransformComponent>()->emplace_back(TransformComponent(last_id_));
   entities_.emplace_back(Entity(last_id_,nullptr));
   
   root_ = &entities_.back();

@@ -23,7 +23,15 @@ class EntityManager {
   // Pendiente para añadir junto el mapa de componentes
   // AddComponentToEntity(Entity& entity, T* component)
   template<class T>
-  T* GetComponentFromEntity(int pos);
+  T* GetComponentFromEntity(int pos){
+    auto comp_vector = mapa_vectores_.find(typeid(T).hash_code());
+    auto casted_comp_vector = static_cast<ComponentVector_Implementation<T>*>(comp_vector->second.get());
+    auto component = casted_comp_vector->vector.at(pos);
+  
+    if (!component.has_value()) return nullptr;
+
+    return component.value();
+  }
   
   Entity* GetEntity(int pos);
 private:
