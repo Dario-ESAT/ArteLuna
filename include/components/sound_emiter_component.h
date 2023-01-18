@@ -2,16 +2,14 @@
 #define __RENDER_COMPONENT_H__ 1
 #include "component.h"
 
-class SoundEmiterComponent : public Component {
+class SoundEmitterComponent : public Component {
 public:
     
-    SoundEmiterComponent* asSoundEmiterComponent() override;
-
     void ImguiTree() override;
-    ~SoundEmiterComponent() override;
+    ~SoundEmitterComponent() override;
 
 protected:
-    SoundEmiterComponent();
+    SoundEmitterComponent();
 };
 
 

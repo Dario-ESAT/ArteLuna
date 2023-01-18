@@ -13,8 +13,6 @@ class Shader;
 
 class RenderComponent : public Component {
 public:
-    RenderComponent* asRenderComponent() override;
-
     void ImguiTree() override;
     std::shared_ptr<Mesh> mesh_;
     std::shared_ptr<Material> material_;

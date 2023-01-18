@@ -2,12 +2,6 @@
 
 #include "components/sound_listener_component.h"
 
-
-
-SoundListenerComponent* SoundListenerComponent::asSoundListenerComponent() {
-	return this;
-}
-
 void SoundListenerComponent::ImguiTree() {
 }
 
@@ -16,6 +10,7 @@ SoundListenerComponent::SoundListenerComponent() {
 }
 
 SoundListenerComponent::~SoundListenerComponent() {
+  printf("\n SoundListener Comp %p", this);
 
 }
 

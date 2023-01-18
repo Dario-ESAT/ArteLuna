@@ -8,11 +8,6 @@
 #include "engine/material.h"
 #include "engine/mesh.h"
 
-RenderComponent* RenderComponent::asRenderComponent()
-{
-	return this;
-}
-
 void RenderComponent::ImguiTree() {
 }
 
@@ -48,13 +43,13 @@ void RenderComponent::RenderObject(
 	// 	material->set_uniform_value(info que pasar,uniforms.second,uniform_pos);
 	// }
 	
-	material->program_.useProgram();
+	material->program_.Use();
 	glBindVertexArray(mesh_->mesh_buffer());
 	glDrawElements(GL_TRIANGLES, (GLsizei)mesh_.get()->indices_.size(),GL_UNSIGNED_INT, 0);
 
 }
 
 RenderComponent::~RenderComponent() {
-
+  printf("\n Render Comp %p", this);
 }
 

@@ -10,7 +10,7 @@ Material::Material() {
 
 Material::Material(char* vert, char* frag) {
 	shader_.Init(vert, frag);
-	program_.Init(shader_.vertex_, shader_.fragment_);
+	program_.Init(shader_.vertex(), shader_.fragment());
 	GLint count;
 
 	GLint size; // size of the variable
@@ -32,7 +32,7 @@ Material::~Material() {
 
 void Material::set_uniform_value(const float* unif, GLenum type,unsigned int 
 uniform_pos) const{
-	program_.useProgram();
+	program_.Use();
 	switch (type) {
 	case GL_FLOAT:
 		
