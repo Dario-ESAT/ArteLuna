@@ -12,7 +12,8 @@ void RenderComponent::ImguiTree() {
 }
 
 RenderComponent::RenderComponent() {
-	
+	mesh_ = nullptr;
+  material_ = nullptr;
 }
 
 RenderComponent::RenderComponent(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material) {

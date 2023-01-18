@@ -33,7 +33,7 @@ class EntityManager {
     return component.value();
   }
   
-  Entity* GetEntity(int pos);
+  Entity* GetEntity(uint16_t pos);
 private:
   EntityManager();
   template<class T>

@@ -9,12 +9,13 @@ class Mesh;
 
 class RigidBodyComponent : public Component {
 public:
+  virtual ~RigidBodyComponent();
+  void ImguiTree() override;
     
-    std::shared_ptr<Mesh> meshComponent_;
-
-    virtual ~RigidBodyComponent();
+  std::shared_ptr<Mesh> meshComponent_;
+  
 protected:
-    RigidBodyComponent();
+  RigidBodyComponent();
 };
 
 

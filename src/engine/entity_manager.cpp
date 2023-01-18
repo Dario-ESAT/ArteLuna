@@ -28,18 +28,18 @@ Entity& EntityManager::CreateNewEntity(Entity* parent) {
 }
 
 
-Entity* EntityManager::GetEntity(int pos) {
-  if (pos < 0 || pos >= last_id_) return nullptr;
+Entity* EntityManager::GetEntity(uint16_t pos) {
+  if (pos >= last_id_) return nullptr;
   
   return &entities_.at(pos);
 }
 
 
 EntityManager::EntityManager() {
+  last_id_ = 0;
   mapa_vectores_[typeid(TransformComponent).hash_code()] = std::make_unique<ComponentVector_Implementation<TransformComponent> >();
   mapa_vectores_[typeid(RenderComponent).hash_code()] = std::make_unique<ComponentVector_Implementation<RenderComponent> >();
   
-  last_id_ = 0;
 
   GetComponentVector<RenderComponent>()->emplace_back();
   GetComponentVector<TransformComponent>()->emplace_back(TransformComponent(last_id_));
