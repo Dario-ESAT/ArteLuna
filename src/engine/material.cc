@@ -10,8 +10,7 @@ Material::Material() {
 
 Material::Material(char* vert, char* frag) {
 	shader_.Init(vert, frag);
-	program_.Init(shader_.vertex_, shader_.fragment_);
-	GLint i;
+	program_.Init(shader_.vertex(), shader_.fragment());
 	GLint count;
 
 	GLint size; // size of the variable
@@ -22,8 +21,8 @@ Material::Material(char* vert, char* frag) {
 	GLsizei length;
 
 	glGetProgramiv(program_.program(), GL_ACTIVE_UNIFORMS, &count);
-	for (i = 0; i < count; i++) {
-		glGetActiveUniform(program_.program(), (GLuint)i, bufSize, &length, &size, &type, name);
+	for (GLint i = 0; i < count; i++) {
+		glGetActiveUniform(program_.program(), i, bufSize, &length, &size, &type, name);
 		uniforms_names_types_.emplace_back(std::string(name,length),type);
 	}
 }
@@ -33,7 +32,7 @@ Material::~Material() {
 
 void Material::set_uniform_value(const float* unif, GLenum type,unsigned int 
 uniform_pos) const{
-	program_.useProgram();
+	program_.Use();
 	switch (type) {
 	case GL_FLOAT:
 		

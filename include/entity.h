@@ -8,34 +8,38 @@
 #include "vector_3.h"
 #include "matrix_4.h"
 
-class EntityManager;
-class TransformComponent;
-class RenderComponent;
-class Component;
 // para las listas de los componentes hacerlas de std::optional<componente>
 // olvida lo de arriba y hazlo en un entity manager :)
 class Entity {
 public:
-    ~Entity();
+  ~Entity();
 
-    Entity& parent() const;
-    std::vector<Entity*> children() const;
-    
-    TransformComponent* get_transform_component();
-    RenderComponent* get_render_component();
-
-    uint32_t id() const;
+  const Entity& parent() const;
+  std::vector<Entity*>& children();
+  template<class T>
+  void set_component(T* component);
+  
+  template<class T>
+  T* get_component() {
+    std::vector<std::optional<T>>* vector = EntityManager::GetManager().GetComponentVector<T>();
+    std::optional<T>* component = &vector->at(id_);
+  
+    if(component->has_value()) return &(component->value());
+  
+    return nullptr;
+  }
+  
+  uint32_t id() const;
 
 protected:
-    Entity();
-    Entity(TransformComponent* trans, int id, Entity* parent);
-    
-    uint32_t id_;
-    std::vector<Component*> components_;
-    std::vector<Entity*> children_;
-    Entity* parent_;
-    EntityManager* entity_manager;
-    friend class EntityManager;
+  Entity();
+  Entity(int id, Entity* parent);
+  
+  uint32_t id_;
+  std::vector<Entity*> children_;
+  Entity* parent_;
+
+  friend class EntityManager;
 };
 
 #endif

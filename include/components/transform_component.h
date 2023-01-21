@@ -12,9 +12,7 @@ class TransformComponent : public Component{
 public:
   ~TransformComponent() override;
 
-  TransformComponent* asTransformComponent() override;
-  
-  void ImguiTree() override;
+    void ImguiTree() override;
 
   const glm::vec3& position() const {return position_;}
   void set_position(const glm::vec3& position) {

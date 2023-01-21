@@ -16,7 +16,7 @@ public:
 
     Shader shader_;
     Program program_;
-    std::vector<std::pair<std::string,GLenum>> uniforms_names_types_;
+    std::vector<std::pair<std::string,GLenum> > uniforms_names_types_;
     std::vector<uint8_t> texture_;
 
     void set_uniform_value(const float* unif, GLenum type,unsigned int uniform_pos) const;

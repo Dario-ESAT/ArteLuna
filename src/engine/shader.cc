@@ -1,5 +1,3 @@
-#define GLFW_INCLUDE_NONE
-
 #include "engine/Shader.h"
 #include "glad/gl.h"
 #include<string>
@@ -13,11 +11,11 @@ Shader::Shader() {
 
 Shader::Shader(const char* vertex, const char* fragment){
     vertex_ = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_, 1, &vertex, 0);
+    glShaderSource(vertex_, 1, &vertex, nullptr);
     glCompileShader(vertex_);
 
     fragment_ = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_, 1, &fragment, 0);
+    glShaderSource(fragment_, 1, &fragment, nullptr);
     glCompileShader(fragment_);
 
     geometry_ = 0;
@@ -39,18 +37,17 @@ bool check_shader(GLuint shader) {
 
 Shader::Shader(const char* vertex, const char* fragment, const char* geometry) {
     vertex_ = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_, 1, &vertex, 0);
+    glShaderSource(vertex_, 1, &vertex, nullptr);
     glCompileShader(vertex_);
     check_shader(vertex_);
 
-
     fragment_ = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_, 1, &fragment, 0);
+    glShaderSource(fragment_, 1, &fragment, nullptr);
     glCompileShader(fragment_);
     check_shader(fragment_);
 
     geometry_ = glCreateShader(GL_GEOMETRY_SHADER);
-    glShaderSource(geometry_, 1, &geometry, 0);
+    glShaderSource(geometry_, 1, &geometry, nullptr);
     glCompileShader(geometry_);
     check_shader(geometry_);
 
@@ -67,12 +64,12 @@ Shader::~Shader() {
 void Shader::Init(const char* vertex, const char* fragment)
 {
     vertex_ = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_, 1, &vertex, 0);
+    glShaderSource(vertex_, 1, &vertex, nullptr);
     glCompileShader(vertex_);
     check_shader(vertex_);
 
     fragment_ = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_, 1, &fragment, 0);
+    glShaderSource(fragment_, 1, &fragment, nullptr);
     glCompileShader(fragment_);
     check_shader(fragment_);
 
@@ -82,26 +79,26 @@ void Shader::Init(const char* vertex, const char* fragment)
 void Shader::Init(const char* vertex, const char* fragment, const char* geometry)
 {
     vertex_ = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_, 1, &vertex, 0);
+    glShaderSource(vertex_, 1, &vertex, nullptr);
     glCompileShader(vertex_);
 
     fragment_ = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_, 1, &fragment, 0);
+    glShaderSource(fragment_, 1, &fragment, nullptr);
     glCompileShader(fragment_);
 
     geometry_ = glCreateShader(GL_GEOMETRY_SHADER);
-    glShaderSource(geometry_, 1, &geometry, 0);
+    glShaderSource(geometry_, 1, &geometry, nullptr);
     glCompileShader(geometry_);
 }
 
-unsigned int Shader::vertex() {
+unsigned int Shader::vertex() const {
     return vertex_;
 }
 
-unsigned int Shader::fragment() {
+unsigned int Shader::fragment() const {
     return fragment_;
 }
 
-unsigned int Shader::geometry() {
+unsigned int Shader::geometry() const {
     return geometry_;
 }

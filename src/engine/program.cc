@@ -5,6 +5,7 @@
 
 
 Program::Program() {
+  id_ = 0;
 }
 
 #include<string>

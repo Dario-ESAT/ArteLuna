@@ -22,6 +22,7 @@
 int main() {
   Window window("Hello World");
   window.input_->setupKeyInputs(window);
+
   
   //IMGUI_CHECKVERSION();
   ImGui::CreateContext();
@@ -31,7 +32,6 @@ int main() {
  
   t.SetData(Texture::UNSIGNED_BYTE, 0);
   
-
   ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
   ImGui_ImplOpenGL3_Init("#version 330");
 
@@ -44,77 +44,74 @@ int main() {
   glm::vec3 scale_ = { 1.0f, 1.0f, 1.0f };
   glm::vec3 rotation_ = { 0.0f, 0.0f, 0.0f };
   
-  std::shared_ptr<Material> material_ = std::make_shared<Material>(vert_.get(),
+  std::shared_ptr<Material> material = std::make_shared<Material>(vert_.get(),
    frag_.get());
+
   std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("../../data/models/ugandan_sonic.obj");
   std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../data/models/sponza.obj");
   EntityManager& manager_ref = EntityManager::GetManager();
   
-  Entity entity = manager_ref.CreateNewEntity(nullptr);
-  TransformComponent* transform_cmp = entity.get_transform_component();
-  RenderComponent* render_cmp =  entity.get_render_component();
+
+  Entity& entity = manager_ref.CreateNewEntity(nullptr);
+  TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
+  RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
+
   transform_cmp->set_position(position_);
   transform_cmp->set_scale(scale_);
   transform_cmp->set_rotation(rotation_);
   transform_cmp->set_transform();
-  render_cmp->mesh_ = mesh_sponza;
-  render_cmp->material_ = material_;
+
   position_.x += offset;
+  render_cmp->mesh_ = mesh_sponza;
+  render_cmp->material_ = material;
   
   for (int i = 0; i < number_of_entities; i++) {
-    Entity entity = manager_ref.CreateNewEntity(nullptr);
-    TransformComponent* transform_cmp = entity.get_transform_component();
-    RenderComponent* render_cmp =  entity.get_render_component();
+    Entity& entity = manager_ref.CreateNewEntity(nullptr);
+    TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
+    RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
+
     transform_cmp->set_position(position_);
     transform_cmp->set_scale(scale_);
     transform_cmp->set_rotation(rotation_);
     transform_cmp->set_transform();
     render_cmp->mesh_ = mesh;
-    render_cmp->material_ = material_;
+
+    render_cmp->material_ = material;
     position_.x += offset;
   }
   
 
   Camera camera;
-    
-  double previus_time  = 0.0;
   
+
   while (!window.ShouldClose()) {
-    double currentTime = window.GetTime();
-    double delta_time = (currentTime - previus_time);
-    previus_time = currentTime;
-    
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();  
 
-    t.Bind();
+    window.ProcessInput();
+     
+    window.Clear();
 
-    window.ProcessInput(delta_time);
+    camera.RenderScene();
     if(window.input_->IsKeyDown(32)) {
       for (int i = 2; i < number_of_entities + 2; i++) {
-        Entity& entities = manager_ref.GetEntity(i);
+        Entity* entities = manager_ref.GetEntity(i);
         //auto& t_comp = manager_ref.transform_components_[i]; 
         
-        TransformComponent* transform_cmp = entities.get_transform_component();
+        TransformComponent* transform_cmp = entities->get_component<TransformComponent>();
         glm::vec3 position_aux(transform_cmp->position());
         position_aux.y = fabsf(sinf((float)glfwGetTime() * 2.f) * 10.f);
         transform_cmp->set_position(position_aux);
       }
     }
-    window.Clear();
-    window.RenderScene();
     // --------ImGui--------
-    window.MenuImgui();
-
-    ImGui::Begin("Frame");
-      ImGui::Text("%f",delta_time);
-    ImGui::End();
+    camera.MenuImgui();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     // ----------------------
     
-    
+
     window.Swap();
   }
 
@@ -130,61 +127,61 @@ int main() {
 #include "soloud_queue.h"
 
 int main() {
-    Window window("Hello World");
-    window.input_->setupKeyInputs(window);
+  Window window("Hello World");
+  window.input_->setupKeyInputs(window);
 
-    //IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
-    ImGui_ImplOpenGL3_Init("#version 330");
-    const char* song_names[] = {
-        "../../data/songs/branching/slbgm_forest_A-01.ogg",
-        "../../data/songs/branching/slbgm_forest_A-02.ogg",
-        "../../data/songs/branching/slbgm_forest_A-03.ogg",
-        "../../data/songs/branching/slbgm_forest_A-04.ogg",
-        "../../data/songs/branching/slbgm_forest_A-05.ogg",
-    };
-    std::vector<SoLoud::Wav> songs;
-    for (int i = 0; i < 0; i++) {
-        songs.push_back(SoLoud::Wav());
-        songs.back().load(song_names[i]);
+  //IMGUI_CHECKVERSION();
+  ImGui::CreateContext();
+  ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
+  ImGui_ImplOpenGL3_Init("#version 330");
+  const char* song_names[] = {
+      "../../data/songs/branching/slbgm_forest_A-01.ogg",
+      "../../data/songs/branching/slbgm_forest_A-02.ogg",
+      "../../data/songs/branching/slbgm_forest_A-03.ogg",
+      "../../data/songs/branching/slbgm_forest_A-04.ogg",
+      "../../data/songs/branching/slbgm_forest_A-05.ogg",
+  };
+  std::vector<SoLoud::Wav> songs;
+  for (int i = 0; i < 0; i++) {
+      songs.push_back(SoLoud::Wav());
+      songs.back().load(song_names[i]);
+  }
+  SoLoud::Queue queue;
+  int current_song = 0;
+  while (!window.ShouldClose()) {
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    window.ProcessInput();
+
+    window.Clear();
+
+    // --------ImGui--------
+    bool window_test = false;
+    ImGui::Begin("Demo window", &window_test, ImGuiWindowFlags_NoMove);
+    if(ImGui::Button("Hello!")) {
+        SoLoud::Wav waw_ogg;
+        waw_ogg.load(song_names[current_song]);
+        queue.play(waw_ogg);
+        current_song = 0;
     }
-    SoLoud::Queue queue;
-    int current_song = 0;
-    while (!window.ShouldClose()) {
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        window.ProcessInput();
-
-        window.Clear();
-
-        // --------ImGui--------
-        bool window_test = false;
-        ImGui::Begin("Demo window", &window_test, ImGuiWindowFlags_NoMove);
-        if(ImGui::Button("Hello!")) {
-            SoLoud::Wav waw_ogg;
-            waw_ogg.load(song_names[current_song]);
-            queue.play(waw_ogg);
-            current_song = 0;
-        }
-        if (queue.getQueueCount() < 2) {
-            
-        }
-        ImGui::End();
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        // ----------------------
+    if (queue.getQueueCount() < 2) {
         
-
-        window.Swap();
-       
     }
-
-    window.End();
+    ImGui::End();
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    // ----------------------
     
-    return 0;
+
+    window.Swap();
+     
+  }
+
+  window.End();
+  
+  return 0;
 }
 
 

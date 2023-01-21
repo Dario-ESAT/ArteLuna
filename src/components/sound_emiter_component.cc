@@ -2,20 +2,19 @@
 
 #include "components/sound_emiter_component.h"
 
+#include <cstdio>
 
-SoundEmiterComponent* SoundEmiterComponent::asSoundEmiterComponent() {
-	return this;
-}
 
-void SoundEmiterComponent::ImguiTree() {
+void SoundEmitterComponent::ImguiTree() {
 	
 }
 
-SoundEmiterComponent::SoundEmiterComponent(){
+SoundEmitterComponent::SoundEmitterComponent(){
 
 }
 
-SoundEmiterComponent::~SoundEmiterComponent() {
+SoundEmitterComponent::~SoundEmitterComponent() {
+  printf("\n SoundEmitter Comp %p", this);
 
 }
 

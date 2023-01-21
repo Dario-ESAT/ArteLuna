@@ -11,7 +11,7 @@ public:
     void Init(unsigned int vertex_,unsigned int fragment_);
     //void linkProgram(std::string link_log);
     //void attachShader();
-    void useProgram() const{
+    void Use() const{
         glUseProgram(id_);
     }
     GLuint program() const{
