@@ -95,28 +95,26 @@ void Camera::Update(float deltatime) {
     
 }
 
-void Camera::RenderScene() {
-    static EntityManager& entity_manager = EntityManager::GetManager();
-    auto render_components = entity_manager.GetComponentVector<RenderComponent>();
-    auto transform_components = entity_manager.GetComponentVector<TransformComponent>();
+void Camera::RenderScene(float aspect) {
+  static EntityManager& entity_manager = EntityManager::GetManager();
+  auto render_components = entity_manager.GetComponentVector<RenderComponent>();
+  auto transform_components = entity_manager.GetComponentVector<TransformComponent>();
 
-    transform_component_.set_transform();
-    static auto perspective = glm::perspective(90.f,1280.f/720.f,0.01f,15000.0f);
-    
-    auto view =  glm::inverse(transform_component_.transform());
-    glm::mat4x4 vp_matrix = glm::matrixCompMult(perspective,view);
+  UpdateTransform();
 
-    
+  static auto perspective = glm::perspective(fov_,aspect,0.01f,15000.0f);
+  auto view =  glm::lookAt(position_,position_ + forward_,glm::vec3(0.f,1.f,0.f));
 
-    for (uint16_t i = 1; i < entity_manager.last_id_; i++) {
-        if (render_components->at(i).has_value()) {
-            TransformComponent& transform_component = transform_components->at(i).value();
-            transform_component.set_transform();
-            RenderComponent& render_component = render_components->at(i).value();
+  glm::mat4x4 vp_matrix = perspective * view;
 
-            render_component.RenderObject(transform_component.transform(), vp_matrix);
-        }
-    }
+  for (uint16_t i = 1; i < entity_manager.last_id_; i++) {
+      if (render_components->at(i).has_value()) {
+          TransformComponent& transform_component = transform_components->at(i).value();
+          transform_component.set_transform();
+          RenderComponent& render_component = render_components->at(i).value();
+
+          render_component.RenderObject(transform_component.transform(), vp_matrix);
+      }
   }
 }
 
@@ -134,18 +132,19 @@ void Camera::MenuImgui() {
     ImGui::Text("Right: x:%f y:%f z:%f",right_.x,right_.y,right_.z);
     ImGui::Text("Up: x:%f y:%f z:%f",up_.x,up_.y,up_.z);
   ImGui::End();
+  EntityManager& e_m = EntityManager::GetManager();
+  std::vector<std::optional<TransformComponent>>* transform_components = e_m.GetComponentVector<TransformComponent>();
   
   ImGui::Begin("Entities");
-    EntityManager& e_m = EntityManager::GetManager();
     if (ImGui::TreeNode((void*)(intptr_t)0, "Root")) {
-      auto& t_comp = e_m.transform_components_[0];
+      auto& t_comp = transform_components->at(0).value();
       t_comp.ImguiTree();
       ImGui::TreePop();
     }
     
-    for (unsigned long long i = 1; i < e_m.transform_components_.size(); i++) {
+    for (unsigned long long i = 1; i < transform_components->size(); i++) {
       if (ImGui::TreeNode((void*)(intptr_t)i, "Entity %d", i)) {
-        auto& t_comp = e_m.transform_components_[i];
+        auto& t_comp = transform_components->at(i).value();
         t_comp.ImguiTree();
         ImGui::TreePop();
       }

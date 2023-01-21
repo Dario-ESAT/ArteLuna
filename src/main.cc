@@ -81,19 +81,21 @@ int main() {
   }
   
 
-  Camera camera;
   
-
+  double last_time = window.GetTime();
+  
   while (!window.ShouldClose()) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();  
-
-    window.ProcessInput();
+    double current_time = window.GetTime();
+    double deltatime = current_time - last_time;
+    last_time = current_time;
      
+    window.ProcessInput(deltatime);
     window.Clear();
 
-    camera.RenderScene();
+    window.RenderScene();
     if(window.input_->IsKeyDown(32)) {
       for (int i = 2; i < number_of_entities + 2; i++) {
         Entity* entities = manager_ref.GetEntity(i);
@@ -106,7 +108,7 @@ int main() {
       }
     }
     // --------ImGui--------
-    camera.MenuImgui();
+    window.MenuImgui();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     // ----------------------

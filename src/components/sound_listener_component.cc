@@ -10,7 +10,6 @@ SoundListenerComponent::SoundListenerComponent() {
 }
 
 SoundListenerComponent::~SoundListenerComponent() {
-  printf("\n SoundListener Comp %p", this);
 
 }
 

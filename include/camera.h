@@ -16,8 +16,6 @@ public:
 
   void MenuImgui();
 
-  void Inputs();
-
   inline glm::vec3 position() const;
   inline glm::mat4 transform_matrix() const;
   inline glm::vec3 forward() const;

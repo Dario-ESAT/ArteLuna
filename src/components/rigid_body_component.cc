@@ -12,7 +12,6 @@ RigidBodyComponent::RigidBodyComponent(){
 }
 
 RigidBodyComponent::~RigidBodyComponent() {
-  printf("\n RigidBody Comp %p", this);
 
 }
 

@@ -14,7 +14,6 @@ SoundEmitterComponent::SoundEmitterComponent(){
 }
 
 SoundEmitterComponent::~SoundEmitterComponent() {
-  printf("\n SoundEmitter Comp %p", this);
 
 }
 

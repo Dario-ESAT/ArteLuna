@@ -51,6 +51,5 @@ void RenderComponent::RenderObject(
 }
 
 RenderComponent::~RenderComponent() {
-  printf("\n Render Comp %p", this);
 }
 

@@ -54,7 +54,6 @@ TransformComponent::TransformComponent(uint16_t id) {
 }
 
 TransformComponent::~TransformComponent() {
-  printf("\n Transform Comp %p", this);
 }
 
 bool TransformComponent::dirty() const {
