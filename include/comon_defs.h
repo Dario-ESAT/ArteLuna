@@ -14,13 +14,7 @@ enum errors {
 	shader_error = -2
 };
 
-enum Component_Type {
-	Render,
-	Rigid_Body,
-	Sound_Emiter,
-	Sound_Listener,
-	Transform
-};
+
 
 
 #endif

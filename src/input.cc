@@ -11,7 +11,7 @@ Input::Input(std::vector<int> keys){
         keys_[key_] = false;
     }
 
-    Input::instances_.push_back(this);
+    instances_.push_back(this);
 }
 
 Input::~Input() {
@@ -42,8 +42,9 @@ void Input::setupKeyInputs(Window& window) {
 }
 
 void Input::callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-  for (Input* keyInput : instances_) {
-    // printf("\nk:%d s:%d a:%d m:%d", key, scancode, action, mods);
+  for(size_t i = 0; i < instances_.size(); i++) {
+    Input* keyInput = instances_[i];
+    printf("\nk:%d s:%d a:%d m:%d", key, scancode, action, mods);
     keyInput->setIsKeyDown(key, action != GLFW_RELEASE);
   }
 }

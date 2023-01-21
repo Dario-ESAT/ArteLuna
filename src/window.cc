@@ -116,12 +116,15 @@ void Window::Clear() {
 }
 
 void Window::RenderScene() {
-    camera.RenderScene();
+    camera.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
+}
+
+void Window::MenuImgui() {
+  camera.MenuImgui();
 }
 
 void Window::Swap() {
     glfwSwapBuffers(window_);
-    
 }
 
 bool Window::ShouldClose() {
@@ -134,39 +137,15 @@ void Window::End() {
 
 void Window::InputLogic() {
     
-    if (input_->IsKeyDown(Input::RIGHT) ||
-        input_->IsKeyDown(Input::D)) {
-        
-    }
-
-    if (input_->IsKeyDown(Input::LEFT) ||
-    input_->IsKeyDown(Input::W)) {
-        
-    }
-
-    if (input_->IsKeyDown(Input::UP) ||
-    input_->IsKeyDown(Input::W)) {
-        
-    }
-
-    if (input_->IsKeyDown(Input::DOWN) ||
-    input_->IsKeyDown(Input::S)) {
-        
-    }
-
-    if (input_->IsKeyDown(Input::E)) {
-        
-    }
-
-    if (input_->IsKeyDown(Input::Q)) {
-        
-    }
-    
 }
 
-void Window::ProcessInput() {
+double Window::GetTime() {
+  return glfwGetTime();
+}
+
+void Window::ProcessInput(double deltatime) {
     glfwPollEvents();
-    
+    camera.UpdateFromInput(deltatime, input_);
     InputLogic();
 }
 

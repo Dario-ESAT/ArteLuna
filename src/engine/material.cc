@@ -47,6 +47,41 @@ uniform_pos) const{
 		glUniform3f(uniform_pos, unif[0], unif[1], unif[2]);
 		break;
 
+	case GL_FLOAT_VEC4:
+		glUniform4f(uniform_pos, unif[0], unif[1], unif[2], unif[3]);
+		break;
+	case GL_INT:
+		glUniform1i(uniform_pos, unif[0]);
+		break;
+
+	case GL_INT_VEC2:
+		glUniform2i(uniform_pos, unif[0], unif[1]);
+		break;
+
+	case GL_INT_VEC3:
+		glUniform3i(uniform_pos, unif[0], unif[1], unif[2]);
+		break;
+
+	case GL_INT_VEC4:
+		glUniform4i(uniform_pos, unif[0], unif[1], unif[2], unif[3]);
+		break;
+
+	case GL_UNSIGNED_INT:
+		glUniform1ui(uniform_pos, unif[0]);
+		break;
+
+	case GL_UNSIGNED_INT_VEC2:
+		glUniform2ui(uniform_pos, unif[0], unif[1]);
+		break;
+
+	case GL_UNSIGNED_INT_VEC3:
+		glUniform3ui(uniform_pos, unif[0], unif[1], unif[2]);
+		break;
+
+	case GL_UNSIGNED_INT_VEC4:
+		glUniform4ui(uniform_pos, unif[0], unif[1], unif[2], unif[3]);
+		break;
+
 	case GL_FLOAT_MAT4:
 		glUniformMatrix4fv(uniform_pos, 1, false, unif);
 		break;

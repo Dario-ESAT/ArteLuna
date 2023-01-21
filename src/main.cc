@@ -13,7 +13,7 @@
 #include "components/transform_component.h"
 #include "components/render_component.h"
 #include "engine/entity_manager.h"
-
+#include "engine/texture.h"
 
 // -----------------------------------------------------------------------------------------------------------
 
@@ -23,8 +23,15 @@ int main() {
   Window window("Hello World");
   window.input_->setupKeyInputs(window);
 
+  
   //IMGUI_CHECKVERSION();
   ImGui::CreateContext();
+
+   //---------- Texture ---------
+  Texture t(0, Texture::Linear, Texture::Linear, Texture::T_2D, "../../data/muse.jpg", Texture::Clamp_to_edge, Texture::Clamp_to_edge, Texture::Clamp_to_edge);
+ 
+  t.SetData(Texture::UNSIGNED_BYTE, 0);
+  
   ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
   ImGui_ImplOpenGL3_Init("#version 330");
 
@@ -37,18 +44,23 @@ int main() {
   glm::vec3 scale_ = { 1.0f, 1.0f, 1.0f };
   glm::vec3 rotation_ = { 0.0f, 0.0f, 0.0f };
   
-  std::shared_ptr<Material> material = std::make_shared<Material>(vert_.get(),frag_.get());
+  std::shared_ptr<Material> material = std::make_shared<Material>(vert_.get(),
+   frag_.get());
+
   std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("../../data/models/ugandan_sonic.obj");
   std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../data/models/sponza.obj");
   EntityManager& manager_ref = EntityManager::GetManager();
   
+
   Entity& entity = manager_ref.CreateNewEntity(nullptr);
   TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
   RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
+
   transform_cmp->set_position(position_);
   transform_cmp->set_scale(scale_);
   transform_cmp->set_rotation(rotation_);
   transform_cmp->set_transform();
+
   position_.x += offset;
   render_cmp->mesh_ = mesh_sponza;
   render_cmp->material_ = material;
@@ -57,11 +69,13 @@ int main() {
     Entity& entity = manager_ref.CreateNewEntity(nullptr);
     TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
     RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
+
     transform_cmp->set_position(position_);
     transform_cmp->set_scale(scale_);
     transform_cmp->set_rotation(rotation_);
     transform_cmp->set_transform();
     render_cmp->mesh_ = mesh;
+
     render_cmp->material_ = material;
     position_.x += offset;
   }
@@ -99,7 +113,6 @@ int main() {
     
 
     window.Swap();
-     
   }
 
   window.End();
