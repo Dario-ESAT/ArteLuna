@@ -20,11 +20,7 @@
 #if 1
 
 int main() {
-  Window window("Hello World");
-  window.input_->setupKeyInputs(window);
-
-  
-  //IMGUI_CHECKVERSION();
+  Window window("Aleksander");
   ImGui::CreateContext();
 
    //---------- Texture ---------
@@ -94,7 +90,7 @@ int main() {
      
     window.ProcessInput(deltatime);
     window.Clear();
-
+    
     window.RenderScene();
     if(window.input_->IsKeyDown(32)) {
       for (int i = 2; i < number_of_entities + 2; i++) {
@@ -114,7 +110,7 @@ int main() {
     // ----------------------
     
 
-    window.Swap();
+    window.Draw();
   }
 
   window.End();

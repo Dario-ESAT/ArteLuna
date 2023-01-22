@@ -36,7 +36,7 @@ class Window{
 
   void MenuImgui();
   
-  void Swap();
+  void Draw();
 
   bool ShouldClose();
 

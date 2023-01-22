@@ -9,8 +9,8 @@ public:
   ~Camera();
   
   void UpdateFromInput(double deltatime, class Input* input);
-  void UpdateRotation(float deltatime);
-  void Update(float deltatime);
+  void UpdateRotation(double deltatime, glm::vec2 cursor_pos);
+  void Update(float deltatime, Input* input);
 
   void RenderScene(float aspect);
 
@@ -33,7 +33,6 @@ private:
   
   glm::vec3 position_;
   glm::mat4 transform_matrix_;
-
   glm::vec3 forward_;
   glm::vec3 right_;
   glm::vec3 up_;
@@ -42,6 +41,7 @@ private:
   bool is_rotating_;
   glm::mat4x4 view_matrix_;
 };
+
 glm::vec3 Camera::position() const {
   return position_;
 }

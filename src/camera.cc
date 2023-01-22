@@ -35,72 +35,94 @@ void Camera::UpdateFromInput(double deltatime, Input* input) {
   float speed = movement_speed_;
   float delta_time = (float)deltatime;
   
-  if (input->IsKeyDown(Input::LEFT_SHIFT)) {
+  if (input->IsKeyDown(LEFT_SHIFT)) {
     speed = speed * 2;
   }
 
-  if (input->IsKeyDown(Input::LEFT) ||
-    input->IsKeyDown(Input::A)) {
+  if (input->IsKeyDown(LEFT) ||
+    input->IsKeyDown(A)) {
     position_ += right_ * speed * delta_time;
   }
 
-  if (input->IsKeyDown(Input::RIGHT) ||
-    input->IsKeyDown(Input::D)) {
+  if (input->IsKeyDown(RIGHT) ||
+    input->IsKeyDown(D)) {
     position_ -= right_ * speed * delta_time;
   }
   
-  if (input->IsKeyDown(Input::UP) ||
-    input->IsKeyDown(Input::W)) {
+  if (input->IsKeyDown(UP) ||
+    input->IsKeyDown(W)) {
     position_ += (forward_) * speed * delta_time;
   }
 
-  if (input->IsKeyDown(Input::DOWN) ||
-    input->IsKeyDown(Input::S)) {
+  if (input->IsKeyDown(DOWN) ||
+    input->IsKeyDown(S)) {
     position_ -= (forward_) * speed * delta_time;
   }
 
-  if (input->IsKeyDown(Input::E)) {
+  if (input->IsKeyDown(E)) {
     position_ += up_ * speed * delta_time;
   }
 
-  if (input->IsKeyDown(Input::Q)) {
+  if (input->IsKeyDown(Q)) {
     position_ -= up_ * speed * delta_time;
   }
   
-  if (input->IsKeyDown(Input::I)) {
+  if (input->IsKeyDown(I)) {
     rotate_x_ -= turn_speed_ * delta_time;
     if (rotate_x_ < -1.5f) {
       rotate_x_ = -1.5f;
     }
   }
-  if (input->IsKeyDown(Input::K)) {
+  if (input->IsKeyDown(K)) {
     rotate_x_ += turn_speed_ * delta_time;
     if (rotate_x_ > 1.5f) {
       rotate_x_ = 1.5f;
     }
   }
-  if (input->IsKeyDown(Input::L)) {
+  if (input->IsKeyDown(L)) {
     rotate_y_ += turn_speed_ * delta_time;
   }
-  if (input->IsKeyDown(Input::J)) {
+  if (input->IsKeyDown(J)) {
     rotate_y_ -= turn_speed_ * delta_time;
+  }
+
+  if (input->IsMouseButtonDown(1)) {
+    input->setMouseMode(DISABLED);
+  }
+  else {
+    is_rotating_ = false;
+    input->setMouseMode(NORMAL);
   }
 }
 
-void Camera::UpdateRotation(float deltatime) {
-    
+void Camera::UpdateRotation(double deltatime, glm::vec2 cursor_pos) {
+  if(!is_rotating_){
+    mouse_pos_buffer_ = cursor_pos;
+    is_rotating_ = true;
+  }
+  float mouse_displacement_x = cursor_pos.x - mouse_pos_buffer_.x;
+  float mouse_displacement_y = cursor_pos.y - mouse_pos_buffer_.y;
+
+  rotate_x_ += mouse_displacement_y * turn_speed_ * static_cast<float>(deltatime);
+  if (rotate_x_ > 1.57f) {
+    rotate_x_ = 1.57f;
+  } else if (rotate_x_ < -1.57f) {
+    rotate_x_ = -1.57f;
+  }
+  rotate_y_ += mouse_displacement_x * turn_speed_ * static_cast<float>(deltatime);
+  mouse_pos_buffer_ = cursor_pos;
 }
 
-void Camera::Update(float deltatime) {
-    
+void Camera::Update(float deltatime, Input* input) {
+  UpdateFromInput(deltatime,input);
+  UpdateRotation(deltatime,input->cursor_pos());
+  UpdateTransform();
 }
 
 void Camera::RenderScene(float aspect) {
   static EntityManager& entity_manager = EntityManager::GetManager();
   auto render_components = entity_manager.GetComponentVector<RenderComponent>();
   auto transform_components = entity_manager.GetComponentVector<TransformComponent>();
-
-  UpdateTransform();
 
   static auto perspective = glm::perspective(fov_,aspect,0.01f,15000.0f);
   auto view =  glm::lookAt(position_,position_ + forward_,glm::vec3(0.f,1.f,0.f));
@@ -120,6 +142,7 @@ void Camera::RenderScene(float aspect) {
 
 void Camera::MenuImgui() {
   ImGui::Begin("Camera controls");
+    
     ImGui::Text("Position");
     ImGui::DragFloat("X##PC",&position_.x,0.1f);
     ImGui::DragFloat("Y##PC",&position_.y,0.1f);
