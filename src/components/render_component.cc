@@ -35,18 +35,21 @@ void RenderComponent::RenderObject(
 	material->set_uniform_value( glm::value_ptr(transform) ,GL_FLOAT_MAT4,uniform_pos);
 	const unsigned int uniform_pos_2 = material->get_uniform_position("u_vp_matrix");
 	material->set_uniform_value(glm::value_ptr(pers_view_matrix),GL_FLOAT_MAT4,uniform_pos_2);
-
-	// Ver como pillar info y ponerla aqui automagicamente (probablemente al�n map)
-	// for (unsigned int i = 0; i < material->uniforms_names_types_.size(); i++) {
-	// 	auto uniforms = material->uniforms_names_types_[i];
-	// 	unsigned int uniform_pos = material->get_uniform_position(
-	// 		uniforms.first.c_str());
-	// 	material->set_uniform_value(info que pasar,uniforms.second,uniform_pos);
-	// }
+  std::hash<const char*> hasher;
+	
+	for (unsigned int i = 0; i < material->uniforms_names_types_.size(); i++) {
+		auto uniforms = material->uniforms_names_types_[i];
+		int uniform_pos = material->get_uniform_position(uniforms.first.c_str());
+	  const char* name = uniforms.first.c_str();
+	  size_t hashcode = hasher(name);
+	  void* data = material->uniform_data_.at(hashcode);
+		material->set_uniform_value(data,uniforms.second,uniform_pos);
+	}
 	
 	material->program_.Use();
+  
 	glBindVertexArray(mesh_->mesh_buffer());
-	glDrawElements(GL_TRIANGLES, (GLsizei)mesh_.get()->indices_.size(),GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, (GLsizei)mesh_->indices_.size(),GL_UNSIGNED_INT, 0);
 
 }
 
