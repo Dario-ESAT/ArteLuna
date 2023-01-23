@@ -3,21 +3,19 @@
 
 #include "shader.h"
 #include "program.h"
-
-class TransformComponent;
-struct Vtx;
+#include "texture.h"
 
 class Material {
   
 public:
     Material();
-    Material(const char* vert, const char* frag);
+    Material(const char* vert, const char* frag,const char* texture_src, Texture::Filter mag_filter, Texture::Filter min_filter, Texture::Type type , Texture::Wrap ws, Texture::Wrap wt, Texture::Wrap wr);
     ~Material();
 
     Shader shader_;
     Program program_;
     std::vector<std::pair<std::string,GLenum> > uniforms_names_types_;
-    std::vector<uint8_t> texture_;
+    Texture texture_;
 
     void set_uniform_value(const float* unif, GLenum type,unsigned int uniform_pos) const;
     

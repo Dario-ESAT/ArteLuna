@@ -1,0 +1,22 @@
+{
+ "options": [
+  [
+   "imgui:shared",
+   "False"
+  ],
+  [
+   "tinyobjloader:double",
+   "False"
+  ],
+  [
+   "tinyobjloader:shared",
+   "False"
+  ]
+ ],
+ "root": {
+  "name": null,
+  "version": null,
+  "user": null,
+  "channel": null
+ }
+}

@@ -24,7 +24,7 @@ Texture::Texture(/*int d, */Filter mag_filter, Filter min_filter, Type type, cha
 	wrap_s_ = ws;
 	wrap_t_ = wt;
 	wrap_r_ = wr;
-	texture_ = stbi_load(texture_src, &width_, &height_, &channels_, 0);
+	data_ = stbi_load(texture_src, &width_, &height_, &channels_, 0);
 	//texture_ = texture_data;
 	switch (channels_) {
 	case 1:
@@ -43,7 +43,7 @@ Texture::Texture(/*int d, */Filter mag_filter, Filter min_filter, Type type, cha
 	type_ = type;
 	//if (id() != 0)
 	glGenTextures(1, &id_texture_);
-	glBindTexture(GL_TEXTURE_2D, id());
+	glBindTexture(GL_TEXTURE_2D, get_id());
 	glActiveTexture(GL_TEXTURE0);
 }
 
@@ -55,7 +55,7 @@ Texture::~Texture() {
 
 void Texture::set_texture(char* texture_src/*, int d*/, Filter mag_filter, Filter min_filter, Format format, Type type)
 {
-	texture_ = stbi_load(texture_src, &width_, &height_, &channels_, 0);
+	data_ = stbi_load(texture_src, &width_, &height_, &channels_, 0);
 	min_filter_ = min_filter;
 	mag_filter_ = mag_filter;
 	type_ = type;
@@ -78,8 +78,8 @@ void Texture::set_texture(char* texture_src/*, int d*/, Filter mag_filter, Filte
 	
 	//if (id() != 0)
 	glGenTextures(1, &id_texture_);
-	glBindTexture(GL_TEXTURE_2D, id());
-	glActiveTexture(GL_TEXTURE0 + id());
+	glBindTexture(GL_TEXTURE_2D, get_id());
+	glActiveTexture(GL_TEXTURE0 + get_id());
 }
 
 void Texture::Bind()
@@ -87,13 +87,13 @@ void Texture::Bind()
 	try {
 		switch (type_) {
 		case Type::T_1D:
-			glBindTexture(GL_TEXTURE_1D, id());
+			glBindTexture(GL_TEXTURE_1D, get_id());
 			break;
 		case Type::T_2D:
-			glBindTexture(GL_TEXTURE_2D, id());
+			glBindTexture(GL_TEXTURE_2D, get_id());
 			break;
 		case Type::T_3D:
-			glBindTexture(GL_TEXTURE_3D, id());
+			glBindTexture(GL_TEXTURE_3D, get_id());
 			break;
 		}
 	}
@@ -263,7 +263,7 @@ void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */D
 	switch (type_)
 	{
 	case T_1D:
-		glBindTexture(GL_TEXTURE_1D, id());
+		glBindTexture(GL_TEXTURE_1D, get_id());
 
 		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, mn_filter);
 		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, mg_filter);
@@ -271,11 +271,11 @@ void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */D
 		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_T, wrap_t);
 		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_R, wrap_r);
 
-		glTexImage1D(GL_TEXTURE_1D, mip_map_LOD, f, width(), 0, format_, type, texture_);
+		glTexImage1D(GL_TEXTURE_1D, mip_map_LOD, f, width(), 0, format_, type, data_);
 		glGenerateMipmap(GL_TEXTURE_1D);
 		break;
 	case T_2D:
-		glBindTexture(GL_TEXTURE_2D, id());
+		glBindTexture(GL_TEXTURE_2D, get_id());
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mn_filter);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mg_filter);
@@ -283,8 +283,8 @@ void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */D
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrap_r);
 
-		if (texture_) {
-			glTexImage2D(GL_TEXTURE_2D, mip_map_LOD, f, width(), height(), 0, f, type, texture_);
+		if (data_) {
+			glTexImage2D(GL_TEXTURE_2D, mip_map_LOD, f, width(), height(), 0, f, type, data_);
 			glGenerateMipmap(GL_TEXTURE_2D);
 		}
 		else {
@@ -292,7 +292,7 @@ void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */D
 		}
 		break;
 	case T_3D:
-		glBindTexture(GL_TEXTURE_3D, id());
+		glBindTexture(GL_TEXTURE_3D, get_id());
 
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, mn_filter);
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, mg_filter);
@@ -300,11 +300,11 @@ void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */D
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, wrap_t);
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, wrap_r);
 
-        glTexImage3D(GL_TEXTURE_3D, mip_map_LOD, f, width(), height(), depth(), 0, format_, type, texture_);
+        glTexImage3D(GL_TEXTURE_3D, mip_map_LOD, f, width(), height(), depth(), 0, format_, type, data_);
         glGenerateMipmap(GL_TEXTURE_3D);
         break;
 	default:
 		throw 86;
 	}
-	stbi_image_free(texture_);
+	stbi_image_free(data_);
 }
