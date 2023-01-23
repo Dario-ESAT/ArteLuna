@@ -10,6 +10,28 @@ Material::Material() {
 	
 }
 
+Material::Material(const char* vert, const char* frag)
+{
+	std::unique_ptr<char[]> vert_ = ReadFile(vert);
+	std::unique_ptr<char[]> frag_ = ReadFile(frag);
+	shader_.Init(vert_.get(), frag_.get());
+	program_.Init(shader_.vertex(), shader_.fragment());
+	GLint count;
+
+	GLint size; // size of the variable
+	GLenum type; // type of the variable (float, vec3 or mat4, etc)
+
+	const GLsizei bufSize = 30; // maximum name length
+	GLchar name[bufSize]; // variable name in GLSL
+	GLsizei length;
+
+	glGetProgramiv(program_.program(), GL_ACTIVE_UNIFORMS, &count);
+	for (GLint i = 0; i < count; i++) {
+		glGetActiveUniform(program_.program(), i, bufSize, &length, &size, &type, name);
+		uniforms_names_types_.emplace_back(std::string(name, length), type);
+	}
+}
+
 Material::Material(const char* vert, const char* frag,const char* texture_src, Texture::Filter mag_filter, Texture::Filter min_filter, Texture::Type t_type, Texture::Wrap ws, Texture::Wrap wt, Texture::Wrap wr) {
 	std::unique_ptr<char[]> vert_ = ReadFile(vert);
 	std::unique_ptr<char[]> frag_ = ReadFile(frag);

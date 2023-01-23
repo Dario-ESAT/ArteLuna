@@ -36,19 +36,19 @@ void RenderComponent::RenderObject(
 	const unsigned int uniform_pos_2 = material->get_uniform_position("u_vp_matrix");
 	material->set_uniform_value(glm::value_ptr(pers_view_matrix),GL_FLOAT_MAT4,uniform_pos_2);
   std::hash<const char*> hasher;
-	
+	/*
 	for (unsigned int i = 0; i < material->uniforms_names_types_.size(); i++) {
 		auto uniforms = material->uniforms_names_types_[i];
 		int uniform_pos = material->get_uniform_position(uniforms.first.c_str());
 	  const char* name = uniforms.first.c_str();
 	  size_t hashcode = hasher(name);
-	  void* data = material->uniform_data_.at(hashcode);
-		material->set_uniform_value(data,uniforms.second,uniform_pos);
+	  //void* data = material->uniform_data_.at(hashcode);
+		//material->set_uniform_value(data,uniforms.second,uniform_pos);
 	}
-	
+	*/
 	material->program_.Use();
 
-	material->texture_.Bind();
+	//material->texture_.Bind();
 	glBindVertexArray(mesh_->mesh_buffer());
 	glDrawElements(GL_TRIANGLES, (GLsizei)mesh_->indices_.size(),GL_UNSIGNED_INT, 0);
 

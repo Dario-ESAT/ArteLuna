@@ -85,7 +85,7 @@ void Texture::set_texture(char* texture_src/*, int d*/, Filter mag_filter, Filte
 void Texture::Bind()
 {
 	try {
-		glActiveTexture(GL_TEXTURE0 + get_id());
+		//glActiveTexture(GL_TEXTURE0 + get_id());
 		switch (type_) {
 		case Type::T_1D:
 			glBindTexture(GL_TEXTURE_1D, get_id());
