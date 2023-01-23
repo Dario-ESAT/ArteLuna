@@ -1,0 +1,7 @@
+[requires]
+# You may have multiple lines like the one below, if you have many dependencies.
+tinyobjloader/2.0.0-rc10
+imgui/1.89.2
+
+[generators]
+premake

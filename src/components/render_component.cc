@@ -29,7 +29,7 @@ void RenderComponent::RenderObject(
 	const glm::mat4x4& transform,
 	const glm::mat4x4& pers_view_matrix) {
 
-	const Material* material = material_.get();
+	Material* material = material_.get();
 
 	const unsigned int uniform_pos = material->get_uniform_position("u_m_matrix");
 	material->set_uniform_value( glm::value_ptr(transform) ,GL_FLOAT_MAT4,uniform_pos);
@@ -47,7 +47,8 @@ void RenderComponent::RenderObject(
 	}
 	
 	material->program_.Use();
-  
+
+	material->texture_.Bind();
 	glBindVertexArray(mesh_->mesh_buffer());
 	glDrawElements(GL_TRIANGLES, (GLsizei)mesh_->indices_.size(),GL_UNSIGNED_INT, 0);
 

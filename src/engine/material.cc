@@ -2,7 +2,7 @@
 #include "comon_defs.h"
 #include "components/transform_component.h"
 #include <memory>
-
+#include "stb_image.h"
 #include "utils.h"
 
 
@@ -10,13 +10,13 @@ Material::Material() {
 	
 }
 
-Material::Material(const char* vert, const char* frag) {
+Material::Material(const char* vert, const char* frag,const char* texture_src, Texture::Filter mag_filter, Texture::Filter min_filter, Texture::Type t_type, Texture::Wrap ws, Texture::Wrap wt, Texture::Wrap wr) {
 	std::unique_ptr<char[]> vert_ = ReadFile(vert);
 	std::unique_ptr<char[]> frag_ = ReadFile(frag);
 	shader_.Init(vert_.get(), frag_.get());
 	program_.Init(shader_.vertex(), shader_.fragment());
 	GLint count;
-
+	
 	GLint size; // size of the variable
 	GLenum type; // type of the variable (float, vec3 or mat4, etc)
 
@@ -29,6 +29,43 @@ Material::Material(const char* vert, const char* frag) {
 		glGetActiveUniform(program_.program(), i, bufSize, &length, &size, &type, name);
 		uniforms_names_types_.emplace_back(std::string(name,length),type);
 	}
+
+	// Texture
+	texture_.set_min_filter(min_filter);
+	texture_.set_mag_filter(mag_filter);
+	texture_.set_wrap_s(ws);
+	texture_.set_wrap_t(wt);
+	texture_.set_wrap_r(wr);
+	texture_.set_type(t_type);
+	int texture_width = texture_.width();
+	int texture_height = texture_.height();
+	int texture_channels = texture_.channels();
+	GLuint id_texture = texture_.get_id();
+	texture_.data_ = stbi_load(texture_src, &texture_width, &texture_height, &texture_channels, 0);
+	//texture_ = texture_data;
+	texture_.set_width(texture_width);
+	texture_.set_height(texture_height);
+	texture_.set_channels(texture_channels);
+	switch (texture_.channels()) {
+	case 1:
+		texture_.set_format(Texture::R);
+		break;
+	case 2:
+		texture_.set_format(Texture::RG);
+		break;
+	case 3:
+		texture_.set_format(Texture::RGB);
+		break;
+	case 4:
+		texture_.set_format(Texture::RGBA);
+		break;
+	}
+	texture_.set_type(t_type);
+	//if (id() != 0)
+	glGenTextures(1, &id_texture);
+	texture_.set_id(id_texture);
+	glBindTexture(GL_TEXTURE_2D, texture_.get_id());
+	glActiveTexture(GL_TEXTURE0);
 }
 
 Material::~Material() {

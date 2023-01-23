@@ -13,7 +13,6 @@
 #include "components/transform_component.h"
 #include "components/render_component.h"
 #include "engine/entity_manager.h"
-#include "engine/texture.h"
 
 // -----------------------------------------------------------------------------------------------------------
 
@@ -24,9 +23,9 @@ int main() {
   ImGui::CreateContext();
 
    //---------- Texture ---------
-  Texture t(/*0, */Texture::Linear, Texture::Linear, Texture::T_2D, "../../data/muse.jpg", Texture::Clamp_to_edge, Texture::Clamp_to_edge, Texture::Clamp_to_edge);
+  //Texture t(/*0, */Texture::Linear, Texture::Linear, Texture::T_2D, "../../data/muse.jpg", Texture::Clamp_to_edge, Texture::Clamp_to_edge, Texture::Clamp_to_edge);
  
-  t.SetData(Texture::UNSIGNED_BYTE, 0);
+ // t.SetData(Texture::UNSIGNED_BYTE, 0);
   
   ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
   ImGui_ImplOpenGL3_Init("#version 330");
@@ -41,7 +40,8 @@ int main() {
   glm::vec3 rotation_ = { 0.0f, 0.0f, 0.0f };
   
   std::shared_ptr<Material> material = std::make_shared<Material>("../../bin/vertex.glslv",
-   "../../bin/fragment.glslf");
+   "../../bin/fragment.glslf", "../../data/muse.jpg", Texture::Linear, Texture::Linear, Texture::T_2D, Texture::Clamp_to_edge,
+   Texture::Clamp_to_edge, Texture::Clamp_to_edge);
 
   std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("../../data/models/ugandan_sonic.obj");
   std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../data/models/sponza.obj");
@@ -59,6 +59,7 @@ int main() {
 
   position_.x += offset;
   render_cmp->mesh_ = mesh_sponza;
+  material->texture_.SetData(Texture::UNSIGNED_BYTE, 0);
   render_cmp->material_ = material;
   
   for (int i = 0; i < number_of_entities; i++) {
@@ -75,7 +76,7 @@ int main() {
     render_cmp->material_ = material;
     position_.x += offset;
   }
-  
+
 
   
   double last_time = window.GetTime();
