@@ -3,13 +3,17 @@
 #include "components/transform_component.h"
 #include <memory>
 
+#include "utils.h"
+
 
 Material::Material() {
 	
 }
 
-Material::Material(char* vert, char* frag) {
-	shader_.Init(vert, frag);
+Material::Material(const char* vert, const char* frag) {
+	std::unique_ptr<char[]> vert_ = ReadFile(vert);
+	std::unique_ptr<char[]> frag_ = ReadFile(frag);
+	shader_.Init(vert_.get(), frag_.get());
 	program_.Init(shader_.vertex(), shader_.fragment());
 	GLint count;
 

@@ -14,11 +14,11 @@ Texture::Texture() {
 	type_ = T_2D;
 }
 
-Texture::Texture(int d, Filter mag_filter, Filter min_filter, Type type, char* texture_src, Wrap ws, Wrap wt, Wrap wr )
+Texture::Texture(/*int d, */Filter mag_filter, Filter min_filter, Type type, char* texture_src, Wrap ws, Wrap wt, Wrap wr )
 {
 	//width_ = w;
 	//height_ = h;
-	depth_ = d;
+	//depth_ = d;
 	min_filter_ = min_filter;
 	mag_filter_ = mag_filter;
 	wrap_s_ = ws;
@@ -53,13 +53,13 @@ Texture::~Texture() {
 
 }
 
-void Texture::set_texture(char* texture_src, int d, Filter mag_filter, Filter min_filter, Format format, Type type)
+void Texture::set_texture(char* texture_src/*, int d*/, Filter mag_filter, Filter min_filter, Format format, Type type)
 {
 	texture_ = stbi_load(texture_src, &width_, &height_, &channels_, 0);
 	min_filter_ = min_filter;
 	mag_filter_ = mag_filter;
 	type_ = type;
-	depth_ = d;
+	//depth_ = d;
 
 	switch (channels_) {
 	case 1:

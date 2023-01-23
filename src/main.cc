@@ -24,15 +24,15 @@ int main() {
   ImGui::CreateContext();
 
    //---------- Texture ---------
-  Texture t(0, Texture::Linear, Texture::Linear, Texture::T_2D, "../../data/muse.jpg", Texture::Clamp_to_edge, Texture::Clamp_to_edge, Texture::Clamp_to_edge);
+  Texture t(/*0, */Texture::Linear, Texture::Linear, Texture::T_2D, "../../data/muse.jpg", Texture::Clamp_to_edge, Texture::Clamp_to_edge, Texture::Clamp_to_edge);
  
   t.SetData(Texture::UNSIGNED_BYTE, 0);
   
   ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
   ImGui_ImplOpenGL3_Init("#version 330");
 
-  std::unique_ptr<char[]> vert_ = ReadFile("../../bin/vertex.glslv");
-  std::unique_ptr<char[]> frag_ = ReadFile("../../bin/fragment.glslf");
+  //std::unique_ptr<char[]> vert_ = ReadFile("../../bin/vertex.glslv");
+  //std::unique_ptr<char[]> frag_ = ReadFile("../../bin/fragment.glslf");
   int number_of_entities = 20;
   float offset = 10.0f;
   //Entity entity;
@@ -40,8 +40,8 @@ int main() {
   glm::vec3 scale_ = { 1.0f, 1.0f, 1.0f };
   glm::vec3 rotation_ = { 0.0f, 0.0f, 0.0f };
   
-  std::shared_ptr<Material> material = std::make_shared<Material>(vert_.get(),
-   frag_.get());
+  std::shared_ptr<Material> material = std::make_shared<Material>("../../bin/vertex.glslv",
+   "../../bin/fragment.glslf");
 
   std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("../../data/models/ugandan_sonic.obj");
   std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../data/models/sponza.obj");

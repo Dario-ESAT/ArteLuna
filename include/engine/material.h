@@ -11,7 +11,7 @@ class Material {
   
 public:
     Material();
-    Material(char* vert, char* frag);
+    Material(const char* vert, const char* frag);
     ~Material();
 
     Shader shader_;

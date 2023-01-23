@@ -48,10 +48,10 @@ public:
     };
 
     Texture();
-    Texture(int d, Filter mag_filter, Filter min_filter, Type type, char* texture_src, Wrap ws, Wrap wt, Wrap wr );
+    Texture(/*int d, */Filter mag_filter, Filter min_filter, Type type, char* texture_src, Wrap ws, Wrap wt, Wrap wr );
     ~Texture();
 
-    void set_texture(char* texture_src, int d, Filter mag_filter, Filter min_filter, Format format, Type type);
+    void set_texture(char* texture_src/*, int d*/, Filter mag_filter, Filter min_filter, Format format, Type type);
     int width() { return width_; };
     int height() { return height_; };
     int depth() { return depth_; };
