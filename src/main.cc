@@ -80,7 +80,7 @@ int main() {
     window.Clear();
     
     window.RenderScene();
-    if(window.input_->IsKeyDown(32)) {
+    if(window.input_->IsKeyDown(InputKeyboard::KEY_0)) {
       for (int i = 2; i < number_of_entities + 2; i++) {
         Entity* entities = manager_ref.GetEntity(i);
         //auto& t_comp = manager_ref.transform_components_[i]; 
