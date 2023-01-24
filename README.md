@@ -25,24 +25,23 @@ Tutorial de uso del motor.
 2. Render component
 3. Transform component
 4. Inputs
+5. Controles cámara
 
-
-1 - Creación entidad
+1 ------------------------Creación entidad---------------------
 
 Comenzaremos guardando la referencia del EntityManager para poder hacer uso de su función CreateNewEntity().
 
 EntityManager& manager_ref = EntityManager::GetManager();
 Entity& entity = manager_ref.CreateNewEntity(nullptr);
 
-A la función CreateNewEntity() podremos pasarle como parametro un padre del cual será hijo nuestra entidad. Si no queremos que sea hijo de nadie tan solo tendremos
-que pasarle un nullptr.
+ Actualmente la herencia no está implementada en el motor por lo que deberemos pasarle si o si un nullptr como parámetro a la función CreateNewEntity().
 
 Con esto ya tendremos nuestra entidad creada.
 
 
 
 
-2 - Render component
+2 ------------------------Render component---------------------
 
 Crearemos un shared_ptr de la clase Material y le pasaremos los siguientes parámetros.
 
@@ -74,7 +73,7 @@ Con estos pasos habremos creado nuestro render component con un material y textu
 
 
 
-3 - Transform component
+3 ---------------------Transform component------------------------
 
 Empezamos por crear un Puntero de la clase TransformComponent que recibirá el componente TransformComponent de la entidad que deseemos mediante la función del entity manager
 get_component<TransformComponent>();
@@ -95,7 +94,7 @@ set_scale(const glm::vec3& scale)
 Con esto ya habremos conseguido transformar nuestra entidad a nuestro gusto.
 
 
-4 - Input
+4 ---------------------Input----------------------
 
 Para realizar la comprobación de Input mediante teclado tan solo debemos hacer uso de la función IsKeyDown() de la clase Input llamandola desde nuestra window ya que es
 la que tiene el contexto.
@@ -161,49 +160,57 @@ int main() {
   return 0;
 }
 
+5 -------------------Controles cámara-------------------
 
-  Filter {
-       	Linear,
-        Nearest,
-        Nearest_Mipmap_Nearest,
-        Linear_mipmap_nearest,
-        Nearest_mipmap_linear,
-        Linear_mipmap_linear
-    };
+Para poder mover la cámara con el ratón deberemos mantener pulsado el click derecho del ratón, haciendolo ya podremos mover libremente la cámara.
+Controles movimiento
+  W - Avanzar hacia adelante
+  S - Retroceder
+  D - Desplazarse a la derecha
+  A - Desplazarse a la izquierda
 
-    DataType {
-        BYTE,
-        UNSIGNED_BYTE,
-        FLOAT,
-        INT,
-        UNSIGNED_INT,
-        SHORT,
-        UNSIGNED_SHORT,
-    };
+Filter {
+    Linear,
+    Nearest,
+    Nearest_Mipmap_Nearest,
+    Linear_mipmap_nearest,
+    Nearest_mipmap_linear,
+    Linear_mipmap_linear
+}
 
-    Wrap {
-        Repeat,
-        Mirrored_repeat,
-        Clamp_to_edge,
-    };
+DataType {
+    BYTE,
+    UNSIGNED_BYTE,
+    FLOAT,
+    INT,
+    UNSIGNED_INT,
+    SHORT,
+    UNSIGNED_SHORT,
+}
 
-    Type {
-        T_Invalid = 0,
-        T_1D,
-        T_2D,
-        T_3D,
-        T_Cubemap,
-    };
+Wrap {
+    Repeat,
+    Mirrored_repeat,
+    Clamp_to_edge,
+}
 
-    Format {
-        None = 0,
-        R,
-        RG,
-        RGB,
-        RGBA,
-        Depth,
-        Depth32,
-    };
+Type {
+    T_Invalid = 0,
+    T_1D,
+    T_2D,
+    T_3D,
+    T_Cubemap,
+}
+
+Format {
+    None = 0,
+    R,
+    RG,
+    RGB,
+    RGBA,
+    Depth,
+    Depth32,
+}
 
 
 InputKeyboard
