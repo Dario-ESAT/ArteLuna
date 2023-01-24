@@ -13,7 +13,7 @@ public:
   Material(const char* vert, const char* frag);
   Material(const char* vert, const char* frag,const char* texture_src, Texture::Filter mag_filter, Texture::Filter min_filter, Texture::Type type , Texture::Wrap ws, Texture::Wrap wt, Texture::Wrap wr);
   ~Material();
-
+  
   Shader shader_;
   Program program_;
   Texture texture_;

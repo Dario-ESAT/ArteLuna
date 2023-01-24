@@ -88,8 +88,8 @@ Material::Material(const char* vert, const char* frag,const char* texture_src, T
 	//if (id() != 0)
 	glGenTextures(1, &id_texture);
 	texture_.set_id(id_texture);
-	glBindTexture(GL_TEXTURE_2D, texture_.get_id());
-	glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(GL_TEXTURE_2D, texture_.get_id());
+	//glActiveTexture(GL_TEXTURE0 + texture_.get_id());
 }
 
 Material::~Material() {

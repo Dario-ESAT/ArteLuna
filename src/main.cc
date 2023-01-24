@@ -32,6 +32,10 @@ int main() {
    "../../bin/fragment.glslf", "../../data/muse.jpg", Texture::Linear, Texture::Linear, Texture::T_2D, Texture::Clamp_to_edge,
    Texture::Clamp_to_edge, Texture::Clamp_to_edge);
 
+  std::shared_ptr<Material> material_2 = std::make_shared<Material>("../../bin/vertex.glslv",
+      "../../bin/fragment.glslf", "../../data/felis.png", Texture::Linear, Texture::Linear, Texture::T_2D, Texture::Clamp_to_edge,
+      Texture::Clamp_to_edge, Texture::Clamp_to_edge);
+
   std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("../../data/models/ugandan_sonic.obj");
   std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../data/models/sponza.obj");
   EntityManager& manager_ref = EntityManager::GetManager();
@@ -49,6 +53,8 @@ int main() {
   position_.x += offset;
   render_cmp->mesh_ = mesh_sponza;
   material->texture_.SetData(Texture::UNSIGNED_BYTE, 0);
+
+  material_2->texture_.SetData(Texture::UNSIGNED_BYTE, 0);
   render_cmp->material_ = material;
   
   for (int i = 0; i < number_of_entities; i++) {
@@ -62,7 +68,7 @@ int main() {
     transform_cmp->set_transform();
     render_cmp->mesh_ = mesh;
 
-    render_cmp->material_ = material;
+    render_cmp->material_ = material_2;
     position_.x += offset;
   }
 

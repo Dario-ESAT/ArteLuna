@@ -6,12 +6,12 @@
 #include "stb_image.h"
 
 Texture::Texture() {
-	width_ = 0;
+/*	width_ = 0;
 	height_ = 0;
 	depth_ = 0;
 	min_filter_ = Linear;
 	mag_filter_ = Linear;
-	type_ = T_2D;
+	type_ = T_2D;*/
 }
 
 Texture::Texture(/*int d, */Filter mag_filter, Filter min_filter, Type type, char* texture_src, Wrap ws, Wrap wt, Wrap wr )
@@ -44,7 +44,7 @@ Texture::Texture(/*int d, */Filter mag_filter, Filter min_filter, Type type, cha
 	//if (id() != 0)
 	glGenTextures(1, &id_texture_);
 	glBindTexture(GL_TEXTURE_2D, get_id());
-	glActiveTexture(GL_TEXTURE0);
+	//glActiveTexture(GL_TEXTURE0);
 }
 
 
@@ -79,13 +79,13 @@ void Texture::set_texture(char* texture_src/*, int d*/, Filter mag_filter, Filte
 	//if (id() != 0)
 	glGenTextures(1, &id_texture_);
 	glBindTexture(GL_TEXTURE_2D, get_id());
-	glActiveTexture(GL_TEXTURE0 + get_id());
+	//glActiveTexture(GL_TEXTURE0 + get_id());
 }
 
 void Texture::Bind()
 {
 	try {
-		//glActiveTexture(GL_TEXTURE0 + get_id());
+		
 		switch (type_) {
 		case Type::T_1D:
 			glBindTexture(GL_TEXTURE_1D, get_id());
@@ -97,6 +97,7 @@ void Texture::Bind()
 			glBindTexture(GL_TEXTURE_3D, get_id());
 			break;
 		}
+		//glActiveTexture(GL_TEXTURE0 + get_id());
 	}
 	catch (int e) {
 		if (e == 10) {
