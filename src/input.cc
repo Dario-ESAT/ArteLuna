@@ -76,7 +76,6 @@ void Input::setupInput(GLFWwindow& window) {
 
 void Input::setMouseMode(CursorMode mode) {
   glfwSetInputMode(window_ref_,GLFW_CURSOR,mode);
-
 }
 
 void Input::keyboard_callback(GLFWwindow* window, int key, int scancode,
