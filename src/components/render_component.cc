@@ -40,7 +40,7 @@ void RenderComponent::RenderObject() {
 	}
 	material->program_.Use();
 
-	//material->texture_.Bind();
+	material->texture_.Bind();
 	glBindVertexArray(mesh_->mesh_buffer());
 	glDrawElements(GL_TRIANGLES, (GLsizei)mesh_->indices_.size(),GL_UNSIGNED_INT, 0);
 

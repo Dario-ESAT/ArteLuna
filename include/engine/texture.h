@@ -74,7 +74,9 @@ public:
     void set_wrap_s(Wrap w) { wrap_s_ = w; }
     void set_wrap_t(Wrap w) { wrap_t_ = w; }
     void set_wrap_r(Wrap w) { wrap_r_ = w; }
-    void set_id(int id) { id_texture_ = id; }
+    void set_id(int id) {
+        id_texture_ = id;
+    }
     void set_width(int w) { width_ = w; }
     void set_height(int h) { height_ = h; }
     void set_channels(int c) { channels_ = c; }
