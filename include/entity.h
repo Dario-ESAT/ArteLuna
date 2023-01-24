@@ -3,35 +3,25 @@
 
 #include <optional>
 #include <vector>
-
 #include "stdint.h"
 
 // para las listas de los componentes hacerlas de std::optional<componente>
 // olvida lo de arriba y hazlo en un entity manager :)
 class Entity {
 public:
-  ~Entity();
+~Entity();
 
-  const Entity& parent() const;
-  void SetParent(Entity& p) {
-      DetachFromParent();
-      parent_ = &p;
-  }
-  void SetChild(Entity& c) {
-      DetachChild(id_);
-      children_.push_back(&c);
-  }
-  void DetachFromParent() { parent_ = EntityManager::GetManager().root_; }
+ const Entity& parent() const;
 
-  void DetachChild(uint32_t id) {
-      for (int i = 0; i < children_.size(); i++) {
-          if (children_.at(i)->id_ == id) {
-              children_.erase(children_.begin() + i);
-              children_.at(i)->DetachFromParent();
-              break;
-          }
-      }
-  }
+ void SetParent(Entity& p);
+
+  void SetChild(Entity& c);
+
+  void DetachFromParent();
+
+
+  void DetachChild(uint32_t id);
+ 
   std::vector<Entity*>& children();
   template<class T>
   void set_component(T* component);

@@ -1,8 +1,9 @@
 #include "entity.h"
 
 #include "components/render_component.h"
-#include "components/transform_component.h"
 #include "engine/entity_manager.h"
+#include "components/transform_component.h"
+
 Entity::Entity() {
 }
 
@@ -21,14 +22,31 @@ const Entity& Entity::parent() const {
 
 void Entity::SetParent(Entity& p)
 {
-   
-    
+    DetachFromParent();
     parent_ = &p;
-    
 }
 
 void Entity::SetChild(Entity& c)
 {
+    DetachChild(id_);
+    children_.push_back(&c);
+}
+
+void Entity::DetachFromParent()
+{
+    parent_ = EntityManager::GetManager().root_;
+}
+
+
+void Entity::DetachChild(uint32_t id)
+{
+    for (int i = 0; i < children_.size(); i++) {
+        if (children_.at(i)->id_ == id) {
+            children_.erase(children_.begin() + i);
+            children_.at(i)->DetachFromParent();
+            break;
+        }
+    }
 }
 
 std::vector<Entity*>& Entity::children() {
