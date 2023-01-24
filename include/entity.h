@@ -13,6 +13,25 @@ public:
   ~Entity();
 
   const Entity& parent() const;
+  void SetParent(Entity& p) {
+      DetachFromParent();
+      parent_ = &p;
+  }
+  void SetChild(Entity& c) {
+      DetachChild(id_);
+      children_.push_back(&c);
+  }
+  void DetachFromParent() { parent_ = EntityManager::GetManager().root_; }
+
+  void DetachChild(uint32_t id) {
+      for (int i = 0; i < children_.size(); i++) {
+          if (children_.at(i)->id_ == id) {
+              children_.erase(children_.begin() + i);
+              children_.at(i)->DetachFromParent();
+              break;
+          }
+      }
+  }
   std::vector<Entity*>& children();
   template<class T>
   void set_component(T* component);
