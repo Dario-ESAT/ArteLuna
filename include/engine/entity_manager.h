@@ -1,5 +1,6 @@
 #ifndef __ENTITY_MANAGER_H__
 #define __ENTITY_MANAGER_H__ 1
+#include <fwd.hpp>
 #include <map>
 #include <optional>
 #include <vector>
@@ -28,7 +29,7 @@ private:
   EntityManager();
   template<class T>
   std::vector<std::optional<T>>* GetComponentVector();
-  
+  void CleanEntities(Entity* entity, glm::mat4 transform, bool dirty);
   Entity* root_;
 
   uint16_t last_id_;

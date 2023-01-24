@@ -1,7 +1,6 @@
 #ifndef __CAMERA_H__
 #define __CAMERA_H__ 1
 
-#include "components/transform_component.h"
 #include "glm.hpp"
 class Camera {
 public:
@@ -28,6 +27,7 @@ public:
   
 private:
   void UpdateTransform();
+  
   
   float rotate_x_;
   float rotate_y_;

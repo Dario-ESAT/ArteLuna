@@ -1,6 +1,5 @@
 #include "engine/entity_manager.h"
 
-#include "entity.h"
 #include "components/transform_component.h"
 #include "components/render_component.h"
 
@@ -47,6 +46,20 @@ EntityManager::EntityManager() {
   
   root_ = &entities_.back();
   last_id_++;
+}
+
+void EntityManager::CleanEntities(Entity* entity, glm::mat4 transform, bool dirty) {
+  TransformComponent* transform_component = entity->get_component<TransformComponent>();
+  bool definitely_dirty = dirty || transform_component->dirty();
+  if (definitely_dirty) {
+    // transform_component
+    
+    
+  }
+  for (size_t i = 0; i < entity->children_.size(); i++) {
+    CleanEntities(entity->children_.at(i), 
+    transform_component->local_transform(),definitely_dirty);
+  }
 }
 
 template <class T>
