@@ -19,6 +19,18 @@ const Entity& Entity::parent() const {
     return *parent_;
 }
 
+void Entity::SetParent(Entity& p)
+{
+   
+    
+    parent_ = &p;
+    
+}
+
+void Entity::SetChild(Entity& c)
+{
+}
+
 std::vector<Entity*>& Entity::children() {
     return children_;
 }
