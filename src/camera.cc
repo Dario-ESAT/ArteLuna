@@ -8,11 +8,11 @@
 
 #include "components/render_component.h"
 #include "components/transform_component.h"
-
+#include "engine/material.h"
 
 Camera::Camera() {
-  movement_speed_ = 100.0f;
-  turn_speed_ = 1.50f;
+  movement_speed_ = 80.0f;
+  rotation_speed_ = 1.0f;
   mouse_pos_buffer_.x = 1280.f / 2.f;
   mouse_pos_buffer_.y = 720.f / 2.f;
   is_rotating_ = false;
@@ -68,22 +68,22 @@ void Camera::UpdateFromInput(double deltatime, Input* input) {
   }
   
   if (input->IsKeyDown(I)) {
-    rotate_x_ -= turn_speed_ * delta_time;
+    rotate_x_ -= rotation_speed_ * delta_time;
     if (rotate_x_ < -1.5f) {
       rotate_x_ = -1.5f;
     }
   }
   if (input->IsKeyDown(K)) {
-    rotate_x_ += turn_speed_ * delta_time;
+    rotate_x_ += rotation_speed_ * delta_time;
     if (rotate_x_ > 1.5f) {
       rotate_x_ = 1.5f;
     }
   }
   if (input->IsKeyDown(L)) {
-    rotate_y_ += turn_speed_ * delta_time;
+    rotate_y_ += rotation_speed_ * delta_time;
   }
   if (input->IsKeyDown(J)) {
-    rotate_y_ -= turn_speed_ * delta_time;
+    rotate_y_ -= rotation_speed_ * delta_time;
   }
 
   if (input->IsMouseButtonDown(1)) {
@@ -103,13 +103,13 @@ void Camera::UpdateRotation(double deltatime, glm::vec2 cursor_pos) {
   float mouse_displacement_x = cursor_pos.x - mouse_pos_buffer_.x;
   float mouse_displacement_y = cursor_pos.y - mouse_pos_buffer_.y;
 
-  rotate_x_ += mouse_displacement_y * turn_speed_ * static_cast<float>(deltatime);
+  rotate_x_ += mouse_displacement_y * rotation_speed_ * static_cast<float>(deltatime);
   if (rotate_x_ > 1.57f) {
     rotate_x_ = 1.57f;
   } else if (rotate_x_ < -1.57f) {
     rotate_x_ = -1.57f;
   }
-  rotate_y_ += mouse_displacement_x * turn_speed_ * static_cast<float>(deltatime);
+  rotate_y_ += mouse_displacement_x * rotation_speed_ * static_cast<float>(deltatime);
   mouse_pos_buffer_ = cursor_pos;
 }
 
@@ -124,19 +124,20 @@ void Camera::RenderScene(float aspect) {
   auto render_components = entity_manager.GetComponentVector<RenderComponent>();
   auto transform_components = entity_manager.GetComponentVector<TransformComponent>();
 
-  static auto perspective = glm::perspective(fov_,aspect,0.01f,15000.0f);
+  auto perspective = glm::perspective(fov_,aspect,0.01f,15000.0f);
   auto view =  glm::lookAt(position_,position_ + forward_,glm::vec3(0.f,1.f,0.f));
 
   glm::mat4x4 vp_matrix = perspective * view;
 
   for (uint16_t i = 1; i < entity_manager.last_id_; i++) {
-      if (render_components->at(i).has_value()) {
-          TransformComponent& transform_component = transform_components->at(i).value();
-          transform_component.set_transform();
-          RenderComponent& render_component = render_components->at(i).value();
-
-          render_component.RenderObject(transform_component.transform(), vp_matrix);
-      }
+    if (render_components->at(i).has_value()) {
+      TransformComponent& transform_component = transform_components->at(i).value();
+      transform_component.set_transform();
+      RenderComponent& render_component = render_components->at(i).value();
+      render_component.material_->set_uniform_data("u_m_matrix",(void*)value_ptr(transform_component.transform()));
+      render_component.material_->set_uniform_data("u_vp_matrix",(void*)value_ptr(vp_matrix));
+      render_component.RenderObject();
+    }
   }
 }
 
@@ -151,9 +152,12 @@ void Camera::MenuImgui() {
     ImGui::Text("Rotation");
     ImGui::DragFloat("X##RC",&rotate_x_,0.01f);
     ImGui::DragFloat("Y##RC",&rotate_y_,0.01f);
-    ImGui::Text("Forward: x:%f y:%f z:%f",forward_.x,forward_.y,forward_.z);
-    ImGui::Text("Right: x:%f y:%f z:%f",right_.x,right_.y,right_.z);
-    ImGui::Text("Up: x:%f y:%f z:%f",up_.x,up_.y,up_.z);
+  
+    ImGui::Text("Config");
+    // ImGui::DragFloat("FOV", &fov_);
+    ImGui::DragFloat("Movement Speed", &movement_speed_);
+    ImGui::DragFloat("Rotation Speed", &rotation_speed_);
+    
   ImGui::End();
   EntityManager& e_m = EntityManager::GetManager();
   std::vector<std::optional<TransformComponent>>* transform_components = e_m.GetComponentVector<TransformComponent>();

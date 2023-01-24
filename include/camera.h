@@ -23,14 +23,14 @@ public:
   inline glm::vec3 up() const;
 
   float movement_speed_;
-  float turn_speed_;
+  float rotation_speed_;
   float fov_;
-  float rotate_x_;
-  float rotate_y_;
   
 private:
   void UpdateTransform();
   
+  float rotate_x_;
+  float rotate_y_;
   glm::vec3 position_;
   glm::mat4 transform_matrix_;
   glm::vec3 forward_;

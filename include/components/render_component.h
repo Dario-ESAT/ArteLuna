@@ -15,10 +15,7 @@ public:
     void ImguiTree() override;
     std::shared_ptr<Mesh> mesh_;
     std::shared_ptr<Material> material_;
-    void RenderObject(
-        const glm::mat4x4& transform,
-        const glm::mat4x4& pers_view_matrix
-    );
+    void RenderObject();
     ~RenderComponent() override;
     RenderComponent();
     RenderComponent(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);

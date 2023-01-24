@@ -19,18 +19,8 @@
 
 int main() {
   Window window("Aleksander");
-  ImGui::CreateContext();
 
-   //---------- Texture ---------
-  //Texture t(/*0, */Texture::Linear, Texture::Linear, Texture::T_2D, "../../data/muse.jpg", Texture::Clamp_to_edge, Texture::Clamp_to_edge, Texture::Clamp_to_edge);
- 
- // t.SetData(Texture::UNSIGNED_BYTE, 0);
-  
-  ImGui_ImplGlfw_InitForOpenGL(window.window_,true);
-  ImGui_ImplOpenGL3_Init("#version 330");
 
-  //std::unique_ptr<char[]> vert_ = ReadFile("../../bin/vertex.glslv");
-  //std::unique_ptr<char[]> frag_ = ReadFile("../../bin/fragment.glslf");
   int number_of_entities = 20;
   float offset = 10.0f;
   //Entity entity;
@@ -81,9 +71,7 @@ int main() {
   double last_time = window.GetTime();
   
   while (!window.ShouldClose()) {
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();  
+ 
     double current_time = window.GetTime();
     double deltatime = current_time - last_time;
     last_time = current_time;
@@ -104,9 +92,7 @@ int main() {
       }
     }
     // --------ImGui--------
-    window.MenuImgui();
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
     // ----------------------
     
 

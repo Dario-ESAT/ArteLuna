@@ -1,13 +1,48 @@
 workspace "ArteLuna"
     configurations { "Debug", "Release"}
     location "../../ArteLuna"
-
+    includedirs { 
+        "../../deps/glfw-3.3.8/include",
+        "../../include",
+        "../../deps/glad2/include",
+        "../../deps/imgui",
+        "../../deps/tinyobjloader",
+        "../../deps/glm/",
+        "../../deps/stb/"
+    }
+    files {
+        "../../src/**.cc", 
+        "../../src/**.cpp", 
+        "../../include/**.h"
+    }
+project "Game"
+    dependson {"ArteLuna"}
+    architecture "x64"
+    location "../../ArteLuna/Game"
+    debugdir "../../bin/Debug"
+    kind "ConsoleApp"
+    language "C++"
+    cppdialect "C++17"
+    targetdir "../../bin/%{cfg.buildcfg}"
+    files {
+        "../../src/**.cc", 
+        "../../src/**.cpp", 
+        "../../include/**.h"
+    }
+    libdirs {
+        "../../bin/Debug",
+        "../../bin/Release"
+    }
+    links {
+        "ArteLuna.lib"
+    }
+    
 project "ArteLuna"
     dependson {"glad2","mathlib","imgui", "tinyobjloader","soloud"}
     architecture "x64"
     location "../../ArteLuna/ArteLuna"
     debugdir "../../bin/Debug"
-    kind "ConsoleApp"
+    kind "StaticLib"
     language "C++"
     cppdialect "C++17"
     targetdir "../../bin/%{cfg.buildcfg}"
@@ -16,10 +51,10 @@ project "ArteLuna"
         "../../deps/glfw-3.3.8/include",
         "../../include",
         "../../deps/glad2/include",
-        "../../deps/mathlib/include",
+        -- "../../deps/mathlib/include",
         "../../deps/imgui",
         "../../deps/tinyobjloader",
-        "../../deps/soloud/include",
+        -- "../../deps/soloud/include",
         "../../deps/glm/",
         "../../deps/stb/"
     }
@@ -29,7 +64,9 @@ project "ArteLuna"
         "../../src/**.cpp", 
         "../../include/**.h"
     }
-    
+    removefiles {
+        "../../src/**main.cc", 
+    }
     libdirs { 
         "../../deps/glfw-3.3.8/lib-vc2019",
         "../../deps/openal-1.1/libs/Win64",
@@ -38,9 +75,9 @@ project "ArteLuna"
     }
     
     links {
-        "soloud.lib",
+        -- "soloud.lib",
         "tinyobjloader.lib",
-        "mathlib.lib",
+        -- "mathlib.lib",
         "OpenAL32.lib",
         "imgui.lib",
         "glad2.lib",
@@ -144,30 +181,30 @@ project "tinyobjloader"
         "../../deps/tinyobjloader/*.h",
         }
     
-project "soloud"
-    architecture "x64"
-    location "../../ArteLuna/soloud"
-    kind "StaticLib"
-    language "C++"
-    cppdialect "C++17"
-    targetdir "../../bin/%{cfg.buildcfg}"
-	defines {"WITH_WINMM"}
+-- project "soloud"
+--     architecture "x64"
+--     location "../../ArteLuna/soloud"
+--     kind "StaticLib"
+--     language "C++"
+--     cppdialect "C++17"
+--     targetdir "../../bin/%{cfg.buildcfg}"
+-- 	defines {"WITH_WINMM"}
     
-    includedirs {
-        "../../deps/soloud/include",
-        "../../deps/soloud/backend/openal",
-        "../../deps/openal-1.1/include",
-    }
-    libdirs { 
-        "../../deps/openal-1.1/libs/Win64",
-    }
+--     includedirs {
+--         "../../deps/soloud/include",
+--         "../../deps/soloud/backend/openal",
+--         "../../deps/openal-1.1/include",
+--     }
+--     libdirs { 
+--         "../../deps/openal-1.1/libs/Win64",
+--     }
 
-    files {
-        "../../deps/soloud/src/backend/winmm/**.c",
-        "../../deps/soloud/src/backend/winmm/**.cpp",
-        "../../deps/soloud/src/audiosource/wav/**.c",
-        "../../deps/soloud/src/audiosource/wav/**.h",
-        "../../deps/soloud/src/audiosource/sfxr/*.c",
-        "../../deps/soloud/src/core/**.cpp",
-        "../../deps/soloud/include/**.h",
-    }
+--     files {
+--         "../../deps/soloud/src/backend/winmm/**.c",
+--         "../../deps/soloud/src/backend/winmm/**.cpp",
+--         "../../deps/soloud/src/audiosource/wav/**.c",
+--         "../../deps/soloud/src/audiosource/wav/**.h",
+--         "../../deps/soloud/src/audiosource/sfxr/*.c",
+--         "../../deps/soloud/src/core/**.cpp",
+--         "../../deps/soloud/include/**.h",
+--     }

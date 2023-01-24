@@ -2,8 +2,12 @@
 #include "glad/gl.h"
 #include "GLFW/glfw3.h"
 #include "window.h"
+
+#include "imgui.h"
 #include "stdio.h"
 #include "input.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
 
 Window::Window() {
     window_ = nullptr;
@@ -61,10 +65,15 @@ Window::Window(
   glfwSetWindowPos(window_, posx, posy);
   glfwMakeContextCurrent(window_);
   gladLoadGL(glfwGetProcAddress);
+  
+  ImGui::CreateContext();
+  ImGui_ImplOpenGL3_Init("#version 330");
+  ImGui_ImplGlfw_InitForOpenGL(window_,true);
 
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
   glEnable(GL_DEPTH_TEST);
+
 }
 
 Window::~Window() {
@@ -106,8 +115,11 @@ bool Window::windowed() {
 }
 
 void Window::Clear() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // glClear(GL_COLOR_BUFFER_BIT);
+  ImGui_ImplOpenGL3_NewFrame();
+  ImGui_ImplGlfw_NewFrame();
+  ImGui::NewFrame(); 
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  // glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void Window::RenderScene() {
@@ -119,6 +131,9 @@ void Window::MenuImgui() {
 }
 
 void Window::Draw() {
+  MenuImgui();
+  ImGui::Render();
+  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   glfwSwapBuffers(window_);
 }
 

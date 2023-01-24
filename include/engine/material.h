@@ -18,7 +18,7 @@ public:
   Program program_;
   Texture texture_;
 
-  void set_uniform_data(const char* name,const void* data);
+  void set_uniform_data(const char* name, void* data);
     
 private:
   std::vector<std::pair<std::string,GLenum> > uniforms_names_types_;
@@ -28,6 +28,7 @@ private:
     return glGetUniformLocation(program_.program(), name);
   }
   void set_uniform_value(const void* unif, GLenum type,int uniform_pos) const;
-
+  std::hash<std::string_view> hasher_;
+  
   friend class RenderComponent;
 };
