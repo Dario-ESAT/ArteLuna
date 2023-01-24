@@ -132,9 +132,8 @@ void Camera::RenderScene(float aspect) {
   for (uint16_t i = 1; i < entity_manager.last_id_; i++) {
     if (render_components->at(i).has_value()) {
       TransformComponent& transform_component = transform_components->at(i).value();
-      transform_component.set_transform();
       RenderComponent& render_component = render_components->at(i).value();
-      render_component.material_->set_uniform_data("u_m_matrix",(void*)value_ptr(transform_component.transform()));
+      render_component.material_->set_uniform_data("u_m_matrix",(void*)value_ptr(transform_component.local_transform()));
       render_component.material_->set_uniform_data("u_vp_matrix",(void*)value_ptr(vp_matrix));
       render_component.RenderObject();
     }

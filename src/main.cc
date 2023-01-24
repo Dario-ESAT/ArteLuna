@@ -48,7 +48,6 @@ int main() {
   transform_cmp->set_position(position_);
   transform_cmp->set_scale(scale_);
   transform_cmp->set_rotation(rotation_);
-  transform_cmp->set_transform();
 
   position_.x += offset;
   render_cmp->mesh_ = mesh_sponza;
@@ -65,7 +64,6 @@ int main() {
     transform_cmp->set_position(position_);
     transform_cmp->set_scale(scale_);
     transform_cmp->set_rotation(rotation_);
-    transform_cmp->set_transform();
     render_cmp->mesh_ = mesh;
 
     render_cmp->material_ = material_2;

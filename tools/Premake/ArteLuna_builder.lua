@@ -1,20 +1,6 @@
 workspace "ArteLuna"
     configurations { "Debug", "Release"}
     location "../../ArteLuna"
-    includedirs { 
-        "../../deps/glfw-3.3.8/include",
-        "../../include",
-        "../../deps/glad2/include",
-        "../../deps/imgui",
-        "../../deps/tinyobjloader",
-        "../../deps/glm/",
-        "../../deps/stb/"
-    }
-    files {
-        "../../src/**.cc", 
-        "../../src/**.cpp", 
-        "../../include/**.h"
-    }
 project "Game"
     dependson {"ArteLuna"}
     architecture "x64"
@@ -24,6 +10,16 @@ project "Game"
     language "C++"
     cppdialect "C++17"
     targetdir "../../bin/%{cfg.buildcfg}"
+    includedirs { 
+        "../../deps/glfw-3.3.8/include",
+        "../../include",
+        "../../deps/glad2/include",
+        "../../deps/imgui",
+        "../../deps/tinyobjloader",
+        "../../deps/glm/",
+        "../../deps/stb/"
+    }
+
     files {
         "../../src/**.cc", 
         "../../src/**.cpp", 
