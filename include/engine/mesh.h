@@ -1,8 +1,5 @@
-#include <memory>
 #include <string>
 #include <vector>
-#include "comon_defs.h"
-
 
 class Mesh {
 public:

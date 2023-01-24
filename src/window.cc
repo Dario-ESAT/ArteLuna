@@ -4,7 +4,6 @@
 #include "window.h"
 #include "stdio.h"
 #include "input.h"
-#include "comon_defs.h"
 
 Window::Window() {
     window_ = nullptr;

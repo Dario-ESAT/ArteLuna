@@ -5,8 +5,6 @@
 
 #include "component.h"
 #include "glm.hpp"
-#include "vector_3.h"
-#include "matrix_4.h"
 
 class TransformComponent : public Component{
 public:

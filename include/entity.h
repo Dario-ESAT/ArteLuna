@@ -5,8 +5,6 @@
 #include <vector>
 
 #include "stdint.h"
-#include "vector_3.h"
-#include "matrix_4.h"
 
 // para las listas de los componentes hacerlas de std::optional<componente>
 // olvida lo de arriba y hazlo en un entity manager :)
