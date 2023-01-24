@@ -16,7 +16,6 @@ EntityManager& EntityManager::GetManager() {
 Entity& EntityManager::CreateNewEntity(Entity* parent) {
   GetComponentVector<TransformComponent>()->emplace_back(TransformComponent(last_id_));
   GetComponentVector<RenderComponent>()->emplace_back(RenderComponent(last_id_));
-
   
   entities_.emplace_back(Entity(last_id_, parent == nullptr ? root_ : parent));
   
@@ -52,9 +51,8 @@ void EntityManager::CleanEntities(Entity* entity, glm::mat4 transform, bool dirt
   TransformComponent* transform_component = entity->get_component<TransformComponent>();
   bool definitely_dirty = dirty || transform_component->dirty();
   if (definitely_dirty) {
-    // transform_component
-    
-    
+    transform_component->set_local_transform(transform);
+    transform_component->set_world_transform(glm::inverse(transform));
   }
   for (size_t i = 0; i < entity->children_.size(); i++) {
     CleanEntities(entity->children_.at(i), 
@@ -70,7 +68,6 @@ std::vector<std::optional<T>>* EntityManager::GetComponentVector() {
   auto casted_comp_vector = static_cast<ComponentVector_Implementation<T>*>(comp_vector->second.get());
 
   return &casted_comp_vector->vector;
-  
 }
 
 // Pendiente para añadir junto el mapa de componentes

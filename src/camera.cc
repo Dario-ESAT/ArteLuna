@@ -123,12 +123,11 @@ void Camera::RenderScene(float aspect) {
   static EntityManager& entity_manager = EntityManager::GetManager();
   auto render_components = entity_manager.GetComponentVector<RenderComponent>();
   auto transform_components = entity_manager.GetComponentVector<TransformComponent>();
-
   auto perspective = glm::perspective(fov_,aspect,0.01f,15000.0f);
   auto view =  glm::lookAt(position_,position_ + forward_,glm::vec3(0.f,1.f,0.f));
 
   glm::mat4x4 vp_matrix = perspective * view;
-
+  
   for (uint16_t i = 1; i < entity_manager.last_id_; i++) {
     if (render_components->at(i).has_value()) {
       TransformComponent& transform_component = transform_components->at(i).value();

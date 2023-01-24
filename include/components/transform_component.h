@@ -27,9 +27,9 @@ public:
 
   TransformComponent();
   TransformComponent(uint16_t id);
-protected:
   void set_local_transform(glm::mat4x4 parent_transform);
   void set_world_transform(glm::mat4x4 inverse_parent_transform);
+private:
 
   bool dirty_;
   glm::vec3 position_;

@@ -3,11 +3,14 @@
 #include "GLFW/glfw3.h"
 #include "window.h"
 
+#include <ext/matrix_transform.hpp>
+
 #include "imgui.h"
 #include "stdio.h"
 #include "input.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
+#include "engine/entity_manager.h"
 
 Window::Window() {
     window_ = nullptr;
@@ -123,6 +126,11 @@ void Window::Clear() {
 }
 
 void Window::RenderScene() {
+  EntityManager::GetManager().CleanEntities(
+    EntityManager::GetManager().root_,
+    glm::identity<glm::mat4>(),
+    EntityManager::GetManager().root_->get_component<TransformComponent>()->dirty()
+  );
   camera.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
 }
 

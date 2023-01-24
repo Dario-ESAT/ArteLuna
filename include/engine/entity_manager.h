@@ -4,8 +4,11 @@
 #include <map>
 #include <optional>
 #include <vector>
-#include "entity.h"
 #include <memory>
+
+#include "entity.h"
+#include "components/transform_component.h"
+
 class ComponentVector {};
 template<typename T>
 class ComponentVector_Implementation : public ComponentVector{
@@ -21,10 +24,8 @@ class EntityManager {
 
   Entity& CreateNewEntity(Entity* parent = nullptr);
 
-  // Pendiente para añadir junto el mapa de componentes
-  // AddComponentToEntity(Entity& entity, T* component)
-
   Entity* GetEntity(uint16_t pos);
+  
 private:
   EntityManager();
   template<class T>
@@ -41,6 +42,8 @@ private:
   
   friend class Camera;
   friend class Entity;
+  friend class TransformComponent;
+  friend class Window;
 };
 
 
