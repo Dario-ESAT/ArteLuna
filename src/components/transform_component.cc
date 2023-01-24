@@ -30,7 +30,7 @@ void TransformComponent::ImguiTree() {
   sprintf_s(label, "Z##S%d", id_);
   ImGui::DragFloat(label,&scale_.z,0.01f);
     
-  const float* transform = glm::value_ptr(transform_);
+  const float* transform = glm::value_ptr(local_transform_);
 
   ImGui::Text("%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f",
     transform[0],transform[1],transform[2],transform[3],
@@ -38,6 +38,36 @@ void TransformComponent::ImguiTree() {
     transform[8],transform[9],transform[10],transform[11],
     transform[12],transform[13],transform[14],transform[15]
   );
+}
+
+void TransformComponent::set_position(const glm::vec3& position) {
+  position_ = position;
+  dirty_ = true;
+}
+
+void TransformComponent::set_rotation(float x, float y, float z) {
+  rotation_.x = x;
+  rotation_.y = y;
+  rotation_.z = z;
+  dirty_ = true;
+}
+
+void TransformComponent::set_scale(const glm::vec3& scale) {
+  scale_ = scale;
+  dirty_ = true;
+}
+
+void TransformComponent::set_transform() {
+  local_transform_ = glm::mat4x4(1.0f);
+  local_transform_ = glm::translate(local_transform_, position_);
+  local_transform_ = glm::scale(local_transform_, scale_);
+  local_transform_ = glm::rotate(local_transform_,rotation_.z, glm::vec3(0.0f, 0.0f, 1.0f));
+  local_transform_ = glm::rotate(local_transform_,rotation_.y, glm::vec3(0.0f, 1.0f, 0.0f));
+  local_transform_ = glm::rotate(local_transform_,rotation_.x, glm::vec3(1.0f, 0.0f, 0.0f));
+}
+
+void TransformComponent::set_transform(glm::mat4x4 transform) {
+  local_transform_ = transform;
 }
 
 
@@ -56,6 +86,7 @@ TransformComponent::TransformComponent(uint16_t id) {
 TransformComponent::~TransformComponent() {
 }
 
-bool TransformComponent::dirty() const {
-    return dirty_;
+void TransformComponent::set_rotation(const glm::vec3& rotation) {
+  rotation_ = rotation;
+  dirty_ = true;
 }
