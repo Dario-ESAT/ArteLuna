@@ -1,6 +1,6 @@
 #include "window.h"
 #include "input.h"
-#include "glad/gl.h"
+// #include "glad/gl.h"
 #include "GLFW/glfw3.h"
 
 #include "backends/imgui_impl_glfw.h"
@@ -8,7 +8,6 @@
 
 #include "entity.h"
 #include "engine/mesh.h"
-#include "utils.h"
 #include "engine/material.h"
 #include "components/transform_component.h"
 #include "components/render_component.h"

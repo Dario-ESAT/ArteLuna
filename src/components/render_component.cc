@@ -1,9 +1,8 @@
 #define GLFW_INCLUDE_NONE
 
 #include "components/render_component.h"
-#include "engine/shader.h"
 #include "engine/program.h"
-#include <GLFW/glfw3native.h>
+#include "gtc/type_ptr.hpp"
 
 #include "engine/material.h"
 #include "engine/mesh.h"
