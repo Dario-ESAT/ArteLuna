@@ -128,7 +128,7 @@ void Window::Clear() {
 void Window::RenderScene() {
   EntityManager::GetManager().CleanEntities(
     EntityManager::GetManager().root_,
-    glm::identity<glm::mat4>(),
+    glm::identity<glm::mat4x4>(),
     EntityManager::GetManager().root_->get_component<TransformComponent>()->dirty()
   );
   camera.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));

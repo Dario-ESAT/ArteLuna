@@ -41,7 +41,7 @@ EntityManager::EntityManager() {
 
   GetComponentVector<RenderComponent>()->emplace_back();
   GetComponentVector<TransformComponent>()->emplace_back(TransformComponent(last_id_));
-  entities_.emplace_back(Entity(last_id_,nullptr));
+  entities_.emplace_back(Entity());
   
   root_ = &entities_.back();
   last_id_++;

@@ -49,21 +49,24 @@ void TransformComponent::set_rotation(float x, float y, float z) {
   rotation_.x = x;
   rotation_.y = y;
   rotation_.z = z;
-  dirty_ = true;
+  dirty_ = false;
 }
 
 void TransformComponent::set_scale(const glm::vec3& scale) {
   scale_ = scale;
-  dirty_ = true;
+  dirty_ = false;
 }
 
 void TransformComponent::set_local_transform(glm::mat4x4 parent_transform) {
-  local_transform_ = parent_transform;
+  local_transform_ = glm::identity<glm::mat4x4>();
   local_transform_ = glm::translate(local_transform_, position_);
   local_transform_ = glm::scale(local_transform_, scale_);
   local_transform_ = glm::rotate(local_transform_,rotation_.z, glm::vec3(0.0f, 0.0f, 1.0f));
   local_transform_ = glm::rotate(local_transform_,rotation_.y, glm::vec3(0.0f, 1.0f, 0.0f));
   local_transform_ = glm::rotate(local_transform_,rotation_.x, glm::vec3(1.0f, 0.0f, 0.0f));
+  // local_transform_ = local_transform_ * parent_transform;
+
+  dirty_ = false;
 }
 
 void TransformComponent::set_world_transform(glm::mat4x4 inverse_parent_transform) {
@@ -72,15 +75,19 @@ void TransformComponent::set_world_transform(glm::mat4x4 inverse_parent_transfor
 
 
 TransformComponent::TransformComponent() {
-    position_ = {0.0f,0.0f,0.0f};
-    rotation_ = {0.0f,0.0f,0.0f};
-    scale_ = {1.0f,1.0f,1.0f};
-    id_ = 0;
+  position_ = {0.0f,0.0f,0.0f};
+  rotation_ = {0.0f,0.0f,0.0f};
+  scale_ = {1.0f,1.0f,1.0f};
+  id_ = 0;
+  dirty_ = true;
 }
 
 TransformComponent::TransformComponent(uint16_t id) {
-    scale_ = {1.0f,1.0f,1.0f};
-    id_ = id;
+  position_ = {0.0f,0.0f,0.0f};
+  rotation_ = {0.0f,0.0f,0.0f};
+  scale_ = {1.0f,1.0f,1.0f};
+  id_ = id;
+  dirty_ = true;
 }
 
 TransformComponent::~TransformComponent() {

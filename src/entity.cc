@@ -5,11 +5,13 @@
 #include "components/transform_component.h"
 
 Entity::Entity() {
+  id_ = 0;
+  parent_ = nullptr;
 }
 
 Entity::Entity(int id, Entity* parent){
-    id_ = id;
-    parent_ = parent;
+  id_ = id;
+  SetParent(*parent);
 }
 
 Entity::~Entity() {
