@@ -9,33 +9,43 @@
 // olvida lo de arriba y hazlo en un entity manager :)
 class Entity {
 public:
-~Entity();
+  ~Entity();
+  Entity(const Entity& other)
+    : id_(other.id_),
+      children_(other.children_),
+      parent_(other.parent_) {}
 
- const Entity& parent() const;
+  Entity(Entity&& other) noexcept
+    : id_(other.id_),
+      children_(std::move(other.children_)),
+      parent_(other.parent_) {}
 
- void SetParent(Entity& p);
+  Entity& operator=(const Entity& other);
 
-  void SetChild(Entity& c);
+  Entity& operator=(Entity&& other) noexcept;
+
+  const Entity& parent() const;
+
+  void SetParent(Entity& p);
 
   void DetachFromParent();
 
-
   void DetachChild(uint32_t id);
- 
+
   std::vector<Entity*>& children();
   template<class T>
   void set_component(T* component);
-  
+
   template<class T>
   T* get_component() {
     std::vector<std::optional<T>>* vector = EntityManager::GetManager().GetComponentVector<T>();
     std::optional<T>* component = &vector->at(id_);
-  
+
     if(component->has_value()) return &(component->value());
-  
+
     return nullptr;
   }
-  
+
   uint32_t id() const;
 
 protected:

@@ -56,7 +56,7 @@ int main() {
   material_2->texture_.SetData(Texture::UNSIGNED_BYTE, 0);
   render_cmp->material_ = material;
   
-  for (int i = 0; i < number_of_entities; i++) {
+  /*for (int i = 0; i < number_of_entities; i++) {
     Entity& entity = manager_ref.CreateNewEntity(nullptr);
     TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
     RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
@@ -68,7 +68,7 @@ int main() {
 
     render_cmp->material_ = material_2;
     position_.x += offset;
-  }
+  }*/
 
 
   
@@ -84,7 +84,7 @@ int main() {
     window.Clear();
     
     window.RenderScene();
-    if(window.input_->IsKeyDown(InputKeyboard::KEY_0)) {
+    /*if(window.input_->IsKeyDown(InputKeyboard::KEY_0)) {
       for (int i = 2; i < number_of_entities + 2; i++) {
         Entity* entities = manager_ref.GetEntity(i);
         //auto& t_comp = manager_ref.transform_components_[i]; 
@@ -94,7 +94,7 @@ int main() {
         position_aux.y = fabsf(sinf((float)glfwGetTime() * 2.f) * 10.f);
         transform_cmp->set_position(position_aux);
       }
-    }
+    }*/
     // --------ImGui--------
 
     // ----------------------

@@ -11,44 +11,60 @@ Entity::Entity() {
 
 Entity::Entity(int id, Entity* parent){
   id_ = id;
-  SetParent(*parent);
+  
+  parent_ = parent;
+  parent_->children().emplace_back(this);
 }
 
 Entity::~Entity() {
 
 }
 
+Entity& Entity::operator=(const Entity& other) {
+  if (this == &other)
+    return *this;
+  id_ = other.id_;
+  children_ = other.children_;
+  parent_ = other.parent_;
+  return *this;
+}
+
+Entity& Entity::operator=(Entity&& other) noexcept {
+  if (this == &other)
+    return *this;
+  id_ = other.id_;
+  children_ = std::move(other.children_);
+  parent_ = other.parent_;
+  return *this;
+}
+
 const Entity& Entity::parent() const {
     return *parent_;
 }
 
-void Entity::SetParent(Entity& p)
-{
-    DetachFromParent();
-    parent_ = &p;
+void Entity::SetParent(Entity& p) {
+  parent_->DetachChild(id());
+  
+  parent_ = &p;
+  parent_->children_.push_back(this);
 }
 
-void Entity::SetChild(Entity& c)
-{
-    DetachChild(id_);
-    children_.push_back(&c);
-}
-
-void Entity::DetachFromParent()
-{
-    parent_ = EntityManager::GetManager().root_;
+void Entity::DetachFromParent() {
+  parent_->DetachChild(id_);
 }
 
 
-void Entity::DetachChild(uint32_t id)
-{
+void Entity::DetachChild(uint32_t id) {
+  if (!children_.empty()) {
     for (int i = 0; i < children_.size(); i++) {
-        if (children_.at(i)->id_ == id) {
-            children_.erase(children_.begin() + i);
-            children_.at(i)->DetachFromParent();
-            break;
-        }
+      
+      if (children_.at(i)->id_ == id) {
+        children_.at(i)->DetachFromParent();
+        children_.erase(children_.begin() + i);
+        break;
+      }
     }
+  }
 }
 
 std::vector<Entity*>& Entity::children() {

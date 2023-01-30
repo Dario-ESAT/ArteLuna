@@ -126,10 +126,14 @@ void Window::Clear() {
 }
 
 void Window::RenderScene() {
-  EntityManager::GetManager().CleanEntities(
-    EntityManager::GetManager().root_,
-    glm::identity<glm::mat4x4>(),
-    EntityManager::GetManager().root_->get_component<TransformComponent>()->dirty()
+  EntityManager& em = EntityManager::GetManager();
+  Entity* root = EntityManager::GetManager().root_;
+  printf("%d",root->id());
+  TransformComponent* transform_component = root->get_component<TransformComponent>();
+  em.CleanEntities(
+    root,
+    glm::mat4x4(1.f),
+    transform_component->dirty()
   );
   camera.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
 }
