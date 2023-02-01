@@ -6,14 +6,15 @@
 
 Entity::Entity() {
   id_ = 0;
-  parent_ = nullptr;
+  parent_ = 0;
 }
 
-Entity::Entity(int id, Entity* parent){
+Entity::Entity(uint32_t id, uint32_t parent){
   id_ = id;
+  if (parent>= EntityManager::GetManager().last_id_) parent = 0;
   
   parent_ = parent;
-  parent_->children().emplace_back(this);
+  EntityManager::GetManager().GetEntity(parent_)->children().emplace_back(id_);
 }
 
 Entity::~Entity() {
@@ -39,27 +40,37 @@ Entity& Entity::operator=(Entity&& other) noexcept {
 }
 
 const Entity& Entity::parent() const {
-    return *parent_;
+    return *EntityManager::GetManager().GetEntity(parent_);
 }
 
-void Entity::SetParent(Entity& p) {
-  parent_->DetachChild(id());
+void Entity::AttachToParent(uint32_t p) {
+  if (p >= EntityManager::GetManager().last_id_) p = 0;
   
-  parent_ = &p;
-  parent_->children_.push_back(this);
+  Entity* parent = EntityManager::GetManager().GetEntity(parent_);
+  Entity* new_parent = EntityManager::GetManager().GetEntity(p);
+
+  parent->DetachChild(id());
+  
+  parent_ = p;
+  new_parent->children_.push_back(id_);
 }
 
 void Entity::DetachFromParent() {
-  parent_->DetachChild(id_);
+  EntityManager::GetManager().GetEntity(parent_)->DetachChild(id_);
+  EntityManager::GetManager().GetEntity(0)->children_.push_back(id_);
+  parent_ = 0;
 }
 
 
 void Entity::DetachChild(uint32_t id) {
+  if (id == 0 || id >= EntityManager::GetManager().last_id_) return;
+  
   if (!children_.empty()) {
     for (int i = 0; i < children_.size(); i++) {
-      
-      if (children_.at(i)->id_ == id) {
-        children_.at(i)->DetachFromParent();
+      Entity* child = EntityManager::GetManager().GetEntity(children_[i]);
+
+      if (child->id_ == id) {
+        child->parent_ = 0;
         children_.erase(children_.begin() + i);
         break;
       }
@@ -67,7 +78,7 @@ void Entity::DetachChild(uint32_t id) {
   }
 }
 
-std::vector<Entity*>& Entity::children() {
+std::vector<uint32_t>& Entity::children() {
     return children_;
 }
 

@@ -13,11 +13,11 @@ EntityManager& EntityManager::GetManager() {
   return manager;
 }
 
-Entity& EntityManager::CreateNewEntity(Entity* parent) {
+Entity& EntityManager::CreateNewEntity(uint32_t parent) {
   GetComponentVector<TransformComponent>()->emplace_back(TransformComponent(last_id_));
   GetComponentVector<RenderComponent>()->emplace_back(RenderComponent(last_id_));
   
-  entities_.emplace_back(Entity(last_id_, parent == nullptr ? root_ : parent));
+  entities_.emplace_back(Entity(last_id_, parent));
   
   Entity& new_entity = entities_.back();
   
@@ -26,7 +26,7 @@ Entity& EntityManager::CreateNewEntity(Entity* parent) {
 }
 
 
-Entity* EntityManager::GetEntity(uint16_t pos) {
+Entity* EntityManager::GetEntity(uint32_t pos) {
   if (pos >= last_id_) return nullptr;
   
   return &entities_.at(pos);
@@ -43,7 +43,6 @@ EntityManager::EntityManager() {
   GetComponentVector<TransformComponent>()->emplace_back(TransformComponent(last_id_));
   entities_.emplace_back(Entity());
   
-  root_ = &entities_.back();
   last_id_++;
 }
 
@@ -55,7 +54,7 @@ void EntityManager::CleanEntities(Entity* entity, glm::mat4 transform, bool dirt
     transform_component->set_world_transform(glm::inverse(transform));
   }
   for (size_t i = 0; i < entity->children_.size(); i++) {
-    CleanEntities(entity->children_.at(i), 
+    CleanEntities(GetEntity(entity->children_.at(i)), 
     transform_component->local_transform(),definitely_dirty);
   }
 }

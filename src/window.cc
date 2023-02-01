@@ -127,8 +127,7 @@ void Window::Clear() {
 
 void Window::RenderScene() {
   EntityManager& em = EntityManager::GetManager();
-  Entity* root = EntityManager::GetManager().root_;
-  printf("%d",root->id());
+  Entity* root = EntityManager::GetManager().GetEntity(0);
   TransformComponent* transform_component = root->get_component<TransformComponent>();
   em.CleanEntities(
     root,

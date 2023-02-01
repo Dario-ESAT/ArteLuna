@@ -26,13 +26,13 @@ public:
 
   const Entity& parent() const;
 
-  void SetParent(Entity& p);
+  void AttachToParent(uint32_t p);
 
   void DetachFromParent();
 
   void DetachChild(uint32_t id);
 
-  std::vector<Entity*>& children();
+  std::vector<uint32_t>& children();
   template<class T>
   void set_component(T* component);
 
@@ -50,11 +50,11 @@ public:
 
 protected:
   Entity();
-  Entity(int id, Entity* parent);
+  Entity(uint32_t id, uint32_t parent);
   
   uint32_t id_;
-  std::vector<Entity*> children_;
-  Entity* parent_;
+  std::vector<uint32_t> children_;
+  uint32_t parent_;
 
   friend class EntityManager;
 };

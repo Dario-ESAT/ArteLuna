@@ -22,18 +22,17 @@ class EntityManager {
 
   static EntityManager& GetManager();
 
-  Entity& CreateNewEntity(Entity* parent = nullptr);
+  Entity& CreateNewEntity(uint32_t parent = 0);
 
-  Entity* GetEntity(uint16_t pos);
+  Entity* GetEntity(uint32_t pos);
   
 private:
   EntityManager();
   template<class T>
   std::vector<std::optional<T>>* GetComponentVector();
   void CleanEntities(Entity* entity, glm::mat4 transform, bool dirty);
-  Entity* root_;
 
-  uint16_t last_id_;
+  uint32_t last_id_;
 
   std::vector<Entity> entities_;
 

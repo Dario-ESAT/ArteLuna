@@ -76,7 +76,7 @@ void TransformComponent::set_local_transform(glm::mat4x4 parent_transform) {
   local_transform_ = glm::rotate(local_transform_,rotation_.z, glm::vec3(0.0f, 0.0f, 1.0f));
   local_transform_ = glm::rotate(local_transform_,rotation_.y, glm::vec3(0.0f, 1.0f, 0.0f));
   local_transform_ = glm::rotate(local_transform_,rotation_.x, glm::vec3(1.0f, 0.0f, 0.0f));
-  // local_transform_ = local_transform_ * parent_transform;
+  local_transform_ = local_transform_ * parent_transform;
 
   dirty_ = false;
 }
