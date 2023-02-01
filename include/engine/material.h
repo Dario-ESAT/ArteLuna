@@ -1,3 +1,6 @@
+#ifndef H_MATERIAL_
+#define H_MATERIAL_ 1
+
 #include <map>
 #include <string>
 #include <vector>
@@ -32,3 +35,5 @@ private:
   
   friend class RenderComponent;
 };
+
+#endif

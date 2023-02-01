@@ -1,4 +1,5 @@
-#pragma once
+#ifndef H_GAME_INSTANCE_
+#define H_GAME_INSTANCE_ 1
 #include <vector>
 
 class GameInstance {
@@ -15,3 +16,4 @@ protected:
     ~GameInstance();
     
 };
+#endif

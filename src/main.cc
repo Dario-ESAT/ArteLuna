@@ -70,8 +70,12 @@ int main() {
      position_.x += offset;
    }
 
-
+   // Test cube
   
+   Entity& cube = manager_ref.CreateCubeEntity(entity_sponza.id());
+   
+   //cube.get_component<RenderComponent>()->material_ = material;
+   // ------
   double last_time = window.GetTime();
   
   while (!window.ShouldClose()) {

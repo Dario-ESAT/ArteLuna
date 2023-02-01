@@ -1,3 +1,6 @@
+#ifndef H_MESH_
+#define H_MESH_ 1
+
 #include <string>
 #include <vector>
 
@@ -25,3 +28,4 @@ private:
     unsigned int normals_array_;
     unsigned int indices_array_;
 };
+#endif

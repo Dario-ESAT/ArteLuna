@@ -1,8 +1,10 @@
 #include "engine/entity_manager.h"
 
+#include "engine/texture.h"
 #include "components/transform_component.h"
 #include "components/render_component.h"
-
+#include "engine/material.h"
+#include "engine/mesh.h"
 
 EntityManager::~EntityManager() {
     
@@ -23,6 +25,21 @@ Entity& EntityManager::CreateNewEntity(uint32_t parent) {
   
   last_id_++;
   return new_entity;
+}
+
+Entity& EntityManager::CreateCubeEntity(uint32_t parent)
+{
+    Entity& e = CreateNewEntity(parent);
+    
+    std::shared_ptr<Material> material = std::make_shared<Material>("../../bin/vertex.glslv",
+        "../../bin/fragment.glslf", "../../data/muse.jpg", Texture::Linear, Texture::Linear, Texture::T_2D, Texture::Clamp_to_edge,
+        Texture::Clamp_to_edge, Texture::Clamp_to_edge);
+    std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("../../data/models/ELCUBO.obj");
+    material->texture_.SetData(Texture::UNSIGNED_BYTE, 0);
+    e.get_component<RenderComponent>()->material_ = material;
+    e.get_component<RenderComponent>()->mesh_ = mesh;
+    
+    return e;
 }
 
 

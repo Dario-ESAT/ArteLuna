@@ -1,3 +1,6 @@
+#ifndef H_TEXTURE_
+#define H_TEXTURE_ 1
+
 #include <string>
 #include <vector>
 
@@ -96,3 +99,5 @@ private:
 
     unsigned int id_texture_;
 };
+
+#endif
