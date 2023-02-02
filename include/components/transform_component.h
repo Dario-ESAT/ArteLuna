@@ -26,10 +26,10 @@ public:
   bool dirty() const {return dirty_;}
 
   TransformComponent();
-  TransformComponent(uint16_t id);
-  void set_local_transform(glm::mat4x4 parent_transform);
-  void set_world_transform(glm::mat4x4 inverse_parent_transform);
+  TransformComponent(uint32_t id);
 private:
+  void update_local_transform(glm::mat4x4 inverse_parent_transform);
+  void update_world_transform(glm::mat4x4 parent_transform);
 
   bool dirty_;
   glm::vec3 position_;
@@ -38,6 +38,8 @@ private:
 
   glm::mat4x4 local_transform_;
   glm::mat4x4 world_transform_;
+
+  friend class EntityManager;
 };
 
 

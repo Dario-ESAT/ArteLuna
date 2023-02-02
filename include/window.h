@@ -52,8 +52,8 @@ class Window{
   void ProcessInput(double deltatime);
   
   private:
-  
 
+  
   Camera camera;
   int16_t width_;
   int16_t height_;

@@ -121,8 +121,8 @@ void Camera::Update(float deltatime, Input* input) {
 
 void Camera::RenderScene(float aspect) {
   static EntityManager& entity_manager = EntityManager::GetManager();
-  auto render_components = entity_manager.GetComponentVector<RenderComponent>();
-  auto transform_components = entity_manager.GetComponentVector<TransformComponent>();
+  auto* render_components = entity_manager.GetComponentVector<RenderComponent>();
+  auto* transform_components = entity_manager.GetComponentVector<TransformComponent>();
   auto perspective = glm::perspective(fov_,aspect,0.01f,15000.0f);
   auto view =  glm::lookAt(position_,position_ + forward_,glm::vec3(0.f,1.f,0.f));
 
@@ -132,8 +132,15 @@ void Camera::RenderScene(float aspect) {
     if (render_components->at(i).has_value()) {
       TransformComponent& transform_component = transform_components->at(i).value();
       RenderComponent& render_component = render_components->at(i).value();
-      render_component.material_->set_uniform_data("u_m_matrix",(void*)value_ptr(transform_component.local_transform()));
-      render_component.material_->set_uniform_data("u_vp_matrix",(void*)value_ptr(vp_matrix));
+      render_component.material_->set_uniform_data(
+        "u_m_matrix",
+        (void*)value_ptr(transform_component.world_transform())
+      );
+      render_component.material_->set_uniform_data(
+        "u_vp_matrix",
+        (void*)value_ptr(vp_matrix)
+      );
+      
       render_component.RenderObject();
     }
   }

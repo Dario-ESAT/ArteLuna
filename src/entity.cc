@@ -1,8 +1,6 @@
 #include "entity.h"
 
-#include "components/render_component.h"
 #include "engine/entity_manager.h"
-#include "components/transform_component.h"
 
 Entity::Entity() {
   id_ = 0;
@@ -14,7 +12,7 @@ Entity::Entity(uint32_t id, uint32_t parent){
   if (parent>= EntityManager::GetManager().last_id_) parent = 0;
   
   parent_ = parent;
-  EntityManager::GetManager().GetEntity(parent_)->children().emplace_back(id_);
+  EntityManager::GetManager().GetEntity(parent)->children().emplace_back(id);
 }
 
 Entity::~Entity() {
@@ -55,7 +53,16 @@ void Entity::AttachToParent(uint32_t p) {
   new_parent->children_.push_back(id_);
 }
 
-void Entity::DetachFromParent() {
+
+void Entity::DetachFromParent(
+    bool keep_worl_location,
+    bool keep_world_rotation,
+    bool keep_world_scale) {
+
+  if (keep_worl_location){
+    
+  }
+  
   EntityManager::GetManager().GetEntity(parent_)->DetachChild(id_);
   EntityManager::GetManager().GetEntity(0)->children_.push_back(id_);
   parent_ = 0;

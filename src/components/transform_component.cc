@@ -42,9 +42,18 @@ void TransformComponent::ImguiTree() {
     set_scale(scale_aux);
   }
   
-  const float* transform = glm::value_ptr(local_transform_);
+  const float* transform = glm::value_ptr(local_transform());
 
-  ImGui::Text("%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f",
+  ImGui::Text("Local Transform: \n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f",
+    transform[0],transform[1],transform[2],transform[3],
+    transform[4],transform[5],transform[6],transform[7],
+    transform[8],transform[9],transform[10],transform[11],
+    transform[12],transform[13],transform[14],transform[15]
+  );
+
+  transform = glm::value_ptr(world_transform());
+
+  ImGui::Text("World Transform: \n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f",
     transform[0],transform[1],transform[2],transform[3],
     transform[4],transform[5],transform[6],transform[7],
     transform[8],transform[9],transform[10],transform[11],
@@ -69,24 +78,26 @@ void TransformComponent::set_scale(const glm::vec3& scale) {
   dirty_ = true;
 }
 
-void TransformComponent::set_local_transform(glm::mat4x4 parent_transform) {
-  local_transform_ = glm::mat4x4(1.0f);
-  local_transform_ = glm::translate(local_transform_, position_);
-  local_transform_ = glm::scale(local_transform_, scale_);
-  local_transform_ = glm::rotate(local_transform_,rotation_.z, glm::vec3(0.0f, 0.0f, 1.0f));
-  local_transform_ = glm::rotate(local_transform_,rotation_.y, glm::vec3(0.0f, 1.0f, 0.0f));
-  local_transform_ = glm::rotate(local_transform_,rotation_.x, glm::vec3(1.0f, 0.0f, 0.0f));
-  local_transform_ = local_transform_ * parent_transform;
+void TransformComponent::update_local_transform(glm::mat4x4 inverse_parent_transform) {
+  local_transform_ = world_transform_ * inverse_parent_transform;
+}
+
+void TransformComponent::update_world_transform(glm::mat4x4 parent_transform) {
+  world_transform_ = glm::mat4x4(1.0f);
+  world_transform_ = glm::translate(world_transform_, position_);
+  world_transform_ = glm::scale(world_transform_, scale_);
+  world_transform_ = glm::rotate(world_transform_,rotation_.z, glm::vec3(0.0f, 0.0f, 1.0f));
+  world_transform_ = glm::rotate(world_transform_,rotation_.y, glm::vec3(0.0f, 1.0f, 0.0f));
+  world_transform_ = glm::rotate(world_transform_,rotation_.x, glm::vec3(1.0f, 0.0f, 0.0f));
+  world_transform_ = world_transform_ * parent_transform;
 
   dirty_ = false;
 }
 
-void TransformComponent::set_world_transform(glm::mat4x4 inverse_parent_transform) {
-  world_transform_ = local_transform_ * inverse_parent_transform;
-}
-
 
 TransformComponent::TransformComponent() {
+  local_transform_ = glm::mat4x4(1.f);
+  world_transform_ = glm::mat4x4(1.f);
   position_ = {0.0f,0.0f,0.0f};
   rotation_ = {0.0f,0.0f,0.0f};
   scale_ = {1.0f,1.0f,1.0f};
@@ -94,7 +105,9 @@ TransformComponent::TransformComponent() {
   dirty_ = true;
 }
 
-TransformComponent::TransformComponent(uint16_t id) {
+TransformComponent::TransformComponent(uint32_t id) {
+  local_transform_ = glm::mat4x4(1.f);
+  world_transform_ = glm::mat4x4(1.f);
   position_ = {0.0f,0.0f,0.0f};
   rotation_ = {0.0f,0.0f,0.0f};
   scale_ = {1.0f,1.0f,1.0f};
@@ -117,7 +130,6 @@ const glm::vec3& TransformComponent::position() const {
 const glm::vec3& TransformComponent::rotation() const {
   return rotation_;
 }
-
 
 const glm::vec3& TransformComponent::scale() const {
   return scale_;

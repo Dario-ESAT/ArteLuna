@@ -28,7 +28,10 @@ public:
 
   void AttachToParent(uint32_t p);
 
-  void DetachFromParent();
+  void DetachFromParent(
+    bool keep_worl_location = true,
+    bool keep_world_rotation = true,
+    bool keep_world_scale = true);
 
   void DetachChild(uint32_t id);
 

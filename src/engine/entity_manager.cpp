@@ -67,12 +67,12 @@ void EntityManager::CleanEntities(Entity* entity, glm::mat4 transform, bool dirt
   TransformComponent* transform_component = entity->get_component<TransformComponent>();
   bool definitely_dirty = dirty || transform_component->dirty();
   if (definitely_dirty) {
-    transform_component->set_local_transform(transform);
-    transform_component->set_world_transform(glm::inverse(transform));
+    transform_component->update_world_transform(transform);
+    transform_component->update_local_transform(glm::inverse(transform));
   }
   for (size_t i = 0; i < entity->children_.size(); i++) {
     CleanEntities(GetEntity(entity->children_.at(i)), 
-    transform_component->local_transform(),definitely_dirty);
+    transform_component->world_transform(),definitely_dirty);
   }
 }
 

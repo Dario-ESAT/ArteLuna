@@ -17,7 +17,7 @@ public:
 protected:
 
     bool enabled_;
-    uint16_t id_;
+    uint32_t id_;
     
 };
 
