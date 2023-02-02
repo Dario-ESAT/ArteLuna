@@ -39,7 +39,7 @@ Entity& Entity::operator=(Entity&& other) noexcept {
   return *this;
 }
 
-const Entity& Entity::parent() const {
+Entity& Entity::parent() const {
     return *EntityManager::GetManager().GetEntity(parent_);
 }
 

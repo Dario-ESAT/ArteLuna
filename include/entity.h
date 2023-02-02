@@ -24,7 +24,7 @@ public:
 
   Entity& operator=(Entity&& other) noexcept;
 
-  const Entity& parent() const;
+  Entity& parent() const;
 
   void AttachToParent(uint32_t p);
 
