@@ -49,6 +49,7 @@ Entity* EntityManager::GetEntity(uint32_t pos) {
 }
 
 
+
 EntityManager::EntityManager() {
   last_id_ = 0;
   mapa_vectores_[typeid(TransformComponent).hash_code()] = std::make_unique<ComponentVector_Implementation<TransformComponent> >();
