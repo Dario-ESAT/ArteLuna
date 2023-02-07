@@ -32,8 +32,7 @@ Entity& EntityManager::CreateCubeEntity(uint32_t parent)
     Entity& e = CreateNewEntity(parent);
     
     std::shared_ptr<Material> material = std::make_shared<Material>("../../bin/vertex.glslv",
-        "../../bin/fragment.glslf", "../../data/muse.jpg", Texture::Linear, Texture::Linear, Texture::T_2D, Texture::Clamp_to_edge,
-        Texture::Clamp_to_edge, Texture::Clamp_to_edge);
+        "../../bin/fragment.glslf", "../../data/muse.jpg", Texture::T_2D);
     std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("../../data/models/ELCUBO.obj");
     material->texture_.SetData(Texture::UNSIGNED_BYTE, 0);
     e.get_component<RenderComponent>()->material_ = material;
