@@ -48,7 +48,6 @@ private:
   uint32_t last_id_;
 
   std::vector<Entity> entities_;
-
   std::map<size_t, std::unique_ptr<ComponentVector> > component_map_;
 
   friend class Camera;

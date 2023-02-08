@@ -29,7 +29,8 @@ int main() {
   std::shared_ptr<Material> material_2 = std::make_shared<Material>("../../bin/vertex.glslv",
       "../../bin/fragment.glslf", "../../data/felis.png", Texture::Type::T_2D);
 
-  std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("../../data/models/ugandan_sonic.obj");
+  //std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("../../data/models/ugandan_sonic.obj");
+  std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(Mesh::Geometries::Quad);
   //mesh.MakeSphere()
   std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../data/models/sponza.obj");
   

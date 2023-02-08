@@ -45,4 +45,5 @@ private:
 // {
 //     albedo_ = albedo;
 // }
+
 #endif
