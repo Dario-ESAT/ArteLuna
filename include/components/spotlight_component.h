@@ -12,7 +12,7 @@ class Shader;
 
 class SpotLightComponent : public Component {
 public:
-    void ImguiTree() override;
+    //void ImguiTree() override;
     ~SpotLightComponent() override;
     SpotLightComponent();
     void set_hue(uint8_t color);

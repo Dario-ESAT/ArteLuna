@@ -37,12 +37,8 @@ private:
   void set_uniform_value(const void* unif, GLenum type,int uniform_pos) const;
   std::hash<std::string_view> hasher_;
   
-  uint8_t albedo_;
+  //uint8_t albedo_;
   friend class RenderComponent;
 };
 
-void Material::set_albedo(uint8_t albedo)
-{
-    albedo_ = albedo;
-}
 #endif

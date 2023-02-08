@@ -6,11 +6,19 @@
 
 class Mesh {
 public:
+    enum Geometries {
+        Cube,
+        Sphere,
+        Quad
+    };
+
     Mesh();
+    Mesh(Geometries g);
     Mesh(std::string inputfile);
     ~Mesh();
-
     
+    void ReadDefaultGeometries(std::string src);
+    void CreateDefaultQuad();
     std::vector<float> vertices_;
     std::vector<float> normal_;
     std::vector<unsigned int> indices_;

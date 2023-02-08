@@ -17,7 +17,7 @@ class LightManager {
   static LightManager& GetLightManager();
 
   
-  Entity& CreateSpotlight(uint32_t parent = 0);
+  //Entity& CreateSpotlight(uint32_t parent = 0);
 
 protected:
     std::vector<uint32_t> point_lights_;

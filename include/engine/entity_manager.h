@@ -33,7 +33,6 @@ class EntityManager {
   template<class T> std::vector<std::optional<T>>* GetComponentVector();
   
   
-  
 
 private:
   EntityManager();
@@ -42,7 +41,6 @@ private:
   uint32_t last_id_;
 
   std::vector<Entity> entities_;
-
   std::map<size_t, std::unique_ptr<ComponentVector> > component_map_;
 
   friend class Camera;
