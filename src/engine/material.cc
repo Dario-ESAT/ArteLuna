@@ -33,7 +33,9 @@ Material::Material(const char* vert, const char* frag)
 	}
 }
 
-Material::Material(const char* vert, const char* frag,const char* texture_src, Texture::Filter mag_filter, Texture::Filter min_filter, Texture::Type t_type, Texture::Wrap ws, Texture::Wrap wt, Texture::Wrap wr) {
+Material::Material(const char* vert, const char* frag, const char* texture_src, Texture::Type t_type, Texture::Filter mag_filter,
+	Texture::Filter min_filter,  Texture::Wrap ws, Texture::Wrap wt, Texture::Wrap wr) {
+
 	std::unique_ptr<char[]> vert_ = ReadFile(vert);
 	std::unique_ptr<char[]> frag_ = ReadFile(frag);
 	shader_.Init(vert_.get(), frag_.get());

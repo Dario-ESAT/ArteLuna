@@ -1,55 +1,35 @@
-#ifndef __ENTITY_MANAGER_H__
-#define __ENTITY_MANAGER_H__ 1
+#ifndef __LIGHT_MANAGER_H__
+#define __LIGHT_MANAGER_H__ 1
 #include <fwd.hpp>
 #include <map>
 #include <optional>
 #include <vector>
 #include <memory>
-#include "components/spotlight_component.h"
-
 #include "entity.h"
 #include "components/transform_component.h"
 
-class ComponentVector {};
-template<typename T>
-class ComponentVector_Implementation : public ComponentVector{
-public:
-  std::vector<std::optional<T>> vector;
-};
 
-class EntityManager {
+
+class LightManager {
   public:
-  ~EntityManager();
+  ~LightManager();
 
-  static EntityManager& GetManager();
+  static LightManager& GetLightManager();
 
-  Entity& CreateNewEntity(uint32_t parent = 0);
-
-  Entity& CreateCubeEntity(uint32_t parent = 0);
-
-  Entity* GetEntity(uint32_t pos);
-
-  template<class T> void CreateComponentVector();
-  template<class T> std::vector<std::optional<T>>* GetComponentVector();
   
-  
-  
+  Entity& CreateSpotlight(uint32_t parent = 0);
+
+protected:
+    std::vector<uint32_t> point_lights_;
+    std::vector<uint32_t> spotlights_;
+    std::vector<uint32_t> directional_lights_;
 
 private:
-  EntityManager();
-  void CleanEntities(Entity* entity, glm::mat4 transform, bool dirty);
+  LightManager();
 
-  uint32_t last_id_;
 
-  std::vector<Entity> entities_;
 
-  std::map<size_t, std::unique_ptr<ComponentVector> > component_map_;
 
-  friend class Camera;
-  friend class Entity;
-  friend class TransformComponent;
-  friend class Window;
-  friend class LightManager;
 };
 
 

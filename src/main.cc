@@ -29,14 +29,13 @@ int main() {
   glm::vec3 rotation_ = { 0.0f, 0.0f, 0.0f };
   
   std::shared_ptr<Material> material = std::make_shared<Material>("../../bin/vertex.glslv",
-   "../../bin/fragment.glslf", "../../data/muse.jpg", Texture::Linear, Texture::Linear, Texture::T_2D, Texture::Clamp_to_edge,
-   Texture::Clamp_to_edge, Texture::Clamp_to_edge);
+   "../../bin/fragment.glslf", "../../data/muse.jpg", Texture::Type::T_2D);
 
   std::shared_ptr<Material> material_2 = std::make_shared<Material>("../../bin/vertex.glslv",
-      "../../bin/fragment.glslf", "../../data/felis.png", Texture::Linear, Texture::Linear, Texture::T_2D, Texture::Clamp_to_edge,
-      Texture::Clamp_to_edge, Texture::Clamp_to_edge);
+      "../../bin/fragment.glslf", "../../data/felis.png", Texture::Type::T_2D);
 
   std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("../../data/models/ugandan_sonic.obj");
+  //mesh.MakeSphere()
   std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../data/models/sponza.obj");
   EntityManager& manager_ref = EntityManager::GetManager();
   

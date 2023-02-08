@@ -125,6 +125,7 @@ void Camera::RenderScene(float aspect) {
   auto* transform_components = entity_manager.GetComponentVector<TransformComponent>();
   auto perspective = glm::perspective(fov_,aspect,0.01f,15000.0f);
   auto view =  glm::lookAt(position_,position_ + forward_,glm::vec3(0.f,1.f,0.f));
+  //auto ortho_perspective = glm::ortho((-1280.0f / 2), (1280.0f / 2), (-720.0f / 2), (720.0f / 2), -1000.0f, 1000.0f);
 
   glm::mat4x4 vp_matrix = perspective * view;
   
