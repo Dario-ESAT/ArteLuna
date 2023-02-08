@@ -20,7 +20,7 @@ RenderComponent::RenderComponent(std::shared_ptr<Mesh> mesh, std::shared_ptr<Mat
 	material_ = material;
 }
 
-RenderComponent::RenderComponent(uint16_t id) {
+RenderComponent::RenderComponent(uint32_t id) {
 	id_ = id;
 }
 

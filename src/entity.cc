@@ -59,10 +59,16 @@ void Entity::DetachFromParent(
     bool keep_world_rotation,
     bool keep_world_scale) {
 
+  
   if (keep_worl_location){
     
   }
-  
+  if (keep_world_rotation){
+    
+  }
+  if (keep_world_scale){
+    
+  }
   EntityManager::GetManager().GetEntity(parent_)->DetachChild(id_);
   EntityManager::GetManager().GetEntity(0)->children_.push_back(id_);
   parent_ = 0;

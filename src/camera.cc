@@ -162,7 +162,8 @@ void Camera::MenuImgui() {
     // ImGui::DragFloat("FOV", &fov_);
     ImGui::DragFloat("Movement Speed", &movement_speed_);
     ImGui::DragFloat("Rotation Speed", &rotation_speed_);
-    
+    ImGui::Text("Forward x:%f y:%f z:%f",forward_.x,forward_.y,forward_.z);
+
   ImGui::End();
   EntityManager& e_m = EntityManager::GetManager();
   std::vector<std::optional<TransformComponent>>* transform_components = e_m.GetComponentVector<TransformComponent>();

@@ -27,18 +27,20 @@ class EntityManager {
   Entity& CreateCubeEntity(uint32_t parent = 0);
 
   Entity* GetEntity(uint32_t pos);
+
+  template<class T> void CreateComponentVector();
+  template<class T> std::vector<std::optional<T>>* GetComponentVector();
+  
   
 private:
   EntityManager();
-  template<class T>
-  std::vector<std::optional<T>>* GetComponentVector();
   void CleanEntities(Entity* entity, glm::mat4 transform, bool dirty);
 
   uint32_t last_id_;
 
   std::vector<Entity> entities_;
 
-  std::map<size_t, std::unique_ptr<ComponentVector> > mapa_vectores_;
+  std::map<size_t, std::unique_ptr<ComponentVector> > component_map_;
 
   
   friend class Camera;

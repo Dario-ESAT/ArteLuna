@@ -19,7 +19,7 @@ public:
     ~RenderComponent() override;
     RenderComponent();
     RenderComponent(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
-    RenderComponent(uint16_t id);
+    RenderComponent(uint32_t id);
 protected:
 };
 

@@ -56,26 +56,26 @@ int main() {
   material_2->texture_.SetData(Texture::UNSIGNED_BYTE, 0);
   render_cmp->material_ = material;
   
-   for (int i = 0; i < number_of_entities; i++) {
-     Entity& entity = manager_ref.CreateNewEntity(entity_sponza.id());
-     TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
-     RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
+  for (int i = 0; i < number_of_entities; i++) {
+   Entity& entity = manager_ref.CreateNewEntity(entity_sponza.id());
+   TransformComponent* transform_cmp = entity.get_component<TransformComponent>();
+   RenderComponent* render_cmp =  entity.get_component<RenderComponent>();
 
-     transform_cmp->set_position(position_);
-     transform_cmp->set_scale(scale_);
-     transform_cmp->set_rotation(rotation_);
-     render_cmp->mesh_ = mesh;
+   transform_cmp->set_position(position_);
+   transform_cmp->set_scale(scale_);
+   transform_cmp->set_rotation(rotation_);
+   render_cmp->mesh_ = mesh;
 
-     render_cmp->material_ = material_2;
-     position_.x += offset;
-   }
+   render_cmp->material_ = material_2;
+   position_.x += offset;
+  }
 
-   // Test cube
+  // Test cube
   
-   Entity& cube = manager_ref.CreateCubeEntity(entity_sponza.id());
+  Entity& cube = manager_ref.CreateCubeEntity(entity_sponza.id());
    
-   //cube.get_component<RenderComponent>()->material_ = material;
-   // ------
+  //cube.get_component<RenderComponent>()->material_ = material;
+  // ------
   double last_time = window.GetTime();
   
   while (!window.ShouldClose()) {
