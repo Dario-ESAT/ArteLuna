@@ -9,7 +9,7 @@ public:
   
   void UpdateFromInput(double deltatime, class Input* input);
   void UpdateRotation(double deltatime, glm::vec2 cursor_pos);
-  void Update(float deltatime, Input* input);
+  void Update(double deltatime, Input* input);
 
   void RenderScene(float aspect);
 

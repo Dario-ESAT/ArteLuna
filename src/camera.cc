@@ -113,7 +113,7 @@ void Camera::UpdateRotation(double deltatime, glm::vec2 cursor_pos) {
   mouse_pos_buffer_ = cursor_pos;
 }
 
-void Camera::Update(float deltatime, Input* input) {
+void Camera::Update(double deltatime, Input* input) {
   UpdateFromInput(deltatime,input);
   UpdateRotation(deltatime,input->cursor_pos());
   UpdateTransform();

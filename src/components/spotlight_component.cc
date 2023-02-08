@@ -7,6 +7,11 @@
 #include "engine/material.h"
 #include "engine/mesh.h"
 
+void SpotLightComponent::ImguiTree() {
+  Component::ImguiTree();
+  
+}
+
 SpotLightComponent::~SpotLightComponent()
 {
 }

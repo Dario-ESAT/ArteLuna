@@ -37,8 +37,15 @@ public:
 
   std::vector<uint32_t>& children();
   template<class T>
-  void set_component(T* component);
+  void add_component() {
+    std::vector<std::optional<T>>* vector = EntityManager::GetManager().GetComponentVector<T>();
+    std::optional<T>* component = &vector->at(id_);
 
+    if(!component->has_value()){
+      component->emplace(T());
+    }
+  }
+  
   template<class T>
   T* get_component() {
     std::vector<std::optional<T>>* vector = EntityManager::GetManager().GetComponentVector<T>();

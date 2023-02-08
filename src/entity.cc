@@ -99,7 +99,4 @@ uint32_t Entity::id() const {
     return id_;
 }
 
-template <class T>
-void Entity::set_component(T* component) {
-    EntityManager::GetManager();
-}
+

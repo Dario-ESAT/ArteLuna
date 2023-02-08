@@ -19,20 +19,13 @@ LightManager& LightManager::GetLightManager() {
 
 Entity& LightManager::CreateSpotlight(uint32_t parent)
 {
-   /* EntityManager& em = EntityManager::GetManager();
+    EntityManager& em = EntityManager::GetManager();
     Entity& light = em.CreateNewEntity(parent);
 
-
-    em.GetComponentVector<TransformComponent>()->emplace_back(TransformComponent(light.id()));
+  
     //em.GetComponentVector<SpotLightComponent>()->emplace_back(SpotLightComponent(light.id()));
 
-    
-    //entities_.emplace_back(Entity(last_id_, parent));
-
-    Entity& new_entity = entities_.back();
-
-    last_id_++;*/
-    //return new_entity;
+    return light;
 }
 
 
@@ -40,9 +33,3 @@ Entity& LightManager::CreateSpotlight(uint32_t parent)
 LightManager::LightManager() {
 
 }
-
-
-
-// Pendiente para añadir junto el mapa de componentes
-// template <class T>
-// void EntityManager::AddComponentToEntity(Entity& entity, T* component) {}

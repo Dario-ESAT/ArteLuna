@@ -5,11 +5,6 @@
 #include "component.h"
 #include "glm.hpp"
 
-class Mesh;
-class Material;
-class program;
-class Shader;
-
 class SpotLightComponent : public Component {
 public:
     void ImguiTree() override;

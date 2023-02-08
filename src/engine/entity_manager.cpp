@@ -16,18 +16,14 @@ EntityManager& EntityManager::GetManager() {
 }
 
 Entity& EntityManager::CreateNewEntity(uint32_t parent) {
-  GetComponentVector<TransformComponent>()->emplace_back(TransformComponent(last_id_));
-  GetComponentVector<RenderComponent>()->emplace_back(RenderComponent(last_id_));
-  // for (std::map<size_t, std::unique_ptr<ComponentVector> >::iterator it=component_map_.begin(); it!=component_map_.end(); ++it){
-  //   std::unique_ptr<ComponentVector_Implementation<Component> >* vector = 
-  //   reinterpret_cast<std::unique_ptr<ComponentVector_Implementation<Component
-  //   > >* > (it->second);
-  //   vector->emplace_back(std::nullopt);
-  // }
+  for (std::map<size_t, std::unique_ptr<ComponentVector> >::iterator it=component_map_.begin(); it!=component_map_.end(); ++it){
+    it->second->Grow();
+  }
+  
   entities_.emplace_back(Entity(last_id_, parent));
-  
   Entity& new_entity = entities_.back();
-  
+  new_entity.add_component<TransformComponent>();
+  new_entity.add_component<RenderComponent>();
   last_id_++;
   return new_entity;
 }
@@ -81,31 +77,7 @@ void EntityManager::CleanEntities(Entity* entity, glm::mat4 transform, bool dirt
   }
 }
 
-template <class T>
-void EntityManager::CreateComponentVector() {
-  auto component_vector = GetComponentVector<T>();
-  if (component_vector->empty()){
-    size_t index = typeid(T).hash_code();
-    component_map_[index] = std::make_unique<ComponentVector_Implementation<T> >();
-    std::vector<std::optional<T>>* vector = GetComponentVector<T>();
 
-    for (int i = 0; i < last_id_; ++i){
-      vector->emplace_back({});
-    }
-    
-  }
-  
-}
-
-template <class T>
-std::vector<std::optional<T>>* EntityManager::GetComponentVector() {
-  auto comp_vector = component_map_.find(typeid(T).hash_code());
-  if (comp_vector == component_map_.end()) return nullptr;
-  
-  auto casted_comp_vector = static_cast<ComponentVector_Implementation<T>*>(comp_vector->second.get());
-
-  return &casted_comp_vector->vector;
-}
 
 // Pendiente para añadir junto el mapa de componentes
 // template <class T>

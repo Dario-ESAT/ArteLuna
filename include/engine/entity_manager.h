@@ -10,10 +10,16 @@
 #include "entity.h"
 #include "components/transform_component.h"
 
-class ComponentVector {};
+class ComponentVector{
+public:
+  virtual void Grow() = 0;
+};
 template<typename T>
 class ComponentVector_Implementation : public ComponentVector{
 public:
+  void Grow() override {
+    vector.emplace_back(std::nullopt);
+  }
   std::vector<std::optional<T>> vector;
 };
 
@@ -28,12 +34,12 @@ class EntityManager {
   Entity& CreateCubeEntity(uint32_t parent = 0);
 
   Entity* GetEntity(uint32_t pos);
+  
+  template<class T>
+  __forceinline std::vector<std::optional<T>>* GetComponentVector();
 
-  template<class T> void CreateComponentVector();
-  template<class T> std::vector<std::optional<T>>* GetComponentVector();
-  
-  
-  
+  template<class T>
+  __forceinline void CreateComponentVector();
 
 private:
   EntityManager();
@@ -52,73 +58,30 @@ private:
   friend class LightManager;
 };
 
+template <class T>
+std::vector<std::optional<T>>* EntityManager::GetComponentVector() {
+  auto comp_vector = component_map_.find(typeid(T).hash_code());
+  if (comp_vector == component_map_.end()) return nullptr;
+  
+  auto casted_comp_vector = static_cast<ComponentVector_Implementation<T>*>(comp_vector->second.get());
 
+  return &casted_comp_vector->vector;
+}
+
+template <class T>
+void EntityManager::CreateComponentVector() {
+  auto component_vector = component_map_.find(typeid(T).hash_code());
+  if (component_vector != component_map_.end()) return;
+    
+  size_t index = typeid(T).hash_code();
+  component_map_[index] = std::make_unique<ComponentVector_Implementation<T> >();
+  std::vector<std::optional<T>>* vector = GetComponentVector<T>();
+
+  for (int i = 0; i < last_id_; ++i){
+    vector->emplace_back(std::nullopt);
+  }
+  
+}
 
 
 #endif
-
-/*
-#include <vector> 
-#include <algorithm> 
-
-class IServiceA {};
-class IServiceB {};
-class IServiceC {};
-
-struct ServiceHolder {
-    size_t type;
-    void* ptr;
-    int operator<=>(const ServiceHolder& other) const {
-        return static_cast<int>(type - other.type);
-    }
-};
-
-
-class ServiceLocator {
-public:
-
-    template<typename T> void Add(T* service) {
-        service_list_.emplace_back(typeid(T).hash_code(), service);
-        std::sort(service_list_.begin(), service_list_.end());
-    }
-
-    template<typename T> T& Get(){
-        auto hash = typeid(T).hash_code();
-        auto result = stf::lower_bound(service_list_.begin(), service_list_.end(), ServiceHolder{ hash,nullptr })
-        if(result == service_list_.end() || result->type != hash){
-            return nullptr();
-        }else{
-            return static_cast<T*>(result->ptr);
-        }
-    }
-
-private:
-
-    std::vector<template<typename Type>> service_list_;
-
-    IServiceA* a_ = nullptr;
-    IServiceB* b_ = nullptr;
-    IServiceC* c_ = nullptr;
-    
-
-};
-
-class ClaseUsuario {
-public:
-    ClaseUsuario(ServiceLocator& sl) : sl_{ sl } {
-        sl_.Get<IServiceA>(); 
-    }
-private:
-    ServiceLocator& sl_;
-};
-
-int main(int, char**){
-
-    ServiceLocator sl;
-    IServiceA a;
-    sl.Add<ServiceA>(a);
-    ClaseUsuario user(sl);
-
-    return 0;
-}
-*/
