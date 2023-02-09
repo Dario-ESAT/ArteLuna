@@ -23,16 +23,16 @@ int main() {
   glm::vec3 scale_ = { 1.0f, 1.0f, 1.0f };
   glm::vec3 rotation_ = { 0.0f, 0.0f, 0.0f };
   
-  std::shared_ptr<Material> material = std::make_shared<Material>("../../bin/vertex.glslv",
-   "../../bin/fragment.glslf", "../../data/muse.jpg", Texture::Type::T_2D);
+  std::shared_ptr<Material> material = std::make_shared<Material>("../../deps/arteluna/bin/vertex.glslv",
+   "../../deps/arteluna/bin/fragment.glslf", "../../deps/arteluna/data/muse.jpg", Texture::Type::T_2D);
 
-  std::shared_ptr<Material> material_2 = std::make_shared<Material>("../../bin/vertex.glslv",
-      "../../bin/fragment.glslf", "../../data/felis.png", Texture::Type::T_2D);
+  std::shared_ptr<Material> material_2 = std::make_shared<Material>("../../deps/arteluna/bin/vertex.glslv",
+      "../../deps/arteluna/bin/fragment.glslf", "../../deps/arteluna/data/felis.png", Texture::Type::T_2D);
 
   //std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("../../data/models/ugandan_sonic.obj");
   std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(Mesh::Geometries::Quad);
   //mesh.MakeSphere()
-  std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../data/models/sponza.obj");
+  std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../deps/arteluna/data/models/sponza.obj");
   
 
   Entity& entity_sponza = manager_ref.CreateNewEntity();
