@@ -10,7 +10,7 @@ class Mesh;
 class RigidBodyComponent : public Component {
 public:
   virtual ~RigidBodyComponent();
-  void ImguiTree() override;
+  void ImguiTree(uint32_t id) override;
     
   std::shared_ptr<Mesh> meshComponent_;
   

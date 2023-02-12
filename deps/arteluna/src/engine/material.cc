@@ -55,6 +55,8 @@ Material::Material(const char* vert, const char* frag, const char* texture_src, 
 		uniforms_names_types_.emplace_back(std::string(name,length),type);
 	  set_uniform_data(name,nullptr);
 	}
+  float a = 1.0f;
+  set_uniform_data("color",(void*)&a);
 
 	// Texture
 	texture_.set_min_filter(min_filter);
@@ -92,6 +94,7 @@ Material::Material(const char* vert, const char* frag, const char* texture_src, 
 	texture_.set_id(id_texture);
 	//glBindTexture(GL_TEXTURE_2D, texture_.get_id());
 	//glActiveTexture(GL_TEXTURE0 + texture_.get_id());
+  texture_.SetData(Texture::UNSIGNED_BYTE, 0);
 }
 
 Material::~Material() {

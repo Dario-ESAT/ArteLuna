@@ -5,7 +5,7 @@
 #include <cstdio>
 
 
-void SoundEmitterComponent::ImguiTree() {
+void SoundEmitterComponent::ImguiTree(uint32_t id) {
 	
 }
 

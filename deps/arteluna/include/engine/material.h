@@ -25,7 +25,7 @@ public:
   Texture texture_;
   // void set_albedo(uint8_t albedo);
   void set_uniform_data(const char* name, void* data);
-    
+
 private:
   std::vector<std::pair<std::string,GLenum> > uniforms_names_types_;
   std::map<size_t,void*> uniform_data_;

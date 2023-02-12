@@ -4,15 +4,15 @@
 
 #include "imgui.h"
 
-void TransformComponent::ImguiTree() {
+void TransformComponent::ImguiTree(uint32_t id) {
   char label[10] = {'\n'};
   glm::vec3 pos_aux = position_;
   ImGui::Text("Transform");
-  sprintf_s(label, "X##P%d", id_);
+  sprintf_s(label, "X##P%d", id);
   ImGui::DragFloat(label,&pos_aux.x,0.1f);
-  sprintf_s(label, "Y##P%d", id_);
+  sprintf_s(label, "Y##P%d", id);
   ImGui::DragFloat(label,&pos_aux.y,0.1f);
-  sprintf_s(label, "Z##P%d", id_);
+  sprintf_s(label, "Z##P%d", id);
   ImGui::DragFloat(label,&pos_aux.z,0.1f);
   if (pos_aux != position_) {
     set_position(pos_aux);
@@ -20,11 +20,11 @@ void TransformComponent::ImguiTree() {
   
   glm::vec3 rot_aux = rotation_;
   ImGui::Text("Rotation");
-  sprintf_s(label, "X##R%d", id_);
+  sprintf_s(label, "X##R%d", id);
   ImGui::DragFloat(label,&rot_aux.x,0.01f);
-  sprintf_s(label, "Y##R%d", id_);
+  sprintf_s(label, "Y##R%d", id);
   ImGui::DragFloat(label,&rot_aux.y,0.01f);
-  sprintf_s(label, "Z##R%d", id_);
+  sprintf_s(label, "Z##R%d", id);
   ImGui::DragFloat(label,&rot_aux.z,0.01f);
   if (rot_aux != rotation_) {
     set_rotation(rot_aux);
@@ -32,11 +32,11 @@ void TransformComponent::ImguiTree() {
 
   glm::vec3 scale_aux = scale_;
   ImGui::Text("Scale");
-  sprintf_s(label, "X##S%d", id_);
+  sprintf_s(label, "X##S%d", id);
   ImGui::DragFloat(label,&scale_aux.x,0.01f);
-  sprintf_s(label, "Y##S%d", id_);
+  sprintf_s(label, "Y##S%d", id);
   ImGui::DragFloat(label,&scale_aux.y,0.01f);
-  sprintf_s(label, "Z##S%d", id_);
+  sprintf_s(label, "Z##S%d", id);
   ImGui::DragFloat(label,&scale_aux.z,0.01f);
   if (scale_aux != scale_) {
     set_scale(scale_aux);
@@ -94,24 +94,12 @@ void TransformComponent::update_world_transform(glm::mat4x4 parent_transform) {
   dirty_ = false;
 }
 
-
 TransformComponent::TransformComponent() {
   local_transform_ = glm::mat4x4(1.f);
   world_transform_ = glm::mat4x4(1.f);
   position_ = {0.0f,0.0f,0.0f};
   rotation_ = {0.0f,0.0f,0.0f};
   scale_ = {1.0f,1.0f,1.0f};
-  id_ = 0;
-  dirty_ = true;
-}
-
-TransformComponent::TransformComponent(uint32_t id) {
-  local_transform_ = glm::mat4x4(1.f);
-  world_transform_ = glm::mat4x4(1.f);
-  position_ = {0.0f,0.0f,0.0f};
-  rotation_ = {0.0f,0.0f,0.0f};
-  scale_ = {1.0f,1.0f,1.0f};
-  id_ = id;
   dirty_ = true;
 }
 

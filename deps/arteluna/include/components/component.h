@@ -11,14 +11,14 @@ public:
     void disable();
     bool isEnabled() const;
     
-    virtual void ImguiTree();
+    virtual void ImguiTree(uint32_t id) = 0;
     virtual ~Component();
     Component();
 protected:
 
     bool enabled_;
-    uint32_t id_;
-    
+
+  friend class Entity;
 };
 
 

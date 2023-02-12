@@ -11,17 +11,24 @@
 
 
 class LightManager {
+  enum Type{
+    Directional,
+    Spotlight,
+    Pointlight
+  };
+  
   public:
   ~LightManager();
 
   static LightManager& GetLightManager();
 
   
-  //Entity& CreateSpotlight(uint32_t parent = 0);
+  Entity& CreateSpotLight(uint32_t parent = 0);
+  Entity& CreatePointLight(uint32_t parent = 0);
 
 protected:
     std::vector<uint32_t> point_lights_;
-    std::vector<uint32_t> spotlights_;
+    std::vector<uint32_t> spot_lights_;
     std::vector<uint32_t> directional_lights_;
 
 private:

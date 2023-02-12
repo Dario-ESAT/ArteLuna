@@ -15,12 +15,8 @@ bool Component::isEnabled() const
 	return enabled_;
 }
 
-void Component::ImguiTree() {
-	
-}
-
 Component::Component(){
-
+  enabled_ = true;
 }
 
 Component::~Component() {

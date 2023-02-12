@@ -12,14 +12,13 @@ class Shader;
 
 class RenderComponent : public Component {
 public:
-    void ImguiTree() override;
+    void ImguiTree(uint32_t id) override;
     std::shared_ptr<Mesh> mesh_;
     std::shared_ptr<Material> material_;
     void RenderObject();
     ~RenderComponent() override;
     RenderComponent();
     RenderComponent(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
-    RenderComponent(uint32_t id);
 protected:
 };
 

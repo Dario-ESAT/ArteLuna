@@ -29,7 +29,7 @@ public:
   void AttachToParent(uint32_t p);
 
   void DetachFromParent(
-    bool keep_worl_location = true,
+    bool keep_worl_position = true,
     bool keep_world_rotation = true,
     bool keep_world_scale = true);
 
@@ -37,13 +37,14 @@ public:
 
   std::vector<uint32_t>& children();
   template<class T>
-  void add_component() {
+  T* add_component() {
     std::vector<std::optional<T>>* vector = EntityManager::GetManager().GetComponentVector<T>();
     std::optional<T>* component = &vector->at(id_);
 
     if(!component->has_value()){
       component->emplace(T());
     }
+    return &component->value();
   }
   
   template<class T>

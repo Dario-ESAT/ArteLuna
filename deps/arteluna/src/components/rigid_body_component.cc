@@ -4,7 +4,8 @@
 
 
 
-void RigidBodyComponent::ImguiTree() {
+void RigidBodyComponent::ImguiTree(uint32_t id) {
+  
 }
 
 RigidBodyComponent::RigidBodyComponent(){

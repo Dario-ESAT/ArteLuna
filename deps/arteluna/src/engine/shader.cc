@@ -36,44 +36,43 @@ bool check_shader(GLuint shader) {
 }
 
 Shader::Shader(const char* vertex, const char* fragment, const char* geometry) {
-    vertex_ = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_, 1, &vertex, nullptr);
-    glCompileShader(vertex_);
-    check_shader(vertex_);
+  vertex_ = glCreateShader(GL_VERTEX_SHADER);
+  glShaderSource(vertex_, 1, &vertex, nullptr);
+  glCompileShader(vertex_);
+  check_shader(vertex_);
+  
+  fragment_ = glCreateShader(GL_FRAGMENT_SHADER);
+  glShaderSource(fragment_, 1, &fragment, nullptr);
+  glCompileShader(fragment_);
+  check_shader(fragment_);
 
-    fragment_ = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_, 1, &fragment, nullptr);
-    glCompileShader(fragment_);
-    check_shader(fragment_);
-
-    geometry_ = glCreateShader(GL_GEOMETRY_SHADER);
-    glShaderSource(geometry_, 1, &geometry, nullptr);
-    glCompileShader(geometry_);
-    check_shader(geometry_);
-
+  geometry_ = glCreateShader(GL_GEOMETRY_SHADER);
+  glShaderSource(geometry_, 1, &geometry, nullptr);
+  glCompileShader(geometry_);
+  check_shader(geometry_);
 }
 
 Shader::~Shader() {
-    glDeleteShader(vertex_);
-    glDeleteShader(fragment_);
-    if (geometry_ != 0) {
-        glDeleteShader(geometry_);
-    }
+  glDeleteShader(vertex_);
+  glDeleteShader(fragment_);
+  if (geometry_ != 0) {
+    glDeleteShader(geometry_);
+  }
 }
 
 void Shader::Init(const char* vertex, const char* fragment)
 {
-    vertex_ = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_, 1, &vertex, nullptr);
-    glCompileShader(vertex_);
-    check_shader(vertex_);
+  vertex_ = glCreateShader(GL_VERTEX_SHADER);
+  glShaderSource(vertex_, 1, &vertex, nullptr);
+  glCompileShader(vertex_);
+  check_shader(vertex_);
 
-    fragment_ = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_, 1, &fragment, nullptr);
-    glCompileShader(fragment_);
-    check_shader(fragment_);
+  fragment_ = glCreateShader(GL_FRAGMENT_SHADER);
+  glShaderSource(fragment_, 1, &fragment, nullptr);
+  glCompileShader(fragment_);
+  check_shader(fragment_);
 
-    geometry_ = 0;
+  geometry_ = 0;
 }
 
 void Shader::Init(const char* vertex, const char* fragment, const char* geometry)

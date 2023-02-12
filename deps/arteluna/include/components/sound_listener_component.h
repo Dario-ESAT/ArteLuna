@@ -7,7 +7,7 @@
 class SoundListenerComponent : public Component {
 public:
     
-    void ImguiTree() override;
+    void ImguiTree(uint32_t id) override;
 
     ~SoundListenerComponent() override;
     SoundListenerComponent();

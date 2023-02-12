@@ -19,8 +19,8 @@ Entity& EntityManager::CreateNewEntity(uint32_t parent) {
   for (std::map<size_t, std::unique_ptr<ComponentVector> >::iterator it=component_map_.begin(); it!=component_map_.end(); ++it){
     it->second->Grow();
   }
-  
   entities_.emplace_back(Entity(last_id_, parent));
+  
   Entity& new_entity = entities_.back();
   new_entity.add_component<TransformComponent>();
   new_entity.add_component<RenderComponent>();
@@ -52,15 +52,13 @@ Entity* EntityManager::GetEntity(uint32_t pos) {
 
 EntityManager::EntityManager() {
   last_id_ = 0;
-  component_map_[typeid(TransformComponent).hash_code()] = std::make_unique<ComponentVector_Implementation<TransformComponent> >();
-  component_map_[typeid(RenderComponent).hash_code()] = std::make_unique<ComponentVector_Implementation<RenderComponent> >();
-  
-
-  GetComponentVector<RenderComponent>()->emplace_back();
-  GetComponentVector<TransformComponent>()->emplace_back(TransformComponent(last_id_));
   entities_.emplace_back(Entity());
-  
   last_id_++;
+  
+  auto* transform = CreateComponentVector<TransformComponent>();
+  CreateComponentVector<RenderComponent>();
+  transform->at(0).emplace(TransformComponent());
+  
 }
 
 void EntityManager::CleanEntities(Entity* entity, glm::mat4 transform, bool dirty) {

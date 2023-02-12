@@ -7,11 +7,15 @@ uniform mat4 u_m_matrix;
 uniform mat4 u_vp_matrix;
 
 out vec3 normal;
-out vec2 texcoord;
+out vec2 uv;
+out vec3 w_pos;
 
 void main() {
-    texcoord = a_uv;
-    normal = a_normal;
+
+    vec4 pos = (u_m_matrix * vec4(a_position, 1.0));
+    w_pos = pos.xyz;
+    uv = a_uv;
+    normal = normalize(mat3(u_m_matrix) * a_normal);
+
     gl_Position = u_vp_matrix * u_m_matrix * vec4(a_position, 1.0f);
-    // gl_Position = u_m_matrix * vec4(a_position, 1.0);
 };

@@ -7,7 +7,7 @@
 #include "engine/material.h"
 #include "engine/mesh.h"
 
-void RenderComponent::ImguiTree() {
+void RenderComponent::ImguiTree(uint32_t id) {
 }
 
 RenderComponent::RenderComponent() {
@@ -18,10 +18,6 @@ RenderComponent::RenderComponent() {
 RenderComponent::RenderComponent(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material) {
 	mesh_ = mesh;
 	material_ = material;
-}
-
-RenderComponent::RenderComponent(uint32_t id) {
-	id_ = id;
 }
 
 void RenderComponent::RenderObject() {

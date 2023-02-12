@@ -8,7 +8,7 @@ class TransformComponent : public Component{
 public:
   ~TransformComponent() override;
 
-  void ImguiTree() override;
+  void ImguiTree(uint32_t id) override;
 
   const glm::vec3& position() const;
   void set_position(const glm::vec3& position);
@@ -26,7 +26,6 @@ public:
   bool dirty() const {return dirty_;}
 
   TransformComponent();
-  TransformComponent(uint32_t id);
 private:
   void update_local_transform(glm::mat4x4 inverse_parent_transform);
   void update_world_transform(glm::mat4x4 parent_transform);

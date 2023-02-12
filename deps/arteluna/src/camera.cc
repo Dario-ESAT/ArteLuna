@@ -11,7 +11,7 @@
 #include "engine/material.h"
 
 Camera::Camera() {
-  movement_speed_ = 80.0f;
+  movement_speed_ = 10.0f;
   rotation_speed_ = 1.0f;
   mouse_pos_buffer_.x = 1280.f / 2.f;
   mouse_pos_buffer_.y = 720.f / 2.f;
@@ -141,7 +141,20 @@ void Camera::RenderScene(float aspect) {
         "u_vp_matrix",
         (void*)value_ptr(vp_matrix)
       );
-      
+      glUniform3f(glGetUniformLocation(render_component.material_->program_.program(),
+      "u_cam_pos"), position_.x - 10, position_.y, position_.z - 3);
+
+      glUniform3f(glGetUniformLocation(render_component.material_->program_.program(),
+       "pointLight[0].position"), transform_component.position().x - 10, transform_component.position().y, 
+       transform_component.position().z - 3);
+      glUniform3f(glGetUniformLocation(render_component.material_->program_.program(),
+       "pointLight[0].color"), 1.f,  1.f,  1.f);
+      glUniform1f(glGetUniformLocation(render_component.material_->program_.program(),
+       "pointLight[0].constant"), 1.f);
+      glUniform1f(glGetUniformLocation(render_component.material_->program_.program(),
+       "pointLight[0].linear"), 0.09f);
+      glUniform1f(glGetUniformLocation(render_component.material_->program_.program(),
+       "pointLight[0].quadratic"), 0.032f);
       render_component.RenderObject();
     }
   }
@@ -165,21 +178,27 @@ void Camera::MenuImgui() {
     ImGui::DragFloat("Rotation Speed", &rotation_speed_);
     ImGui::Text("Forward x:%f y:%f z:%f",forward_.x,forward_.y,forward_.z);
 
+
   ImGui::End();
   EntityManager& e_m = EntityManager::GetManager();
   std::vector<std::optional<TransformComponent>>* transform_components = e_m.GetComponentVector<TransformComponent>();
   
+  char label[20] = {'\n'};
   ImGui::Begin("Entities");
     if (ImGui::TreeNode((void*)(intptr_t)0, "Root")) {
       auto& t_comp = transform_components->at(0).value();
-      t_comp.ImguiTree();
+      t_comp.ImguiTree(0);
       ImGui::TreePop();
     }
     
     for (unsigned long long i = 1; i < transform_components->size(); i++) {
       if (ImGui::TreeNode((void*)(intptr_t)i, "Entity %d", i)) {
         auto& t_comp = transform_components->at(i).value();
-        t_comp.ImguiTree();
+        t_comp.ImguiTree(i);
+        sprintf_s(label, "Huerfanear##P%d", i);
+        if(ImGui::Button(label)){
+          e_m.GetEntity(i)->DetachFromParent();
+        }
         ImGui::TreePop();
       }
     }

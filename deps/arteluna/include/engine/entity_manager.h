@@ -5,7 +5,6 @@
 #include <optional>
 #include <vector>
 #include <memory>
-#include "components/spotlight_component.h"
 
 #include "entity.h"
 #include "components/transform_component.h"
@@ -20,7 +19,7 @@ public:
   void Grow() override {
     vector.emplace_back(std::nullopt);
   }
-  std::vector<std::optional<T>> vector;
+  std::vector<std::optional<T> > vector;
 };
 
 class EntityManager {
@@ -39,7 +38,7 @@ class EntityManager {
   __forceinline std::vector<std::optional<T>>* GetComponentVector();
 
   template<class T>
-  __forceinline void CreateComponentVector();
+  __forceinline std::vector<std::optional<T>>* CreateComponentVector();
 
 private:
   EntityManager();
@@ -68,18 +67,18 @@ std::vector<std::optional<T>>* EntityManager::GetComponentVector() {
 }
 
 template <class T>
-void EntityManager::CreateComponentVector() {
+std::vector<std::optional<T>>* EntityManager::CreateComponentVector() {
   auto component_vector = component_map_.find(typeid(T).hash_code());
-  if (component_vector != component_map_.end()) return;
-    
+  if (component_vector != component_map_.end()) return nullptr;
+  
   size_t index = typeid(T).hash_code();
   component_map_[index] = std::make_unique<ComponentVector_Implementation<T> >();
   std::vector<std::optional<T>>* vector = GetComponentVector<T>();
 
-  for (int i = 0; i < last_id_; ++i){
+  for (uint32_t i = 0; i < last_id_; ++i){
     vector->emplace_back(std::nullopt);
   }
-  
+  return vector;
 }
 
 
