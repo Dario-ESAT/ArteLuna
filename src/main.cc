@@ -24,17 +24,29 @@ int main() {
 
   std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../deps/arteluna/data/models/ugandan_sonic.obj");
 
-  Entity& entity_sponza = manager_ref.CreateNewEntity();
-  TransformComponent* transform_cmp = entity_sponza.get_component<TransformComponent>();
-  transform_cmp->set_position(position_);
-  transform_cmp->set_scale(scale_);
-  transform_cmp->set_rotation(rotation_);
+  Entity& entity_1 = manager_ref.CreateNewEntity();
+  TransformComponent* transform_cmp = entity_1.get_component<TransformComponent>();
+  transform_cmp->set_position({ 0.0 , 0.0f, 10.0f });
+  transform_cmp->set_scale({ 1.0f, 1.0f, 1.0f });
+  transform_cmp->set_rotation({ 0.0f, 3.140f, 0.0f });
 
 
-  RenderComponent* render_cmp =  entity_sponza.get_component<RenderComponent>();
+  RenderComponent* render_cmp =  entity_1.get_component<RenderComponent>();
   render_cmp->mesh_ = mesh_sponza;
 
   render_cmp->material_ = material;
+
+	Entity& entity_0 = manager_ref.CreateNewEntity();
+	transform_cmp = entity_0.get_component<TransformComponent>();
+	transform_cmp->set_position({ 7.0 , 0.0f, 10.0f });
+	transform_cmp->set_scale({ 1.0f, 1.0f, 1.0f });
+	transform_cmp->set_rotation({ 0.0f, 3.140f, 0.0f });
+
+
+	render_cmp =  entity_0.get_component<RenderComponent>();
+	render_cmp->mesh_ = mesh_sponza;
+
+	render_cmp->material_ = material;
   double last_time = window.GetTime();
   
   while (!window.ShouldClose()) {

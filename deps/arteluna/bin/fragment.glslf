@@ -11,15 +11,15 @@
 #version 330
 
 const int MAX_D_LIGHTS = 5;
-const int MAX_p_LIGHTS = 25;
-const int MAX_s_LIGHTS = 25;
+const int MAX_p_LIGHTS = 5;
+const int MAX_s_LIGHTS = 5;
 
 //uniform vec4 u_color;
 uniform sampler2D u_texture;
 uniform sampler2D u_normal;
 // uniform sampler2D u_specular;
 // uniform float u_shininess;
-uniform vec3 u_cam_pos;
+uniform vec3 cam_pos;
 
 
 
@@ -121,8 +121,10 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
   // attenuation
 
   float distance = length(light.position - fragPos);
+  // float attenuation = 1.0 / (light.constant + light.linear * distance + 
+  //   light.quadratic * (distance * distance));  
   float attenuation = 1.0 / (light.constant + light.linear * distance + 
-            light.quadratic * (distance * distance));    
+    0.032f * (distance * distance));    
   // combine results
   
   vec3 color  = light.color * vec3(texture(u_texture, uv));
@@ -137,28 +139,28 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     //    return (color + diffuse + specular);
 }
 
-// vec3 CalcDir(DirLight light, vec3 normal, vec3 viewDir) {
-//   vec3 lightDir = normalize(light.direction);
-//   // diffuse shading
-//   float diff = max(dot(normal, lightDir), 0.0);
-//   // specular shading
-//   vec3 reflectDir = reflect(-lightDir, normal);
-//   float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
-//   // combine results
-//   //vec3 color  = light.color;
-//   vec3 color  = light.color * vec3(texture(u_texture, uv));
-//   //vec3 diffuse  = light.diffuse * diff;
-//   vec3 diffuse  = light.diffuse * diff * vec3(texture(u_texture, uv));
-//   //vec3 specular = light.specular * spec;
-//   vec3 specular = light.specular * spec * vec3(texture(u_specular, uv));
-//   // return (diffuse);
-//   // return (color);
-//   // return (color + diffuse);
-//   return (color + diffuse + specular);
-// }
+/* vec3 CalcDir(DirLight light, vec3 normal, vec3 viewDir) {
+  vec3 lightDir = normalize(light.direction);
+  // diffuse shading
+  float diff = max(dot(normal, lightDir), 0.0);
+  // specular shading
+  vec3 reflectDir = reflect(-lightDir, normal);
+  float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
+  // combine results
+  //vec3 color  = light.color;
+  vec3 color  = light.color * vec3(texture(u_texture, uv));
+  //vec3 diffuse  = light.diffuse * diff;
+  vec3 diffuse  = light.diffuse * diff * vec3(texture(u_texture, uv));
+  //vec3 specular = light.specular * spec;
+  vec3 specular = light.specular * spec * vec3(texture(u_specular, uv));
+  // return (diffuse);
+  // return (color);
+  // return (color + diffuse);
+  return (color + diffuse + specular);
+} */
 
 void main() {
-  vec3 view_dir = normalize(u_cam_pos - w_pos);
+  vec3 view_dir = normalize(cam_pos - w_pos);
   vec3 light_result = vec3(0.0,0.0,0.0);
   vec3 Nnormal = normalize(normal);
 //   for(int i = 0; i < u_n_dirLight;i++) {
@@ -173,15 +175,15 @@ void main() {
 //     light_result += CalcSpotLight(spotLight[i],Nnormal,w_pos,view_dir);
 //   }
 
-  vec4 fog_position = vec4(w_pos, 1);
+  // vec4 fog_position = vec4(w_pos, 1);
 	//float fog_distance = distance(vec4(CameraPosition, 1.0f), fog_position);
-	float fog_distance = distance(vec4(u_cam_pos, 1), fog_position);
-	float alpha = GetFogFactor(fog_distance);
+	// float fog_distance = distance(vec4(cam_pos, 1), fog_position);
+	// float alpha = GetFogFactor(fog_distance);
 
 	// gl_FragColor = vec4(u_n_dirLight,u_n_pointLight,u_n_spotLight, 1);
 	//vec4 objectColor = vec4(light_result, 1);// * texture(u_texture, uv);
 	//gl_FragColor = mix(objectColor, VertexIn.color, alpha);// * texture(u_texture, uv);
 
-	// gl_FragColor = vec4(light_result, 1);  // SIN NIEBLA
-	gl_FragColor = mix( vec4(light_result, 1), VertexIn.color, alpha); // CON NIEBLA 
+	gl_FragColor = vec4(light_result, 1);  // SIN NIEBLA
+	// gl_FragColor = mix( vec4(light_result, 1), VertexIn.color, alpha); // CON NIEBLA 
 } 

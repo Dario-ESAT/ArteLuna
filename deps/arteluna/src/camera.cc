@@ -131,30 +131,70 @@ void Camera::RenderScene(float aspect) {
   
   for (uint16_t i = 1; i < entity_manager.last_id_; i++) {
     if (render_components->at(i).has_value()) {
+    	
       TransformComponent& transform_component = transform_components->at(i).value();
       RenderComponent& render_component = render_components->at(i).value();
-      render_component.material_->set_uniform_data(
-        "u_m_matrix",
-        (void*)value_ptr(transform_component.world_transform())
-      );
-      render_component.material_->set_uniform_data(
-        "u_vp_matrix",
-        (void*)value_ptr(vp_matrix)
-      );
-      glUniform3f(glGetUniformLocation(render_component.material_->program_.program(),
-      "u_cam_pos"), position_.x - 10, position_.y, position_.z - 3);
+    	render_component.material_->program_.Use();
+      // render_component.material_->set_uniform_data(
+      //   "u_m_matrix",
+      //   (void*)value_ptr(transform_component.world_transform())
+      // );
+      // render_component.material_->set_uniform_data(
+      //   "u_vp_matrix",
+      //   (void*)value_ptr(vp_matrix)
+      // );
+    	int uniform = glGetUniformLocation(render_component.material_->program_.program(),"u_vp_matrix");
+    	glUniformMatrix4fv(uniform, 1, false, value_ptr(vp_matrix));
+    	
+    	uniform = glGetUniformLocation(render_component.material_->program_.program(),"u_m_matrix");
+    	glUniformMatrix4fv(uniform, 1, false, value_ptr(transform_component.world_transform()));
+    	
+    	uniform = glGetUniformLocation(render_component.material_->program_.program(),"u_n_pointLight");
+      if (uniform > -1){
+				glUniform1i(uniform, 1);
+      } else{
+	      printf("Error en u_n_pointLight\n");
+      }
+    	uniform = glGetUniformLocation(render_component.material_->program_.program(),"cam_pos");
+    	if (uniform > -1){
+    		glUniform3f(uniform, position_.x, position_.y, position_.z);
+    	} else{
+    		printf("Error en cam_pos\n");
+    	}
 
-      glUniform3f(glGetUniformLocation(render_component.material_->program_.program(),
-       "pointLight[0].position"), transform_component.position().x - 10, transform_component.position().y, 
-       transform_component.position().z - 3);
-      glUniform3f(glGetUniformLocation(render_component.material_->program_.program(),
-       "pointLight[0].color"), 1.f,  1.f,  1.f);
-      glUniform1f(glGetUniformLocation(render_component.material_->program_.program(),
-       "pointLight[0].constant"), 1.f);
-      glUniform1f(glGetUniformLocation(render_component.material_->program_.program(),
-       "pointLight[0].linear"), 0.09f);
-      glUniform1f(glGetUniformLocation(render_component.material_->program_.program(),
-       "pointLight[0].quadratic"), 0.032f);
+      uniform = glGetUniformLocation(render_component.material_->program_.program(),"pointLight[0].position");
+    	if (uniform > -1){
+    		glUniform3f(uniform,  3.50f , 0.0f, 10.0f);
+    	} else{
+    		printf("Error en pointLight[0].position\n");
+    	}
+
+      uniform = glGetUniformLocation(render_component.material_->program_.program(),"pointLight[0].color");
+    	if (uniform > -1){
+    		glUniform3f(uniform, 1.f,  1.f,  1.f);
+    	} else{
+    		printf("Error en pointLight[0].color\n");
+    	}
+
+    	uniform = glGetUniformLocation(render_component.material_->program_.program(),"pointLight[0].constant");
+    	if (uniform > -1){
+    		glUniform1f(uniform, 1.f);
+    	} else{
+    		printf("Error en pointLight[0].constant\n");
+    	}
+    	uniform = glGetUniformLocation(render_component.material_->program_.program(),"pointLight[0].linear");
+    	if (uniform > -1){
+    		glUniform1f(uniform, 0.09f);
+    	} else{
+    		printf("Error en pointLight[0].linear\n");
+    	}
+    	uniform = glGetUniformLocation(render_component.material_->program_.program(),"pointLight[0].quadratic");
+    	if (uniform > -1){
+    		glUniform1f(uniform,  0.032f);
+    	} else{
+    		printf("Error en pointLight[0].quadratic\n");
+    	}
+
       render_component.RenderObject();
     }
   }
