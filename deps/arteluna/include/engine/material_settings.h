@@ -16,7 +16,7 @@ public:
   ~MaterialSettings();
   
   virtual void use() = 0;
-  virtual void SetUniformTime();
+  
 
 private:
  

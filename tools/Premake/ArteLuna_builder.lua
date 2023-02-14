@@ -83,7 +83,7 @@ project "ArteLuna"
         -- "soloud.lib",
         "tinyobjloader.lib",
         -- "mathlib.lib",
-        "OpenAL32.lib",
+        -- "OpenAL32.lib",
         "imgui.lib",
         "glad2.lib",
         "opengl32.lib",

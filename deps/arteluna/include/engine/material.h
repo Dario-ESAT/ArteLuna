@@ -10,9 +10,21 @@
 #include "program.h"
 #include "texture.h"
 
-class UniformData{
+class UniformManagerData{
 public:
+  UniformManagerData();
+  void set_uniform_data(std::string name, void* data);
+  void set_uniform_value(const void* unif, GLenum type, int uniform_pos) const;
+
   
+private:
+  std::unordered_map<std::string, std::pair<GLenum, void*>> uniform_data_;
+  Program program_;
+  __forceinline unsigned int get_uniform_position(const char* name) const {
+    return glGetUniformLocation(program_.program(), name);
+  }
+  friend class Material;
+  friend class RenderComponent;
 };
 
 class Material {
@@ -25,21 +37,16 @@ public:
       Texture::Wrap ws = Texture::Wrap::Clamp_to_edge, Texture::Wrap wt = Texture::Wrap::Clamp_to_edge, Texture::Wrap wr = Texture::Wrap::Clamp_to_edge);
 
   ~Material();
-  
+  UniformManagerData uniform_manager_;
   Shader shader_;
   Program program_;
   Texture texture_;
   // void set_albedo(uint8_t albedo);
-  void set_uniform_data(std::string name, void* data);
+ 
 
 private:
-  std::unordered_map<std::string,std::pair<GLenum,void*>> uniform_data_;
   
-  __forceinline unsigned int get_uniform_position(const char* name) const{
-    return glGetUniformLocation(program_.program(), name);
-  }
-
-  void set_uniform_value(const void* unif, GLenum type,int uniform_pos) const;
+  
   
   // uint8_t albedo_;
   friend class RenderComponent;

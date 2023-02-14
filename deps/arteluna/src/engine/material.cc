@@ -7,11 +7,13 @@
 
 
 Material::Material() {
-	
+	uniform_manager_.program_ = program_;
 }
 
 Material::Material(const char* vert, const char* frag)
 {
+	uniform_manager_.program_ = program_;
+
 	std::unique_ptr<char[]> vert_ = ReadFile(vert);
 	std::unique_ptr<char[]> frag_ = ReadFile(frag);
 	shader_.Init(vert_.get(), frag_.get());
@@ -28,14 +30,17 @@ Material::Material(const char* vert, const char* frag)
 	glGetProgramiv(program_.program(), GL_ACTIVE_UNIFORMS, &count);
 	for (GLint i = 0; i < count; i++) {
 		glGetActiveUniform(program_.program(), i, bufSize, &length, &size, &type, name);
-		uniforms_names_types_.emplace_back(std::string(name, length), type);
-	  set_uniform_data(name,nullptr);
+		uniform_manager_.uniform_data_[name].first = type;// (std::string(name, length), type);
+		uniform_manager_.uniform_data_[name].second = nullptr;
+		uniform_manager_.set_uniform_data(name,nullptr);
 	}
 }
 
 Material::Material(const char* vert, const char* frag, const char* texture_src, Texture::Type t_type, Texture::Filter mag_filter,
 	Texture::Filter min_filter,  Texture::Wrap ws, Texture::Wrap wt, Texture::Wrap wr) {
 
+	uniform_manager_.program_ = program_;
+
 	std::unique_ptr<char[]> vert_ = ReadFile(vert);
 	std::unique_ptr<char[]> frag_ = ReadFile(frag);
 	shader_.Init(vert_.get(), frag_.get());
@@ -52,11 +57,12 @@ Material::Material(const char* vert, const char* frag, const char* texture_src, 
 	glGetProgramiv(program_.program(), GL_ACTIVE_UNIFORMS, &count);
 	for (GLint i = 0; i < count; i++) {
 		glGetActiveUniform(program_.program(), i, bufSize, &length, &size, &type, name);
-		uniforms_names_types_.emplace_back(std::string(name,length),type);
-	  set_uniform_data(name,nullptr);
+		uniform_manager_.uniform_data_[name].first = type;// (std::string(name, length), type);
+		uniform_manager_.uniform_data_[name].second = nullptr;
+		uniform_manager_.set_uniform_data(name,nullptr);
 	}
-  float a = 1.0f;
-  set_uniform_data("color",(void*)&a);
+  float a = 1.0f; 
+	uniform_manager_.set_uniform_data("color",(void*)&a);
 
 	// Texture
 	texture_.set_min_filter(min_filter);
@@ -100,14 +106,18 @@ Material::Material(const char* vert, const char* frag, const char* texture_src, 
 Material::~Material() {
 }
 
-void Material::set_uniform_data(std::string name, void* data) {
+UniformManagerData::UniformManagerData()
+{
+}
+
+void UniformManagerData::set_uniform_data(std::string name, void* data) {
   std::hash<std::string_view> hasher_;
 
   size_t hashcode = hasher_(name);
-  uniform_data_[name] = data;
+  uniform_data_[name].second = data;
 }
 
-void Material::set_uniform_value(const void* unif, GLenum type,int uniform_pos) const{
+void UniformManagerData::set_uniform_value(const void* unif, GLenum type,int uniform_pos) const{
 	program_.Use();
 	switch (type) {
 	  case GL_FLOAT: {
@@ -178,3 +188,5 @@ void Material::set_uniform_value(const void* unif, GLenum type,int uniform_pos) 
 	  default: break;
 	}
 }
+
+

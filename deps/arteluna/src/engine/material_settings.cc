@@ -13,6 +13,3 @@ MaterialSettings::~MaterialSettings()
 {
 }
 
-void MaterialSettings::SetUniformTime()
-{
-}

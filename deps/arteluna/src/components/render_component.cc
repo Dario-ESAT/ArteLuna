@@ -24,16 +24,15 @@ void RenderComponent::RenderObject() {
 
 	Material* material = material_.get();
  
-	for (unsigned int i = 0; i < material->uniforms_names_types_.size(); i++) {
-		auto uniforms = material->uniforms_names_types_[i];
-		int uniform_pos = material->get_uniform_position(uniforms.first.c_str());
-	  const char* name = uniforms.first.c_str();
-	  size_t hashcode = material->hasher_(name);
-	  void* data = material->uniform_data_.at(hashcode);
-    if (data != nullptr) {
-      material->set_uniform_value(data,uniforms.second,uniform_pos);
-    }
+	for (std::unordered_map<std::string, std::pair<GLenum, void*> > ::iterator it = material->uniform_manager_.uniform_data_.begin(); it != material->uniform_manager_.uniform_data_.end(); ++it) {
+		
+		if (it->second.second != nullptr) {
+			GLuint position =	material->uniform_manager_.get_uniform_position(it->first.c_str());
+			material->uniform_manager_.set_uniform_value(it->second.second, it->second.first, position);
+		}
 	}
+
+	
 	material->program_.Use();
 
 	material->texture_.Bind();
