@@ -13,13 +13,14 @@
 #include "engine/entity_manager.h"
 
 Window::Window() {
-    window_ = nullptr;
-    width_ = 0;
-    height_ = 0;
-    posx_ = 0;
-    posy_ = 0;
-    windowed_ = false;
-    
+  window_ = nullptr;
+  width_ = 0;
+  height_ = 0;
+  posx_ = 0;
+  posy_ = 0;
+  windowed_ = false;
+  delta_time_ = 0;
+  last_time_ = 0;
 }
 
 Window::Window(
@@ -72,7 +73,8 @@ Window::Window(
   ImGui::CreateContext();
   ImGui_ImplOpenGL3_Init("#version 330");
   ImGui_ImplGlfw_InitForOpenGL(window_,true);
-
+  delta_time_ = 0;
+  last_time_ = glfwGetTime();
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
   glEnable(GL_DEPTH_TEST);
@@ -117,55 +119,13 @@ bool Window::windowed() {
   return windowed_;
 }
 
-void Window::Clear() {
-  ImGui_ImplOpenGL3_NewFrame();
-  ImGui_ImplGlfw_NewFrame();
-  ImGui::NewFrame();
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(	0.2f,0.2f,0.2f,1.f);
-  // glClear(GL_COLOR_BUFFER_BIT);
-}
-
-void Window::RenderScene() {
-  EntityManager& em = EntityManager::GetManager();
-  Entity* root = EntityManager::GetManager().GetEntity(0);
-  TransformComponent* transform_component = root->get_component<TransformComponent>();
-  em.CleanEntities(root,glm::mat4x4(1.f),transform_component->dirty());
-  camera.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
-}
-
-void Window::MenuImgui() {
-  camera.MenuImgui();
-}
-
-void Window::Draw() {
-  MenuImgui();
-  ImGui::Render();
-  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-  glfwSwapBuffers(window_);
-}
 
 bool Window::ShouldClose() {
   return glfwWindowShouldClose(window_);
 }
 
-void Window::End() {
-  glfwTerminate();
-}
-
-void Window::InputLogic() {
-
-  
-}
-
 double Window::GetTime() {
   return glfwGetTime();
-}
-
-void Window::ProcessInput(double deltatime) {
-  glfwPollEvents();
-  camera.Update(deltatime, input_);
-  InputLogic();
 }
 
 int Window::posx() const {
@@ -186,17 +146,34 @@ void Window::set_posy(int posy) {
   glfwSetWindowPos(window_, posx_, posy_);
 }
 
-int Window::Init(const char* name, int16_t width, int16_t heigth,int posx , int posy, bool windowed, int monitor) {
-  if (!glfwInit())
-    return -1;
+void Window::BeginFrame() {
+  double current_time_ = glfwGetTime();
+  delta_time_ = current_time_ - last_time_;
+  last_time_ = current_time_;
+  
+  glfwPollEvents();
+  camera.Update(delta_time_, input_);
+  ImGui_ImplOpenGL3_NewFrame();
+  ImGui_ImplGlfw_NewFrame();
+  ImGui::NewFrame();
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glClearColor(	0.2f,0.2f,0.2f,1.f);
+  // glClear(GL_COLOR_BUFFER_BIT);
+}
 
-  window_ = glfwCreateWindow(width, heigth, name, nullptr, nullptr);
-  if (!window_){
-    glfwTerminate();
-    return -1;
-  }
-  glfwSetWindowPos(window_, posx, posy);
-  glfwMakeContextCurrent(window_);
-  gladLoadGL(glfwGetProcAddress);
-  return 0;
+void Window::EndFrame() {
+  // Render Scene --------
+  EntityManager& em = EntityManager::GetManager();
+  Entity* root = EntityManager::GetManager().GetEntity(0);
+  TransformComponent* transform_component = root->get_component<TransformComponent>();
+  em.CleanEntities(root,glm::mat4x4(1.f),transform_component->dirty());
+  camera.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
+
+  // Render Imgui
+  camera.MenuImgui();
+  ImGui::Render();
+  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+  
+  // Draw
+  glfwSwapBuffers(window_);
 }

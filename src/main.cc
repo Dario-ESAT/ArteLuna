@@ -47,18 +47,11 @@ int main() {
 	render_cmp->mesh_ = mesh_sponza;
 
 	render_cmp->material_ = material;
-  double last_time = window.GetTime();
   
   while (!window.ShouldClose()) {
  
-    double current_time = window.GetTime();
-    double deltatime = current_time - last_time;
-    last_time = current_time;
+    window.BeginFrame();
      
-    window.ProcessInput(deltatime);
-    window.Clear();
-    
-    window.RenderScene();
     /*if(window.input_->IsKeyDown(InputKeyboard::KEY_0)) {
       for (int i = 2; i < number_of_entities + 2; i++) {
         Entity* entities = manager_ref.GetEntity(i);
@@ -75,10 +68,8 @@ int main() {
     // ----------------------
     
 
-    window.Draw();
+    window.EndFrame();
   }
 
-  window.End();
-  
   return 0;
 }

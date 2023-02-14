@@ -24,36 +24,22 @@ class Window{
   void set_posx(int posx);
   int posy() const;
   void set_posy(int posy);
+
+  void BeginFrame();
   
-  //Functions
-  int Init( const char* name, int16_t width = 1280, int16_t heigth = 720,
-    int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
-  );
-
-  void Clear();
-
-  void RenderScene();
-
-  void MenuImgui();
+  void EndFrame();
   
-  void Draw();
-
   bool ShouldClose();
 
-  void End();
+  static double GetTime();
   
-  virtual void InputLogic();
-
-  double GetTime();
+  __forceinline double delta_time() const;
 
   struct GLFWwindow* window_;
   class Input* input_;
   
-  void ProcessInput(double deltatime);
-  
   private:
 
-  
   Camera camera;
   int16_t width_;
   int16_t height_;
@@ -62,7 +48,12 @@ class Window{
   bool windowed_;
 
    
+  double delta_time_;
+  double last_time_;
 };
 
+double Window::delta_time() const {
+  return delta_time_;
+}
 
 #endif
