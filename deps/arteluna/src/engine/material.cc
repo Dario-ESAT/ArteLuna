@@ -100,9 +100,11 @@ Material::Material(const char* vert, const char* frag, const char* texture_src, 
 Material::~Material() {
 }
 
-void Material::set_uniform_data(const char* name, void* data) {
+void Material::set_uniform_data(std::string name, void* data) {
+  std::hash<std::string_view> hasher_;
+
   size_t hashcode = hasher_(name);
-  uniform_data_[hashcode] = data;
+  uniform_data_[name] = data;
 }
 
 void Material::set_uniform_value(const void* unif, GLenum type,int uniform_pos) const{

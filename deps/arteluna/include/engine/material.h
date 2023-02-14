@@ -3,11 +3,17 @@
 
 #include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "shader.h"
 #include "program.h"
 #include "texture.h"
+
+class UniformData{
+public:
+  
+};
 
 class Material {
   
@@ -24,18 +30,16 @@ public:
   Program program_;
   Texture texture_;
   // void set_albedo(uint8_t albedo);
-  void set_uniform_data(const char* name, void* data);
+  void set_uniform_data(std::string name, void* data);
 
 private:
-  std::vector<std::pair<std::string,GLenum> > uniforms_names_types_;
-  std::map<size_t,void*> uniform_data_;
+  std::unordered_map<std::string,std::pair<GLenum,void*>> uniform_data_;
   
   __forceinline unsigned int get_uniform_position(const char* name) const{
     return glGetUniformLocation(program_.program(), name);
   }
 
   void set_uniform_value(const void* unif, GLenum type,int uniform_pos) const;
-  std::hash<std::string_view> hasher_;
   
   // uint8_t albedo_;
   friend class RenderComponent;
