@@ -12,27 +12,29 @@ LightManager& LightManager::GetLightManager() {
   return manager;
 }
 
-Entity& LightManager::CreatePointLight(uint32_t parent) {
-  EntityManager& em = EntityManager::GetManager();
-  Entity& light = em.CreateNewEntity(parent);
+Entity& LightManager::CreateDirectionalLight(uint32_t parent) {
+  Entity& light = EntityManager::GetManager().CreateNewEntity(parent);
   LightComponent* light_component = light.add_component<LightComponent>();
-
-  light_component->set_color(1.f,1.f,1.f);
+  light_component->type_ = LightComponent::Directional;
+  directional_lights_.push_back(light.id());
   return light;
 }
-/*
-Entity& LightManager::CreateSpotlight(uint32_t parent)
-{
-    EntityManager& em = EntityManager::GetManager();
-    Entity& light = em.CreateNewEntity(parent);
 
-    //em.GetComponentVector<SpotLightComponent>()->emplace_back(SpotLightComponent(light.id()));
-
-    return light;
-
+Entity& LightManager::CreateSpotLight(uint32_t parent) {
+  Entity& light = EntityManager::GetManager().CreateNewEntity(parent);
+  LightComponent* light_component = light.add_component<LightComponent>();
+  light_component->type_ = LightComponent::Spotlight;
+  spot_lights_.push_back(light.id());
+  return light;
 }
-*/
 
+Entity& LightManager::CreatePointLight(uint32_t parent) {
+  Entity& light = EntityManager::GetManager().CreateNewEntity(parent);
+  LightComponent* light_component = light.add_component<LightComponent>();
+  light_component->type_ = LightComponent::Pointlight;
+  point_lights_.push_back(light.id());
+  return light;
+}
 
 LightManager::LightManager() {
 

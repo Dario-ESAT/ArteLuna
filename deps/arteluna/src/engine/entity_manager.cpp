@@ -23,7 +23,6 @@ Entity& EntityManager::CreateNewEntity(uint32_t parent) {
   
   Entity& new_entity = entities_.back();
   new_entity.add_component<TransformComponent>();
-  new_entity.add_component<RenderComponent>();
   last_id_++;
   return new_entity;
 }

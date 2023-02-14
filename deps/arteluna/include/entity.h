@@ -36,26 +36,10 @@ public:
   void DetachChild(uint32_t id);
 
   std::vector<uint32_t>& children();
-  template<class T>
-  T* add_component() {
-    std::vector<std::optional<T>>* vector = EntityManager::GetManager().GetComponentVector<T>();
-    std::optional<T>* component = &vector->at(id_);
-
-    if(!component->has_value()){
-      component->emplace(T());
-    }
-    return &component->value();
-  }
   
-  template<class T>
-  T* get_component() {
-    std::vector<std::optional<T>>* vector = EntityManager::GetManager().GetComponentVector<T>();
-    std::optional<T>* component = &vector->at(id_);
-
-    if(component->has_value()) return &(component->value());
-
-    return nullptr;
-  }
+  template<class T> T* add_component();
+  
+  template<class T> T* get_component();
 
   uint32_t id() const;
 
@@ -69,5 +53,26 @@ protected:
 
   friend class EntityManager;
 };
+
+template <class T>
+T* Entity::add_component() {
+  std::vector<std::optional<T>>* vector = EntityManager::GetManager().GetComponentVector<T>();
+  std::optional<T>* component = &vector->at(id_);
+
+  if(!component->has_value()){
+    component->emplace(T());
+  }
+  return &component->value();
+}
+
+template <class T>
+T* Entity::get_component() {
+  std::vector<std::optional<T>>* vector = EntityManager::GetManager().GetComponentVector<T>();
+  std::optional<T>* component = &vector->at(id_);
+
+  if(component->has_value()) return &(component->value());
+
+  return nullptr;
+}
 
 #endif
