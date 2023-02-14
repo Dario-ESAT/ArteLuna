@@ -14,7 +14,7 @@ LightManager& LightManager::GetLightManager() {
 
 Entity& LightManager::CreateDirectionalLight(uint32_t parent) {
   Entity& light = EntityManager::GetManager().CreateNewEntity(parent);
-  LightComponent* light_component = light.add_component<LightComponent>();
+  LightComponent* light_component = light.AddComponent<LightComponent>();
   light_component->type_ = LightComponent::Directional;
   directional_lights_.push_back(light.id());
   return light;
@@ -22,7 +22,7 @@ Entity& LightManager::CreateDirectionalLight(uint32_t parent) {
 
 Entity& LightManager::CreateSpotLight(uint32_t parent) {
   Entity& light = EntityManager::GetManager().CreateNewEntity(parent);
-  LightComponent* light_component = light.add_component<LightComponent>();
+  LightComponent* light_component = light.AddComponent<LightComponent>();
   light_component->type_ = LightComponent::Spotlight;
   spot_lights_.push_back(light.id());
   return light;
@@ -30,7 +30,7 @@ Entity& LightManager::CreateSpotLight(uint32_t parent) {
 
 Entity& LightManager::CreatePointLight(uint32_t parent) {
   Entity& light = EntityManager::GetManager().CreateNewEntity(parent);
-  LightComponent* light_component = light.add_component<LightComponent>();
+  LightComponent* light_component = light.AddComponent<LightComponent>();
   light_component->type_ = LightComponent::Pointlight;
   point_lights_.push_back(light.id());
   return light;

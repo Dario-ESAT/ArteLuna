@@ -31,7 +31,7 @@ int main() {
   transform_cmp->set_rotation({ 0.0f, 3.140f, 0.0f });
 
 
-  RenderComponent* render_cmp =  entity_1.add_component<RenderComponent>();
+  RenderComponent* render_cmp =  entity_1.AddComponent<RenderComponent>();
   render_cmp->mesh_ = mesh_sponza;
 
   render_cmp->material_ = material;
@@ -43,7 +43,7 @@ int main() {
 	transform_cmp->set_rotation({ 0.0f, 3.140f, 0.0f });
 
 
-	render_cmp =  entity_0.add_component<RenderComponent>();
+	render_cmp =  entity_0.AddComponent<RenderComponent>();
 	render_cmp->mesh_ = mesh_sponza;
 
 	render_cmp->material_ = material;

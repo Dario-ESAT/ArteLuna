@@ -22,7 +22,7 @@ Entity& EntityManager::CreateNewEntity(uint32_t parent) {
   entities_.emplace_back(Entity(last_id_, parent));
   
   Entity& new_entity = entities_.back();
-  new_entity.add_component<TransformComponent>();
+  new_entity.AddComponent<TransformComponent>();
   last_id_++;
   return new_entity;
 }

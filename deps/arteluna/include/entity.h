@@ -37,10 +37,13 @@ public:
 
   std::vector<uint32_t>& children();
   
-  template<class T> T* add_component();
+  template<class T> T* AddComponent();
+  
+  template<class T> void RemoveComponent();
   
   template<class T> T* get_component();
 
+  
   uint32_t id() const;
 
 protected:
@@ -55,8 +58,11 @@ protected:
 };
 
 template <class T>
-T* Entity::add_component() {
+T* Entity::AddComponent() {
   std::vector<std::optional<T>>* vector = EntityManager::GetManager().GetComponentVector<T>();
+  if (vector == nullptr){
+    vector = EntityManager::GetManager().CreateComponentVector<T>();
+  }
   std::optional<T>* component = &vector->at(id_);
 
   if(!component->has_value()){
@@ -66,8 +72,21 @@ T* Entity::add_component() {
 }
 
 template <class T>
+void Entity::RemoveComponent() {
+  std::vector<std::optional<T>>* vector = EntityManager::GetManager().GetComponentVector<T>();
+  if (vector == nullptr) return;
+  std::optional<T>* component = &vector->at(id_);
+
+  if(!component->has_value()) {
+    component->reset();
+  }
+}
+
+template <class T>
 T* Entity::get_component() {
   std::vector<std::optional<T>>* vector = EntityManager::GetManager().GetComponentVector<T>();
+  if (vector == nullptr) return nullptr;
+  
   std::optional<T>* component = &vector->at(id_);
 
   if(component->has_value()) return &(component->value());
