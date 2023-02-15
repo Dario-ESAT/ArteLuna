@@ -43,6 +43,7 @@ class Window{
   Camera camera;
   int16_t width_;
   int16_t height_;
+
   int posx_;
   int posy_;
   bool windowed_;

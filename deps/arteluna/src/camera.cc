@@ -24,6 +24,12 @@ Camera::Camera() {
   position_.y = 0.0f;
   position_.z = 0.0f;
   
+  mode_ = Perspective;
+  ortho_x_ = 10.0f;
+  ortho_y_ = 10.0f;
+  near_ = -50.f;
+  far_ = 50.0f;
+
   UpdateTransform();
 }
 
@@ -40,22 +46,22 @@ void Camera::UpdateFromInput(double deltatime, Input* input) {
   }
 
   if (input->IsKeyDown(LEFT) ||
-    input->IsKeyDown(A)) {
+    input->IsKeyDown(A) && mode_ == Perspective) {
     position_ += right_ * speed * delta_time;
   }
 
   if (input->IsKeyDown(RIGHT) ||
-    input->IsKeyDown(D)) {
+    input->IsKeyDown(D) && mode_ == Perspective) {
     position_ -= right_ * speed * delta_time;
   }
   
   if (input->IsKeyDown(UP) ||
-    input->IsKeyDown(W)) {
+    input->IsKeyDown(W) && mode_ == Perspective) {
     position_ += (forward_) * speed * delta_time;
   }
 
   if (input->IsKeyDown(DOWN) ||
-    input->IsKeyDown(S)) {
+    input->IsKeyDown(S) && mode_ == Perspective) {
     position_ -= (forward_) * speed * delta_time;
   }
 
@@ -88,6 +94,7 @@ void Camera::UpdateFromInput(double deltatime, Input* input) {
 
   if (input->IsMouseButtonDown(1)) {
     input->setMouseMode(DISABLED);
+    is_rotating_ = true;
   }
   else {
     is_rotating_ = false;
@@ -96,38 +103,56 @@ void Camera::UpdateFromInput(double deltatime, Input* input) {
 }
 
 void Camera::UpdateRotation(double deltatime, glm::vec2 cursor_pos) {
-  if(!is_rotating_){
-    mouse_pos_buffer_ = cursor_pos;
-    is_rotating_ = true;
-  }
-  float mouse_displacement_x = cursor_pos.x - mouse_pos_buffer_.x;
-  float mouse_displacement_y = cursor_pos.y - mouse_pos_buffer_.y;
+  if (is_rotating_) {
+    if (mode_ == Perspective) {
+      rotate_x_ += mouse_displacement_y_ * rotation_speed_ * static_cast<float>(deltatime);
+      if (rotate_x_ > 1.57f) {
+        rotate_x_ = 1.57f;
+      }
+      else if (rotate_x_ < -1.57f) {
+        rotate_x_ = -1.57f;
+      }
+      rotate_y_ += mouse_displacement_x_ * rotation_speed_ * static_cast<float>(deltatime);
+      mouse_pos_buffer_ = cursor_pos;
+    }
 
-  rotate_x_ += mouse_displacement_y * rotation_speed_ * static_cast<float>(deltatime);
-  if (rotate_x_ > 1.57f) {
-    rotate_x_ = 1.57f;
-  } else if (rotate_x_ < -1.57f) {
-    rotate_x_ = -1.57f;
+    if (mode_ == Ortho) {
+     
+    }
   }
-  rotate_y_ += mouse_displacement_x * rotation_speed_ * static_cast<float>(deltatime);
-  mouse_pos_buffer_ = cursor_pos;
 }
 
 void Camera::Update(double deltatime, Input* input) {
   UpdateFromInput(deltatime,input);
+  mouse_displacement_x_ = input->cursor_pos().x - mouse_pos_buffer_.x;
+  mouse_displacement_y_ = input->cursor_pos().y - mouse_pos_buffer_.y;
   UpdateRotation(deltatime,input->cursor_pos());
   UpdateTransform();
+}
+
+void Camera::TransformOrtho(Input* input)
+{
+  if (mode_ == Ortho) {
+   // printf("%f \n", input->scrollback_y_value_);
+  }
 }
 
 void Camera::RenderScene(float aspect) {
   static EntityManager& entity_manager = EntityManager::GetManager();
   auto* render_components = entity_manager.GetComponentVector<RenderComponent>();
   auto* transform_components = entity_manager.GetComponentVector<TransformComponent>();
-  auto perspective = glm::perspective(fov_,aspect,0.01f,15000.0f);
-  auto view =  glm::lookAt(position_,position_ + forward_,glm::vec3(0.f,1.f,0.f));
-  //auto ortho_perspective = glm::ortho(-5.f, 5.f, -5.f, 5.f, -50.0f, 50.0f);
+  auto perspective = glm::perspective(fov_, aspect, 0.01f, 15000.0f);
+  auto ortho_perspective = glm::ortho(-ortho_x(), ortho_x(), -ortho_y(), ortho_y(), near(), far());
+  glm::mat4x4 vp_matrix;
+  if (mode_ == Ortho) {
+    auto view = glm::lookAt(position_, glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f));
+    vp_matrix = ortho_perspective * view;
+  } 
+  if (mode_ == Perspective) {
+    auto view = glm::lookAt(position_, position_ + forward_, glm::vec3(0.f, 1.f, 0.f));
+    vp_matrix = perspective * view;
+  }
 
-  glm::mat4x4 vp_matrix = perspective * view;
   
   for (uint16_t i = 1; i < entity_manager.last_id_; i++) {
     if (render_components->at(i).has_value()) {
@@ -246,21 +271,28 @@ void Camera::MenuImgui() {
         
 }
 
+void Camera::Mode(Modes m)
+{
+  mode_ = m;
+}
+
 void Camera::UpdateTransform() {
   glm::mat4x4 transform_aux(1.0f);
-  transform_aux = glm::scale(transform_aux, glm::vec3(1.0f, 1.0f, 1.0f));
-  transform_aux = glm::rotate(transform_aux,rotate_y_, glm::vec3(0.0f, 1.0f, 0.0f));
-  transform_aux = glm::translate(transform_aux, position_);
-  transform_aux = glm::transpose(transform_aux);
+  if (mode_ == Perspective) {
+    transform_aux = glm::scale(transform_aux, glm::vec3(1.0f, 1.0f, 1.0f));
+    transform_aux = glm::rotate(transform_aux, rotate_y_, glm::vec3(0.0f, 1.0f, 0.0f));
+    transform_aux = glm::translate(transform_aux, position_);
+    transform_aux = glm::transpose(transform_aux);
 
-  transform_aux = glm::rotate(transform_aux,rotate_x_, glm::vec3(1.0f, 0.0f, 0.0f));
-  transform_matrix_ = transform_aux;
+    transform_aux = glm::rotate(transform_aux, rotate_x_, glm::vec3(1.0f, 0.0f, 0.0f));
+    transform_matrix_ = transform_aux;
 
-  glm::mat3x3 rotation_mat(transform_matrix_);
+    glm::mat3x3 rotation_mat(transform_matrix_);
 
-  right_ = rotation_mat * glm::vec3(1.f,0.f,0.f);
-  up_ = rotation_mat * glm::vec3(0.f,1.f,0.f);
-  forward_ = rotation_mat * glm::vec3(0.f,0.f,1.f);
+    right_ = rotation_mat * glm::vec3(1.f, 0.f, 0.f);
+    up_ = rotation_mat * glm::vec3(0.f, 1.f, 0.f);
+    forward_ = rotation_mat * glm::vec3(0.f, 0.f, 1.f);
+  }
 }
 
 
