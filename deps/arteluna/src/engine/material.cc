@@ -2,17 +2,58 @@
 #include "comon_defs.h"
 #include "components/transform_component.h"
 #include <memory>
+#include <gtc/type_ptr.hpp>
+
 #include "stb_image.h"
 #include "utils.h"
-
-
-Material::Material() {
-	uniform_manager_.program_ = program_;
+static std::unique_ptr<Data> init_uniform_data(GLenum type){
+  switch (type) {
+  case GL_FLOAT: {
+    return std::make_unique<Data>(Data_Implementation<float>());
+  }
+  case GL_FLOAT_VEC2: {
+    return std::make_unique<Data>(Data_Implementation<glm::vec<2,float>>());
+  }
+  case GL_FLOAT_VEC3: {
+    return std::make_unique<Data>(Data_Implementation<glm::vec<3,float>>());
+  }
+  case GL_FLOAT_VEC4: {
+    return std::make_unique<Data>(Data_Implementation<glm::vec<4,float>>());
+  }
+  case GL_FLOAT_MAT4: {
+    return std::make_unique<Data>(Data_Implementation<glm::mat<4,4,float>>());
+  }
+  case GL_INT: {
+    return std::make_unique<Data>(Data_Implementation<int>());
+  }
+  case GL_INT_VEC2: {
+    return std::make_unique<Data>(Data_Implementation<glm::vec<2,int>>());
+  }
+  case GL_INT_VEC3:{
+    return std::make_unique<Data>(Data_Implementation<glm::vec<3,int>>());
+  }
+  case GL_INT_VEC4: {
+    return std::make_unique<Data>(Data_Implementation<glm::vec<4,int>>());
+  }
+  case GL_UNSIGNED_INT: {
+    return std::make_unique<Data>(Data_Implementation<unsigned int>());
+  }
+  case GL_UNSIGNED_INT_VEC2: {
+    return std::make_unique<Data>(Data_Implementation<glm::vec<2,unsigned int> >());
+  }
+  case GL_UNSIGNED_INT_VEC3: {
+    return std::make_unique<Data>(Data_Implementation<glm::vec<3,unsigned int> >());
+  }
+  case GL_UNSIGNED_INT_VEC4: {
+    return std::make_unique<Data>(Data_Implementation<glm::vec<4,unsigned int> >());
+  }
+  default: break;
+  }
 }
 
-Material::Material(const char* vert, const char* frag)
-{
-	uniform_manager_.program_ = program_;
+Material::Material() {}
+
+Material::Material(const char* vert, const char* frag) {
 
 	std::unique_ptr<char[]> vert_ = ReadFile(vert);
 	std::unique_ptr<char[]> frag_ = ReadFile(frag);
@@ -23,23 +64,22 @@ Material::Material(const char* vert, const char* frag)
 	GLint size; // size of the variable
 	GLenum type; // type of the variable (float, vec3 or mat4, etc)
 
-	const GLsizei bufSize = 30; // maximum name length
+	const GLsizei bufSize = 40; // maximum name length
 	GLchar name[bufSize]; // variable name in GLSL
 	GLsizei length;
 
 	glGetProgramiv(program_.program(), GL_ACTIVE_UNIFORMS, &count);
 	for (GLint i = 0; i < count; i++) {
 		glGetActiveUniform(program_.program(), i, bufSize, &length, &size, &type, name);
-		uniform_manager_.uniform_data_[name].first = type;// (std::string(name, length), type);
-		uniform_manager_.uniform_data_[name].second = nullptr;
-		uniform_manager_.set_uniform_data(name,nullptr);
+#ifdef DEBUG
+    uniform_tpes_[name] = type;
+#endif
+	  uniform_data_[name] = nullptr;
 	}
 }
 
 Material::Material(const char* vert, const char* frag, const char* texture_src, Texture::Type t_type, Texture::Filter mag_filter,
 	Texture::Filter min_filter,  Texture::Wrap ws, Texture::Wrap wt, Texture::Wrap wr) {
-
-	uniform_manager_.program_ = program_;
 
 	std::unique_ptr<char[]> vert_ = ReadFile(vert);
 	std::unique_ptr<char[]> frag_ = ReadFile(frag);
@@ -50,19 +90,20 @@ Material::Material(const char* vert, const char* frag, const char* texture_src, 
 	GLint size; // size of the variable
 	GLenum type; // type of the variable (float, vec3 or mat4, etc)
 
-	const GLsizei bufSize = 30; // maximum name length
+	const GLsizei bufSize = 40; // maximum name length
 	GLchar name[bufSize]; // variable name in GLSL
 	GLsizei length;
 
 	glGetProgramiv(program_.program(), GL_ACTIVE_UNIFORMS, &count);
 	for (GLint i = 0; i < count; i++) {
 		glGetActiveUniform(program_.program(), i, bufSize, &length, &size, &type, name);
-		uniform_manager_.uniform_data_[name].first = type;// (std::string(name, length), type);
-		uniform_manager_.uniform_data_[name].second = nullptr;
-		uniform_manager_.set_uniform_data(name,nullptr);
+#ifdef DEBUG
+	  uniform_tpes_[name] = type;
+#endif
+		uniform_data_[name] = nullptr;
 	}
-  float a = 1.0f; 
-	uniform_manager_.set_uniform_data("color",(void*)&a);
+  float a = 1.0f;
+	set_uniform_data("color",(void*)&a);
 
 	// Texture
 	texture_.set_min_filter(min_filter);
@@ -103,90 +144,48 @@ Material::Material(const char* vert, const char* frag, const char* texture_src, 
   texture_.SetData(Texture::UNSIGNED_BYTE, 0);
 }
 
-Material::~Material() {
+Material::~Material() {}
+
+void Data_Implementation<float>::bind(GLint program) {
+  glUniform1f(program, value_);
+}
+void Data_Implementation<glm::vec<2,float> >::bind(GLint program) {
+  glUniform2f(program, value_.x, value_.y);
+}
+void Data_Implementation<glm::vec<3,float> >::bind(GLint program) {
+  glUniform3f(program, value_.x, value_.y, value_[2]);
+}
+void Data_Implementation<glm::vec<4,float> >::bind(GLint program) {
+  glUniform4f(program, value_.x, value_.y, value_.z, value_.w);
 }
 
-UniformManagerData::UniformManagerData()
-{
+void Data_Implementation<glm::mat<4,4,float> >::bind(GLint program) {
+  glUniformMatrix4fv(program, 1, false, glm::value_ptr(value_));
 }
 
-void UniformManagerData::set_uniform_data(std::string name, void* data) {
-  std::hash<std::string_view> hasher_;
-
-  size_t hashcode = hasher_(name);
-  uniform_data_[name].second = data;
+void Data_Implementation<int>::bind(GLint program) {
+  glUniform1i(program, value_);
+}
+void Data_Implementation<glm::vec<2,int>>::bind(GLint program) {
+  glUniform2i(program, value_.x, value_.y);
+}
+void Data_Implementation<glm::vec<3,int>>::bind(GLint program) {
+  glUniform3i(program, value_.x, value_.y,value_.z);
 }
 
-void UniformManagerData::set_uniform_value(const void* unif, GLenum type,int uniform_pos) const{
-	program_.Use();
-	switch (type) {
-	  case GL_FLOAT: {
-	    float* value = (float*)unif;
-		  glUniform1f(uniform_pos, *value);
-		  break;
-	  }
-	  case GL_FLOAT_VEC2: {
-	    float* value = (float*)unif;
-		  glUniform2f(uniform_pos, value[0], value[1]);
-		  break;
-	  }
-	  case GL_FLOAT_VEC3: {
-	    float* value = (float*)unif;
-		  glUniform3f(uniform_pos, value[0], value[1], value[2]);
-		  break;
-	  }
-	  case GL_FLOAT_VEC4: {
-	    float* value = (float*)unif;
-		  glUniform4f(uniform_pos, value[0], value[1], value[2], value[3]);
-		  break;
-	  }
-	  case GL_FLOAT_MAT4: {
-	    float* value = (float*)unif;
-	    glUniformMatrix4fv(uniform_pos, 1, false, value);
-	    break;
-	  }
-	  case GL_INT: {
-	    int* value = (int*)unif;
-		  glUniform1i(uniform_pos, value[0]);
-		  break;
-	  }
-	  case GL_INT_VEC2: {
-	    int* value = (int*)unif;
-		  glUniform2i(uniform_pos, value[0], value[1]);
-		  break;
-	  }
-	  case GL_INT_VEC3:{
-	    int* value = (int*)unif;
-		  glUniform3i(uniform_pos, value[0], value[1], value[2]);
-		  break;
-	  }
-	  case GL_INT_VEC4: {
-	    int* value = (int*)unif;
-		  glUniform4i(uniform_pos, value[0], value[1], value[2], value[3]);
-		  break;
-	  }
-	  case GL_UNSIGNED_INT: {
-	    unsigned int* value = (unsigned int*)unif;
-		  glUniform1ui(uniform_pos, value[0]);
-		  break;
-	  }
-	  case GL_UNSIGNED_INT_VEC2: {
-	    unsigned int* value = (unsigned int*)unif;
-		  glUniform2ui(uniform_pos, value[0], value[1]);
-		  break;
-	    }
-	  case GL_UNSIGNED_INT_VEC3: {
-	    unsigned int* value = (unsigned int*)unif;
-		  glUniform3ui(uniform_pos, value[0], value[1], value[2]);
-		  break;
-	  }
-	  case GL_UNSIGNED_INT_VEC4: {
-		  unsigned int* value = (unsigned int*)unif;
-      glUniform4ui(uniform_pos, value[0], value[1], value[2], value[3]);
-		  break;
-	  }
-	  default: break;
-	}
+void Data_Implementation<glm::vec<4,int>>::bind(GLint program) {
+  glUniform4i(program, value_.x, value_.y,value_.z,value_.w);
 }
 
-
+void Data_Implementation<unsigned int>::bind(GLint program) {
+  glUniform1ui(program, value_);
+}
+void Data_Implementation<glm::vec<2,unsigned int>>::bind(GLint program) {
+  glUniform2ui(program, value_.x, value_.y);
+}
+void Data_Implementation<glm::vec<3,unsigned int>>::bind(GLint program) {
+  glUniform3ui(program, value_.x, value_.y,value_.z);
+}
+void Data_Implementation<glm::vec<4,unsigned int>>::bind(GLint program) {
+  glUniform4ui(program, value_.x, value_.y,value_.z,value_.w);
+}

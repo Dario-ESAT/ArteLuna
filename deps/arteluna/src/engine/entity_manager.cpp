@@ -16,7 +16,11 @@ EntityManager& EntityManager::GetManager() {
 }
 
 Entity& EntityManager::CreateNewEntity(uint32_t parent) {
-  for (std::map<size_t, std::unique_ptr<ComponentVector> >::iterator it=component_map_.begin(); it!=component_map_.end(); ++it){
+  for (
+    std::map<size_t, std::unique_ptr<ComponentVector> >::iterator it=component_map_.begin();
+    it!=component_map_.end();
+    ++it){
+    
     it->second->Grow();
   }
   entities_.emplace_back(Entity(last_id_, parent));
@@ -72,9 +76,3 @@ void EntityManager::CleanEntities(Entity* entity, glm::mat4 transform, bool dirt
     transform_component->world_transform(),definitely_dirty);
   }
 }
-
-
-
-// Pendiente para añadir junto el mapa de componentes
-// template <class T>
-// void EntityManager::AddComponentToEntity(Entity& entity, T* component) {}

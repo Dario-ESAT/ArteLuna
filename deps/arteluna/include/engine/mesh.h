@@ -2,6 +2,7 @@
 #define H_MESH_ 1
 
 #include <string>
+#include <vec3.hpp>
 #include <vector>
 
 class Mesh {
@@ -23,7 +24,9 @@ public:
     std::vector<float> normal_;
     std::vector<unsigned int> indices_;
     std::vector<float> uv_;
-    
+    std::vector<glm::vec3> tangents_;
+    std::vector<glm::vec3> bi_tangents_;
+
     unsigned int mesh_buffer() { return mesh_buffer_; }
     unsigned int vertex_array() { return vertex_array_; }
     unsigned int u_v_array() { return u_v_array_; }

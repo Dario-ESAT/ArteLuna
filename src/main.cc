@@ -21,7 +21,8 @@ int main() {
   
   std::shared_ptr<Material> material = std::make_shared<Material>("../../deps/arteluna/bin/vertex.glslv",
    "../../deps/arteluna/bin/fragment.glslf", "../../deps/arteluna/data/muse.jpg", Texture::Type::T_2D);
-
+  float time = window.GetTime();
+  material->uniform_manager_.set_uniform_data("u_time",&time);
   std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../deps/arteluna/data/models/ugandan_sonic.obj");
 
   Entity& entity_1 = manager_ref.CreateNewEntity();
