@@ -64,12 +64,18 @@ void Input::setIsMouseDown(int key, bool is_down) {
   }
 }
 
+void Input::get_scrollback(GLFWwindow* window, double xoffset, double yoffset)
+{
+  //scrollback_x_value_ = xoffset;
+  //scrollback_y_value_ = yoffset;
+}
+
 void Input::setupInput(GLFWwindow& window) {
   window_ref_ = &window;
   glfwSetKeyCallback(&window, keyboard_callback);
   glfwSetMouseButtonCallback(&window, mouse_button_callback);
   glfwSetCursorPosCallback(&window, cursor_pos_callback);
-  
+  glfwSetScrollCallback(&window, get_scrollback);
   if (glfwRawMouseMotionSupported())
     glfwSetInputMode(&window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 }

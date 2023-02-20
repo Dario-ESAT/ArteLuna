@@ -149,6 +149,11 @@ class Input {
   void setEnabled(bool value) { enabled_ = value; }
   void setMouseMode(CursorMode mode);
   glm::vec2 cursor_pos() const {return cursor_pos_;}
+
+  static void get_scrollback(GLFWwindow* window, double xoffset, double yoffset);
+
+  static float scrollback_y_value_;
+  static float scrollback_x_value_;
 private:
   void setupInput(GLFWwindow& window);
   void setIsKeyDown(int key, bool is_down);
