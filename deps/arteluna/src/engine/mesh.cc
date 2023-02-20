@@ -1,5 +1,6 @@
 #include "engine/mesh.h"
 #include "glad/gl.h"
+#include "glm.hpp"
 #define TINYOBJLOADER_IMPLEMENTATION // define this in only *one* .cc
 // Optional. define TINYOBJLOADER_USE_MAPBOX_EARCUT gives robust trinagulation. Requires C++11
 //#define TINYOBJLOADER_USE_MAPBOX_EARCUT
@@ -33,13 +34,16 @@ Mesh::Mesh() {
   auto& shapes = reader.GetShapes();
   auto& materials = reader.GetMaterials();
   
+
   // Loop over shapes
   for (size_t s = 0; s < shapes.size(); s++) {
     // Loop over faces(polygon)
     size_t index_offset = 0;
     for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
       size_t fv = size_t(shapes[s].mesh.num_face_vertices[f]);
-
+      std::vector<glm::vec3> a;
+      std::vector<glm::vec2> b;
+      
       // Loop over vertices in the face.
       for (size_t v = 0; v < fv; v++) {
         // access to vertex
@@ -50,6 +54,8 @@ Mesh::Mesh() {
         vertices_.push_back(attrib.vertices[3 * (idx.vertex_index) + 0]);
         vertices_.push_back(attrib.vertices[3 * (idx.vertex_index) + 1]);
         vertices_.push_back(attrib.vertices[3 * (idx.vertex_index) + 2]);
+
+        a.push_back(glm::vec3(vertices_.at(0), vertices_.at(1), vertices_.at(2)));
 
         if (idx.normal_index >= 0) {
             
@@ -63,7 +69,8 @@ Mesh::Mesh() {
         if (idx.texcoord_index >= 0) {
             uv_.push_back(attrib.texcoords[2 *(idx.texcoord_index) + 0]);
             uv_.push_back(attrib.texcoords[2 *(idx.texcoord_index) + 1]);
-            
+            b.push_back(glm::vec2(uv_.at(0), uv_.at(1)));
+
         }
 
         // Optional: vertex colors
@@ -73,11 +80,34 @@ Mesh::Mesh() {
       }
       index_offset += fv;
 
+      glm::vec3 edge_1;
+      glm::vec3 edge_2;
+      glm::vec2 delta_uv1;
+      glm::vec2 delta_uv2;
+
+      edge_1 = a[1] - a[0];
+      edge_2 = a[2] - a[0];
+
+      delta_uv1 = b[1] - b[0];
+      delta_uv2 = b[2] - b[0];
+
+      float f = 1.0f / (delta_uv1.x * delta_uv2.y - delta_uv2.x * delta_uv1.y);
+
+      glm::vec3 tangent;
+      tangent.x = f * (delta_uv2.y * edge_1.x - delta_uv1.y * edge_2.x);
+      tangent.y = f * (delta_uv2.y * edge_1.y - delta_uv1.y * edge_2.y);
+      tangent.z = f * (delta_uv2.y * edge_1.z - delta_uv1.y * edge_2.z);
+
+      for (size_t v = 0; v < fv; v++) {
+        tangents_.push_back(tangent.x);
+        tangents_.push_back(tangent.y);
+        tangents_.push_back(tangent.z);
+      }
       // per-face material
       shapes[s].mesh.material_ids[f];
     }
   }
-  
+
   for (int i = 0; i < indices_.size(); i++) {
       indices_[i] = i;
   }
@@ -87,6 +117,7 @@ Mesh::Mesh() {
   glGenBuffers(1, &normals_array_);
   glGenBuffers(1, &u_v_array_);
   glGenBuffers(1, &indices_array_);
+  glGenBuffers(1, &tangent_array_);
 
 
   glBindVertexArray(mesh_buffer_);
@@ -104,6 +135,11 @@ Mesh::Mesh() {
   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * uv_.size(), uv_.data(), GL_STATIC_DRAW);
   glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
   glEnableVertexAttribArray(2);
+
+  glBindBuffer(GL_ARRAY_BUFFER, tangent_array_);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(float) * tangents_.size(), tangents_.data(), GL_STATIC_DRAW);
+  glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+  glEnableVertexAttribArray(3);
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_array_);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices_.size(), indices_.data(), GL_STATIC_DRAW);

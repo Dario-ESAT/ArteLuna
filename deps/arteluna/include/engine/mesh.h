@@ -24,8 +24,8 @@ public:
     std::vector<float> normal_;
     std::vector<unsigned int> indices_;
     std::vector<float> uv_;
-    std::vector<glm::vec3> tangents_;
-    std::vector<glm::vec3> bi_tangents_;
+    std::vector<float> tangents_;
+    std::vector<float> bi_tangents_;
 
     unsigned int mesh_buffer() { return mesh_buffer_; }
     unsigned int vertex_array() { return vertex_array_; }
@@ -35,6 +35,7 @@ public:
 private:
     unsigned int mesh_buffer_;
     unsigned int vertex_array_;
+    unsigned int tangent_array_;
     unsigned int u_v_array_;
     unsigned int normals_array_;
     unsigned int indices_array_;
