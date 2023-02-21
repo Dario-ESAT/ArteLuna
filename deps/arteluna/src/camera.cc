@@ -171,9 +171,9 @@ void Camera::RenderScene(float aspect) {
     	int uniform = glGetUniformLocation(render_component.material_->program_.program(),"u_vp_matrix");
     	glUniformMatrix4fv(uniform, 1, false, value_ptr(vp_matrix));
     	
-    	uniform = glGetUniformLocation(render_component.material_->program_.program(),"u_m_matrix");
-    	glUniformMatrix4fv(uniform, 1, false, value_ptr(transform_component.world_transform()));
-    	
+    	// uniform = glGetUniformLocation(render_component.material_->program_.program(),"u_m_matrix");
+    	// glUniformMatrix4fv(uniform, 1, false, value_ptr(transform_component.world_transform()));
+    	render_component.material_->set_uniform_data("u_m_matrix",&transform_component.world_transform());
     	uniform = glGetUniformLocation(render_component.material_->program_.program(),"u_n_pointLight");
       if (uniform > -1){
 				glUniform1i(uniform, 1);

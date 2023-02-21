@@ -14,13 +14,13 @@ public:
     void Use() const{
         glUseProgram(id_);
     }
-    GLuint program() const{
+    GLint program() const{
         return id_;
     }
 
     // void attachShader()
 private:
-    GLuint id_;
+    GLint id_;
   
 };
 

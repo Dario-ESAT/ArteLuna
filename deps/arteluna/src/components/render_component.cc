@@ -23,19 +23,17 @@ RenderComponent::RenderComponent(std::shared_ptr<Mesh> mesh, std::shared_ptr<Mat
 void RenderComponent::RenderObject() {
 	material_->program_.Use();
   
-	for (std::unordered_map<std::string, std::unique_ptr<Data> > ::iterator it = material_->uniform_data_.begin(); it != material_->uniform_data_.end(); ++it) {
+	for (std::unordered_map<std::string, uniform > ::iterator it = material_->uniform_map_.begin(); it != material_->uniform_map_.end(); ++it) {
 		
-		if (it->second != nullptr) {
+		if (it->second.first) {
 			GLint position =	glGetUniformLocation(material_->program_.program(), it->first.c_str());
       if (position > -1){
-			  material_->set_uniform_data(it->first, it->second);
+		    it->second.first->bind(position);
       } else{
         printf("\nCouldn't find %s",it->first.c_str());
       }
 		}
 	}
-
-	
 
 	material_->texture_.Bind();
 	glBindVertexArray(mesh_->mesh_buffer());

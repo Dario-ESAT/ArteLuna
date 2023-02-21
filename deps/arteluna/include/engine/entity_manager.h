@@ -83,3 +83,4 @@ std::vector<std::optional<T>>* EntityManager::CreateComponentVector() {
 
 
 #endif
+

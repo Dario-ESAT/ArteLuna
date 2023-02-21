@@ -38,9 +38,9 @@ class Window{
   struct GLFWwindow* window_;
   class Input* input_;
   
+  Camera camera_;
   private:
 
-  Camera camera;
   int16_t width_;
   int16_t height_;
 

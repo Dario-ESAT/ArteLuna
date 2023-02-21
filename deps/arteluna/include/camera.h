@@ -12,11 +12,7 @@ public:
   Camera();
   ~Camera();
   
-  void UpdateFromInput(double deltatime, class Input* input);
-  void UpdateRotation(double deltatime, glm::vec2 cursor_pos);
-  void Update(double deltatime, Input* input);
-  void TransformOrtho(Input* input);
-  void RenderScene(float aspect);
+
 
   void MenuImgui();
 
@@ -44,8 +40,13 @@ public:
   float mouse_displacement_x_;
   float mouse_displacement_y_;
 private:
-  void UpdateTransform();
+  void Update(double deltatime, class Input* input);
   
+  void UpdateFromInput(double deltatime, class Input* input);
+  void UpdateRotation(double deltatime, glm::vec2 cursor_pos);
+  void RenderScene(float aspect);
+  void UpdateTransform();
+  void TransformOrtho(class Input* input);
   
   float rotate_x_;
   float rotate_y_;
@@ -66,6 +67,7 @@ private:
   glm::mat4x4 view_matrix_;
 
   uint32_t mode_;
+  friend class Window;
 };
 
 glm::vec3 Camera::position() const {
