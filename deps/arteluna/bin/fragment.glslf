@@ -21,7 +21,6 @@ uniform sampler2D u_normal;
 uniform vec3 cam_pos;
 
 
-
 out vec4 gl_FragColor;
 
 struct DirLight {
@@ -64,8 +63,8 @@ uniform int u_n_spotLight;
 in vec3 normal;
 in vec2 uv;
 in vec3 w_pos;
- in vec2 texcoord;
-
+in mat3 TBN;
+in vec2 TexCoord;
 /* float GetFogFactor(float fog_distance) {
 	const float fog_max = 10000.0f;
 	const float fog_min = 10.0f;
@@ -161,12 +160,12 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
 void main() {
   vec3 view_dir = normalize(cam_pos - w_pos);
   vec3 light_result = vec3(0.0,0.0,0.0);
-  vec3 Nnormal = normalize(normal);
+  /*vec3 Nnormal = normalize(normal);
 
   vec3 normals_mapping = texture(u_normal, TexCoord).xyz;
   normals_mapping.z = sqrt(1 - normals_mapping.x * normals_mapping.x + normals_mapping.y * normals_mapping.y);
   vec3 N = normals_mapping * 2.0 - 1.0;
-  N = TBN * N;
+  N = TBN * N;*/
 
 
 
@@ -174,11 +173,11 @@ void main() {
 //     light_result += CalcDir(dirLight[i],Nnormal,view_dir);
 //   }
   vec3 LD;
-  float i;
+  float sindicato;
   for(int i = 0; i < u_n_pointLight;i++) {
     light_result += CalcPointLight(pointLight[i],Nnormal,w_pos,view_dir);
-    LD = normalize(pointLight[i].position - w_pos);
-    i += max(dot(LD, N), 0.0f);
+    //LD = normalize(pointLight[i].position - w_pos);
+    //sindicato += max(dot(LD, N), 0.0f);
   }
 
 //   for(int i = 0; i < u_n_spotLight;i++) {
@@ -194,6 +193,6 @@ void main() {
 	//vec4 objectColor = vec4(light_result, 1);// * texture(u_texture, uv);
 	//gl_FragColor = mix(objectColor, VertexIn.color, alpha);// * texture(u_texture, uv);
   
-	gl_FragColor = texture(u_texture, TexCoord) * i;// SIN NIEBLA
+	gl_FragColor = texture(light_result, 1.0);// SIN NIEBLA
 	// gl_FragColor = mix( vec4(light_result, 1), VertexIn.color, alpha); // CON NIEBLA 
 } 

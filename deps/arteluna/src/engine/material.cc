@@ -137,7 +137,7 @@ Material::Material(const char* vert, const char* frag, const char* texture_src, 
 	//glBindTexture(GL_TEXTURE_2D, texture_.get_id());
 	//glActiveTexture(GL_TEXTURE0 + texture_.get_id());
   texture_.SetData(Texture::UNSIGNED_BYTE, 0);
-
+  /*
   int ntexture_width = texture_.width();
   int ntexture_height = texture_.height();
   int ntexture_channels = texture_.channels();
@@ -174,7 +174,7 @@ Material::Material(const char* vert, const char* frag, const char* texture_src, 
   normal_texture_.set_id(id_ntexture);
   //glBindTexture(GL_TEXTURE_2D, texture_.get_id());
   //glActiveTexture(GL_TEXTURE0 + texture_.get_id());
-  normal_texture_.SetData(Texture::UNSIGNED_BYTE, 0);
+  normal_texture_.SetData(Texture::UNSIGNED_BYTE, 0);*/
 }
 
 Material::~Material() {}
