@@ -259,8 +259,8 @@ void Camera::MenuImgui() {
     for (unsigned long long i = 1; i < transform_components->size(); i++) {
       if (ImGui::TreeNode((void*)(intptr_t)i, "Entity %d", i)) {
         auto& t_comp = transform_components->at(i).value();
-        t_comp.ImguiTree(i);
-        sprintf_s(label, "Huerfanear##P%d", i);
+        t_comp.ImguiTree((uint32_t)i);
+        sprintf_s(label, "Huerfanear##P%d",(int) i);
         if(ImGui::Button(label)){
           e_m.GetEntity(i)->DetachFromParent();
         }

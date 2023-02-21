@@ -24,7 +24,7 @@ struct Data_Implementation : Data{
 };
 template <typename T>
 void Data_Implementation<T>::CopyData(void* data) {
-  memcpy_s(&value_, sizeof(T),data,sizeof(T));
+  memcpy(&value_, data,sizeof(T));
 }
 typedef std::pair<std::unique_ptr<Data>, GLenum> uniform;
 

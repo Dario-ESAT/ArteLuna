@@ -336,11 +336,48 @@ void Material::set_uniform_data(std::string name, const glm::vec<3,int>* data) {
 void Data_Implementation<glm::vec<4,int>>::bind(GLint position) {
   glUniform4i(position, value_.x, value_.y,value_.z,value_.w);
 }
+
+template <>
+void Material::set_uniform_data(std::string name, const glm::vec<4,int>* data) {
+  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+  (name);
+  if (uniform != uniform_map_.end()){
+    if (data == nullptr){
+      uniform->second.first.release();
+      return;
+    }
+
+    if (!uniform->second.first){
+      uniform->second.first = init_uniform_data(uniform->second.second);
+    }
+
+    uniform->second.first->CopyData((void*)data);
+  }
+}
+
 #pragma endregion 
 
 #pragma region UNSIGNED INT
 void Data_Implementation<unsigned int>::bind(GLint position) {
   glUniform1ui(position, value_);
+}
+
+template <>
+void Material::set_uniform_data(std::string name, const unsigned int* data) {
+  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+  (name);
+  if (uniform != uniform_map_.end()){
+    if (data == nullptr){
+      uniform->second.first.release();
+      return;
+    }
+
+    if (!uniform->second.first){
+      uniform->second.first = init_uniform_data(uniform->second.second);
+    }
+
+    uniform->second.first->CopyData((void*)data);
+  }
 }
 #pragma endregion 
 
@@ -348,16 +385,70 @@ void Data_Implementation<unsigned int>::bind(GLint position) {
 void Data_Implementation<glm::vec<2,unsigned int>>::bind(GLint position) {
   glUniform2ui(position, value_.x, value_.y);
 }
+
+template <>
+void Material::set_uniform_data(std::string name, const glm::vec<2,unsigned int>* data) {
+  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+  (name);
+  if (uniform != uniform_map_.end()){
+    if (data == nullptr){
+      uniform->second.first.release();
+      return;
+    }
+
+    if (!uniform->second.first){
+      uniform->second.first = init_uniform_data(uniform->second.second);
+    }
+
+    uniform->second.first->CopyData((void*)data);
+  }
+}
 #pragma endregion 
 
 #pragma region UNSIGNED INT3
 void Data_Implementation<glm::vec<3,unsigned int>>::bind(GLint position) {
   glUniform3ui(position, value_.x, value_.y,value_.z);
 }
+
+template <>
+void Material::set_uniform_data(std::string name, const glm::vec<3,unsigned int>* data) {
+  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+  (name);
+  if (uniform != uniform_map_.end()){
+    if (data == nullptr){
+      uniform->second.first.release();
+      return;
+    }
+
+    if (!uniform->second.first){
+      uniform->second.first = init_uniform_data(uniform->second.second);
+    }
+
+    uniform->second.first->CopyData((void*)data);
+  }
+}
 #pragma endregion 
 
 #pragma region UNSIGNED INT4
 void Data_Implementation<glm::vec<4,unsigned int>>::bind(GLint position) {
   glUniform4ui(position, value_.x, value_.y,value_.z,value_.w);
+}
+
+template <>
+void Material::set_uniform_data(std::string name, const glm::vec<4,unsigned int>* data) {
+  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+  (name);
+  if (uniform != uniform_map_.end()){
+    if (data == nullptr){
+      uniform->second.first.release();
+      return;
+    }
+
+    if (!uniform->second.first){
+      uniform->second.first = init_uniform_data(uniform->second.second);
+    }
+
+    uniform->second.first->CopyData((void*)data);
+  }
 }
 #pragma endregion 
