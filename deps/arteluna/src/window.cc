@@ -152,7 +152,7 @@ void Window::BeginFrame() {
   last_time_ = current_time_;
   
   glfwPollEvents();
-  camera.Update(delta_time_, input_);
+  camera_.Update(delta_time_, input_);
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
@@ -167,10 +167,10 @@ void Window::EndFrame() {
   Entity* root = EntityManager::GetManager().GetEntity(0);
   TransformComponent* transform_component = root->get_component<TransformComponent>();
   em.CleanEntities(root,glm::mat4x4(1.f),transform_component->dirty());
-  camera.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
+  camera_.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
 
   // Render Imgui
-  camera.MenuImgui();
+  camera_.MenuImgui();
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   

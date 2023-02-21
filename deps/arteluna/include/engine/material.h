@@ -13,20 +13,22 @@
 #include "texture.h"
 
 struct Data{
-  virtual void* ptr() = 0;
-  virtual void bind(GLint program) = 0;
+  virtual void CopyData(void * data) = 0;
+  virtual void bind(GLint position) = 0;
 };
 template<typename T>
 struct Data_Implementation : Data{
-  void* ptr() override {
-    return &value_;
-  }
-  void bind(GLint program) override;
+  void CopyData(void * data) override;
+  void bind(GLint position) override;
   T value_;
 };
+template <typename T>
+void Data_Implementation<T>::CopyData(void* data) {
+  memcpy_s(&value_, sizeof(T),data,sizeof(T));
+}
+typedef std::pair<std::unique_ptr<Data>, GLenum> uniform;
 
 class Material {
-  
 public:
   Material();
   Material(const char* vert, const char* frag);
@@ -35,13 +37,7 @@ public:
       Texture::Wrap ws = Texture::Wrap::Clamp_to_edge, Texture::Wrap wt = Texture::Wrap::Clamp_to_edge, Texture::Wrap wr = Texture::Wrap::Clamp_to_edge);
   ~Material();
   template<typename T>
-  __forceinline void set_uniform_data(std::string name, const T& data);
-  
-#ifdef DEBUG
-  std::unordered_map<std::string,GLuint > uniform_tpes_;
-#endif
-
-  std::unordered_map<std::string, std::unique_ptr<Data> > uniform_data_;
+  void set_uniform_data(std::string name, const T* data);
   
   Shader shader_;
   Program program_;
@@ -49,18 +45,11 @@ public:
  
 
 private:
+  std::unordered_map<std::string, uniform > uniform_map_;
+  static std::unique_ptr<Data> init_uniform_data(GLenum type);
   friend class RenderComponent;
 };
 
 
-template <typename T>
-void Material::set_uniform_data(std::string name, const T& data) {
-#ifdef DEBUG
-  std::unordered_map<std::string,GLuint >::iterator uniform = uniform_tpes_.find(name);
-  if (uniform != uniform_tpes_.end()){
-    
-  }
-#endif
 
-}
 #endif
