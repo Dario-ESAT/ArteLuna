@@ -42,7 +42,7 @@ public:
   Shader shader_;
   Program program_;
   Texture texture_;
- 
+  Texture normal_texture_;
 
 private:
   std::unordered_map<std::string, uniform > uniform_map_;
