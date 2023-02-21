@@ -23,7 +23,7 @@ RenderComponent::RenderComponent(std::shared_ptr<Mesh> mesh, std::shared_ptr<Mat
 void RenderComponent::RenderObject() {
 	material_->program_.Use();
   
-	for (std::unordered_map<std::string, std::unique_ptr<Data> > ::iterator it = material_->uniform_data_.begin(); it != material_->uniform_manager_.uniform_data_.end(); ++it) {
+	for (std::unordered_map<std::string, std::unique_ptr<Data> > ::iterator it = material_->uniform_data_.begin(); it != material_->uniform_data_.end(); ++it) {
 		
 		if (it->second != nullptr) {
 			GLint position =	glGetUniformLocation(material_->program_.program(), it->first.c_str());

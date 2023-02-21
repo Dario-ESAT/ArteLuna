@@ -170,6 +170,7 @@ Mesh::Mesh(std::string inputfile) {
   reader_config.mtl_search_path = "./"; // Path to material files
   
   tinyobj::ObjReader reader;
+  tinyobj::ObjReader n_texture;
   
   if (!reader.ParseFromFile(inputfile, reader_config)) {
     if (!reader.Error().empty()) {

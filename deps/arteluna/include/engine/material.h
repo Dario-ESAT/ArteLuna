@@ -46,7 +46,7 @@ public:
   Shader shader_;
   Program program_;
   Texture texture_;
- 
+  Texture normal_texture_;
 
 private:
   friend class RenderComponent;

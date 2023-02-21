@@ -106,15 +106,55 @@ Material::Material(const char* vert, const char* frag, const char* texture_src, 
 	set_uniform_data("color",(void*)&a);
 
 	// Texture
+	normal_texture_.set_min_filter(min_filter);
+	normal_texture_.set_mag_filter(mag_filter);
+	normal_texture_.set_wrap_s(ws);
+	normal_texture_.set_wrap_t(wt);
+	normal_texture_.set_wrap_r(wr);
+	normal_texture_.set_type(t_type);
+	int texture_width = normal_texture_.width();
+	int texture_height = normal_texture_.height();
+	int texture_channels = normal_texture_.channels();
+	GLuint id_ntexture = normal_texture_.get_id();
+	normal_texture_.data_ = stbi_load("../../deps/arteluna/data/wavy.dds", &texture_width, &texture_height, &texture_channels, 0);
+	//texture_ = texture_data;
+	normal_texture_.set_width(texture_width);
+	normal_texture_.set_height(texture_height);
+	normal_texture_.set_channels(texture_channels);
+	switch (normal_texture_.channels()) {
+	case 1:
+		normal_texture_.set_format(Texture::R);
+		break;
+	case 2:
+		normal_texture_.set_format(Texture::RG);
+		break;
+	case 3:
+		normal_texture_.set_format(Texture::RGB);
+		break;
+	case 4:
+		normal_texture_.set_format(Texture::RGBA);
+		break;
+	}
+	normal_texture_.set_type(t_type);
+	//if (id() != 0)
+	glGenTextures(1, &id_ntexture);
+	texture_.set_id(id_ntexture);
+	//glBindTexture(GL_TEXTURE_2D, texture_.get_id());
+	//glActiveTexture(GL_TEXTURE0 + texture_.get_id());
+	normal_texture_.SetData(Texture::UNSIGNED_BYTE, 0);
+
+
+
+
 	texture_.set_min_filter(min_filter);
 	texture_.set_mag_filter(mag_filter);
 	texture_.set_wrap_s(ws);
 	texture_.set_wrap_t(wt);
 	texture_.set_wrap_r(wr);
 	texture_.set_type(t_type);
-	int texture_width = texture_.width();
-	int texture_height = texture_.height();
-	int texture_channels = texture_.channels();
+	texture_width = texture_.width();
+	texture_height = texture_.height();
+	texture_channels = texture_.channels();
 	GLuint id_texture = texture_.get_id();
 	texture_.data_ = stbi_load(texture_src, &texture_width, &texture_height, &texture_channels, 0);
 	//texture_ = texture_data;
