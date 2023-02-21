@@ -91,12 +91,12 @@ Mesh::Mesh() {
       delta_uv1 = b[1] - b[0];
       delta_uv2 = b[2] - b[0];
 
-      float f = 1.0f / (delta_uv1.x * delta_uv2.y - delta_uv2.x * delta_uv1.y);
+      float v = 1.0f / (delta_uv1.x * delta_uv2.y - delta_uv2.x * delta_uv1.y);
 
       glm::vec3 tangent;
-      tangent.x = f * (delta_uv2.y * edge_1.x - delta_uv1.y * edge_2.x);
-      tangent.y = f * (delta_uv2.y * edge_1.y - delta_uv1.y * edge_2.y);
-      tangent.z = f * (delta_uv2.y * edge_1.z - delta_uv1.y * edge_2.z);
+      tangent.x = v * (delta_uv2.y * edge_1.x - delta_uv1.y * edge_2.x);
+      tangent.y = v * (delta_uv2.y * edge_1.y - delta_uv1.y * edge_2.y);
+      tangent.z = v * (delta_uv2.y * edge_1.z - delta_uv1.y * edge_2.z);
 
       for (size_t v = 0; v < fv; v++) {
         tangents_.push_back(tangent.x);
