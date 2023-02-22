@@ -15,11 +15,13 @@
 struct Data{
   virtual void CopyData(void * data) = 0;
   virtual void bind(GLint position) = 0;
+  virtual ~Data() {}
 };
 template<typename T>
 struct Data_Implementation : Data{
   void CopyData(void * data) override;
   void bind(GLint position) override;
+  ~Data_Implementation() override {}
   T value_;
 };
 template <typename T>

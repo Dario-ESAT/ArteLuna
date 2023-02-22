@@ -112,201 +112,35 @@ void Texture::Bind()
 	}
 }
 
-void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */DataType d_type, unsigned int mip_map_LOD)
+void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */DataType d_type, int mip_map_LOD)
 {
-	GLenum mg_filter;
-	switch (mag_filter_)
-	{
-	case Linear:
-		mg_filter = GL_LINEAR;
-		break;
-	case Nearest:
-		mg_filter = GL_NEAREST;
-		break;
-	case Nearest_Mipmap_Nearest:
-		mg_filter = GL_NEAREST_MIPMAP_NEAREST;
-		break;
-	case Linear_mipmap_nearest:
-		mg_filter = GL_LINEAR_MIPMAP_NEAREST;
-		break;
-	case Nearest_mipmap_linear:
-		mg_filter = GL_NEAREST_MIPMAP_LINEAR;
-		break;
-	case Linear_mipmap_linear:
-		mg_filter = GL_LINEAR_MIPMAP_LINEAR;
-		break;
-	default:
-		throw 79;
-	}
+		glBindTexture(type_, get_id());
 
-	GLenum mn_filter;
-	switch (min_filter_)
-	{
-	case Linear:
-		mn_filter = GL_LINEAR;
-		break;
-	case Nearest:
-		mn_filter = GL_NEAREST;
-		break;
-	case Nearest_Mipmap_Nearest:
-		mn_filter = GL_NEAREST_MIPMAP_NEAREST;
-		break;
-	case Linear_mipmap_nearest:
-		mn_filter = GL_LINEAR_MIPMAP_NEAREST;
-		break;
-	case Nearest_mipmap_linear:
-		mn_filter = GL_NEAREST_MIPMAP_LINEAR;
-		break;
-	case Linear_mipmap_linear:
-		mn_filter = GL_LINEAR_MIPMAP_LINEAR;
-		break;
-	default:
-		throw 80;
-	}
-
-	GLenum wrap_s;
-	switch (wrap_s_)
-	{
-	case Repeat:
-		wrap_s = GL_REPEAT;
-		break;
-	case Mirrored_repeat:
-		wrap_s = GL_MIRRORED_REPEAT;
-		break;
-	case Clamp_to_edge:
-		wrap_s = GL_CLAMP_TO_EDGE;
-		break;
-	default:
-		throw 81;
-	}
-
-	GLenum wrap_t;
-	switch (wrap_t_)
-	{
-	case Repeat:
-		wrap_t = GL_REPEAT;
-		break;
-	case Mirrored_repeat:
-		wrap_t = GL_MIRRORED_REPEAT;
-		break;
-	case Clamp_to_edge:
-		wrap_t = GL_CLAMP_TO_EDGE;
-		break;
-	default:
-		throw 82;
-	}
-
-	GLenum wrap_r;
-	switch (wrap_r_)
-	{
-	case Repeat:
-		wrap_r = GL_REPEAT;
-		break;
-	case Mirrored_repeat:
-		wrap_r = GL_MIRRORED_REPEAT;
-		break;
-	case Clamp_to_edge:
-		wrap_r = GL_CLAMP_TO_EDGE;
-		break;
-	default:
-		throw 83;
-	}
-
-	GLenum f = GL_RGB;
-	switch (format_)
-	{
-	case R:
-		f = GL_R;
-		break;
-	case RG:
-		f = GL_RG;
-		break;
-	case RGB:
-		f = GL_RGB;
-		break;
-	case RGBA:
-		f = GL_RGBA;
-		break;
-	case Depth:
-		f = GL_DEPTH_COMPONENT24;
-	case Depth32:
-		f = GL_DEPTH_COMPONENT32F;
-		break;
-	default:
-		throw 84;
-	}
-
-	GLenum type;
-	switch (d_type) {
-	case BYTE:
-		type = GL_BYTE;
-		break;
-	case UNSIGNED_BYTE:
-		type = GL_UNSIGNED_BYTE;
-		break;
-	case FLOAT:
-		type = GL_FLOAT;
-		break;
-	case INT:
-		type = GL_INT;
-		break;
-	case UNSIGNED_INT:
-		type = GL_UNSIGNED_INT;
-		break;
-	case SHORT:
-		type = GL_SHORT;
-		break;
-	case UNSIGNED_SHORT:
-		type = GL_UNSIGNED_SHORT;
-		break;
-	default:
-		throw 85;
-	}
-	switch (type_)
-	{
-	case T_1D:
-		glBindTexture(GL_TEXTURE_1D, get_id());
-
-		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, mn_filter);
-		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, mg_filter);
-		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, wrap_s);
-		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_T, wrap_t);
-		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_R, wrap_r);
-
-		glTexImage1D(GL_TEXTURE_1D, mip_map_LOD, f, width(), 0, format_, type, data_);
-		glGenerateMipmap(GL_TEXTURE_1D);
-		break;
-	case T_2D:
-		glBindTexture(GL_TEXTURE_2D, get_id());
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mn_filter);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mg_filter);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_s);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrap_r);
-
-		if (data_) {
-			glTexImage2D(GL_TEXTURE_2D, mip_map_LOD, f, width(), height(), 0, f, type, data_);
-			glGenerateMipmap(GL_TEXTURE_2D);
-		}
-		else {
-			printf("Error loading the texture");
-		}
-		break;
-	case T_3D:
-		glBindTexture(GL_TEXTURE_3D, get_id());
-
-        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, mn_filter);
-        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, mg_filter);
-        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, wrap_s);
-        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, wrap_t);
-        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, wrap_r);
-
-        glTexImage3D(GL_TEXTURE_3D, mip_map_LOD, f, width(), height(), depth(), 0, format_, type, data_);
-        glGenerateMipmap(GL_TEXTURE_3D);
-        break;
-	default:
-		throw 86;
+		glTexParameteri(type_, GL_TEXTURE_MIN_FILTER, min_filter_);
+		glTexParameteri(type_, GL_TEXTURE_MAG_FILTER, mag_filter_);
+		glTexParameteri(type_, GL_TEXTURE_WRAP_S, wrap_s_);
+		glTexParameteri(type_, GL_TEXTURE_WRAP_T, wrap_t_);
+		glTexParameteri(type_, GL_TEXTURE_WRAP_R, wrap_r_);
+  if (data_){
+	  switch (type_) {
+	  case T_1D:{
+		  glTexImage1D(GL_TEXTURE_1D, mip_map_LOD, format_, width(), 0, format_, d_type, data_);
+		  break;
+	  }
+	  case T_2D:{
+      glTexImage2D(GL_TEXTURE_2D, mip_map_LOD, format_, width(), height(), 0, format_, d_type, data_);
+      break;
+	  }
+	  case T_3D:{
+      glTexImage3D(GL_TEXTURE_3D, mip_map_LOD, format_, width(), height(), depth(), 0, format_, d_type, data_);
+      break;
+	  }
+  	default:
+		  throw 86;
+	  }
+		glGenerateMipmap(type_);
+	} else {
+		printf("Error loading the texture");
 	}
 	stbi_image_free(data_);
 }

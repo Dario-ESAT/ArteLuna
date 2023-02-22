@@ -16,20 +16,20 @@ public:
 
   void MenuImgui();
 
-  inline glm::vec3 position() const;
-  inline glm::mat4 transform_matrix() const;
-  inline glm::vec3 forward() const;
-  inline glm::vec3 right() const;
-  inline glm::vec3 up() const;
-  inline float ortho_x();
-  inline float ortho_y();
-  inline float near();
-  inline float far();
+  __forceinline glm::vec3 position() const;
+  __forceinline glm::mat4 transform_matrix() const;
+  __forceinline glm::vec3 forward() const;
+  __forceinline glm::vec3 right() const;
+  __forceinline glm::vec3 up() const;
+  __forceinline float ortho_x();
+  __forceinline float ortho_y();
+  __forceinline float near();
+  __forceinline float far();
 
-  inline void set_ortho_x(float m);
-  inline void set_ortho_y(float m);
-  inline void set_near(float m);
-  inline void set_far(float m);
+  __forceinline void set_ortho_x(float m);
+  __forceinline void set_ortho_y(float m);
+  __forceinline void set_near(float m);
+  __forceinline void set_far(float m);
 
   float movement_speed_;
   float rotation_speed_;

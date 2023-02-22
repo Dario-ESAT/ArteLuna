@@ -275,7 +275,6 @@ void Material::set_uniform_data(std::string name, const glm::vec<4,float>* data)
 }
 #pragma endregion 
 
-
 #pragma region FLOAT4x4
 void Data_Implementation<glm::mat<4,4,float> >::bind(GLint position) {
   glUniformMatrix4fv(position, 1, false, glm::value_ptr(value_));
@@ -300,6 +299,197 @@ void Material::set_uniform_data(std::string name, const glm::mat<4,4,float>* dat
 }
 #pragma endregion 
 
+#pragma region FLOAT3x3
+void Data_Implementation<glm::mat<3,3,float> >::bind(GLint position) {
+  glUniformMatrix3fv(position, 1, false, glm::value_ptr(value_));
+}
+
+template <>
+void Material::set_uniform_data(std::string name, const glm::mat<3,3,float>* data) {
+  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+  (name);
+  if (uniform != uniform_map_.end()){
+    if (data == nullptr){
+      uniform->second.first.release();
+      return;
+    }
+
+    if (!uniform->second.first){
+      uniform->second.first = init_uniform_data(uniform->second.second);
+    }
+
+    uniform->second.first->CopyData((void*)data);
+  }
+}
+#pragma endregion
+
+#pragma region FLOAT2x2
+void Data_Implementation<glm::mat<2,2,float> >::bind(GLint position) {
+  glUniformMatrix2fv(position, 1, false, glm::value_ptr(value_));
+}
+
+template <>
+void Material::set_uniform_data(std::string name, const glm::mat<2,2,float>* data) {
+  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+  (name);
+  if (uniform != uniform_map_.end()){
+    if (data == nullptr){
+      uniform->second.first.release();
+      return;
+    }
+
+    if (!uniform->second.first){
+      uniform->second.first = init_uniform_data(uniform->second.second);
+    }
+
+    uniform->second.first->CopyData((void*)data);
+  }
+}
+#pragma endregion
+
+#pragma region FLOAT2x3
+void Data_Implementation<glm::mat<2,3,float> >::bind(GLint position) {
+  glUniformMatrix2x3fv(position, 1, false, glm::value_ptr(value_));
+}
+
+template <>
+void Material::set_uniform_data(std::string name, const glm::mat<2,3,float>* data) {
+  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+  (name);
+  if (uniform != uniform_map_.end()){
+    if (data == nullptr){
+      uniform->second.first.release();
+      return;
+    }
+
+    if (!uniform->second.first){
+      uniform->second.first = init_uniform_data(uniform->second.second);
+    }
+
+    uniform->second.first->CopyData((void*)data);
+  }
+}
+#pragma endregion
+
+#pragma region FLOAT3x2
+void Data_Implementation<glm::mat<3,2,float> >::bind(GLint position) {
+  glUniformMatrix3x2fv(position, 1, false, glm::value_ptr(value_));
+}
+
+template <>
+void Material::set_uniform_data(std::string name, const glm::mat<3,2,float>* data) {
+  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+  (name);
+  if (uniform != uniform_map_.end()){
+    if (data == nullptr){
+      uniform->second.first.release();
+      return;
+    }
+
+    if (!uniform->second.first){
+      uniform->second.first = init_uniform_data(uniform->second.second);
+    }
+
+    uniform->second.first->CopyData((void*)data);
+  }
+}
+#pragma endregion
+
+#pragma region FLOAT2x4
+void Data_Implementation<glm::mat<2,4,float> >::bind(GLint position) {
+  glUniformMatrix2x4fv(position, 1, false, glm::value_ptr(value_));
+}
+
+template <>
+void Material::set_uniform_data(std::string name, const glm::mat<2,4,float>* data) {
+  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+  (name);
+  if (uniform != uniform_map_.end()){
+    if (data == nullptr){
+      uniform->second.first.release();
+      return;
+    }
+
+    if (!uniform->second.first){
+      uniform->second.first = init_uniform_data(uniform->second.second);
+    }
+
+    uniform->second.first->CopyData((void*)data);
+  }
+}
+#pragma endregion
+
+#pragma region FLOAT4x2
+void Data_Implementation<glm::mat<4,2,float> >::bind(GLint position) {
+  glUniformMatrix4x2fv(position, 1, false, glm::value_ptr(value_));
+}
+
+template <>
+void Material::set_uniform_data(std::string name, const glm::mat<4,2,float>* data) {
+  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+  (name);
+  if (uniform != uniform_map_.end()){
+    if (data == nullptr){
+      uniform->second.first.release();
+      return;
+    }
+
+    if (!uniform->second.first){
+      uniform->second.first = init_uniform_data(uniform->second.second);
+    }
+
+    uniform->second.first->CopyData((void*)data);
+  }
+}
+#pragma endregion
+
+#pragma region FLOAT3x4
+void Data_Implementation<glm::mat<3,4,float> >::bind(GLint position) {
+  glUniformMatrix3x4fv(position, 1, false, glm::value_ptr(value_));
+}
+
+template <>
+void Material::set_uniform_data(std::string name, const glm::mat<3,4,float>* data) {
+  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+  (name);
+  if (uniform != uniform_map_.end()){
+    if (data == nullptr){
+      uniform->second.first.release();
+      return;
+    }
+
+    if (!uniform->second.first){
+      uniform->second.first = init_uniform_data(uniform->second.second);
+    }
+
+    uniform->second.first->CopyData((void*)data);
+  }
+}
+#pragma endregion
+
+#pragma region FLOAT4x3
+void Data_Implementation<glm::mat<4,3,float> >::bind(GLint position) {
+  glUniformMatrix4x3fv(position, 1, false, glm::value_ptr(value_));
+}
+
+template <>
+void Material::set_uniform_data(std::string name, const glm::mat<4,3,float>* data) {
+  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+  (name);
+  if (uniform != uniform_map_.end()){
+    if (data == nullptr){
+      uniform->second.first.release();
+      return;
+    }
+
+    if (!uniform->second.first){
+      uniform->second.first = init_uniform_data(uniform->second.second);
+    }
+
+    uniform->second.first->CopyData((void*)data);
+  }
+}
+#pragma endregion 
 
 #pragma region INT
 void Data_Implementation<int>::bind(GLint position) {
@@ -371,7 +561,6 @@ void Material::set_uniform_data(std::string name, const glm::vec<3,int>* data) {
   }
 }
 #pragma endregion 
-
 
 #pragma region INT4
 void Data_Implementation<glm::vec<4,int>>::bind(GLint position) {
