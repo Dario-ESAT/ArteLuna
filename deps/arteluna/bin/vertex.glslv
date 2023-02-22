@@ -21,12 +21,12 @@ void main() {
     normal = normalize(mat3(u_m_matrix) * a_normal);
 
     // Normal mapping
-    /*mat3 model3x3 = mat3(u_m_matrix);
+    mat3 model3x3 = mat3(u_m_matrix);
     vec3 mT = model3x3 * a_tangent;
     vec3 mN = model3x3 * a_normal;
     vec3 mB = cross(mN, mT);
 
     TBN = mat3(mT, mB, mN);
-    TexCoord = a_uv;*/
+    TexCoord = a_uv;
     gl_Position = u_vp_matrix * u_m_matrix * vec4(a_position, 1.0f);
 };
