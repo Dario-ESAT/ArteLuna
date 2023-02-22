@@ -62,8 +62,8 @@ private:
   glm::vec3 right_;
   glm::vec3 up_;
   
-  glm::vec2 mouse_pos_buffer_;
-  bool is_rotating_;
+  glm::vec<2,double> mouse_pos_buffer_;
+  bool is_moving_;
   glm::mat4x4 view_matrix_;
 
   uint32_t mode_;

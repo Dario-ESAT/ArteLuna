@@ -5,6 +5,11 @@
 #include "imgui.h"
 
 void LightComponent::ImguiTree(uint32_t id) {
+  ImGui::ColorPicker3("Color",&color_.r,ImGuiColorEditFlags_Float);
+  int b = brightness_;
+  ImGui::DragInt("Brightness",&b,0,0,255,"%d");
+  brightness_ = b;
+  
   switch (type_){
     case Spotlight:{
       float aux = inner_cone_radius_;
@@ -20,13 +25,9 @@ void LightComponent::ImguiTree(uint32_t id) {
       ImGui::DragFloat("Linear",&linear_,0.02f);
       ImGui::DragFloat("Quadratic",&quadratic_,0.02f);
     }
-    case Directional:{
-      ImGui::ColorPicker3("Color",&color_.r,ImGuiColorEditFlags_Float);
-      int b = brightness_;
-      ImGui::SliderInt("Brightness",&b,0,255,"%d");
-      brightness_ = b;
+    default:{
+      break;
     }
-    
   }
 }
 

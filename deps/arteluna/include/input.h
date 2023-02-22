@@ -148,7 +148,7 @@ class Input {
   bool enabled() const { return enabled_; }
   void setEnabled(bool value) { enabled_ = value; }
   void setMouseMode(CursorMode mode);
-  glm::vec2 cursor_pos() const {return cursor_pos_;}
+  glm::vec<2,double> cursor_pos() const {return cursor_pos_;}
 
   static void get_scrollback(GLFWwindow* window, double xoffset, double yoffset);
 
@@ -170,7 +170,7 @@ private:
   std::map<int, bool> mouse_keys_;
   static std::vector<Input*> instances_;
   GLFWwindow* window_ref_;
-  glm::vec2 cursor_pos_;
+  glm::vec<2,double> cursor_pos_;
   
   friend class Window;
 };

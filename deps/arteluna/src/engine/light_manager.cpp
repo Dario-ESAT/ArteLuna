@@ -4,7 +4,7 @@
 #include "engine/entity_manager.h"
 
 LightManager::~LightManager() {
-    
+  
 }
 
 LightManager& LightManager::GetLightManager() {

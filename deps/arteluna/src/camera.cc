@@ -15,7 +15,7 @@ Camera::Camera() {
   rotation_speed_ = 1.0f;
   mouse_pos_buffer_.x = 1280.f / 2.f;
   mouse_pos_buffer_.y = 720.f / 2.f;
-  is_rotating_ = false;
+  is_moving_ = false;
   rotate_x_ = 0;
   rotate_y_ = 0;
   fov_ = 90.0f;
@@ -94,16 +94,16 @@ void Camera::UpdateFromInput(double deltatime, Input* input) {
 
   if (input->IsMouseButtonDown(1)) {
     input->setMouseMode(DISABLED);
-    is_rotating_ = true;
-  }
-  else {
-    is_rotating_ = false;
+    is_moving_ = true;
+  } else {
+    is_moving_ = false;
     input->setMouseMode(NORMAL);
   }
 }
 
-void Camera::UpdateRotation(double deltatime, glm::vec2 cursor_pos) {
-  if (is_rotating_) {
+void Camera::UpdateRotation(double deltatime, glm::vec<2,float> cursor_pos) {
+  if (is_moving_) {
+    
     if (mode_ == Perspective) {
       rotate_x_ += mouse_displacement_y_ * rotation_speed_ * static_cast<float>(deltatime);
       if (rotate_x_ > 1.57f) {
@@ -113,7 +113,6 @@ void Camera::UpdateRotation(double deltatime, glm::vec2 cursor_pos) {
         rotate_x_ = -1.57f;
       }
       rotate_y_ += mouse_displacement_x_ * rotation_speed_ * static_cast<float>(deltatime);
-      mouse_pos_buffer_ = cursor_pos;
     }
 
     if (mode_ == Ortho) {
@@ -123,11 +122,15 @@ void Camera::UpdateRotation(double deltatime, glm::vec2 cursor_pos) {
 }
 
 void Camera::Update(double deltatime, Input* input) {
+  glm::vec<2,double> mouse_pos = input->cursor_pos();
+  mouse_displacement_x_ = (float)(mouse_pos.x - mouse_pos_buffer_.x);
+  mouse_displacement_y_ = (float)(mouse_pos.y - mouse_pos_buffer_.y);
+  
   UpdateFromInput(deltatime,input);
-  mouse_displacement_x_ = input->cursor_pos().x - mouse_pos_buffer_.x;
-  mouse_displacement_y_ = input->cursor_pos().y - mouse_pos_buffer_.y;
-  UpdateRotation(deltatime,input->cursor_pos());
+  UpdateRotation(deltatime,mouse_pos);
   UpdateTransform();
+  
+  mouse_pos_buffer_ = input->cursor_pos();
 }
 
 void Camera::TransformOrtho(Input* input)
@@ -277,21 +280,23 @@ void Camera::Mode(Modes m)
 }
 
 void Camera::UpdateTransform() {
-  glm::mat4x4 transform_aux(1.0f);
-  if (mode_ == Perspective) {
-    transform_aux = glm::scale(transform_aux, glm::vec3(1.0f, 1.0f, 1.0f));
-    transform_aux = glm::rotate(transform_aux, rotate_y_, glm::vec3(0.0f, 1.0f, 0.0f));
-    transform_aux = glm::translate(transform_aux, position_);
-    transform_aux = glm::transpose(transform_aux);
+  if (is_moving_){
+    glm::mat4x4 transform_aux(1.0f);
+    if (mode_ == Perspective) {
+      transform_aux = glm::scale(transform_aux, glm::vec3(1.0f, 1.0f, 1.0f));
+      transform_aux = glm::rotate(transform_aux, rotate_y_, glm::vec3(0.0f, 1.0f, 0.0f));
+      transform_aux = glm::translate(transform_aux, position_);
+      transform_aux = glm::transpose(transform_aux);
 
-    transform_aux = glm::rotate(transform_aux, rotate_x_, glm::vec3(1.0f, 0.0f, 0.0f));
-    transform_matrix_ = transform_aux;
+      transform_aux = glm::rotate(transform_aux, rotate_x_, glm::vec3(1.0f, 0.0f, 0.0f));
+      transform_matrix_ = transform_aux;
 
-    glm::mat3x3 rotation_mat(transform_matrix_);
+      glm::mat3x3 rotation_mat(transform_matrix_);
 
-    right_ = rotation_mat * glm::vec3(1.f, 0.f, 0.f);
-    up_ = rotation_mat * glm::vec3(0.f, 1.f, 0.f);
-    forward_ = rotation_mat * glm::vec3(0.f, 0.f, 1.f);
+      right_ = rotation_mat * glm::vec3(1.f, 0.f, 0.f);
+      up_ = rotation_mat * glm::vec3(0.f, 1.f, 0.f);
+      forward_ = rotation_mat * glm::vec3(0.f, 0.f, 1.f);
+    }
   }
 }
 
