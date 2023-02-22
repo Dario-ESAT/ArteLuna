@@ -15,7 +15,7 @@ Camera::Camera() {
   rotation_speed_ = 1.0f;
   mouse_pos_buffer_.x = 1280.f / 2.f;
   mouse_pos_buffer_.y = 720.f / 2.f;
-  is_moving_ = false;
+  is_moving_ = true;
   rotate_x_ = 0;
   rotate_y_ = 0;
   fov_ = 90.0f;
@@ -31,6 +31,7 @@ Camera::Camera() {
   far_ = 50.0f;
 
   UpdateTransform();
+  
 }
 
 Camera::~Camera() {
