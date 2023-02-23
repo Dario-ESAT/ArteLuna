@@ -126,7 +126,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     0.032f * (distance * distance));    
   // combine results
   
-  vec3 color  = light.color * vec3(texture(u_texture, uv));
+  vec3 color  = light.color * vec3(texture(u_normal, uv));
   //vec3 diffuse  = light.diffuse  * diff * vec3(texture(u_texture, uv));
   vec3 diffuse  = light.color * diff * vec3(texture(u_texture, uv));
     //   vec3 specular = light.specular * spec * vec3(texture(u_specular, uv));
@@ -163,9 +163,11 @@ void main() {
   vec3 light_result = vec3(0.0,0.0,0.0);
   vec3 Nnormal = normalize(normal);
 
-  vec3 normals_mapping = texture(u_normal, TexCoord).xyz;
+  vec3 normals_mapping = texture(u_normal, TexCoord).rgb;
+  vec3 diffuse_color = texture(u_texture, TexCoord).rgb;
   normals_mapping.z = sqrt(1 - normals_mapping.x * normals_mapping.x + normals_mapping.y * normals_mapping.y);
   vec3 N = normals_mapping * 2.0 - 1.0;
+  N = normalize(N);
   N = TBN * N;
 
 
@@ -176,11 +178,12 @@ void main() {
   vec3 LD;
   float sindicato;
   for(int i = 0; i < u_n_pointLight;i++) {
-    light_result += CalcPointLight(pointLight[i],Nnormal,w_pos,view_dir);
-    LD = normalize(pointLight[i].position - w_pos);
-    sindicato += max(dot(LD, N), 0.0f);
+    light_result += CalcPointLight(pointLight[i],N,w_pos,view_dir);
+    //light_result *= diffuse_color;
   }
-
+  float b =light_result.x;
+  b = b + light_result.y;
+  b = b + light_result.z;
 //   for(int i = 0; i < u_n_spotLight;i++) {
 //     light_result += CalcSpotLight(spotLight[i],Nnormal,w_pos,view_dir);
 //   }
@@ -194,6 +197,6 @@ void main() {
 	//vec4 objectColor = vec4(light_result, 1);// * texture(u_texture, uv);
 	//gl_FragColor = mix(objectColor, VertexIn.color, alpha);// * texture(u_texture, uv);
   
-	gl_FragColor = texture(u_texture, TexCoord) * sindicato;// SIN NIEBLA
+	gl_FragColor = texture(u_texture, TexCoord) * b;// SIN NIEBLA
 	// gl_FragColor = mix( vec4(light_result, 1), VertexIn.color, alpha); // CON NIEBLA 
 } 

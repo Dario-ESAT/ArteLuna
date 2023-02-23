@@ -20,8 +20,8 @@ int main() {
   glm::vec3 rotation_ = { 0.0f, 3.140f, 0.0f };
   
   std::shared_ptr<Material> material = std::make_shared<Material>("../../deps/arteluna/bin/vertex.glslv",
-   "../../deps/arteluna/bin/fragment.glslf", "../../deps/arteluna/data/muse.jpg", Texture::Type::T_2D);
-  std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../deps/arteluna/data/models/ugandan_sonic.obj");
+   "../../deps/arteluna/bin/fragment.glslf", "../../deps/arteluna/data/white_prueba.jpg","../../deps/arteluna/data/felis.png", Texture::Type::T_2D);
+  std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../deps/arteluna/data/models/cuke.obj");
   
   Entity& entity_1 = manager_ref.CreateNewEntity();
   TransformComponent* transform_cmp = entity_1.get_component<TransformComponent>();

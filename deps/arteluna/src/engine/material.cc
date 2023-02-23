@@ -75,7 +75,7 @@ Material::Material(const char* vert, const char* frag) {
 	}
 }
 
-Material::Material(const char* vert, const char* frag, const char* texture_src, Texture::Type t_type, Texture::Filter mag_filter,
+Material::Material(const char* vert, const char* frag, const char* texture_src,const char* normal_texture_src, Texture::Type t_type, Texture::Filter mag_filter,
 	Texture::Filter min_filter,  Texture::Wrap ws, Texture::Wrap wt, Texture::Wrap wr) {
 
 	std::unique_ptr<char[]> vert_ = ReadFile(vert);
@@ -87,7 +87,7 @@ Material::Material(const char* vert, const char* frag, const char* texture_src, 
 	GLint size; // size of the variable
 	GLenum type; // type of the variable (float, vec3 or mat4, etc)
 
-	const GLsizei bufSize = 40; // maximum name length
+	const GLsizei bufSize = 4000; // maximum name length
 	GLchar name[bufSize]; // variable name in GLSL
 	GLsizei length;
 
@@ -107,11 +107,10 @@ Material::Material(const char* vert, const char* frag, const char* texture_src, 
 	texture_.set_wrap_t(wt);
 	texture_.set_wrap_r(wr);
 	texture_.set_type(t_type);
-	texture_width = texture_.width();
-	texture_height = texture_.height();
-	texture_channels = texture_.channels();
+  int p = glGetUniformLocation(program_.program(), "u_texture");
+  
 	GLuint id_texture = texture_.get_id();
-	texture_.data_ = stbi_load(texture_src, &texture_width, &texture_height, &texture_channels, 0);
+	texture_.data_ = stbi_load(texture_src, &texture_width, &texture_height, &texture_channels, 4);
 	//texture_ = texture_data;
 	texture_.set_width(texture_width);
 	texture_.set_height(texture_height);
@@ -137,19 +136,21 @@ Material::Material(const char* vert, const char* frag, const char* texture_src, 
 	//glBindTexture(GL_TEXTURE_2D, texture_.get_id());
 	//glActiveTexture(GL_TEXTURE0 + texture_.get_id());
   texture_.SetData(Texture::UNSIGNED_BYTE, 0);
-  /*
-  int ntexture_width = texture_.width();
-  int ntexture_height = texture_.height();
-  int ntexture_channels = texture_.channels();
+  
+  // Normal texture
+  int ntexture_width = normal_texture_.width();
+  int ntexture_height = normal_texture_.height();
+  int ntexture_channels = normal_texture_.channels();
   normal_texture_.set_min_filter(min_filter);
   normal_texture_.set_mag_filter(mag_filter);
   normal_texture_.set_wrap_s(ws);
   normal_texture_.set_wrap_t(wt);
   normal_texture_.set_wrap_r(wr);
   normal_texture_.set_type(t_type);
-
   GLuint id_ntexture = normal_texture_.get_id();
-  normal_texture_.data_ = stbi_load("../../deps/arteluna/data/wavy.jpg", &ntexture_width, &ntexture_height, &ntexture_channels, 0);
+  normal_texture_.data_ = stbi_load(normal_texture_src, &ntexture_width, &ntexture_height, &ntexture_channels, 0);
+  if (stbi_failure_reason())
+    std::cout << stbi_failure_reason();
   //texture_ = texture_data;
   normal_texture_.set_width(ntexture_width);
   normal_texture_.set_height(ntexture_height);
@@ -174,7 +175,7 @@ Material::Material(const char* vert, const char* frag, const char* texture_src, 
   normal_texture_.set_id(id_ntexture);
   //glBindTexture(GL_TEXTURE_2D, texture_.get_id());
   //glActiveTexture(GL_TEXTURE0 + texture_.get_id());
-  normal_texture_.SetData(Texture::UNSIGNED_BYTE, 0);*/
+  normal_texture_.SetData(Texture::UNSIGNED_BYTE, 0);
 }
 
 Material::~Material() {}

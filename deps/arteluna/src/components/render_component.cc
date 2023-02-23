@@ -23,6 +23,8 @@ RenderComponent::RenderComponent(std::shared_ptr<Mesh> mesh, std::shared_ptr<Mat
 void RenderComponent::RenderObject() {
 	material_->program_.Use();
   
+
+
 	for (std::unordered_map<std::string, uniform > ::iterator it = material_->uniform_map_.begin(); it != material_->uniform_map_.end(); ++it) {
 		
 		if (it->second.first) {
@@ -34,8 +36,17 @@ void RenderComponent::RenderObject() {
       }
 		}
 	}
-
+	material_->texture_.Active();
 	material_->texture_.Bind();
+	int uniform = glGetUniformLocation(material_->program_.program(), "u_texture");
+	glUniform1i(uniform, material_->texture_.get_id());
+
+	material_->normal_texture_.Active();
+	material_->normal_texture_.Bind();
+	uniform = glGetUniformLocation(material_->program_.program(), "u_normal");
+	glUniform1i(uniform, material_->normal_texture_.get_id());
+
+
 	glBindVertexArray(mesh_->mesh_buffer());
 	glDrawElements(GL_TRIANGLES, (GLsizei)mesh_->indices_.size(),GL_UNSIGNED_INT, 0);
 

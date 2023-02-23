@@ -144,3 +144,8 @@ void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */D
 	}
 	stbi_image_free(data_);
 }
+
+void Texture::Active()
+{
+	glActiveTexture(GL_TEXTURE0 + id_texture_);
+}
