@@ -89,7 +89,7 @@ void Input::keyboard_callback(GLFWwindow* window, int key, int scancode,
   
   for(size_t i = 0; i < instances_.size(); i++) {
     Input* input = instances_[i];
-    // printf("\nk:%d s:%d a:%d m:%d", key, scancode, action, mods);
+    printf("\nk:%d s:%d a:%d m:%d", key, scancode, action, mods);
     input->setIsKeyDown(key, action != GLFW_RELEASE);
   }
   

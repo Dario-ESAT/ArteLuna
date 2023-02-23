@@ -20,7 +20,7 @@ RenderComponent::RenderComponent(std::shared_ptr<Mesh> mesh, std::shared_ptr<Mat
 	material_ = material;
 }
 
-void RenderComponent::RenderObject() {
+void RenderComponent::RenderObject() const{
 	material_->program_.Use();
   
 

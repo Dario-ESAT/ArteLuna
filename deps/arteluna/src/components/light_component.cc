@@ -42,3 +42,13 @@ LightComponent::LightComponent() {
   outer_cone_radius_ = 10.f;
   brightness_ = 255;
 }
+
+
+
+
+
+
+
+
+
+
