@@ -178,14 +178,14 @@ void Camera::RenderScene(float aspect) {
       if (uniform > -1){
         glUniform3f(uniform, position_.x, position_.y, position_.z);
       }
-      for (unsigned long long j = 0; j < light_manager.lights_.size(); i++){
+      // for (unsigned long long j = 0; j < light_manager.lights_.size(); i++){
         
         uniform = glGetUniformLocation(program,"u_n_pointLight");
         if (uniform > -1){
           glUniform1i(uniform, 1);
         }
-        char uniform_name[50] = {'\0'};
-        sprintf(uniform_name,"pointLight[%d].position",j);
+        // char uniform_name[50] = {'\0'};
+        // sprintf(uniform_name,"pointLight[%d].position",j);
         uniform = glGetUniformLocation(program,"pointLight[0].position");
         if (uniform > -1){
           glUniform3f(uniform,  3.50f , 0.0f, 10.0f);
@@ -209,7 +209,7 @@ void Camera::RenderScene(float aspect) {
           glUniform1f(uniform,  0.032f);
         }
         
-      }
+      // }
     	
 
       render_component.RenderObject();
