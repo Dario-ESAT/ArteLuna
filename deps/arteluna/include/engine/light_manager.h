@@ -2,6 +2,7 @@
 #define __LIGHT_MANAGER_H__ 1
 #include <vector>
 #include "entity.h"
+#include "components/light_component.h"
 
 class LightManager {
   public:
@@ -9,20 +10,19 @@ class LightManager {
   
   ~LightManager();
 
-  static LightManager& GetLightManager();
+  static LightManager& GetManager();
   
-  Entity& CreateDirectionalLight(uint32_t parent = 0);
-  Entity& CreateSpotLight(uint32_t parent = 0);
-  Entity& CreatePointLight(uint32_t parent = 0);
-
+  Entity& CreatelLight(uint32_t parent = 0, LightComponent::Type type = 
+  LightComponent::Directional);
+  
+  void DestroyLight(size_t index);
 protected:
-    std::vector<uint32_t> point_lights_;
-    std::vector<uint32_t> spot_lights_;
-    std::vector<uint32_t> directional_lights_;
+  std::vector<uint32_t> lights_;
 
 private:
   LightManager();
-
+  friend class LightComponent;
+  friend class Camera;
 };
 
 
