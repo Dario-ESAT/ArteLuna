@@ -9,7 +9,7 @@ Entity::Entity() {
 
 Entity::Entity(uint32_t id, uint32_t parent){
   id_ = id;
-  if (parent>= EntityManager::GetManager().last_id_) parent = 0;
+  if (parent >= EntityManager::GetManager().last_id_) parent = 0;
   
   parent_ = parent;
   EntityManager::GetManager().GetEntity(parent)->children().emplace_back(id);

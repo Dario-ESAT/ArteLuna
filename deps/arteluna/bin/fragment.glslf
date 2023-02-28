@@ -1,35 +1,21 @@
-// out vec4 gl_FragColor;
-// in vec3 normal;
-// uniform sampler2D textcolor;
-
-// void main()
-// {
-//     gl_FragColor = texture(textcolor, texcoord);
-// };
-
 #version 330
-
-const int MAX_D_LIGHTS = 5;
-const int MAX_p_LIGHTS = 5;
-const int MAX_s_LIGHTS = 5;
-
 //uniform vec4 u_color;
 uniform sampler2D u_texture;
 uniform sampler2D u_normal;
 // uniform sampler2D u_specular;
 // uniform float u_shininess;
-uniform vec3 cam_pos;
+uniform vec3 al_cam_pos;
 
 
 out vec4 gl_FragColor;
 
-struct DirLight {
-    vec3 direction;
-  
-    vec3 color;
+struct al_DirLight {
+  vec3 direction;
+
+  vec3 color;
 };
 
-struct PointLight {    
+struct al_PointLight {    
   vec3 position;
   
   float constant;
@@ -39,7 +25,7 @@ struct PointLight {
   vec3 color;
 };
 
-struct SpotLight {    
+struct al_SpotLight {    
   vec3 position;
   vec3 direction;
   
@@ -51,14 +37,17 @@ struct SpotLight {
 
   vec3 color;
 };
+const int MAX_D_LIGHTS = 5;
+const int MAX_p_LIGHTS = 5;
+const int MAX_s_LIGHTS = 5;
 
-uniform DirLight dirLight[MAX_D_LIGHTS];
-uniform PointLight pointLight[MAX_p_LIGHTS];
-uniform SpotLight spotLight[MAX_s_LIGHTS];
+uniform al_DirLight al_dirLight[MAX_D_LIGHTS];
+uniform al_PointLight al_pointLight[MAX_p_LIGHTS];
+uniform al_SpotLight al_spotLight[MAX_s_LIGHTS];
 
-uniform int u_n_dirLight;
-uniform int u_n_pointLight;
-uniform int u_n_spotLight;
+uniform int al_n_dirLight;
+uniform int al_n_pointLight;
+uniform int al_n_spotLight;
 
 in vec3 normal;
 in vec2 uv;
@@ -81,7 +70,7 @@ in vec2 TexCoord;
 	return 1 - (fog_max - fog_distance) / (fog_max - fog_min);
 } */
 
-/* vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
+/* vec3 Calcal_SpotLight(al_SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
   vec3 lightDir = normalize(light.position - fragPos);
   
   // specular
@@ -108,7 +97,7 @@ in vec2 TexCoord;
   return color;
 } */
 
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
+vec3 Calcal_PointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
   //vec3 lightDir = normalize(light.position - fragPos);
   vec3 lightDir = normalize(light.position - fragPos);
     // diffuse shading
@@ -138,7 +127,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     //    return (color + diffuse + specular);
 }
 
-/* vec3 CalcDir(DirLight light, vec3 normal, vec3 viewDir) {
+/* vec3 CalcDir(al_DirLight light, vec3 normal, vec3 viewDir) {
   vec3 lightDir = normalize(light.direction);
   // diffuse shading
   float diff = max(dot(normal, lightDir), 0.0);
@@ -159,7 +148,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
 } */
 
 void main() {
-  vec3 view_dir = normalize(cam_pos - w_pos);
+  vec3 view_dir = normalize(al_cam_pos - w_pos);
   vec3 light_result = vec3(0.0,0.0,0.0);
   vec3 Nnormal = normalize(normal);
 
@@ -175,19 +164,19 @@ void main() {
 //   }
   vec3 LD;
   float sindicato;
-  for(int i = 0; i < u_n_pointLight;i++) {
-    light_result += CalcPointLight(pointLight[i],Nnormal,w_pos,view_dir);
-    LD = normalize(pointLight[i].position - w_pos);
+  for(int i = 0; i < al_n_pointLight;i++) {
+    light_result += Calcal_PointLight(al_pointLight[i],Nnormal,w_pos,view_dir);
+    LD = normalize(al_pointLight[i].position - w_pos);
     sindicato += max(dot(LD, N), 0.0f);
   }
 
 //   for(int i = 0; i < u_n_spotLight;i++) {
-//     light_result += CalcSpotLight(spotLight[i],Nnormal,w_pos,view_dir);
+//     light_result += Calcal_SpotLight(spotLight[i],Nnormal,w_pos,view_dir);
 //   }
 
   // vec4 fog_position = vec4(w_pos, 1);
 	//float fog_distance = distance(vec4(CameraPosition, 1.0f), fog_position);
-	// float fog_distance = distance(vec4(cam_pos, 1), fog_position);
+	// float fog_distance = distance(vec4(al_cam_pos, 1), fog_position);
 	// float alpha = GetFogFactor(fog_distance);
 
 	// gl_FragColor = vec4(u_n_dirLight,u_n_pointLight,u_n_spotLight, 1);

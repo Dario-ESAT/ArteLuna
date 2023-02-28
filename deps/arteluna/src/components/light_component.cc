@@ -34,14 +34,21 @@ void LightComponent::ImguiTree(uint32_t id) {
 LightComponent::~LightComponent(){}
 
 LightComponent::LightComponent() {
-  color_ = {1.f,1.f,1.f};
   constant_ = 1.f;
   linear_ = 0.09f;
   quadratic_ = 0.032f;
   inner_cone_radius_ = 3.f;
   outer_cone_radius_ = 10.f;
   brightness_ = 255;
+  type_ = Directional;
 }
+
+
+
+
+
+
+
 
 
 

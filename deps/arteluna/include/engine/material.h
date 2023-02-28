@@ -13,23 +13,37 @@
 #include "texture.h"
 
 struct Data{
-  virtual void CopyData(void * data) = 0;
-  virtual void bind(GLint position) = 0;
+  virtual void CopyData(const void * data) = 0;
+  virtual void bind(GLint location) = 0;
   virtual ~Data() {}
 };
 template<typename T>
 struct Data_Implementation : Data{
-  void CopyData(void * data) override;
-  void bind(GLint position) override;
-  ~Data_Implementation() override {}
+  void CopyData(const void * data) override;
+  void bind(GLint location) override;
+  ~Data_Implementation() override = default;
   T value_;
 };
 template <typename T>
-void Data_Implementation<T>::CopyData(void* data) {
+void Data_Implementation<T>::CopyData(const void* data) {
   memcpy(&value_, data,sizeof(T));
 }
-typedef std::pair<std::unique_ptr<Data>, GLenum> uniform;
 
+struct ALUniform{
+  int32_t location_;
+  friend class Material;
+};
+
+struct Uniform : ALUniform{
+  GLenum type_;
+  std::unique_ptr<Data> data_;
+};
+
+struct LightUniforms{
+  GLuint position;
+  GLuint color;
+  
+};
 class Material {
 public:
   Material();
@@ -39,7 +53,7 @@ public:
       Texture::Wrap ws = Texture::Wrap::Clamp_to_edge, Texture::Wrap wt = Texture::Wrap::Clamp_to_edge, Texture::Wrap wr = Texture::Wrap::Clamp_to_edge);
   ~Material();
   template<typename T>
-  void set_uniform_data(std::string name, const T* data);
+  void set_uniform_data(const std::string& name, const T* data);
   
   Shader shader_;
   Program program_;
@@ -47,9 +61,13 @@ public:
   Texture normal_texture_;
 
 private:
-  std::unordered_map<std::string, uniform > uniform_map_;
-  static std::unique_ptr<Data> init_uniform_data(GLenum type);
+  
+  std::unordered_map<std::string, Uniform > user_uniforms_;
+  std::unordered_map<std::string, ALUniform > al_uniforms_;
+  std::vector<LightUniforms> lights;
+  
   friend class RenderComponent;
+  friend class Camera;
 };
 
 

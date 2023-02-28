@@ -6,7 +6,7 @@
 
 #include "stb_image.h"
 #include "utils.h"
-std::unique_ptr<Data> Material::init_uniform_data(GLenum type){
+std::unique_ptr<Data> init_uniform_data(GLenum type){
   switch (type) {
   case GL_FLOAT: {
     return std::make_unique<Data_Implementation<float>>();
@@ -51,51 +51,52 @@ std::unique_ptr<Data> Material::init_uniform_data(GLenum type){
   }
 }
 
+void InitMaterial (
+  std::unordered_map<std::string, Uniform >& user_uniforms,
+  std::unordered_map<std::string, ALUniform >& al_uniforms,
+  const char* vert, const char* frag, Shader& shader,
+  Program& program) {
+
+  std::unique_ptr<char[]> vert_ = ReadFile(vert);
+  std::unique_ptr<char[]> frag_ = ReadFile(frag);
+  shader.Init(vert_.get(), frag_.get());
+  program.Init(shader.vertex(), shader.fragment());
+  GLint count;
+
+  GLint size; // size of the variable
+  GLenum type; // type of the variable (float, vec3 or mat4, etc)
+
+  const GLsizei bufSize = 40; // maximum name length
+  GLchar name[bufSize]; // variable name in GLSL
+  GLsizei length;
+
+  glGetProgramiv(program.program(), GL_ACTIVE_UNIFORMS, &count);
+  for (GLint i = 0; i < count; i++) {
+    glGetActiveUniform(program.program(), i, bufSize, &length, &size, &type, name);
+    const int32_t location = glGetUniformLocation(program.program(),name);
+    
+    if (name[0] == 'a' && name[1] == 'l' && name[2] == '_'){
+      al_uniforms[name].location_ = location;
+    } else{
+      user_uniforms[name].type_ = type;
+      user_uniforms[name].location_ = location;
+    }
+  }
+  
+}
+
+
 Material::Material() {}
 
 Material::Material(const char* vert, const char* frag) {
 
-	std::unique_ptr<char[]> vert_ = ReadFile(vert);
-	std::unique_ptr<char[]> frag_ = ReadFile(frag);
-	shader_.Init(vert_.get(), frag_.get());
-	program_.Init(shader_.vertex(), shader_.fragment());
-	GLint count;
-
-	GLint size; // size of the variable
-	GLenum type; // type of the variable (float, vec3 or mat4, etc)
-
-	const GLsizei bufSize = 40; // maximum name length
-	GLchar name[bufSize]; // variable name in GLSL
-	GLsizei length;
-
-	glGetProgramiv(program_.program(), GL_ACTIVE_UNIFORMS, &count);
-	for (GLint i = 0; i < count; i++) {
-		glGetActiveUniform(program_.program(), i, bufSize, &length, &size, &type, name);
-	  uniform_map_[name].second = type;
-	}
+  InitMaterial(user_uniforms_,al_uniforms_,vert,frag,shader_,program_);
 }
 
 Material::Material(const char* vert, const char* frag, const char* texture_src, Texture::Type t_type, Texture::Filter mag_filter,
 	Texture::Filter min_filter,  Texture::Wrap ws, Texture::Wrap wt, Texture::Wrap wr) {
-
-	std::unique_ptr<char[]> vert_ = ReadFile(vert);
-	std::unique_ptr<char[]> frag_ = ReadFile(frag);
-	shader_.Init(vert_.get(), frag_.get());
-	program_.Init(shader_.vertex(), shader_.fragment());
-	GLint count;
-	
-	GLint size; // size of the variable
-	GLenum type; // type of the variable (float, vec3 or mat4, etc)
-
-	const GLsizei bufSize = 40; // maximum name length
-	GLchar name[bufSize]; // variable name in GLSL
-	GLsizei length;
-
-	glGetProgramiv(program_.program(), GL_ACTIVE_UNIFORMS, &count);
-	for (GLint i = 0; i < count; i++) {
-		glGetActiveUniform(program_.program(), i, bufSize, &length, &size, &type, name);
-		uniform_map_[name].second = type;
-	}
+  
+  InitMaterial(user_uniforms_,al_uniforms_,vert,frag,shader_,program_);
 
 	// Texture
   int texture_width = texture_.width();
@@ -185,20 +186,22 @@ void Data_Implementation<float>::bind(GLint position) {
 }
 
 template <>
-void Material::set_uniform_data(std::string name, const float* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
-  (name);
-  if (uniform != uniform_map_.end()){
+void Material::set_uniform_data(
+  const std::string& name,
+  const float* data) {
+  
+  const auto uniform = user_uniforms_.find(name);
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion 
@@ -210,20 +213,22 @@ void Data_Implementation<glm::vec<2,float> >::bind(GLint position) {
 }
 
 template <>
-void Material::set_uniform_data(std::string name, const glm::vec<2,float>* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
-  (name);
-  if (uniform != uniform_map_.end()){
+void Material::set_uniform_data(
+  const std::string& name,
+  const glm::vec<2,float>* data) {
+  
+  const auto uniform = user_uniforms_.find(name);
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion 
@@ -234,20 +239,22 @@ void Data_Implementation<glm::vec<3,float> >::bind(GLint position) {
 }
 
 template <>
-void Material::set_uniform_data(std::string name, const glm::vec<3,float>* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
-  (name);
-  if (uniform != uniform_map_.end()){
+void Material::set_uniform_data(
+  const std::string& name,
+  const glm::vec<3,float>* data) {
+  
+  const auto uniform = user_uniforms_.find(name);
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion 
@@ -257,20 +264,23 @@ void Data_Implementation<glm::vec<4,float> >::bind(GLint position) {
   glUniform4f(position, value_.x, value_.y, value_.z, value_.w);
 }
 template <>
-void Material::set_uniform_data(std::string name, const glm::vec<4,float>* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+void Material::set_uniform_data(
+  const std::string& name,
+  const glm::vec<4,float>* data) {
+  
+  const auto uniform = user_uniforms_.find
   (name);
-  if (uniform != uniform_map_.end()){
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion 
@@ -281,20 +291,23 @@ void Data_Implementation<glm::mat<4,4,float> >::bind(GLint position) {
 }
 
 template <>
-void Material::set_uniform_data(std::string name, const glm::mat<4,4,float>* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+void Material::set_uniform_data(
+  const std::string& name,
+  const glm::mat<4,4,float>* data) {
+  
+  const auto uniform = user_uniforms_.find
   (name);
-  if (uniform != uniform_map_.end()){
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion 
@@ -305,20 +318,23 @@ void Data_Implementation<glm::mat<3,3,float> >::bind(GLint position) {
 }
 
 template <>
-void Material::set_uniform_data(std::string name, const glm::mat<3,3,float>* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+void Material::set_uniform_data(
+  const std::string& name,
+  const glm::mat<3,3,float>* data) {
+  
+  const auto uniform = user_uniforms_.find
   (name);
-  if (uniform != uniform_map_.end()){
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion
@@ -329,20 +345,23 @@ void Data_Implementation<glm::mat<2,2,float> >::bind(GLint position) {
 }
 
 template <>
-void Material::set_uniform_data(std::string name, const glm::mat<2,2,float>* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+void Material::set_uniform_data(
+  const std::string& name,
+  const glm::mat<2,2,float>* data) {
+  
+  const auto uniform = user_uniforms_.find
   (name);
-  if (uniform != uniform_map_.end()){
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion
@@ -353,20 +372,22 @@ void Data_Implementation<glm::mat<2,3,float> >::bind(GLint position) {
 }
 
 template <>
-void Material::set_uniform_data(std::string name, const glm::mat<2,3,float>* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
-  (name);
-  if (uniform != uniform_map_.end()){
+void Material::set_uniform_data(
+  const std::string& name,
+  const glm::mat<2,3,float>* data) {
+  
+  const auto uniform = user_uniforms_.find(name);
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion
@@ -377,20 +398,22 @@ void Data_Implementation<glm::mat<3,2,float> >::bind(GLint position) {
 }
 
 template <>
-void Material::set_uniform_data(std::string name, const glm::mat<3,2,float>* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
-  (name);
-  if (uniform != uniform_map_.end()){
+void Material::set_uniform_data(
+  const std::string& name,
+  const glm::mat<3,2,float>* data) {
+  
+  const auto uniform = user_uniforms_.find(name);
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion
@@ -401,20 +424,22 @@ void Data_Implementation<glm::mat<2,4,float> >::bind(GLint position) {
 }
 
 template <>
-void Material::set_uniform_data(std::string name, const glm::mat<2,4,float>* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
-  (name);
-  if (uniform != uniform_map_.end()){
+void Material::set_uniform_data(
+  const std::string& name,
+  const glm::mat<2,4,float>* data) {
+  
+  const auto uniform = user_uniforms_.find(name);
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion
@@ -425,20 +450,22 @@ void Data_Implementation<glm::mat<4,2,float> >::bind(GLint position) {
 }
 
 template <>
-void Material::set_uniform_data(std::string name, const glm::mat<4,2,float>* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
-  (name);
-  if (uniform != uniform_map_.end()){
+void Material::set_uniform_data(
+  const std::string& name,
+  const glm::mat<4,2,float>* data) {
+
+  const auto uniform = user_uniforms_.find(name);
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion
@@ -449,20 +476,23 @@ void Data_Implementation<glm::mat<3,4,float> >::bind(GLint position) {
 }
 
 template <>
-void Material::set_uniform_data(std::string name, const glm::mat<3,4,float>* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+void Material::set_uniform_data(
+  const std::string& name,
+  const glm::mat<3,4,float>* data) {
+
+  const auto uniform = user_uniforms_.find
   (name);
-  if (uniform != uniform_map_.end()){
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion
@@ -473,20 +503,23 @@ void Data_Implementation<glm::mat<4,3,float> >::bind(GLint position) {
 }
 
 template <>
-void Material::set_uniform_data(std::string name, const glm::mat<4,3,float>* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+void Material::set_uniform_data(
+  const std::string& name,
+  const glm::mat<4,3,float>* data) {
+
+  const auto uniform = user_uniforms_.find
   (name);
-  if (uniform != uniform_map_.end()){
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion 
@@ -496,20 +529,22 @@ void Data_Implementation<int>::bind(GLint position) {
   glUniform1i(position, value_);
 }
 template <>
-void Material::set_uniform_data(std::string name, const int* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
-  (name);
-  if (uniform != uniform_map_.end()){
+void Material::set_uniform_data(
+  const std::string& name,
+  const int* data) {
+  
+  const auto uniform = user_uniforms_.find(name);
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion 
@@ -520,20 +555,22 @@ void Data_Implementation<glm::vec<2,int>>::bind(GLint position) {
 }
 
 template <>
-void Material::set_uniform_data(std::string name, const glm::vec<2,int>* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
-  (name);
-  if (uniform != uniform_map_.end()){
+void Material::set_uniform_data(
+  const std::string& name,
+  const glm::vec<2,int>* data) {
+
+  const auto uniform = user_uniforms_.find(name);
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion 
@@ -544,20 +581,21 @@ void Data_Implementation<glm::vec<3,int>>::bind(GLint position) {
 }
 
 template <>
-void Material::set_uniform_data(std::string name, const glm::vec<3,int>* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
-  (name);
-  if (uniform != uniform_map_.end()){
+void Material::set_uniform_data(
+  const std::string& name,
+  const glm::vec<3,int>* data) {
+  const auto uniform = user_uniforms_.find(name);
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion 
@@ -568,20 +606,23 @@ void Data_Implementation<glm::vec<4,int>>::bind(GLint position) {
 }
 
 template <>
-void Material::set_uniform_data(std::string name, const glm::vec<4,int>* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
+void Material::set_uniform_data(
+  const std::string& name,
+  const glm::vec<4,int>* data) {
+  
+  const auto uniform = user_uniforms_.find
   (name);
-  if (uniform != uniform_map_.end()){
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 
@@ -593,20 +634,21 @@ void Data_Implementation<unsigned int>::bind(GLint position) {
 }
 
 template <>
-void Material::set_uniform_data(std::string name, const unsigned int* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
-  (name);
-  if (uniform != uniform_map_.end()){
+void Material::set_uniform_data(
+  const std::string& name,
+  const unsigned int* data) {
+  const auto uniform = user_uniforms_.find(name);
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion 
@@ -617,20 +659,22 @@ void Data_Implementation<glm::vec<2,unsigned int>>::bind(GLint position) {
 }
 
 template <>
-void Material::set_uniform_data(std::string name, const glm::vec<2,unsigned int>* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
-  (name);
-  if (uniform != uniform_map_.end()){
+void Material::set_uniform_data(
+  const std::string& name,
+  const glm::vec<2,unsigned int>* data) {
+  
+  const auto uniform = user_uniforms_.find(name);
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion 
@@ -641,20 +685,22 @@ void Data_Implementation<glm::vec<3,unsigned int>>::bind(GLint position) {
 }
 
 template <>
-void Material::set_uniform_data(std::string name, const glm::vec<3,unsigned int>* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
-  (name);
-  if (uniform != uniform_map_.end()){
+void Material::set_uniform_data(
+  const std::string& name,
+  const glm::vec<3,unsigned int>* data) {
+  
+  const auto uniform = user_uniforms_.find(name);
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion 
@@ -665,20 +711,22 @@ void Data_Implementation<glm::vec<4,unsigned int>>::bind(GLint position) {
 }
 
 template <>
-void Material::set_uniform_data(std::string name, const glm::vec<4,unsigned int>* data) {
-  std::unordered_map<std::string,uniform >::iterator uniform = uniform_map_.find
-  (name);
-  if (uniform != uniform_map_.end()){
+void Material::set_uniform_data(
+  const std::string& name,
+  const glm::vec<4,unsigned int>* data) {
+  
+  const auto uniform = user_uniforms_.find(name);
+  if (uniform != user_uniforms_.end()){
     if (data == nullptr){
-      uniform->second.first.release();
+      uniform->second.data_.release();
       return;
     }
 
-    if (!uniform->second.first){
-      uniform->second.first = init_uniform_data(uniform->second.second);
+    if (!uniform->second.data_){
+      uniform->second.data_ = init_uniform_data(uniform->second.type_);
     }
 
-    uniform->second.first->CopyData((void*)data);
+    uniform->second.data_->CopyData(data);
   }
 }
 #pragma endregion 

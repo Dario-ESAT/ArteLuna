@@ -12,17 +12,24 @@ class LightManager {
 
   static LightManager& GetManager();
   
-  Entity& CreatelLight(uint32_t parent = 0, LightComponent::Type type = 
-  LightComponent::Directional);
+  Entity& CreatelLight(uint32_t parent = 0,
+    LightComponent::Type type = LightComponent::Directional);
   
   void DestroyLight(size_t index);
-protected:
-  std::vector<uint32_t> lights_;
-
+  
 private:
   LightManager();
+  
+  void OrderLights();
+  std::vector<uint32_t> lights_;
+  
+  uint32_t num_directionals_;
+  uint32_t num_points_;
+  uint32_t num_spots_;
+
+
   friend class LightComponent;
-  friend class Camera;
+  friend class RenderComponent;
 };
 
 

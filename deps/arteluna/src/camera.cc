@@ -145,14 +145,12 @@ void Camera::TransformOrtho(Input* input)
 
 void Camera::RenderScene(float aspect) {
   EntityManager& entity_manager = EntityManager::GetManager();
-  LightManager& light_manager = LightManager::GetManager();
   glm::mat4x4 vp_matrix;
   if (mode_ == Ortho) {
     auto ortho_perspective = glm::ortho(-ortho_x(), ortho_x(), -ortho_y(), ortho_y(), near(), far());
-    auto view = glm::lookAt(position_, glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f));
+    auto view = glm::lookAt(position_,position_ + glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f));
     vp_matrix = ortho_perspective * view;
-  } 
-  if (mode_ == Perspective) {
+  } else if (mode_ == Perspective) {
     auto perspective = glm::perspective(fov_, aspect, 0.01f, 15000.0f);
     auto view = glm::lookAt(position_, position_ + forward_, glm::vec3(0.f, 1.f, 0.f));
     vp_matrix = perspective * view;
@@ -165,53 +163,26 @@ void Camera::RenderScene(float aspect) {
     if (render_components->at(i).has_value()) {
       const TransformComponent& transform_component = transform_components->at(i).value();
       const RenderComponent& render_component = render_components->at(i).value();
-    	render_component.material_->program_.Use();
-      const GLint program = render_component.material_->program_.program();
+      auto& material = render_component.material_;
+      auto& al_uniforms = material->al_uniforms_;
+      const GLint program = material->program_.program();
+
+      material->program_.Use();
       
-    	int uniform = glGetUniformLocation(program,"u_vp_matrix");
-    	glUniformMatrix4fv(uniform, 1, false, value_ptr(vp_matrix));
-    	
-    	uniform = glGetUniformLocation(program,"u_m_matrix");
-    	glUniformMatrix4fv(uniform, 1, false, value_ptr(transform_component.world_transform()));
-
-      uniform = glGetUniformLocation(program,"cam_pos");
-      if (uniform > -1){
-        glUniform3f(uniform, position_.x, position_.y, position_.z);
+      auto al_uniform = al_uniforms.find("al_vp_matrix");
+      if (al_uniform != al_uniforms.end()){
+    	  glUniformMatrix4fv(al_uniform->second.location_, 1, false, value_ptr(vp_matrix));
       }
-      // for (unsigned long long j = 0; j < light_manager.lights_.size(); i++){
-        
-        uniform = glGetUniformLocation(program,"u_n_pointLight");
-        if (uniform > -1){
-          glUniform1i(uniform, 1);
-        }
-        // char uniform_name[50] = {'\0'};
-        // sprintf(uniform_name,"pointLight[%d].position",j);
-        uniform = glGetUniformLocation(program,"pointLight[0].position");
-        if (uniform > -1){
-          glUniform3f(uniform,  3.50f , 0.0f, 10.0f);
-        }
-
-        uniform = glGetUniformLocation(program,"pointLight[0].color");
-        if (uniform > -1){
-          glUniform3f(uniform, 1.f,  1.f,  1.f);
-        }
-
-        uniform = glGetUniformLocation(program,"pointLight[0].constant");
-        if (uniform > -1){
-          glUniform1f(uniform, 1.f);
-        }
-        uniform = glGetUniformLocation(program,"pointLight[0].linear");
-        if (uniform > -1){
-          glUniform1f(uniform, 0.09f);
-        }
-        uniform = glGetUniformLocation(program,"pointLight[0].quadratic");
-        if (uniform > -1){
-          glUniform1f(uniform,  0.032f);
-        }
-        
-      // }
-    	
-
+      
+      al_uniform = al_uniforms.find("al_m_matrix");
+      if (al_uniform != al_uniforms.end()){
+      	glUniformMatrix4fv(al_uniform->second.location_, 1, false, value_ptr(transform_component.world_transform()));
+      }
+      al_uniform = al_uniforms.find("al_cam_pos");
+      if (al_uniform != al_uniforms.end()){
+        glUniform3f(al_uniform->second.location_, position_.x, position_.y, position_.z);
+      }
+      
       render_component.RenderObject();
     }
   }
