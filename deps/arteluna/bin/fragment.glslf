@@ -112,6 +112,7 @@ vec3 Calcal_PointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 view
     0.032f * (distance * distance));    
   // combine results
   
+  
   vec3 color  = light.color * vec3(texture(u_texture, uv));
   vec3 diffuse  = light.color * diff * vec3(texture(u_texture, uv));
 
