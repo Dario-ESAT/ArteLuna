@@ -15,7 +15,7 @@ out mat3 TBN;
 
 void main() {
 
-    FragPos = vec3(u_m_matrix * vec4(a_position, 1.0));
+    FragPos = vec3(al_m_matrix * vec4(a_position, 1.0));
     uv = a_uv;
     normal = normalize(mat3(al_m_matrix) * a_normal);
 

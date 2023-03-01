@@ -142,43 +142,28 @@ vec3 Calcal_PointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 view
   return (color + diffuse + specular);
 }
 */
+
 void main() {
-  vec3 view_dir = normalize(al_cam_pos - w_pos);
+  vec3 view_dir = normalize(al_cam_pos - FragPos);
   vec3 light_result = vec3(0.0,0.0,0.0);
   vec3 Nnormal = normalize(normal);
 
- vec3 diffuse_color = texture(u_texture, TexCoord).rgb;
-
-
-
-
-
-
- 
-
-
+  vec3 diffuse_color = texture(u_texture, TexCoord).rgb;
 
 //   for(int i = 0; i < u_n_dirLight;i++) {
 //     light_result += CalcDir(dirLight[i],Nnormal,view_dir);
 //   }
   float sindicato;
-<<<<<<< HEAD
   for(int i = 0; i < al_n_pointLight;i++) {
-    light_result += Calcal_PointLight(al_pointLight[i],Nnormal,w_pos,view_dir);
-    LD = normalize(al_pointLight[i].position - w_pos);
-    sindicato += max(dot(LD, N), 0.0f);
-=======
-  for(int i = 0; i < u_n_pointLight;i++) {
     //light_result += CalcPointLight(pointLight[i],N,FragPos,view_dir);
     //light_result *= diffuse_color;
->>>>>>> 83ea92e831feba4eb82f0ae8b9a3de75fa02950c
   }
- //float b =light_result.x;
+  //float b =light_result.x;
   //b = b + light_result.y;
- // b = b + light_result.z;
-//   for(int i = 0; i < u_n_spotLight;i++) {
-//     light_result += Calcal_SpotLight(spotLight[i],Nnormal,w_pos,view_dir);
-//   }
+  //b = b + light_result.z;
+  //   for(int i = 0; i < u_n_spotLight;i++) {
+  //     light_result += Calcal_SpotLight(spotLight[i],Nnormal,w_pos,view_dir);
+  //   }
 
   // vec4 fog_position = vec4(w_pos, 1);
 	//float fog_distance = distance(vec4(CameraPosition, 1.0f), fog_position);
@@ -193,7 +178,7 @@ void main() {
   vec3 N = normals_mapping * 2.0 - 1.0;
   N = normalize(N);
   N = TBN * N;
-  vec3 LD = normalize(pointLight[0].position - FragPos);
+  vec3 LD = normalize(al_pointLight[0].position - FragPos);
   float i = max(dot(LD, N),0.0f);
   vec4 RawColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	gl_FragColor = texture(u_texture, TexCoord) * i * RawColor;// SIN NIEBLA
