@@ -174,11 +174,18 @@ void main() {
 	// gl_FragColor = vec4(u_n_dirLight,u_n_pointLight,u_n_spotLight, 1);
 	//vec4 objectColor = vec4(light_result, 1);// * texture(al_texture, uv);
 	//gl_FragColor = mix(objectColor, VertexIn.color, alpha);// * texture(al_texture, uv);
+  
+
+
    vec3 normals_mapping = texture(al_normal, TexCoord).xyz;
   normals_mapping.z = sqrt(1 - normals_mapping.x * normals_mapping.x + normals_mapping.y * normals_mapping.y);
   vec3 N = normals_mapping * 2.0 - 1.0;
+    N = normalize(N);
+   N = TBN * N;
   N = normalize(N);
-  N = TBN * N;
+ 
+
+
   vec3 LD = normalize(al_pointLight[0].position - FragPos);
   float i = max(dot(LD, N),0.0f);
   vec4 RawColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
