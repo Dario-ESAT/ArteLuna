@@ -31,6 +31,7 @@ Camera::Camera() {
   near_ = 0.1f;
   far_ = 10000.0f;
 
+  imgui_mode_ = false;
   UpdateTransform();
 }
 
@@ -190,47 +191,54 @@ void Camera::RenderScene(float aspect) {
 
 void Camera::MenuImgui() {
   ImGui::Begin("Camera controls");
-    
-    ImGui::Text("Position");
-    ImGui::DragFloat("X##PC",&position_.x,0.1f);
-    ImGui::DragFloat("Y##PC",&position_.y,0.1f);
-    ImGui::DragFloat("Z##PC",&position_.z,0.1f);
-    
-    ImGui::Text("Rotation");
-    ImGui::DragFloat("X##RC",&rotate_x_,0.01f);
-    ImGui::DragFloat("Y##RC",&rotate_y_,0.01f);
-  
-    ImGui::Text("Config");
-    // ImGui::DragFloat("FOV", &fov_);
-    ImGui::DragFloat("Movement Speed", &movement_speed_);
-    ImGui::DragFloat("Rotation Speed", &rotation_speed_);
-    ImGui::Text("Forward x:%f y:%f z:%f",forward_.x,forward_.y,forward_.z);
+
+  ImGui::Text("Position");
+  ImGui::DragFloat("X##PC", &position_.x, 0.1f);
+  ImGui::DragFloat("Y##PC", &position_.y, 0.1f);
+  ImGui::DragFloat("Z##PC", &position_.z, 0.1f);
+
+  ImGui::Text("Rotation");
+  ImGui::DragFloat("X##RC", &rotate_x_, 0.01f);
+  ImGui::DragFloat("Y##RC", &rotate_y_, 0.01f);
+
+  ImGui::Text("Config");
+  // ImGui::DragFloat("FOV", &fov_);
+  ImGui::DragFloat("Movement Speed", &movement_speed_);
+  ImGui::DragFloat("Rotation Speed", &rotation_speed_);
+  ImGui::Text("Forward x:%f y:%f z:%f", forward_.x, forward_.y, forward_.z);
+
+  if (ImGui::Button(mode_ == Perspective ? "Perspective" : "Orthographic")) {
+    if (mode_ == Perspective)
+      mode_ = Ortho;
+    else
+      mode_ = Perspective;
+  }
 
   ImGui::End();
   EntityManager& e_m = EntityManager::GetManager();
   std::vector<std::optional<TransformComponent>>* transform_components = e_m.GetComponentVector<TransformComponent>();
-  
-  char label[20] = {'\n'};
+
+  char label[20] = { '\n' };
   ImGui::Begin("Entities");
-    if (ImGui::TreeNode((void*)(intptr_t)0, "Root")) {
-      auto& t_comp = transform_components->at(0).value();
-      t_comp.ImguiTree(0);
+  if (ImGui::TreeNode((void*)(intptr_t)0, "Root")) {
+    auto& t_comp = transform_components->at(0).value();
+    t_comp.ImguiTree(0);
+    ImGui::TreePop();
+  }
+
+  for (unsigned long long i = 1; i < transform_components->size(); i++) {
+    if (ImGui::TreeNode((void*)(intptr_t)i, "Entity %d", i)) {
+      auto& t_comp = transform_components->at(i).value();
+      t_comp.ImguiTree((uint32_t)i);
+      sprintf_s(label, "Huerfanear##P%d", (int)i);
+      if (ImGui::Button(label)) {
+        e_m.GetEntity((unsigned int)i)->DetachFromParent();
+      }
       ImGui::TreePop();
     }
-    
-    for (unsigned long long i = 1; i < transform_components->size(); i++) {
-      if (ImGui::TreeNode((void*)(intptr_t)i, "Entity %d", i)) {
-        auto& t_comp = transform_components->at(i).value();
-        t_comp.ImguiTree((uint32_t)i);
-        sprintf_s(label, "Huerfanear##P%d",(int) i);
-        if(ImGui::Button(label)){
-          e_m.GetEntity((unsigned int)i)->DetachFromParent();
-        }
-        ImGui::TreePop();
-      }
-    }
+  }
   ImGui::End();
-        
+
 }
 
 void Camera::Mode(Modes m)

@@ -20,13 +20,13 @@ int main() {
   glm::vec3 rotation_ = { 0.0f, 3.140f, 0.0f };
   
   std::shared_ptr<Material> material = std::make_shared<Material>("../../deps/arteluna/bin/vertex.glslv",
-   "../../deps/arteluna/bin/fragment.glslf", "../../deps/arteluna/data/muse.jpg", Texture::Type::T_2D);
-  std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../deps/arteluna/data/models/ugandan_sonic.obj");
+   "../../deps/arteluna/bin/fragment.glslf", "../../deps/arteluna/data/textures/brick.png","../../deps/arteluna/data/textures/Box002NormalsMap.png", Texture::Type::T_2D);
+  std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../deps/arteluna/data/models/cuke.obj");
   
   Entity& entity_1 = manager_ref.CreateNewEntity();
   TransformComponent* transform_cmp = entity_1.get_component<TransformComponent>();
   transform_cmp->set_position({ 0.0 , 0.0f, 10.0f });
-  transform_cmp->set_scale({ 1.0f, 1.0f, 1.0f });
+  transform_cmp->set_scale({ 0.1f, 0.1f, 0.1f });
   transform_cmp->set_rotation({ 0.0f, 3.140f, 0.0f });
 
 
@@ -35,7 +35,7 @@ int main() {
 
   render_cmp->material_ = material;
 
-	Entity& entity_0 = manager_ref.CreateNewEntity();
+	/*Entity& entity_0 = manager_ref.CreateNewEntity();
 	transform_cmp = entity_0.get_component<TransformComponent>();
 	transform_cmp->set_position({ 7.0 , 0.0f, 10.0f });
 	transform_cmp->set_scale({ 1.0f, 1.0f, 1.0f });
@@ -46,7 +46,7 @@ int main() {
 	render_cmp->mesh_ = mesh_sponza;
 
 	render_cmp->material_ = material;
-  
+  */
   while (!window.ShouldClose()) {
  
     window.BeginFrame();

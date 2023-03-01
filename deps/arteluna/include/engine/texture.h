@@ -66,7 +66,7 @@ public:
     unsigned char* data_;
     void Bind();
     void SetData(/*Filter mag_filter, Filter min_filter, Format format,/*/DataType d_type, int mip_map_LOD);
-    
+    void Active();
 
 
     unsigned int get_id() { return id_texture_; }

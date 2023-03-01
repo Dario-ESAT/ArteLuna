@@ -48,7 +48,7 @@ class Material {
 public:
   Material();
   Material(const char* vert, const char* frag);
-  Material(const char* vert, const char* frag,const char* texture_src, Texture::Type t_type,
+  Material(const char* vert, const char* frag,const char* texture_src, const char* normal_texture_src, Texture::Type t_type,
       Texture::Filter mag_filter = Texture::Filter::Linear, Texture::Filter min_filter = Texture::Filter::Linear,
       Texture::Wrap ws = Texture::Wrap::Clamp_to_edge, Texture::Wrap wt = Texture::Wrap::Clamp_to_edge, Texture::Wrap wr = Texture::Wrap::Clamp_to_edge);
   ~Material();

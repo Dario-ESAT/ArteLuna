@@ -67,6 +67,7 @@ private:
   glm::mat4x4 view_matrix_;
 
   uint32_t mode_;
+  bool imgui_mode_;
   friend class Window;
 };
 

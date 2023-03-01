@@ -162,8 +162,17 @@ void RenderComponent::RenderObject() const{
       printf("\nUniform %s is null",it->first.c_str());
     }
 	}
-
+	material_->texture_.Active();
 	material_->texture_.Bind();
+	int uniform = glGetUniformLocation(material_->program_.program(), "u_texture");
+	glUniform1i(uniform, material_->texture_.get_id());
+
+	material_->normal_texture_.Active();
+	material_->normal_texture_.Bind();
+	uniform = glGetUniformLocation(material_->program_.program(), "u_normal");
+	glUniform1i(uniform, material_->normal_texture_.get_id());
+
+
 	glBindVertexArray(mesh_->mesh_buffer());
 	glDrawElements(GL_TRIANGLES, (GLsizei)mesh_->indices_.size(),GL_UNSIGNED_INT, 0);
 

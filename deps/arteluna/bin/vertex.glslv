@@ -10,13 +10,12 @@ uniform mat4 al_vp_matrix;
 out vec3 normal;
 out vec2 TexCoord;
 out vec2 uv;
-out vec3 w_pos;
+out vec3 FragPos;
 out mat3 TBN;
 
 void main() {
 
-    vec4 pos = (al_m_matrix * vec4(a_position, 1.0));
-    w_pos = pos.xyz;
+    FragPos = vec3(u_m_matrix * vec4(a_position, 1.0));
     uv = a_uv;
     normal = normalize(mat3(al_m_matrix) * a_normal);
 

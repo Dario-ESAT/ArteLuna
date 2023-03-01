@@ -51,7 +51,7 @@ uniform int al_n_spotLight;
 
 in vec3 normal;
 in vec2 uv;
-in vec3 w_pos;
+in vec3 FragPos;
 in mat3 TBN;
 in vec2 TexCoord;
 
@@ -101,24 +101,19 @@ vec3 Calcal_PointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 view
   //vec3 lightDir = normalize(light.position - fragPos);
   vec3 lightDir = normalize(light.position - fragPos);
     // diffuse shading
-  float diff = max(dot(normal, lightDir), 0.0);
-  // float diff = max(dot(-lightDir, normal), 0.0);
+  float diff = max(dot(lightDir, normal), 0.0);
   // specular shading
   vec3 reflectDir = reflect(-lightDir, normal);
-    //   float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
+  //float spec = pow(max(dot(viewDir, reflectDir), 0.0), 1.f/*u_shininess*/);
   // attenuation
 
   float distance = length(light.position - fragPos);
-  // float attenuation = 1.0 / (light.constant + light.linear * distance + 
-  //   light.quadratic * (distance * distance));  
   float attenuation = 1.0 / (light.constant + light.linear * distance + 
     0.032f * (distance * distance));    
   // combine results
   
   vec3 color  = light.color * vec3(texture(u_texture, uv));
-  //vec3 diffuse  = light.diffuse  * diff * vec3(texture(u_texture, uv));
   vec3 diffuse  = light.color * diff * vec3(texture(u_texture, uv));
-    //   vec3 specular = light.specular * spec * vec3(texture(u_specular, uv));
 
   color  *= attenuation;
   diffuse  *= attenuation;
@@ -145,31 +140,42 @@ vec3 Calcal_PointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 view
   // return (color);
   // return (color + diffuse);
   return (color + diffuse + specular);
-} */
-
+}
+*/
 void main() {
   vec3 view_dir = normalize(al_cam_pos - w_pos);
   vec3 light_result = vec3(0.0,0.0,0.0);
   vec3 Nnormal = normalize(normal);
 
-  vec3 normals_mapping = texture(u_normal, TexCoord).xyz;
-  normals_mapping.z = sqrt(1 - normals_mapping.x * normals_mapping.x + normals_mapping.y * normals_mapping.y);
-  vec3 N = normals_mapping * 2.0 - 1.0;
-  N = TBN * N;
+ vec3 diffuse_color = texture(u_texture, TexCoord).rgb;
+
+
+
+
+
+
+ 
 
 
 
 //   for(int i = 0; i < u_n_dirLight;i++) {
 //     light_result += CalcDir(dirLight[i],Nnormal,view_dir);
 //   }
-  vec3 LD;
   float sindicato;
+<<<<<<< HEAD
   for(int i = 0; i < al_n_pointLight;i++) {
     light_result += Calcal_PointLight(al_pointLight[i],Nnormal,w_pos,view_dir);
     LD = normalize(al_pointLight[i].position - w_pos);
     sindicato += max(dot(LD, N), 0.0f);
+=======
+  for(int i = 0; i < u_n_pointLight;i++) {
+    //light_result += CalcPointLight(pointLight[i],N,FragPos,view_dir);
+    //light_result *= diffuse_color;
+>>>>>>> 83ea92e831feba4eb82f0ae8b9a3de75fa02950c
   }
-
+ //float b =light_result.x;
+  //b = b + light_result.y;
+ // b = b + light_result.z;
 //   for(int i = 0; i < u_n_spotLight;i++) {
 //     light_result += Calcal_SpotLight(spotLight[i],Nnormal,w_pos,view_dir);
 //   }
@@ -182,7 +188,14 @@ void main() {
 	// gl_FragColor = vec4(u_n_dirLight,u_n_pointLight,u_n_spotLight, 1);
 	//vec4 objectColor = vec4(light_result, 1);// * texture(u_texture, uv);
 	//gl_FragColor = mix(objectColor, VertexIn.color, alpha);// * texture(u_texture, uv);
-  
-	gl_FragColor = texture(u_texture, TexCoord) * sindicato;// SIN NIEBLA
+   vec3 normals_mapping = texture(u_normal, TexCoord).xyz;
+  normals_mapping.z = sqrt(1 - normals_mapping.x * normals_mapping.x + normals_mapping.y * normals_mapping.y);
+  vec3 N = normals_mapping * 2.0 - 1.0;
+  N = normalize(N);
+  N = TBN * N;
+  vec3 LD = normalize(pointLight[0].position - FragPos);
+  float i = max(dot(LD, N),0.0f);
+  vec4 RawColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	gl_FragColor = texture(u_texture, TexCoord) * i * RawColor;// SIN NIEBLA
 	// gl_FragColor = mix( vec4(light_result, 1), VertexIn.color, alpha); // CON NIEBLA 
 } 
