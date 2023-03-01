@@ -14,7 +14,24 @@ struct ServiceHolder {
   }
   size_t type;
   void* service;
-  
+  bool operator==(const ServiceHolder& other) const {
+    return other.type == type;
+  }
+  bool operator!=(const ServiceHolder& other) const {
+    return other.type != type;
+  }
+  bool operator<(const ServiceHolder& other) const {
+    return other.type < type;
+  }
+  bool operator>(const ServiceHolder& other) const{
+    return other.type > type;
+  }
+  bool operator<=(const ServiceHolder& other) const {
+    return other.type <= type;
+  }
+  bool operator>=(const ServiceHolder& other) const {
+    return other.type >= type;
+  }
   /*int operator<=>(const ServiceHolder& other) const {
     return static_cast<int>(type - other.type);
   }*/
@@ -30,7 +47,7 @@ public:
     std::sort(services_.begin(), services_.end());
   }
 
-  template<typename t> t& Get()
+  template<typename t> t* Get()
   {
     auto hash = typeid(t).hash_code();
     auto result = std::lower_bound(services_.begin(), services_.end(),ServiceHolder{ hash, nullptr});
