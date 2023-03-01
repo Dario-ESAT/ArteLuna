@@ -1,7 +1,7 @@
 #version 330
 //uniform vec4 u_color;
-uniform sampler2D u_texture;
-uniform sampler2D u_normal;
+uniform sampler2D al_texture;
+uniform sampler2D al_normal;
 // uniform sampler2D u_specular;
 // uniform float u_shininess;
 uniform vec3 al_cam_pos;
@@ -81,12 +81,12 @@ in vec2 TexCoord;
             light.quadratic * (distance * distance));
 
   // combine results
-  vec3 color  = light.color  * vec3(texture(u_texture, uv));
+  vec3 color  = light.color  * vec3(texture(al_texture, uv));
   color  *= attenuation;
 
   if(dot(lightDir,normalize(-light.direction)) < light.cutoff){
     float diff = max(dot(normal, lightDir), 0.0);
-    vec3 diffuse  = light.diffuse  * diff * vec3(texture(u_texture, uv));
+    vec3 diffuse  = light.diffuse  * diff * vec3(texture(al_texture, uv));
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
     vec3 specular = light.specular * spec * vec3(texture(u_specular, uv));
     diffuse  *= attenuation;
@@ -113,8 +113,8 @@ vec3 Calcal_PointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 view
   // combine results
   
   
-  vec3 color  = light.color * vec3(texture(u_texture, uv));
-  vec3 diffuse  = light.color * diff * vec3(texture(u_texture, uv));
+  vec3 color  = light.color * vec3(texture(al_texture, uv));
+  vec3 diffuse  = light.color * diff * vec3(texture(al_texture, uv));
 
   color  *= attenuation;
   diffuse  *= attenuation;
@@ -132,9 +132,9 @@ vec3 Calcal_PointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 view
   float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
   // combine results
   //vec3 color  = light.color;
-  vec3 color  = light.color * vec3(texture(u_texture, uv));
+  vec3 color  = light.color * vec3(texture(al_texture, uv));
   //vec3 diffuse  = light.diffuse * diff;
-  vec3 diffuse  = light.diffuse * diff * vec3(texture(u_texture, uv));
+  vec3 diffuse  = light.diffuse * diff * vec3(texture(al_texture, uv));
   //vec3 specular = light.specular * spec;
   vec3 specular = light.specular * spec * vec3(texture(u_specular, uv));
   // return (diffuse);
@@ -149,7 +149,7 @@ void main() {
   vec3 light_result = vec3(0.0,0.0,0.0);
   vec3 Nnormal = normalize(normal);
 
-  vec3 diffuse_color = texture(u_texture, TexCoord).rgb;
+  vec3 diffuse_color = texture(al_texture, TexCoord).rgb;
 
 //   for(int i = 0; i < u_n_dirLight;i++) {
 //     light_result += CalcDir(dirLight[i],Nnormal,view_dir);
@@ -172,9 +172,9 @@ void main() {
 	// float alpha = GetFogFactor(fog_distance);
 
 	// gl_FragColor = vec4(u_n_dirLight,u_n_pointLight,u_n_spotLight, 1);
-	//vec4 objectColor = vec4(light_result, 1);// * texture(u_texture, uv);
-	//gl_FragColor = mix(objectColor, VertexIn.color, alpha);// * texture(u_texture, uv);
-   vec3 normals_mapping = texture(u_normal, TexCoord).xyz;
+	//vec4 objectColor = vec4(light_result, 1);// * texture(al_texture, uv);
+	//gl_FragColor = mix(objectColor, VertexIn.color, alpha);// * texture(al_texture, uv);
+   vec3 normals_mapping = texture(al_normal, TexCoord).xyz;
   normals_mapping.z = sqrt(1 - normals_mapping.x * normals_mapping.x + normals_mapping.y * normals_mapping.y);
   vec3 N = normals_mapping * 2.0 - 1.0;
   N = normalize(N);
@@ -182,6 +182,6 @@ void main() {
   vec3 LD = normalize(al_pointLight[0].position - FragPos);
   float i = max(dot(LD, N),0.0f);
   vec4 RawColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	gl_FragColor = texture(u_texture, TexCoord) * i * RawColor;// SIN NIEBLA
+	gl_FragColor = texture(al_texture, TexCoord) * i * RawColor;// SIN NIEBLA
 	// gl_FragColor = mix( vec4(light_result, 1), VertexIn.color, alpha); // CON NIEBLA 
 } 
