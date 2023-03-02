@@ -5,6 +5,7 @@
 #include "engine/material.h"
 #include "components/transform_component.h"
 #include "components/render_component.h"
+#include "engine/service_manager.h"
 #include "components/light_component.h"
 #include "engine/entity_manager.h"
 
@@ -13,7 +14,9 @@
 int main() {
   Window window("Aleksander");
   EntityManager& manager_ref = EntityManager::GetManager();
-  
+  ServiceManager& sm = ServiceManager::get_service_manager();
+	sm.Add(manager_ref);
+	
   //Entity entity;
   glm::vec3 position_ = { 0.0 , 0.0f, 10.0f };
   glm::vec3 scale_ = { 1.0f, 1.0f, 1.0f };
@@ -29,12 +32,23 @@ int main() {
   transform_cmp->set_scale({ 0.1f, 0.1f, 0.1f });
   transform_cmp->set_rotation({ 0.0f, 3.140f, 0.0f });
 
-
+	
   RenderComponent* render_cmp =  entity_1.AddComponent<RenderComponent>();
   render_cmp->mesh_ = mesh_sponza;
 
   render_cmp->material_ = material;
 
+  Entity& entity_2 = sm.Get<EntityManager>()->CreateNewEntity();
+  transform_cmp = entity_2.get_component<TransformComponent>();
+  transform_cmp->set_position({ 0.0 , 0.0f, 10.0f });
+  transform_cmp->set_scale({ 0.1f, 0.1f, 0.1f });
+  transform_cmp->set_rotation({ 0.0f, 3.140f, 0.0f });
+
+
+  render_cmp = entity_2.AddComponent<RenderComponent>();
+  render_cmp->mesh_ = mesh_sponza;
+
+  render_cmp->material_ = material;
 	/*Entity& entity_0 = manager_ref.CreateNewEntity();
 	transform_cmp = entity_0.get_component<TransformComponent>();
 	transform_cmp->set_position({ 7.0 , 0.0f, 10.0f });

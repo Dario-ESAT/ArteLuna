@@ -70,7 +70,7 @@ in vec2 TexCoord;
 	return 1 - (fog_max - fog_distance) / (fog_max - fog_min);
 } */
 
-/* vec3 Calcal_SpotLight(al_SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
+/* vec3 CalSpotLight(al_SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
   vec3 lightDir = normalize(light.position - fragPos);
   
   // specular
@@ -97,7 +97,7 @@ in vec2 TexCoord;
   return color;
 } */
 
-vec3 Calcal_PointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
+vec3 CalcPointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
   //vec3 lightDir = normalize(light.position - fragPos);
   vec3 lightDir = normalize(light.position - fragPos);
     // diffuse shading
@@ -150,7 +150,13 @@ void main() {
   vec3 Nnormal = normalize(normal);
 
   vec3 diffuse_color = texture(al_texture, TexCoord).rgb;
-
+   vec3 normals_mapping = texture(al_normal, TexCoord).xyz;
+  normals_mapping.z = sqrt(1 - normals_mapping.x * normals_mapping.x + normals_mapping.y * normals_mapping.y);
+  vec3 N = normals_mapping * 2.0 - 1.0;
+  N = normalize(N);
+  N = TBN * N;
+  N = normalize(N);
+ 
 //   for(int i = 0; i < u_n_dirLight;i++) {
 //     light_result += CalcDir(dirLight[i],Nnormal,view_dir);
 //   }
@@ -159,9 +165,9 @@ void main() {
     //light_result += CalcPointLight(pointLight[i],N,FragPos,view_dir);
     //light_result *= diffuse_color;
   }
-  //float b =light_result.x;
-  //b = b + light_result.y;
-  //b = b + light_result.z;
+  float b =light_result.x;
+  b = b + light_result.y;
+  b = b + light_result.z;
   //   for(int i = 0; i < u_n_spotLight;i++) {
   //     light_result += Calcal_SpotLight(spotLight[i],Nnormal,w_pos,view_dir);
   //   }
@@ -174,11 +180,12 @@ void main() {
 	// gl_FragColor = vec4(u_n_dirLight,u_n_pointLight,u_n_spotLight, 1);
 	//vec4 objectColor = vec4(light_result, 1);// * texture(al_texture, uv);
 	//gl_FragColor = mix(objectColor, VertexIn.color, alpha);// * texture(al_texture, uv);
-   vec3 normals_mapping = texture(al_normal, TexCoord).xyz;
-  normals_mapping.z = sqrt(1 - normals_mapping.x * normals_mapping.x + normals_mapping.y * normals_mapping.y);
-  vec3 N = normals_mapping * 2.0 - 1.0;
-  N = normalize(N);
-  N = TBN * N;
+  
+
+
+
+
+
   vec3 LD = normalize(al_pointLight[0].position - FragPos);
   float i = max(dot(LD, N),0.0f);
   vec4 RawColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
