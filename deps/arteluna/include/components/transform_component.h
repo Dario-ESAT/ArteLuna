@@ -31,11 +31,19 @@ public:
   glm::vec3 up() const { return up_; }
   
   glm::vec3 right() const { return right_; }
-  
-private:
-  void update_transform(glm::mat4x4 parent_transform);
 
-  bool dirty_;
+  Entity& parent() const;
+
+  void AttachToParent(uint32_t p);
+
+  void DetachFromParent(
+    bool keep_worl_position = true,
+    bool keep_world_rotation = true,
+    bool keep_world_scale = true);
+  
+  void update_transform(glm::mat4x4 parent_transform);
+private:
+
   glm::vec3 position_;
   glm::vec3 rotation_;
   glm::vec3 scale_;
@@ -47,6 +55,8 @@ private:
   glm::mat4x4 local_transform_;
   glm::mat4x4 world_transform_;
 
+  bool dirty_;
+  uint32_t parent_;
   friend class EntityManager;
 };
 

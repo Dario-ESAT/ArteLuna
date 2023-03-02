@@ -232,7 +232,7 @@ void Camera::MenuImgui() {
       t_comp.ImguiTree((uint32_t)i);
       sprintf_s(label, "Huerfanear##P%d", (int)i);
       if (ImGui::Button(label)) {
-        e_m.GetEntity((unsigned int)i)->DetachFromParent();
+        // e_m.GetEntity((unsigned int)i)->DetachFromParent();
       }
       ImGui::TreePop();
     }

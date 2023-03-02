@@ -1419,7 +1419,7 @@ inline real_t GetLength(TinyObjPoint &e) {
 }
 
 inline TinyObjPoint Normalize(TinyObjPoint e) {
-	real_t inv_length = 1.0 / GetLength(e);
+	real_t inv_length = 1.0f / GetLength(e);
 	return TinyObjPoint(e.x * inv_length, e.y * inv_length, e.z * inv_length );
 }
 

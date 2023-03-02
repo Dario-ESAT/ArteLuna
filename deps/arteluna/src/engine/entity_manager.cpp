@@ -63,16 +63,3 @@ EntityManager::EntityManager() {
   transform->at(0).emplace(TransformComponent());
   
 }
-
-void EntityManager::CleanEntities(Entity* entity, glm::mat4 transform, bool dirty) {
-  TransformComponent* transform_component = entity->get_component<TransformComponent>();
-  bool definitely_dirty = dirty || transform_component->dirty();
-  
-  if (definitely_dirty) {
-    transform_component->update_transform(transform);
-  }
-  for (size_t i = 0; i < entity->children_.size(); i++) {
-    CleanEntities(GetEntity(entity->children_.at(i)), 
-    transform_component->world_transform(),definitely_dirty);
-  }
-}

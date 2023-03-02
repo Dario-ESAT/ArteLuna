@@ -11,32 +11,15 @@ class Entity {
 public:
   ~Entity();
   Entity(const Entity& other)
-    : id_(other.id_),
-      children_(other.children_),
-      parent_(other.parent_) {}
+    : id_(other.id_) {}
 
   Entity(Entity&& other) noexcept
-    : id_(other.id_),
-      children_(std::move(other.children_)),
-      parent_(other.parent_) {}
+    : id_(other.id_) {}
 
   Entity& operator=(const Entity& other);
 
   Entity& operator=(Entity&& other) noexcept;
 
-  Entity& parent() const;
-
-  void AttachToParent(uint32_t p);
-
-  void DetachFromParent(
-    bool keep_worl_position = true,
-    bool keep_world_rotation = true,
-    bool keep_world_scale = true);
-
-  void DetachChild(uint32_t id);
-
-  std::vector<uint32_t>& children();
-  
   template<class T> T* AddComponent();
   
   template<class T> void RemoveComponent();
@@ -51,8 +34,6 @@ protected:
   Entity(uint32_t id, uint32_t parent);
   
   uint32_t id_;
-  std::vector<uint32_t> children_;
-  uint32_t parent_;
 
   friend class EntityManager;
 };

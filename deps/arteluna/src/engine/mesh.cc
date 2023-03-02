@@ -20,14 +20,14 @@ Mesh::Mesh() {
   if (!reader.ParseFromFile(inputfile, reader_config)) {
     if (!reader.Error().empty()) {
       //std::cerr << "TinyObjReader: " << reader.Error();
-      printf("Error en TinyObjReader %d \n", reader.Error());
+      printf("Error en TinyObjReader %s \n", reader.Error().c_str());
     }
     exit(1);
   }
   
   if (!reader.Warning().empty()) {
     // std::cout << "TinyObjReader: " << reader.Warning();
-    printf("Warning en TinyObjReader %d \n", reader.Warning());
+    printf("Warning en TinyObjReader %s \n", reader.Warning().c_str());
   }
   
   auto& attrib = reader.GetAttrib();
@@ -104,11 +104,11 @@ Mesh::Mesh() {
         tangents_.push_back(tangent.z);
       }
       // per-face material
-      shapes[s].mesh.material_ids[f];
+      // shapes[s].mesh.material_ids[f];
     }
   }
 
-  for (int i = 0; i < indices_.size(); i++) {
+  for (unsigned int i = 0; i < indices_.size(); i++) {
       indices_[i] = i;
   }
   
@@ -175,14 +175,14 @@ Mesh::Mesh(std::string inputfile) {
   if (!reader.ParseFromFile(inputfile, reader_config)) {
     if (!reader.Error().empty()) {
       //std::cerr << "TinyObjReader: " << reader.Error();
-      printf("Error en TinyObjReader %d \n", reader.Error());
+      printf("Error en TinyObjReader %s \n", reader.Error().c_str());
     }
     exit(1);
   }
   
   if (!reader.Warning().empty()) {
     // std::cout << "TinyObjReader: " << reader.Warning();
-    printf("Warning en TinyObjReader %d \n", reader.Warning());
+    printf("Warning en TinyObjReader %s \n", reader.Warning().c_str());
   }
   
   auto& attrib = reader.GetAttrib();
@@ -230,11 +230,11 @@ Mesh::Mesh(std::string inputfile) {
       index_offset += fv;
 
       // per-face material
-      shapes[s].mesh.material_ids[f];
+      // shapes[s].mesh.material_ids[f];
     }
   }
   
-  for (int i = 0; i < indices_.size(); i++) {
+  for (unsigned int i = 0; i < indices_.size(); i++) {
     indices_[i] = i;
   }
   
@@ -281,14 +281,14 @@ void Mesh::ReadDefaultGeometries(std::string src)
     if (!reader.ParseFromFile(src, reader_config)) {
         if (!reader.Error().empty()) {
             //std::cerr << "TinyObjReader: " << reader.Error();
-            printf("Error en TinyObjReader %d \n", reader.Error());
+            printf("Error en TinyObjReader %s \n", reader.Error().c_str());
         }
         exit(1);
     }
 
     if (!reader.Warning().empty()) {
         // std::cout << "TinyObjReader: " << reader.Warning();
-        printf("Warning en TinyObjReader %d \n", reader.Warning());
+        printf("Warning en TinyObjReader %s \n", reader.Warning().c_str());
     }
 
     auto& attrib = reader.GetAttrib();
@@ -336,11 +336,11 @@ void Mesh::ReadDefaultGeometries(std::string src)
             index_offset += fv;
 
             // per-face material
-            shapes[s].mesh.material_ids[f];
+            // shapes[s].mesh.material_ids[f];
         }
     }
 
-    for (int i = 0; i < indices_.size(); i++) {
+    for (unsigned int i = 0; i < indices_.size(); i++) {
         indices_[i] = i;
     }
 

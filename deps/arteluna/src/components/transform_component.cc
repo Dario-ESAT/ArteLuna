@@ -3,6 +3,7 @@
 #include <gtc/type_ptr.hpp>
 
 #include "imgui.h"
+#include "engine/entity_manager.h"
 
 void TransformComponent::ImguiTree(uint32_t id) {
   char label[10] = {'\n'};
@@ -89,6 +90,62 @@ TransformComponent::TransformComponent() {
   right_ = {1.0f,0.f,0.f};
   dirty_ = true;
 }
+
+Entity& TransformComponent::parent() const {
+  return *EntityManager::GetManager().GetEntity(parent_);
+}
+
+void TransformComponent::AttachToParent(uint32_t p) {
+  if (p >= EntityManager::GetManager().last_id_) p = 0;
+  
+  parent_ = p;
+}
+
+
+void TransformComponent::DetachFromParent(
+    bool keep_worl_position,
+    bool keep_world_rotation,
+    bool keep_world_scale) {
+
+  if (dirty_){
+    // EntityManager& manager = EntityManager::GetManager();
+    // Entity* root = manager.GetEntity(0);
+    // manager.CleanEntities(root,glm::mat4x4(1.0f),
+    // root->get_component<TransformComponent>()->dirty());
+  }
+  const glm::mat4x4& w_transf = world_transform();
+  if (keep_worl_position){
+    glm::vec4 row4 = w_transf[3];
+    set_position(glm::vec3(row4.x,row4.y,row4.z));
+  }
+  if (keep_world_rotation){
+    glm::vec4 row1 = w_transf[0];
+    glm::vec4 row2 = w_transf[2];
+    glm::vec4 row3 = w_transf[3];
+    
+    set_rotation({
+      atan2f(row3.y,row3.z),
+      atan2f(row3.x,sqrtf((row3.y * row3.y) + (row3.z * row3.z))),
+      atan2f(row2.x,row2.x)
+    });
+    
+  }
+  if (keep_world_scale){
+    glm::vec4 row1 = w_transf[0];
+    glm::vec4 row2 = w_transf[2];
+    glm::vec4 row3 = w_transf[3];
+    glm::vec3 scale_x_(row1.x,row2.x,row3.x);
+    glm::vec3 scale_y_(row1.y,row2.y,row3.y);
+    glm::vec3 scale_z_(row1.z,row2.z,row3.z);
+    float scale_x = glm::vec3::length();
+    float scale_y = scale_y_.length();
+    float scale_z = scale_z_.length();
+    set_scale({scale_x,scale_y,scale_z});
+
+  }
+  parent_ = 0;
+}
+
 
 void TransformComponent::update_transform(glm::mat4x4 parent_transform) {
   local_transform_ = glm::mat4x4(1.0f);

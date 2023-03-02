@@ -42,7 +42,6 @@ class EntityManager {
 
 private:
   EntityManager();
-  void CleanEntities(Entity* entity, glm::mat4 transform, bool dirty);
 
   uint32_t last_id_;
 

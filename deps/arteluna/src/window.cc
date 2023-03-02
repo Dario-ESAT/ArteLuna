@@ -166,7 +166,7 @@ void Window::EndFrame() {
   EntityManager& em = EntityManager::GetManager();
   Entity* root = EntityManager::GetManager().GetEntity(0);
   TransformComponent* transform_component = root->get_component<TransformComponent>();
-  em.CleanEntities(root,glm::mat4x4(1.f),transform_component->dirty());
+  // em.CleanEntities(root,glm::mat4x4(1.f),transform_component->dirty());
   camera_.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
 
   // Render Imgui
