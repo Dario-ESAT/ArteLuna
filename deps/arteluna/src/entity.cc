@@ -8,11 +8,12 @@ Entity::Entity() {
 }
 
 Entity::Entity(uint32_t id, uint32_t parent){
+  ServiceManager sm = ServiceManager::get_service_manager();
   id_ = id;
-  if (parent >= EntityManager::GetManager().last_id_) parent = 0;
+  if (parent >= sm.Get<EntityManager>()->last_id_) parent = 0;
   
   parent_ = parent;
-  EntityManager::GetManager().GetEntity(parent)->children().emplace_back(id);
+  sm.Get<EntityManager>()->GetEntity(parent)->children().emplace_back(id);
 }
 
 Entity::~Entity() {
@@ -38,14 +39,16 @@ Entity& Entity::operator=(Entity&& other) noexcept {
 }
 
 Entity& Entity::parent() const {
-    return *EntityManager::GetManager().GetEntity(parent_);
+  ServiceManager sm = ServiceManager::get_service_manager();
+    return *sm.Get<EntityManager>()->GetEntity(parent_);
 }
 
 void Entity::AttachToParent(uint32_t p) {
-  if (p >= EntityManager::GetManager().last_id_) p = 0;
+  ServiceManager sm = ServiceManager::get_service_manager();
+  if (p >= sm.Get<EntityManager>()->last_id_) p = 0;
   
-  Entity* parent = EntityManager::GetManager().GetEntity(parent_);
-  Entity* new_parent = EntityManager::GetManager().GetEntity(p);
+  Entity* parent = sm.Get<EntityManager>()->GetEntity(parent_);
+  Entity* new_parent = sm.Get<EntityManager>()->GetEntity(p);
 
   parent->DetachChild(id());
   
@@ -58,12 +61,12 @@ void Entity::DetachFromParent(
     bool keep_worl_position,
     bool keep_world_rotation,
     bool keep_world_scale) {
+  ServiceManager sm = ServiceManager::get_service_manager();
 
   TransformComponent* transform = get_component<TransformComponent>();
   if (transform->dirty()){
-    EntityManager& manager = EntityManager::GetManager();
-    Entity* root = manager.GetEntity(0);
-    manager.CleanEntities(root,glm::mat4x4(1.0f),
+    Entity* root = sm.Get<EntityManager>()->GetEntity(0);
+    sm.Get<EntityManager>()->CleanEntities(root,glm::mat4x4(1.0f),
     root->get_component<TransformComponent>()->dirty());
   }
   const glm::mat4x4& w_transf = transform->world_transform();
@@ -96,18 +99,19 @@ void Entity::DetachFromParent(
     transform->set_scale({scale_x,scale_y,scale_z});
 
   }
-  EntityManager::GetManager().GetEntity(parent_)->DetachChild(id_);
-  EntityManager::GetManager().GetEntity(0)->children_.push_back(id_);
+  sm.Get<EntityManager>()->GetEntity(parent_)->DetachChild(id_);
+  sm.Get<EntityManager>()->GetEntity(0)->children_.push_back(id_);
   parent_ = 0;
 }
 
 
 void Entity::DetachChild(uint32_t id) {
-  if (id == 0 || id >= EntityManager::GetManager().last_id_) return;
+  ServiceManager sm = ServiceManager::get_service_manager();
+  if (id == 0 || id >= sm.Get<EntityManager>()->last_id_) return;
   
   if (!children_.empty()) {
     for (int i = 0; i < children_.size(); i++) {
-      Entity* child = EntityManager::GetManager().GetEntity(children_[i]);
+      Entity* child = sm.Get<EntityManager>()->GetEntity(children_[i]);
 
       if (child->id_ == id) {
         child->parent_ = 0;
