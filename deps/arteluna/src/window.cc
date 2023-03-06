@@ -11,6 +11,7 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "engine/entity_manager.h"
+#include "engine/service_manager.h"
 
 Window::Window() {
   window_ = nullptr;
@@ -79,6 +80,11 @@ Window::Window(
   glCullFace(GL_BACK);
   glEnable(GL_DEPTH_TEST);
 
+
+  EntityManager& manager_ref = EntityManager::GetManager();
+  Systems
+  ServiceManager& sm = ServiceManager::Manager();
+  sm.Add(manager_ref);
 }
 
 Window::~Window() {
@@ -165,8 +171,7 @@ void Window::EndFrame() {
   // Render Scene --------
   EntityManager& em = EntityManager::GetManager();
   Entity* root = EntityManager::GetManager().GetEntity(0);
-  TransformComponent* transform_component = root->get_component<TransformComponent>();
-  // em.CleanEntities(root,glm::mat4x4(1.f),transform_component->dirty());
+  
   camera_.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
 
   // Render Imgui

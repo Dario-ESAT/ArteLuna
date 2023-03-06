@@ -1,6 +1,8 @@
 #include "components/transform_component.h"
 
 #include <gtc/type_ptr.hpp>
+#include "gtx/matrix_decompose.hpp"
+
 
 #include "imgui.h"
 #include "engine/entity_manager.h"
@@ -106,55 +108,52 @@ void TransformComponent::DetachFromParent(
     bool keep_worl_position,
     bool keep_world_rotation,
     bool keep_world_scale) {
-
-  if (dirty_){
-    // EntityManager& manager = EntityManager::GetManager();
-    // Entity* root = manager.GetEntity(0);
-    // manager.CleanEntities(root,glm::mat4x4(1.0f),
-    // root->get_component<TransformComponent>()->dirty());
-  }
-  const glm::mat4x4& w_transf = world_transform();
-  if (keep_worl_position){
-    glm::vec4 row4 = w_transf[3];
-    set_position(glm::vec3(row4.x,row4.y,row4.z));
-  }
-  if (keep_world_rotation){
-    glm::vec4 row1 = w_transf[0];
-    glm::vec4 row2 = w_transf[2];
-    glm::vec4 row3 = w_transf[3];
+  
+  if (keep_worl_position || keep_world_rotation || keep_world_scale){
     
-    set_rotation({
-      atan2f(row3.y,row3.z),
-      atan2f(row3.x,sqrtf((row3.y * row3.y) + (row3.z * row3.z))),
-      atan2f(row2.x,row2.x)
-    });
+    if (dirty_){
+      // EntityManager& manager = EntityManager::GetManager();
+      // Entity* root = manager.GetEntity(0);
+      // manager.CleanEntities(root,glm::mat4x4(1.0f),
+      // root->get_component<TransformComponent>()->dirty());
+    }
     
+    glm::vec3 scale;
+    glm::quat q_rotation;
+    glm::vec3 translation;
+    glm::vec3 skew;
+    glm::vec4 perspective;
+    
+    glm::decompose(world_transform_, scale, q_rotation,
+      translation, skew, perspective
+    );
+    
+    glm::vec3 e_rotation = glm::eulerAngles(q_rotation);
+    
+    if (keep_worl_position){
+      set_position(translation);
+    }
+    if (keep_world_rotation){
+      set_rotation(e_rotation);
+    }
+    if (keep_world_scale){
+      set_scale(scale);
+    }
+    parent_ = 0;
   }
-  if (keep_world_scale){
-    glm::vec4 row1 = w_transf[0];
-    glm::vec4 row2 = w_transf[2];
-    glm::vec4 row3 = w_transf[3];
-    glm::vec3 scale_x_(row1.x,row2.x,row3.x);
-    glm::vec3 scale_y_(row1.y,row2.y,row3.y);
-    glm::vec3 scale_z_(row1.z,row2.z,row3.z);
-    float scale_x = glm::vec3::length();
-    float scale_y = scale_y_.length();
-    float scale_z = scale_z_.length();
-    set_scale({scale_x,scale_y,scale_z});
-
-  }
-  parent_ = 0;
 }
 
-
-void TransformComponent::update_transform(glm::mat4x4 parent_transform) {
+void TransformComponent::update_local_transform() {
   local_transform_ = glm::mat4x4(1.0f);
   local_transform_ = glm::translate(local_transform_, position_);
   local_transform_ = glm::scale(local_transform_, scale_);
   local_transform_ = glm::rotate(local_transform_,rotation_.z, glm::vec3(0.0f, 0.0f, 1.0f));
   local_transform_ = glm::rotate(local_transform_,rotation_.y, glm::vec3(0.0f, 1.0f, 0.0f));
   local_transform_ = glm::rotate(local_transform_,rotation_.x, glm::vec3(1.0f, 0.0f, 0.0f));
-  
+}
+
+
+void TransformComponent::update_world_transform(glm::mat4x4 parent_transform) {
   world_transform_ = local_transform_ * parent_transform;
 
   glm::mat3 mat_rot(world_transform_);

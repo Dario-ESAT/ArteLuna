@@ -61,7 +61,7 @@ public:
     }
   }
 
-  static ServiceManager& get_service_manager()
+  static ServiceManager& Manager()
   {
     static ServiceManager sm;
     return sm;

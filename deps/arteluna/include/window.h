@@ -5,8 +5,7 @@
 #include "stdint.h"
 
 class Window{
-  public:
-  Window();
+public:
   Window( const char* name, int16_t width = 1280, int16_t heigth = 720,
       int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
   );
@@ -39,7 +38,8 @@ class Window{
   class Input* input_;
   
   Camera camera_;
-  private:
+private:
+  Window();
 
   int16_t width_;
   int16_t height_;

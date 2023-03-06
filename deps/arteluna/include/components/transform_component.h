@@ -1,4 +1,4 @@
-#ifndef __TRANSFORM_COMPONENT_H__
+  #ifndef __TRANSFORM_COMPONENT_H__
 #define __TRANSFORM_COMPONENT_H__ 1
 
 #include "component.h"
@@ -41,8 +41,9 @@ public:
     bool keep_world_rotation = true,
     bool keep_world_scale = true);
   
-  void update_transform(glm::mat4x4 parent_transform);
 private:
+  void update_local_transform();
+  void update_world_transform(glm::mat4x4 parent_transform);
 
   glm::vec3 position_;
   glm::vec3 rotation_;
@@ -57,7 +58,9 @@ private:
 
   bool dirty_;
   uint32_t parent_;
+  
   friend class EntityManager;
+  friend class Systems;
 };
 
 

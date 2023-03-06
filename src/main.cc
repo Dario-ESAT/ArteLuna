@@ -13,9 +13,7 @@
 
 int main() {
   Window window("Aleksander");
-  EntityManager& manager_ref = EntityManager::GetManager();
-  ServiceManager& sm = ServiceManager::get_service_manager();
-	sm.Add(manager_ref);
+  
 	
   //Entity entity;
   glm::vec3 position_ = { 0.0 , 0.0f, 10.0f };

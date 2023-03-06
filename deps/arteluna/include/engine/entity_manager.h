@@ -53,6 +53,7 @@ private:
   friend class TransformComponent;
   friend class Window;
   friend class LightManager;
+  friend class Systems;
 };
 
 template <class T>
