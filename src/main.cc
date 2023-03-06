@@ -13,7 +13,9 @@
 
 int main() {
   Window window("Aleksander");
-  
+  EntityManager manager_ref;
+  ServiceManager& sm = ServiceManager::Manager();
+	sm.Add(manager_ref);
 	
   //Entity entity;
   glm::vec3 position_ = { 0.0 , 0.0f, 10.0f };
@@ -24,7 +26,7 @@ int main() {
    "../../deps/arteluna/bin/fragment.glslf", "../../deps/arteluna/data/textures/brick.png","../../deps/arteluna/data/textures/Box002NormalsMap.png", Texture::Type::T_2D);
   std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../deps/arteluna/data/models/cuke.obj");
   
-  Entity& entity_1 = manager_ref.CreateNewEntity();
+  Entity& entity_1 = sm.Get<EntityManager>()->CreateNewEntity();
   TransformComponent* transform_cmp = entity_1.get_component<TransformComponent>();
   transform_cmp->set_position({ 0.0 , 0.0f, 10.0f });
   transform_cmp->set_scale({ 0.1f, 0.1f, 0.1f });

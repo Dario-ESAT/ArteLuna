@@ -4,6 +4,7 @@
 #include <optional>
 #include <vector>
 #include "stdint.h"
+#include "engine/service_manager.h"
 
 // para las listas de los componentes hacerlas de std::optional<componente>
 // olvida lo de arriba y hazlo en un entity manager :)
@@ -40,9 +41,10 @@ protected:
 
 template <class T>
 T* Entity::AddComponent() {
-  std::vector<std::optional<T>>* vector = EntityManager::GetManager().GetComponentVector<T>();
+  ServiceManager sm = ServiceManager::Manager();
+  std::vector<std::optional<T>>* vector = sm.Get<EntityManager>()->GetComponentVector<T>();
   if (vector == nullptr){
-    vector = EntityManager::GetManager().CreateComponentVector<T>();
+    vector = sm.Get<EntityManager>()->CreateComponentVector<T>();
   }
   std::optional<T>* component = &vector->at(id_);
 
@@ -54,7 +56,8 @@ T* Entity::AddComponent() {
 
 template <class T>
 void Entity::RemoveComponent() {
-  std::vector<std::optional<T>>* vector = EntityManager::GetManager().GetComponentVector<T>();
+  ServiceManager sm = ServiceManager::Manager();
+  std::vector<std::optional<T>>* vector = sm.Get<EntityManager>()->GetComponentVector<T>();
   if (vector == nullptr) return;
   std::optional<T>* component = &vector->at(id_);
 
@@ -65,7 +68,8 @@ void Entity::RemoveComponent() {
 
 template <class T>
 T* Entity::get_component() {
-  std::vector<std::optional<T>>* vector = EntityManager::GetManager().GetComponentVector<T>();
+  ServiceManager sm = ServiceManager::Manager();
+  std::vector<std::optional<T>>* vector = sm.Get<EntityManager>()->GetComponentVector<T>();
   if (vector == nullptr) return nullptr;
   
   std::optional<T>* component = &vector->at(id_);

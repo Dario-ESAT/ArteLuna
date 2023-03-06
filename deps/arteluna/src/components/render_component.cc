@@ -9,6 +9,7 @@
 
 #include "engine/material.h"
 #include "engine/mesh.h"
+#include "engine/service_manager.h"
 
 void RenderComponent::ImguiTree(uint32_t id) {
 }
@@ -24,7 +25,7 @@ RenderComponent::RenderComponent(std::shared_ptr<Mesh> mesh, std::shared_ptr<Mat
 }
 
 void RenderComponent::RenderObject() const{
-  EntityManager& entity_manager = EntityManager::GetManager();
+  ServiceManager sm = ServiceManager::Manager();
   LightManager& light_manager = LightManager::GetManager();
 
 	material_->program_.Use();
@@ -38,7 +39,7 @@ void RenderComponent::RenderObject() const{
   char uniform_name[50] = {'\0'};
   // ----- Directional lights -----
   for (uint32_t j = 0; j < light_manager.num_directionals_; j++){
-    Entity* entity =  entity_manager.GetEntity(light_manager.lights_[j]);
+    Entity* entity =  sm.Get<EntityManager>()->GetEntity(light_manager.lights_[j]);
     TransformComponent* transform =  entity->get_component<TransformComponent>();
     LightComponent* light = entity->get_component<LightComponent>();
     sprintf_s(uniform_name,"al_dirLight[%d].direction",j);
@@ -56,7 +57,7 @@ void RenderComponent::RenderObject() const{
 
   // ----- Point lights -----
   for (uint32_t j = light_manager.num_directionals_; j < light_manager.num_points_; j++){
-    Entity* entity =  entity_manager.GetEntity(light_manager.lights_[j]);
+    Entity* entity =  sm.Get<EntityManager>()->GetEntity(light_manager.lights_[j]);
     TransformComponent* transform =  entity->get_component<TransformComponent>();
     LightComponent* light = entity->get_component<LightComponent>();
     
@@ -102,7 +103,7 @@ void RenderComponent::RenderObject() const{
     uint32_t j = light_manager.num_directionals_ + light_manager.num_points_;
     j < light_manager.num_spots_; j++){
     
-    Entity* entity =  entity_manager.GetEntity(light_manager.lights_[j]);
+    Entity* entity =  sm.Get<EntityManager>()->GetEntity(light_manager.lights_[j]);
     TransformComponent* transform =  entity->get_component<TransformComponent>();
     LightComponent* light = entity->get_component<LightComponent>();
 

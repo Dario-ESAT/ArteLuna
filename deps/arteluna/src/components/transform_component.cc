@@ -94,11 +94,11 @@ TransformComponent::TransformComponent() {
 }
 
 Entity& TransformComponent::parent() const {
-  return *EntityManager::GetManager().GetEntity(parent_);
+  return *ServiceManager::Manager().Get<EntityManager>()->GetEntity(parent_);
 }
 
 void TransformComponent::AttachToParent(uint32_t p) {
-  if (p >= EntityManager::GetManager().last_id_) p = 0;
+  if (p >= ServiceManager::Manager().Get<EntityManager>()->last_id_) p = 0;
   
   parent_ = p;
 }
@@ -112,10 +112,6 @@ void TransformComponent::DetachFromParent(
   if (keep_worl_position || keep_world_rotation || keep_world_scale){
     
     if (dirty_){
-      // EntityManager& manager = EntityManager::GetManager();
-      // Entity* root = manager.GetEntity(0);
-      // manager.CleanEntities(root,glm::mat4x4(1.0f),
-      // root->get_component<TransformComponent>()->dirty());
     }
     
     glm::vec3 scale;

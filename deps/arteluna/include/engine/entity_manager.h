@@ -24,9 +24,10 @@ public:
 
 class EntityManager {
   public:
+   EntityManager();
   ~EntityManager();
 
-  static EntityManager& GetManager();
+  //static EntityManager& GetManager();
 
   Entity& CreateNewEntity(uint32_t parent = 0);
 
@@ -41,7 +42,6 @@ class EntityManager {
   __forceinline std::vector<std::optional<T>>* CreateComponentVector();
 
 private:
-  EntityManager();
 
   uint32_t last_id_;
 

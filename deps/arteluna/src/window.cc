@@ -81,10 +81,10 @@ Window::Window(
   glEnable(GL_DEPTH_TEST);
 
 
-  EntityManager& manager_ref = EntityManager::GetManager();
-  Systems
-  ServiceManager& sm = ServiceManager::Manager();
-  sm.Add(manager_ref);
+  // EntityManager& manager_ref = EntityManager::GetManager();
+  // Systems
+  // ServiceManager& sm = ServiceManager::Manager();
+  // sm.Add(manager_ref);
 }
 
 Window::~Window() {
@@ -168,10 +168,11 @@ void Window::BeginFrame() {
 }
 
 void Window::EndFrame() {
+  ServiceManager sm = ServiceManager::Manager();
   // Render Scene --------
-  EntityManager& em = EntityManager::GetManager();
-  Entity* root = EntityManager::GetManager().GetEntity(0);
-  
+  Entity* root = sm.Get<EntityManager>()->GetEntity(0);
+  TransformComponent* transform_component = root->get_component<TransformComponent>();
+  // sm.Get<EntityManager>()->CleanEntities(root,glm::mat4x4(1.f),transform_component->dirty());
   camera_.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
 
   // Render Imgui

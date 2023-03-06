@@ -10,6 +10,7 @@
 #include "components/transform_component.h"
 #include "engine/light_manager.h"
 #include "engine/material.h"
+#include "engine/service_manager.h"
 
 Camera::Camera() {
   movement_speed_ = 10.0f;
@@ -145,7 +146,8 @@ void Camera::TransformOrtho(Input* input)
 }
 
 void Camera::RenderScene(float aspect) {
-  EntityManager& entity_manager = EntityManager::GetManager();
+  ServiceManager& sm = ServiceManager::Manager();
+  //EntityManager& entity_manager = EntityManager::GetManager();
   glm::mat4x4 vp_matrix;
   if (mode_ == Ortho) {
     auto ortho_perspective = glm::ortho(-ortho_x(), ortho_x(), -ortho_y(), ortho_y(), near(), far());
@@ -157,9 +159,9 @@ void Camera::RenderScene(float aspect) {
     vp_matrix = perspective * view;
   }
   
-  auto* render_components = entity_manager.GetComponentVector<RenderComponent>();
-  auto* transform_components = entity_manager.GetComponentVector<TransformComponent>();
-  for (uint16_t i = 1; i < entity_manager.last_id_; i++) {
+  auto* render_components =sm.Get<EntityManager>()->GetComponentVector<RenderComponent>();
+  auto* transform_components = sm.Get<EntityManager>()->GetComponentVector<TransformComponent>();
+  for (uint16_t i = 1; i < sm.Get<EntityManager>()->last_id_; i++) {
     
     if (render_components->at(i).has_value()) {
       const TransformComponent& transform_component = transform_components->at(i).value();
@@ -190,6 +192,7 @@ void Camera::RenderScene(float aspect) {
 }
 
 void Camera::MenuImgui() {
+  ServiceManager& sm = ServiceManager::Manager();
   ImGui::Begin("Camera controls");
 
   ImGui::Text("Position");
@@ -215,8 +218,8 @@ void Camera::MenuImgui() {
   }
 
   ImGui::End();
-  EntityManager& e_m = EntityManager::GetManager();
-  std::vector<std::optional<TransformComponent>>* transform_components = e_m.GetComponentVector<TransformComponent>();
+  //EntityManager& e_m = EntityManager::GetManager();
+  std::vector<std::optional<TransformComponent>>* transform_components = sm.Get<EntityManager>()->GetComponentVector<TransformComponent>();
 
   char label[20] = { '\n' };
   ImGui::Begin("Entities");
@@ -232,7 +235,7 @@ void Camera::MenuImgui() {
       t_comp.ImguiTree((uint32_t)i);
       sprintf_s(label, "Huerfanear##P%d", (int)i);
       if (ImGui::Button(label)) {
-        // e_m.GetEntity((unsigned int)i)->DetachFromParent();
+        // sm.Get<EntityManager>()->GetEntity((unsigned int)i)->DetachFromParent();
       }
       ImGui::TreePop();
     }

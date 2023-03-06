@@ -9,15 +9,15 @@
 EntityManager::~EntityManager() {
     
 }
-
+/*
 EntityManager& EntityManager::GetManager() {
   static EntityManager manager;
   return manager;
 }
-
+*/
 Entity& EntityManager::CreateNewEntity(uint32_t parent) {
   for (
-    std::map<size_t, std::unique_ptr<ComponentVector> >::iterator it=component_map_.begin();
+    auto it=component_map_.begin();
     it!=component_map_.end();
     ++it){
     
