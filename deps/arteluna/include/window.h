@@ -1,14 +1,13 @@
 #ifndef __WINDOW_H__
 #define __WINDOW_H__ 1
 
+#include <memory>
+
 #include "camera.h"
 #include "stdint.h"
 
 class Window{
 public:
-  Window( const char* name, int16_t width = 1280, int16_t heigth = 720,
-      int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
-  );
   ~Window();
 
   //Parameters
@@ -35,10 +34,13 @@ public:
   __forceinline double delta_time() const;
 
   struct GLFWwindow* window_;
-  class Input* input_;
+  std::unique_ptr<class Input>input_;
   
   Camera camera_;
 private:
+  Window( const char* name, int16_t width = 1280, int16_t heigth = 720,
+      int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
+  );
   Window();
 
   int16_t width_;
@@ -51,6 +53,7 @@ private:
    
   double delta_time_;
   double last_time_;
+  friend class Engine;
 };
 
 double Window::delta_time() const {

@@ -5,6 +5,7 @@
 #include <vector>
 #include "stdint.h"
 #include "engine/service_manager.h"
+#include "engine/entity_manager.h"
 
 // para las listas de los componentes hacerlas de std::optional<componente>
 // olvida lo de arriba y hazlo en un entity manager :)
@@ -32,7 +33,7 @@ public:
 
 protected:
   Entity();
-  Entity(uint32_t id, uint32_t parent);
+  Entity(uint32_t id);
   
   uint32_t id_;
 

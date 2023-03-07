@@ -7,12 +7,12 @@ public:
   Systems();
   ~Systems();
 
-  void ServiceUpdate();
+  void SystemsUpdate();
   
 
 private:
-  void ClearTransformComponents();
-  void TravelTreeUp(class Entity* entity);
+  void ClearTransformComponents() const;
+  static bool TravelTreeUp(class Entity* entity);
   
   class ServiceManager* service_manager_;
 

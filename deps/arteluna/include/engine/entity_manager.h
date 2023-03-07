@@ -6,11 +6,11 @@
 #include <vector>
 #include <memory>
 
-#include "entity.h"
 #include "components/transform_component.h"
 
 class ComponentVector{
 public:
+  virtual ~ComponentVector() = default;
   virtual void Grow() = 0;
 };
 template<typename T>
@@ -26,8 +26,6 @@ class EntityManager {
   public:
    EntityManager();
   ~EntityManager();
-
-  //static EntityManager& GetManager();
 
   Entity& CreateNewEntity(uint32_t parent = 0);
 

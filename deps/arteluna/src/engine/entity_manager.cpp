@@ -1,5 +1,6 @@
 #include "engine/entity_manager.h"
 
+#include "entity.h"
 #include "engine/texture.h"
 #include "components/transform_component.h"
 #include "components/render_component.h"
@@ -23,10 +24,11 @@ Entity& EntityManager::CreateNewEntity(uint32_t parent) {
     
     it->second->Grow();
   }
-  entities_.emplace_back(Entity(last_id_, parent));
-  
+  entities_.emplace_back(Entity(last_id_));
+  if (parent >= last_id_) parent = 0;
+
   Entity& new_entity = entities_.back();
-  new_entity.AddComponent<TransformComponent>();
+  new_entity.AddComponent<TransformComponent>()->parent_ = parent;
   last_id_++;
   return new_entity;
 }

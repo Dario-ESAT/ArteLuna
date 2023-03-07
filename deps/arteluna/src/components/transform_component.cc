@@ -6,6 +6,7 @@
 
 #include "imgui.h"
 #include "engine/entity_manager.h"
+#include "engine/service_manager.h"
 
 void TransformComponent::ImguiTree(uint32_t id) {
   char label[10] = {'\n'};
@@ -95,6 +96,11 @@ TransformComponent::TransformComponent() {
 
 Entity& TransformComponent::parent() const {
   return *ServiceManager::Manager().Get<EntityManager>()->GetEntity(parent_);
+}
+
+TransformComponent& TransformComponent::parent_transform_component() const {
+  return ServiceManager::Manager().Get<EntityManager>()
+  ->GetComponentVector<TransformComponent>()->at(parent_).value();
 }
 
 void TransformComponent::AttachToParent(uint32_t p) {

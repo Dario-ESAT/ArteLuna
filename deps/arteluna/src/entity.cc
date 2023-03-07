@@ -6,11 +6,8 @@ Entity::Entity() {
   id_ = 0;
 }
 
-Entity::Entity(uint32_t id, uint32_t parent){
-  ServiceManager sm = ServiceManager::Manager();
+Entity::Entity(uint32_t id){
   id_ = id;
-  if (parent >= sm.Get<EntityManager>()->last_id_) parent = 0;
-  
 }
 
 Entity::~Entity() {

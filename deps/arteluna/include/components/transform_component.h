@@ -33,6 +33,7 @@ public:
   glm::vec3 right() const { return right_; }
 
   Entity& parent() const;
+  TransformComponent& parent_transform_component() const;
 
   void AttachToParent(uint32_t p);
 

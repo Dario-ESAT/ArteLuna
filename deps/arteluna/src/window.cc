@@ -12,6 +12,7 @@
 #include "backends/imgui_impl_opengl3.h"
 #include "engine/entity_manager.h"
 #include "engine/service_manager.h"
+#include "systems/systems.h"
 
 Window::Window() {
   window_ = nullptr;
@@ -64,7 +65,7 @@ Window::Window(
     keys.push_back(i);
   }
 
-  input_ = new Input(keys);
+  input_ = std::make_unique<Input>(keys);
   input_->setupInput(*window_);
 
   glfwSetWindowPos(window_, posx, posy);
@@ -158,7 +159,7 @@ void Window::BeginFrame() {
   last_time_ = current_time_;
   
   glfwPollEvents();
-  camera_.Update(delta_time_, input_);
+  camera_.Update(delta_time_, input_.get());
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
@@ -171,8 +172,8 @@ void Window::EndFrame() {
   ServiceManager sm = ServiceManager::Manager();
   // Render Scene --------
   Entity* root = sm.Get<EntityManager>()->GetEntity(0);
-  TransformComponent* transform_component = root->get_component<TransformComponent>();
-  // sm.Get<EntityManager>()->CleanEntities(root,glm::mat4x4(1.f),transform_component->dirty());
+  Systems* systems = sm.Get<Systems>();
+  systems->SystemsUpdate();
   camera_.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
 
   // Render Imgui
