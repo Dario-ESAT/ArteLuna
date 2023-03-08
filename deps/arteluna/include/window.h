@@ -40,7 +40,9 @@ public:
   std::unique_ptr<class Input>input_;
   
   Camera camera_;
+
 private:
+
   Window();
 
   int16_t width_;
@@ -54,6 +56,7 @@ private:
   double delta_time_;
   double last_time_;
   friend class Engine;
+  friend std::unique_ptr<Window> std::make_unique<Window>();
 };
 
 double Window::delta_time() const {

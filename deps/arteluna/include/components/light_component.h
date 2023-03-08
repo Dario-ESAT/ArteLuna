@@ -20,6 +20,9 @@ public:
   __forceinline uint8_t brightness() const;
   __forceinline void set_brightness(uint8_t brightness);
 
+  __forceinline glm::vec3 direction() const;
+  __forceinline void set_direction(glm::vec3 dir);
+
   __forceinline float inner_cone_radius() const;
   __forceinline void set_inner_cone_radius(float inner_cone_radius);
 
@@ -50,6 +53,7 @@ protected:
   float quadratic_;
   float inner_cone_radius_;
   float outer_cone_radius_;
+  glm::vec3 direction_;
   Type type_;
 
   friend class LightManager;
@@ -57,6 +61,16 @@ protected:
 
 uint8_t LightComponent::brightness() const { return brightness_; }
 void LightComponent::set_brightness(uint8_t brightness) { brightness_ = brightness; }
+
+inline glm::vec3 LightComponent::direction() const
+{
+  return direction_;
+}
+
+inline void LightComponent::set_direction(glm::vec3 dir)
+{
+  direction_ = dir;
+}
 
 float LightComponent::inner_cone_radius() const { return inner_cone_radius_; }
 void LightComponent::set_inner_cone_radius(float inner_cone_radius) {

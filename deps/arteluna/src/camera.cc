@@ -27,7 +27,7 @@ Camera::Camera() {
   position_.z = 0.0f;
   
   mode_ = Perspective;
-  ortho_x_ = 10.0f;
+  ortho_x_ = 15.0f;
   ortho_y_ = 10.0f;
   near_ = 0.1f;
   far_ = 10000.0f;
@@ -215,6 +215,12 @@ void Camera::MenuImgui() {
       mode_ = Ortho;
     else
       mode_ = Perspective;
+  }
+
+  if (mode_ == Ortho) {
+    ImGui::Text("Set ortho size");
+    ImGui::DragFloat("Ortho width", &ortho_x_, 0.01f);
+    ImGui::DragFloat("Ortho height", &ortho_y_, 0.01f);
   }
 
   ImGui::End();

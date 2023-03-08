@@ -7,18 +7,18 @@
 class LightManager {
   public:
 
-  
+   LightManager();
   ~LightManager();
-
-  static LightManager& GetManager();
+  //static LightManager& GetManager();
   
-  Entity& CreatelLight(uint32_t parent = 0,
-    LightComponent::Type type = LightComponent::Directional);
+  Entity& CreatelLight(
+    LightComponent::Type type = LightComponent::Directional,
+    uint32_t parent = 0);
   
   void DestroyLight(size_t index);
-  
+
 private:
-  LightManager();
+  
   
   void OrderLights();
   std::vector<uint32_t> lights_;
