@@ -14,7 +14,7 @@
 int main() {
   ServiceManager& sm = ServiceManager::Manager();
   Engine& engine = Engine::GetEngine();
-  Window window& = *engine.CreateNewWindow("Aleksander");
+  Window& window = *engine.CreateNewWindow("Aleksander");
 
   //Entity entity;
   glm::vec3 position_ = { 0.0 , 0.0f, 10.0f };
@@ -37,7 +37,7 @@ int main() {
 
   render_cmp->material_ = material;
 
-  Entity& entity_2 = sm.Get<EntityManager>()->CreateNewEntity();
+  Entity& entity_2 = sm.Get<EntityManager>()->CreateNewEntity(1);
   transform_cmp = entity_2.get_component<TransformComponent>();
   transform_cmp->set_position({ 0.0 , 0.0f, 10.0f });
   transform_cmp->set_scale({ 0.1f, 0.1f, 0.1f });
