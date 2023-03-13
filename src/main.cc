@@ -31,9 +31,9 @@ int main() {
   d_light.get_component<LightComponent>()->set_direction(glm::vec3(0, -1, 0));
 
   std::shared_ptr<Material> material = std::make_shared<Material>("../../deps/arteluna/bin/vertex.glslv",
-   "../../deps/arteluna/bin/fragment.glslf", "../../deps/arteluna/data/textures/brick_b.png","../../deps/arteluna/data/textures/brick_NRM.png",
-    "../../deps/arteluna/data/textures/brick_b_DISP.png",Texture::Type::T_2D);
-  std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../deps/arteluna/data/models/cuke.obj");
+   "../../deps/arteluna/bin/fragment.glslf", "../../deps/arteluna/data/textures/wavy_COLOR.png","../../deps/arteluna/data/textures/wavy.jpg",
+    "../../deps/arteluna/data/textures/wavy_DISP.png",Texture::Type::T_2D);
+  std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../deps/arteluna/data/models/sponza.obj");
   
   Entity& entity_1 = sm.Get<EntityManager>()->CreateNewEntity();
   TransformComponent* transform_cmp = entity_1.get_component<TransformComponent>();

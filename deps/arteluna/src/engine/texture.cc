@@ -53,6 +53,16 @@ Texture::~Texture() {
 
 }
 
+unsigned int Texture::create_cubemap(char* cubemap_src)
+{
+	Texture t;
+	glGenTextures(1,&t.id_texture_);
+
+
+
+	return 0;
+}
+
 void Texture::set_texture(char* texture_src/*, int d*/, Filter mag_filter, Filter min_filter, Format format, Type type)
 {
 	data_ = stbi_load(texture_src, &width_, &height_, &channels_, 0);

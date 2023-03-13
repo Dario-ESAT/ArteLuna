@@ -16,6 +16,14 @@ struct al_DirLight {
   vec3 color;
 };
 
+in VS_OUT {
+    vec3 FragPos;
+    vec2 TexCoords;
+    vec3 TangentLightPos;
+    vec3 TangentViewPos;
+    vec3 TangentFragPos;
+} fs_in;
+
 struct al_PointLight {    
   vec3 position;
   
@@ -143,13 +151,14 @@ vec3 CalcPointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir
 
 
 void main() {
-  DepthScale = 1;
-  vec3 view_dir = normalize(al_cam_pos - FragPos);
+  DepthScale = 5.9;
+
+  vec3 view_dir = normalize(fs_in.TangentViewPos - fs_in.TangentFragPos);
   vec3 light_result = vec3(0.0,0.0,0.0);
   vec3 Nnormal = normalize(normal);
 
   // Parallax mapping
-  vec2 texCoord_ = ParallaxMapping(TexCoord, view_dir);
+  vec2 texCoord_ = ParallaxMapping(fs_in.TexCoords, view_dir);
 
   vec3 diffuse_color = texture(al_texture, texCoord_).rgb;
    vec3 normals_mapping = texture(al_normal, texCoord_).xyz;
