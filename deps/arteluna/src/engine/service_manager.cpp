@@ -1,10 +1,6 @@
 #include "engine/service_manager.h"
 
 
-ServiceManager::~ServiceManager()
-{
-}
+ServiceManager::~ServiceManager() = default;
 
-ServiceManager::ServiceManager()
-{
-}
+ServiceManager::ServiceManager() = default;

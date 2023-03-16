@@ -7,14 +7,14 @@
 LightManager::~LightManager() {
   
 }
-
+/*
 LightManager& LightManager::GetManager() {
   static LightManager manager;
   return manager;
 }
-
+*/
 Entity& LightManager::
-CreatelLight(uint32_t parent, LightComponent::Type type) {
+CreatelLight(LightComponent::Type type, uint32_t parent) {
   ServiceManager sm = ServiceManager::Manager();
   Entity& light = sm.Get<EntityManager>()->CreateNewEntity(parent);
   LightComponent* light_component = light.AddComponent<LightComponent>();

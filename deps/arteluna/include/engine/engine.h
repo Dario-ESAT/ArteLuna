@@ -1,6 +1,9 @@
 #ifndef H_GAME_INSTANCE_
 #define H_GAME_INSTANCE_ 1
 #include <memory>
+
+#include "entity_manager.h"
+#include "systems/systems.h"
 class Window;
 class Engine {
     
@@ -16,7 +19,9 @@ public:
 protected:
     Engine();
     ~Engine();
-
+  
+  EntityManager em_;
+  Systems systems_;
   std::unique_ptr<Window> window_;
 };
 #endif

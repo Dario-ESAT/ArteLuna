@@ -8,6 +8,9 @@
 
 class Window{
 public:
+  Window( const char* name, int16_t width = 1280, int16_t heigth = 720,
+      int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
+  );
   ~Window();
 
   //Parameters
@@ -37,10 +40,9 @@ public:
   std::unique_ptr<class Input>input_;
   
   Camera camera_;
+
 private:
-  Window( const char* name, int16_t width = 1280, int16_t heigth = 720,
-      int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
-  );
+
   Window();
 
   int16_t width_;
@@ -54,6 +56,7 @@ private:
   double delta_time_;
   double last_time_;
   friend class Engine;
+  friend std::unique_ptr<Window> std::make_unique<Window>();
 };
 
 double Window::delta_time() const {
