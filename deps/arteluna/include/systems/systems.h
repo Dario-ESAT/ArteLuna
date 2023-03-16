@@ -5,7 +5,8 @@
   
   class Systems{
   public:
-    Systems();
+    Systems() = delete;
+    Systems(ServiceManager& sm);
     void SetServiceManager(ServiceManager& sm);
     
     ~Systems() = default;

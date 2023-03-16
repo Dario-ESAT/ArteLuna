@@ -4,11 +4,11 @@
 #include "engine/entity_manager.h"
 #include "engine/service_manager.h"
 
-Systems::Systems() {
-  service_manager_ = nullptr;
-}
-void Systems::SetServiceManager(ServiceManager& sm) {
+Systems::Systems(ServiceManager& sm) {
   service_manager_ = &sm;
+}
+
+void Systems::SetServiceManager(ServiceManager& sm) {
 }
 
 void Systems::SystemsUpdate() {

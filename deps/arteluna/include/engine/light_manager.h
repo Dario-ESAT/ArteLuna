@@ -6,16 +6,14 @@
 
   class LightManager {
   public:
-
-  
-    ~LightManager();
+    LightManager() = delete;
     LightManager(ServiceManager& sm);
+    ~LightManager();
 
     Entity& CreatelLight(EntityManager& em,uint32_t parent = 0,
       LightComponent::Type type = LightComponent::Directional);
   
     void DestroyLight(size_t index);
-    LightManager();
   private:
     
     void OrderLights(EntityManager& em);

@@ -1,7 +1,7 @@
 #include "engine/engine.h"
+
 #include "window.h"
 #include "engine/service_manager.h"
-#include "systems/systems.h"
 
 Window* Engine::CreateNewWindow(const char* name, int16_t width, int16_t heigth,
                                 int posx, int posy, bool windowed, int monitor) {
@@ -13,9 +13,7 @@ Window* Engine::CreateNewWindow(const char* name, int16_t width, int16_t heigth,
   return window_.get();
 }
 
-Engine::Engine() {}
-
-void Engine::SetServiceManager(ServiceManager& sm){
+Engine::Engine(ServiceManager& sm) : systems_(sm), lm_(sm){
   
   sm.Add(em_);
   sm.Add(systems_);

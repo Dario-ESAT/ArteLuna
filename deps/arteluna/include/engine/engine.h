@@ -10,20 +10,19 @@ class Window;
 class Engine {
   
 public:
-  Engine();
-  void SetServiceManager(class ServiceManager& sm);
+  Engine(class ServiceManager& sm);
   ~Engine();
-
+  Engine() = delete;
   Window* CreateNewWindow(const char* name,
     int16_t width = 1280, int16_t heigth = 720,
     int posx = 110, int posy = 110,
     bool windowed = true, int monitor = 0);
 
-protected:
   ServiceManager* sm_;
   EntityManager em_;
   Systems systems_;
   LightManager lm_;
+protected:
   
   std::unique_ptr<Window> window_;
 };

@@ -12,7 +12,10 @@
 #include "systems/systems.h"
 int main() {
   ServiceManager sm;
-  Engine engine(sm);
+  Engine engine;
+  engine.SetServiceManager(sm);
+
+  EntityManager& em = *sm.Get<EntityManager>();
   Window& window = *engine.CreateNewWindow("Aleksander");
 
   std::shared_ptr<Material> material = std::make_shared<Material>("../../deps/arteluna/bin/vertex.glslv",
@@ -20,36 +23,36 @@ int main() {
   std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../deps/arteluna/data/models/cuke.obj");
   
   Entity& entity_1 = sm.Get<EntityManager>()->CreateNewEntity();
-  TransformComponent* transform_cmp = entity_1.get_component<TransformComponent>();
+  TransformComponent* transform_cmp = entity_1.get_component<TransformComponent>(em);
   transform_cmp->set_position({ 0.0 , 0.0f, 10.0f });
   transform_cmp->set_scale({ 0.1f, 0.1f, 0.1f });
   transform_cmp->set_rotation({ 0.0f, 3.1416f, 0.0f });
 
 	
-  RenderComponent* render_cmp =  entity_1.AddComponent<RenderComponent>();
+  RenderComponent* render_cmp =  entity_1.AddComponent<RenderComponent>(em);
   render_cmp->mesh_ = mesh_sponza;
 
   render_cmp->material_ = material;
 
   Entity& entity_2 = sm.Get<EntityManager>()->CreateNewEntity();
-  transform_cmp = entity_2.get_component<TransformComponent>();
+  transform_cmp = entity_2.get_component<TransformComponent>(em);
   transform_cmp->set_position({ 0.0 , 0.0f, 10.0f });
   transform_cmp->set_scale({ 0.1f, 0.1f, 0.1f });
   transform_cmp->set_rotation({ 0.0f, 3.140f, 0.0f });
 
 
-  render_cmp = entity_2.AddComponent<RenderComponent>();
+  render_cmp = entity_2.AddComponent<RenderComponent>(em);
   render_cmp->mesh_ = mesh_sponza;
 
   render_cmp->material_ = material;
 	/*Entity& entity_0 = .CreateNewEntity();
-	transform_cmp = entity_0.get_component<TransformComponent>();
+	transform_cmp = entity_0.get_component<TransformComponent>(em);
 	transform_cmp->set_position({ 7.0 , 0.0f, 10.0f });
 	transform_cmp->set_scale({ 1.0f, 1.0f, 1.0f });
 	transform_cmp->set_rotation({ 0.0f, 3.140f, 0.0f });
 
 
-	render_cmp =  entity_0.AddComponent<RenderComponent>();
+	render_cmp =  entity_0.AddComponent<RenderComponent>(em);
 	render_cmp->mesh_ = mesh_sponza;
 
 	render_cmp->material_ = material;
