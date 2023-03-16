@@ -4,35 +4,31 @@
 #include "entity.h"
 #include "components/light_component.h"
 
-class LightManager {
+  class LightManager {
   public:
 
   
-  ~LightManager();
+    ~LightManager();
+    LightManager(ServiceManager& sm);
 
-  static LightManager& GetManager();
+    Entity& CreatelLight(EntityManager& em,uint32_t parent = 0,
+      LightComponent::Type type = LightComponent::Directional);
   
-  Entity& CreatelLight(uint32_t parent = 0,
-    LightComponent::Type type = LightComponent::Directional);
+    void DestroyLight(size_t index);
+    LightManager();
+  private:
+    
+    void OrderLights(EntityManager& em);
+    std::vector<uint32_t> lights_;
   
-  void DestroyLight(size_t index);
-  
-private:
-  LightManager();
-  
-  void OrderLights();
-  std::vector<uint32_t> lights_;
-  
-  uint32_t num_directionals_;
-  uint32_t num_points_;
-  uint32_t num_spots_;
+    uint32_t num_directionals_;
+    uint32_t num_points_;
+    uint32_t num_spots_;
 
 
-  friend class LightComponent;
-  friend class RenderComponent;
-};
-
-
+    friend class LightComponent;
+    friend class RenderComponent;
+  };
 
 
 #endif

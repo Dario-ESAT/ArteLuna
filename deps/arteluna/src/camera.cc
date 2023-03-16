@@ -11,7 +11,6 @@
 #include "engine/light_manager.h"
 #include "engine/material.h"
 #include "engine/service_manager.h"
-
 Camera::Camera() {
   movement_speed_ = 10.0f;
   rotation_speed_ = 1.0f;
@@ -20,12 +19,12 @@ Camera::Camera() {
   is_moving_ = true;
   rotate_x_ = 0;
   rotate_y_ = 0;
-  fov_ = 90.0f;
-  
+  fov_ = glm::radians(90.0f);
+
   position_.x = 0.0f;
   position_.y = 0.0f;
   position_.z = 0.0f;
-  
+
   mode_ = Perspective;
   ortho_x_ = 10.0f;
   ortho_y_ = 10.0f;
@@ -37,13 +36,13 @@ Camera::Camera() {
 }
 
 Camera::~Camera() {
-  
+
 }
 
 void Camera::UpdateFromInput(double deltatime, Input* input) {
   float speed = movement_speed_;
   float delta_time = (float)deltatime;
-  
+
   if (input->IsMouseButtonDown(1)) {
     input->setMouseMode(DISABLED);
     is_moving_ = true;
@@ -51,7 +50,7 @@ void Camera::UpdateFromInput(double deltatime, Input* input) {
     is_moving_ = false;
     input->setMouseMode(NORMAL);
   }
-  
+
   if (is_moving_){
     if (input->IsKeyDown(LEFT_SHIFT)) {
       speed = speed * 2;
@@ -66,7 +65,7 @@ void Camera::UpdateFromInput(double deltatime, Input* input) {
       input->IsKeyDown(D) && mode_ == Perspective) {
       position_ -= right_ * speed * delta_time;
       }
-  
+
     if (input->IsKeyDown(UP) ||
       input->IsKeyDown(W) && mode_ == Perspective) {
       position_ += (forward_) * speed * delta_time;
@@ -84,7 +83,7 @@ void Camera::UpdateFromInput(double deltatime, Input* input) {
     if (input->IsKeyDown(Q)) {
       position_ -= up_ * speed * delta_time;
     }
-  
+
     if (input->IsKeyDown(I)) {
       rotate_x_ -= rotation_speed_ * delta_time;
       if (rotate_x_ < -1.5f) {
@@ -108,7 +107,7 @@ void Camera::UpdateFromInput(double deltatime, Input* input) {
 
 void Camera::UpdateRotation(double deltatime, glm::vec<2,float> cursor_pos) {
   if (is_moving_) {
-    
+  
     if (mode_ == Perspective) {
       rotate_x_ += mouse_displacement_y_ * rotation_speed_ * static_cast<float>(deltatime);
       if (rotate_x_ > 1.57f) {
@@ -121,7 +120,7 @@ void Camera::UpdateRotation(double deltatime, glm::vec<2,float> cursor_pos) {
     }
 
     if (mode_ == Ortho) {
-     
+   
     }
   }
 }
@@ -130,25 +129,25 @@ void Camera::Update(double deltatime, Input* input) {
   glm::vec<2,double> mouse_pos = input->cursor_pos();
   mouse_displacement_x_ = (float)(mouse_pos.x - mouse_pos_buffer_.x);
   mouse_displacement_y_ = (float)(mouse_pos.y - mouse_pos_buffer_.y);
-  
+
   UpdateFromInput(deltatime,input);
   UpdateRotation(deltatime,mouse_pos);
   UpdateTransform();
-  
+
   mouse_pos_buffer_ = input->cursor_pos();
 }
 
 void Camera::TransformOrtho(Input* input)
 {
   if (mode_ == Ortho) {
-   // printf("%f \n", input->scrollback_y_value_);
+    // printf("%f \n", input->scrollback_y_value_);
   }
 }
 
 void Camera::RenderScene(float aspect) {
-  ServiceManager& sm = ServiceManager::Manager();
   //EntityManager& entity_manager = EntityManager::GetManager();
   glm::mat4x4 vp_matrix;
+  LightManager& lm = *sm_->Get<LightManager>();
   if (mode_ == Ortho) {
     auto ortho_perspective = glm::ortho(-ortho_x(), ortho_x(), -ortho_y(), ortho_y(), near(), far());
     auto view = glm::lookAt(position_,position_ + glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f));
@@ -158,11 +157,11 @@ void Camera::RenderScene(float aspect) {
     auto view = glm::lookAt(position_, position_ + forward_, glm::vec3(0.f, 1.f, 0.f));
     vp_matrix = perspective * view;
   }
+  auto& em = *sm_->Get<EntityManager>();
+  const auto* render_components = em.GetComponentVector<RenderComponent>();
+  const auto* transform_components = em.GetComponentVector<TransformComponent>();
+  for (uint16_t i = 1; i < em.last_id_; i++) {
   
-  auto* render_components =sm.Get<EntityManager>()->GetComponentVector<RenderComponent>();
-  auto* transform_components = sm.Get<EntityManager>()->GetComponentVector<TransformComponent>();
-  for (uint16_t i = 1; i < sm.Get<EntityManager>()->last_id_; i++) {
-    
     if (render_components->at(i).has_value()) {
       const TransformComponent& transform_component = transform_components->at(i).value();
       const RenderComponent& render_component = render_components->at(i).value();
@@ -186,13 +185,12 @@ void Camera::RenderScene(float aspect) {
         glUniform3f(al_uniform->second.location_, position_.x, position_.y, position_.z);
       }
       
-      render_component.RenderObject();
+      render_component.RenderObject(em,lm);
     }
   }
 }
 
 void Camera::MenuImgui() {
-  ServiceManager& sm = ServiceManager::Manager();
   ImGui::Begin("Camera controls");
 
   ImGui::Text("Position");
@@ -219,7 +217,7 @@ void Camera::MenuImgui() {
 
   ImGui::End();
   //EntityManager& e_m = EntityManager::GetManager();
-  std::vector<std::optional<TransformComponent>>* transform_components = sm.Get<EntityManager>()->GetComponentVector<TransformComponent>();
+  std::vector<std::optional<TransformComponent>>* transform_components = sm_->Get<EntityManager>()->GetComponentVector<TransformComponent>();
 
   char label[20] = { '\n' };
   ImGui::Begin("Entities");
@@ -269,6 +267,4 @@ void Camera::UpdateTransform() {
     }
   }
 }
-
-
 

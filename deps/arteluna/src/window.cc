@@ -13,174 +13,184 @@
 #include "engine/entity_manager.h"
 #include "engine/service_manager.h"
 #include "systems/systems.h"
+  Window::Window() {
+    window_ = nullptr;
+    width_ = 0;
+    height_ = 0;
+    posx_ = 0;
+    posy_ = 0;
+    windowed_ = false;
+    delta_time_ = 0;
+    last_time_ = 0;
+  }
 
-Window::Window() {
-  window_ = nullptr;
-  width_ = 0;
-  height_ = 0;
-  posx_ = 0;
-  posy_ = 0;
-  windowed_ = false;
-  delta_time_ = 0;
-  last_time_ = 0;
-}
-
-Window::Window(
-        const char* name,
-        int16_t width,
-        int16_t heigth,
-        int posx,
-        int posy,
-        bool windowed,
-        int monitor
-    ) {
-  width_ = width;
-  height_ = heigth;
-  posx_ = posx;
-  posy_ = posy;
-  windowed_ = windowed;
-  try {
-    if (!glfwInit())
+  Window::Window(
+          const char* name,
+          int16_t width,
+          int16_t height,
+          int posx,
+          int posy,
+          bool windowed,
+          int monitor
+      ) {
+    width_ = width;
+    height_ = height;
+    posx_ = posx;
+    posy_ = posy;
+    windowed_ = windowed;
+    try {
+      if (!glfwInit())
         throw 14;
-  }
+    }
     catch (int e) {
-    printf("There was an error on glfw, the window couldn't be initialize %d",e);
+      printf("There was an error on glfw, the window couldn't be initialize %d",e);
+    }
+
+    try {
+      window_ = glfwCreateWindow(width, height, name, nullptr, nullptr);
+
+      if (!window_) {
+        printf("There was an error on the window, the window couldn't be initialize");
+        glfwTerminate();
+      }
+    }
+    catch (int e) {
+      printf("There was an error on the window, the window couldn't be created %d",e);
+    }
+
+
+    std::vector<int> keys;
+    for(int i = 0; i < 348; i++){
+      keys.push_back(i);
+    }
+
+    input_ = std::make_unique<Input>(keys);
+    input_->setupInput(*window_);
+
+    glfwSetWindowPos(window_, posx, posy);
+    glfwMakeContextCurrent(window_);
+    gladLoadGL(glfwGetProcAddress);
+  
+    ImGui::CreateContext();
+    ImGui_ImplOpenGL3_Init("#version 330");
+    ImGui_ImplGlfw_InitForOpenGL(window_,true);
+    delta_time_ = 0;
+    last_time_ = glfwGetTime();
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glEnable(GL_DEPTH_TEST);
+
+
+    // EntityManager& manager_ref = EntityManager::GetManager();
+    // Systems
+    // ServiceManager& sm = ServiceManager::Manager();
+    // sm.Add(manager_ref);
   }
 
-  try {
-    window_ = glfwCreateWindow(width, heigth, name, nullptr, nullptr);
-
-    if (!window_) {
-      printf("There was an error on the window, the window couldn't be initialize");
+  Window::~Window() {
+    if (window_ != nullptr) {
+      glfwDestroyWindow(window_);
       glfwTerminate();
     }
   }
-  catch (int e) {
-    printf("There was an error on the window, the window couldn't be created %d",e);
+
+  Window::Window(Window& other) {
+    width_ = other.width_;
+    height_ = other.height_;
+    posx_ = other.posx_;
+    posy_ = other.posy_;
+    windowed_ = other.windowed_;
+    camera_ = other.camera_;
+    windowed_ = other.window_;
+    input_ = std::move(other.input_);
   }
 
-
-  std::vector<int> keys;
-  for(int i = 0; i < 348; i++){
-    keys.push_back(i);
+  int16_t Window::width() {
+    return width_;
   }
 
-  input_ = std::make_unique<Input>(keys);
-  input_->setupInput(*window_);
-
-  glfwSetWindowPos(window_, posx, posy);
-  glfwMakeContextCurrent(window_);
-  gladLoadGL(glfwGetProcAddress);
-  
-  ImGui::CreateContext();
-  ImGui_ImplOpenGL3_Init("#version 330");
-  ImGui_ImplGlfw_InitForOpenGL(window_,true);
-  delta_time_ = 0;
-  last_time_ = glfwGetTime();
-  glEnable(GL_CULL_FACE);
-  glCullFace(GL_BACK);
-  glEnable(GL_DEPTH_TEST);
-
-
-  // EntityManager& manager_ref = EntityManager::GetManager();
-  // Systems
-  // ServiceManager& sm = ServiceManager::Manager();
-  // sm.Add(manager_ref);
-}
-
-Window::~Window() {
-  if (window_ != nullptr) {
-    glfwDestroyWindow(window_);
-    glfwTerminate();
+  void Window::set_width(int16_t width) {
+    width_ = width;
+    if (windowed_) {
+      glfwSetWindowAspectRatio(window_,width_,height_);
+    }
   }
-}
 
-int16_t Window::width() {
-  return width_;
-}
-
-void Window::set_width(int16_t width) {
-  width_ = width;
-  if (windowed_) {
-    glfwSetWindowAspectRatio(window_,width_,height_);
-  }
-}
-
-int16_t Window::height() {
+  int16_t Window::height() {
     return height_;
-}
-
-void Window::set_height(int16_t height)
-{
-  height_ = height;
-  if (windowed_) {
-    glfwSetWindowAspectRatio(window_,width_,height_);
   }
-}
 
-void Window::set_windowed(bool windowed) {
+  void Window::set_height(int16_t height)
+  {
+    height_ = height;
+    if (windowed_) {
+      glfwSetWindowAspectRatio(window_,width_,height_);
+    }
+  }
+
+  void Window::set_windowed(bool windowed) {
   
-}
+  }
 
-bool Window::windowed() {
-  return windowed_;
-}
+  bool Window::windowed() {
+    return windowed_;
+  }
 
 
-bool Window::ShouldClose() {
-  return glfwWindowShouldClose(window_);
-}
+  bool Window::ShouldClose() {
+    return glfwWindowShouldClose(window_);
+  }
 
-double Window::GetTime() {
-  return glfwGetTime();
-}
+  double Window::GetTime() {
+    return glfwGetTime();
+  }
 
-int Window::posx() const {
-  return posx_;
-}
+  int Window::posx() const {
+    return posx_;
+  }
 
-void Window::set_posx(int posx){
-  posx_ = posx;
-  glfwSetWindowPos(window_, posx_, posy_);
-}
+  void Window::set_posx(int posx){
+    posx_ = posx;
+    glfwSetWindowPos(window_, posx_, posy_);
+  }
 
-int Window::posy() const {
-  return posy_;
-}
+  int Window::posy() const {
+    return posy_;
+  }
 
-void Window::set_posy(int posy) {
-  posy_ = posy;
-  glfwSetWindowPos(window_, posx_, posy_);
-}
+  void Window::set_posy(int posy) {
+    posy_ = posy;
+    glfwSetWindowPos(window_, posx_, posy_);
+  }
 
-void Window::BeginFrame() {
-  double current_time_ = glfwGetTime();
-  delta_time_ = current_time_ - last_time_;
-  last_time_ = current_time_;
+  void Window::set_service_manager(ServiceManager& sm) {
+    sm_ = &sm;
+  }
+
+  void Window::BeginFrame() {
+    double current_time_ = glfwGetTime();
+    delta_time_ = current_time_ - last_time_;
+    last_time_ = current_time_;
   
-  glfwPollEvents();
-  camera_.Update(delta_time_, input_.get());
-  ImGui_ImplOpenGL3_NewFrame();
-  ImGui_ImplGlfw_NewFrame();
-  ImGui::NewFrame();
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glClearColor(	0.2f,0.2f,0.2f,1.f);
-  // glClear(GL_COLOR_BUFFER_BIT);
-}
+    glfwPollEvents();
+    camera_.Update(delta_time_, input_.get());
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(	0.2f,0.2f,0.2f,1.f);
+  }
 
-void Window::EndFrame() {
-  ServiceManager sm = ServiceManager::Manager();
-  // Render Scene --------
-  Entity* root = sm.Get<EntityManager>()->GetEntity(0);
-  Systems* systems = sm.Get<Systems>();
-  systems->SystemsUpdate();
-  camera_.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
+  void Window::EndFrame() {
+    // Render Scene --------
+    sm_->Get<Systems>()->SystemsUpdate();
+    camera_.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
 
-  // Render Imgui
-  camera_.MenuImgui();
-  ImGui::Render();
-  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    // Render Imgui
+    camera_.MenuImgui();
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   
-  // Draw
-  glfwSwapBuffers(window_);
-}
+    // Draw
+    glfwSwapBuffers(window_);
+  }

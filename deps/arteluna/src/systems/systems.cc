@@ -5,11 +5,10 @@
 #include "engine/service_manager.h"
 
 Systems::Systems() {
-  service_manager_ = &ServiceManager::Manager();
+  service_manager_ = nullptr;
 }
-
-Systems::~Systems() {
-  
+void Systems::SetServiceManager(ServiceManager& sm) {
+  service_manager_ = &sm;
 }
 
 void Systems::SystemsUpdate() {
@@ -17,14 +16,15 @@ void Systems::SystemsUpdate() {
 }
 
 bool Systems::TravelTreeUp(Entity* entity){
-  TransformComponent* transform_component = entity->get_component<TransformComponent>();
-  Entity* parent = &transform_component->parent();
-  
+  EntityManager& em = *(service_manager_->Get<EntityManager>());
+  auto* transform_component = entity->get_component<TransformComponent>(em);
+  Entity* parent = &transform_component->parent(em);
+
   if (entity->id() > 0){
     const bool parent_dirty = TravelTreeUp(&(*parent));
     if (transform_component->dirty() || parent_dirty) {
       transform_component->update_local_transform();
-      transform_component->update_world_transform(parent->get_component<TransformComponent>()->world_transform_);
+      transform_component->update_world_transform(parent->get_component<TransformComponent>(em)->world_transform_);
       return true;
     }
   } else{
@@ -37,14 +37,14 @@ bool Systems::TravelTreeUp(Entity* entity){
   return false;
 }
 
-void Systems::ClearTransformComponents() const {
+void Systems::ClearTransformComponents() {
   auto* em = service_manager_->Get<EntityManager>();
   for (size_t i = 0; i < em->entities_.size(); i++){
     TravelTreeUp(&em->entities_[i]);
   }
 
   for (size_t i = 0; i < em->entities_.size(); i++){
-    em->entities_[i].get_component<TransformComponent>()->dirty_ = false;
+    em->entities_[i].get_component<TransformComponent>(*service_manager_->Get<EntityManager>())->dirty_ = false;
   }
-  
+
 }

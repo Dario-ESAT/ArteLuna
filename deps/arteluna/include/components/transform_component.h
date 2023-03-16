@@ -4,6 +4,7 @@
 #include "component.h"
 #include "glm.hpp"
 
+class EntityManager;
 class TransformComponent : public Component{
 public:
   TransformComponent();
@@ -23,25 +24,26 @@ public:
 
   const glm::mat4x4& local_transform() const;
   const glm::mat4x4& world_transform() const;
-  
+
   bool dirty() const {return dirty_;}
 
   glm::vec3 forward() const { return forward_; }
-  
+
   glm::vec3 up() const { return up_; }
-  
+
   glm::vec3 right() const { return right_; }
 
-  Entity& parent() const;
-  TransformComponent& parent_transform_component() const;
+  Entity& parent(EntityManager& em) const;
+  TransformComponent& parent_transform_component(EntityManager& em) const;
 
-  void AttachToParent(uint32_t p);
+  void AttachToParent(EntityManager& em, uint32_t p);
 
   void DetachFromParent(
+    class ServiceManager& sm,
     bool keep_worl_position = true,
     bool keep_world_rotation = true,
     bool keep_world_scale = true);
-  
+
 private:
   void update_local_transform();
   void update_world_transform(glm::mat4x4 parent_transform);
@@ -58,12 +60,11 @@ private:
   glm::mat4x4 world_transform_;
 
   bool dirty_;
+  bool was_dirty_;
   uint32_t parent_;
-  
+
   friend class EntityManager;
   friend class Systems;
 };
-
-
 
 #endif

@@ -10,17 +10,11 @@
 #include "engine/engine.h"
 #include "engine/entity_manager.h"
 #include "systems/systems.h"
-
 int main() {
-  ServiceManager& sm = ServiceManager::Manager();
-  Engine& engine = Engine::GetEngine();
-  Window window& = *engine.CreateNewWindow("Aleksander");
+  ServiceManager sm;
+  Engine engine(sm);
+  Window& window = *engine.CreateNewWindow("Aleksander");
 
-  //Entity entity;
-  glm::vec3 position_ = { 0.0 , 0.0f, 10.0f };
-  glm::vec3 scale_ = { 1.0f, 1.0f, 1.0f };
-  glm::vec3 rotation_ = { 0.0f, 3.140f, 0.0f };
-  
   std::shared_ptr<Material> material = std::make_shared<Material>("../../deps/arteluna/bin/vertex.glslv",
    "../../deps/arteluna/bin/fragment.glslf", "../../deps/arteluna/data/textures/brick.png","../../deps/arteluna/data/textures/Box002NormalsMap.png", Texture::Type::T_2D);
   std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../deps/arteluna/data/models/cuke.obj");
@@ -29,7 +23,7 @@ int main() {
   TransformComponent* transform_cmp = entity_1.get_component<TransformComponent>();
   transform_cmp->set_position({ 0.0 , 0.0f, 10.0f });
   transform_cmp->set_scale({ 0.1f, 0.1f, 0.1f });
-  transform_cmp->set_rotation({ 0.0f, 3.140f, 0.0f });
+  transform_cmp->set_rotation({ 0.0f, 3.1416f, 0.0f });
 
 	
   RenderComponent* render_cmp =  entity_1.AddComponent<RenderComponent>();

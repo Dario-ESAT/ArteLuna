@@ -1,22 +1,24 @@
 #ifndef __SERVICES_H__
 #define __SERVICES_H__ 1
 
-
-class Systems{
-public:
-  Systems();
-  ~Systems();
-
-  void SystemsUpdate();
+  class ServiceManager;
   
+  class Systems{
+  public:
+    Systems();
+    void SetServiceManager(ServiceManager& sm);
+    
+    ~Systems() = default;
 
-private:
-  void ClearTransformComponents() const;
-  static bool TravelTreeUp(class Entity* entity);
-  
-  class ServiceManager* service_manager_;
+    void SystemsUpdate();
 
-  friend class EntityManager;
-};
+  private:
+    void ClearTransformComponents();
+    bool TravelTreeUp(class Entity* entity);
 
+    ServiceManager* service_manager_;
+
+    friend class EntityManager;
+    friend class Engine;
+  };
 #endif

@@ -4,19 +4,17 @@
 
 #include "component.h"
 
+  class Mesh;
 
-class Mesh;
-
-class RigidBodyComponent : public Component {
-public:
-  virtual ~RigidBodyComponent();
-  void ImguiTree(uint32_t id) override;
+  class RigidBodyComponent : public Component {
+  public:
+    virtual ~RigidBodyComponent();
+    void ImguiTree(uint32_t id) override;
     
-  std::shared_ptr<Mesh> meshComponent_;
+    std::shared_ptr<Mesh> meshComponent_;
   
-protected:
-  RigidBodyComponent();
-};
-
+  protected:
+    RigidBodyComponent();
+  };
 
 #endif

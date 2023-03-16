@@ -1,7 +1,6 @@
 #include "entity.h"
 
 #include "engine/entity_manager.h"
-
 Entity::Entity() {
   id_ = 0;
 }
@@ -29,7 +28,6 @@ Entity& Entity::operator=(Entity&& other) noexcept {
 }
 
 uint32_t Entity::id() const {
-    return id_;
+  return id_;
 }
-
 
