@@ -7,11 +7,13 @@
 #include "systems/systems.h"
   
 class Window;
+class ServiceManager;
 class Engine {
   
 public:
-  Engine();
-  void SetServiceManager(class ServiceManager& sm);
+  Engine() = delete;
+  Engine(ServiceManager& sm);
+  void SetServiceManager(ServiceManager& sm);
   ~Engine();
 
   Window* CreateNewWindow(const char* name,

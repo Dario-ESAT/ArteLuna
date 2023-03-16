@@ -13,7 +13,9 @@ Window* Engine::CreateNewWindow(const char* name, int16_t width, int16_t heigth,
   return window_.get();
 }
 
-Engine::Engine() {}
+Engine::Engine(ServiceManager& sm) {
+  sm_ = &sm;
+}
 
 void Engine::SetServiceManager(ServiceManager& sm){
   
