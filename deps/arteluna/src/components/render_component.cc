@@ -183,6 +183,10 @@ void RenderComponent::RenderObject() const{
 	uniform = glGetUniformLocation(material_->program_.program(), "al_normal");
 	glUniform1i(uniform, material_->normal_texture_.get_id());
 
+  material_->displacement_texture_.Active();
+  material_->displacement_texture_.Bind();
+  uniform = glGetUniformLocation(material_->program_.program(), "al_displacement");
+  glUniform1i(uniform, material_->displacement_texture_.get_id());
 
 	glBindVertexArray(mesh_->mesh_buffer());
 	glDrawElements(GL_TRIANGLES, (GLsizei)mesh_->indices_.size(),GL_UNSIGNED_INT, 0);

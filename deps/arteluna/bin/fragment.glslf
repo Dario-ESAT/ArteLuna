@@ -2,6 +2,7 @@
 //uniform vec4 u_color;
 uniform sampler2D al_texture;
 uniform sampler2D al_normal;
+uniform sampler2D al_displacement;
 // uniform sampler2D u_specular;
 // uniform float u_shininess;
 uniform vec3 al_cam_pos;
@@ -14,6 +15,14 @@ struct al_DirLight {
   vec3 diffuse;
   vec3 color;
 };
+
+in VS_OUT {
+    vec3 FragPos;
+    vec2 TexCoords;
+    vec3 TangentLightPos;
+    vec3 TangentViewPos;
+    vec3 TangentFragPos;
+} fs_in;
 
 struct al_PointLight {    
   vec3 position;
@@ -54,6 +63,14 @@ in vec2 uv;
 in vec3 FragPos;
 in mat3 TBN;
 in vec2 TexCoord;
+
+float DepthScale; // this could be a uniform
+
+vec2 ParallaxMapping(vec2 textCoords, vec3 viewdir){
+    float height =  texture(al_displacement, textCoords).r;    
+    vec2 p = viewdir.xy / viewdir.z * (height * DepthScale);
+    return textCoords - p;  
+}
 
 /* float GetFogFactor(float fog_distance) {
 	const float fog_max = 10000.0f;
@@ -135,18 +152,27 @@ vec3 CalcPointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir
 
 
 void main() {
-  vec3 view_dir = normalize(al_cam_pos - FragPos);
+  DepthScale = 5.9;
+
+  vec3 view_dir = normalize(fs_in.TangentViewPos - fs_in.TangentFragPos);
   vec3 light_result = vec3(0.0,0.0,0.0);
   vec3 Nnormal = normalize(normal);
 
-  vec3 diffuse_color = texture(al_texture, TexCoord).rgb;
-   vec3 normals_mapping = texture(al_normal, TexCoord).xyz;
+  // Parallax mapping
+  vec2 texCoord_ = ParallaxMapping(fs_in.TexCoords, view_dir);
+
+  vec3 diffuse_color = texture(al_texture, texCoord_).rgb;
+   vec3 normals_mapping = texture(al_normal, texCoord_).xyz;
   normals_mapping.z = sqrt(1 - normals_mapping.x * normals_mapping.x + normals_mapping.y * normals_mapping.y);
   vec3 N = normals_mapping * 2.0 - 1.0;
   N = normalize(N);
   N = TBN * N;
   N = normalize(N);
  
+
+
+
+
    //for(int i = 0; i < al_n_dirLight;i++) {
      //light_result = CalcDir(al_dirLight[0],N,view_dir);
    //}
