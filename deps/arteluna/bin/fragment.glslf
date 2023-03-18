@@ -87,11 +87,11 @@ vec2 ParallaxMapping(vec2 textCoords, vec3 viewdir){
 	return 1 - (fog_max - fog_distance) / (fog_max - fog_min);
 } */
 
-/* vec3 CalSpotLight(al_SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
+vec3 CalSpotLight(al_SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
   vec3 lightDir = normalize(light.position - fragPos);
   
   // specular
-  vec3 reflectDir = reflect(-lightDir, normal);
+  // vec3 reflectDir = reflect(-lightDir, normal);
   // attenuation
   float distance    = length(light.position - fragPos);
   float attenuation = 1.0 / (light.constant + light.linear * distance + 
@@ -103,21 +103,22 @@ vec2 ParallaxMapping(vec2 textCoords, vec3 viewdir){
 
   if(dot(lightDir,normalize(-light.direction)) < light.cutoff){
     float diff = max(dot(normal, lightDir), 0.0);
-    vec3 diffuse  = light.diffuse  * diff * vec3(texture(al_texture, uv));
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
-    vec3 specular = light.specular * spec * vec3(texture(u_specular, uv));
+    vec3 diffuse  = diff * vec3(texture(al_texture, uv));
+    // float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
+    // vec3 specular = light.specular * spec * vec3(texture(u_specular, uv));
+
     diffuse  *= attenuation;
-    specular *= attenuation;
-    return (color + diffuse + specular);
+    // specular *= attenuation;
+    return (color + diffuse /* + specular */);
   }
   
   return color;
-} */
+}
 
 vec3 CalcPointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
   vec3 lightDir = normalize(light.position - fragPos);
   float diff = max(dot(lightDir, normal), 0.0);
-  vec3 reflectDir = reflect(-lightDir, normal);
+  // vec3 reflectDir = reflect(-lightDir, normal);
   //float spec = pow(max(dot(viewDir, reflectDir), 0.0), 1.f/*u_shininess*/);
   // attenuation
 
@@ -132,7 +133,7 @@ vec3 CalcPointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir
 
   //color  *= attenuation;
   //diffuse  *= attenuation;
-    //   specular *= attenuation;
+  //specular *= attenuation;
   return (color + diffuse);
 }
 
@@ -180,9 +181,9 @@ void main() {
     light_result += CalcPointLight(al_pointLight[i],N,FragPos,view_dir);
     //light_result *= diffuse_color;
   }
-  //   for(int i = 0; i < u_n_spotLight;i++) {
-  //     light_result += Calcal_SpotLight(spotLight[i],Nnormal,w_pos,view_dir);
-  //   }
+  for(int i = 0; i < al_n_spotLight;i++) {
+    light_result += CalSpotLight(al_spotLight[i],N,FragPos,view_dir);
+  }
 
   // vec4 fog_position = vec4(w_pos, 1);
 	//float fog_distance = distance(vec4(CameraPosition, 1.0f), fog_position);

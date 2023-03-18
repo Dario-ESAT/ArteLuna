@@ -13,8 +13,8 @@ Window* Engine::CreateNewWindow(const char* name, int16_t width, int16_t heigth,
 
 Engine::Engine() {
   ServiceManager& sm = ServiceManager::Manager();
-  //sm.Add<EntityManager>();
-  //sm.Add<Systems>();
+  sm.Add(em_);
+  sm.Add(systems_);
   
 }
 

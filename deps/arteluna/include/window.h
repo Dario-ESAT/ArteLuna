@@ -8,6 +8,9 @@
 
 class Window{
 public:
+  Window( const char* name, int16_t width = 1280, int16_t heigth = 720,
+      int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
+  );
   ~Window();
 
   //Parameters
@@ -37,11 +40,9 @@ public:
   std::unique_ptr<class Input>input_;
   
   Camera camera_;
-  Window(const char* name, int16_t width = 1280, int16_t heigth = 720,
-    int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
-  );
+
 private:
- 
+
   Window();
 
   int16_t width_;

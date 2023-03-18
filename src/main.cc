@@ -14,26 +14,31 @@
 
 int main() {
   ServiceManager& sm = ServiceManager::Manager();
-  EntityManager manager_;
-  sm.Add(manager_);
-  Systems system_;
-  sm.Add(system_);
-  LightManager l_manager;
-  sm.Add(l_manager);
   Engine& engine = Engine::GetEngine();
   Window& window = *engine.CreateNewWindow("Aleksander");
+  LightManager l_manager;
+  sm.Add(l_manager);
 
-  Entity& p_light = sm.Get<LightManager>()->CreatelLight(LightComponent::Type::Pointlight, 0);
+  Entity& p_light = sm.Get<LightManager>()->CreatelLight(LightComponent::Type::Pointlight);
   p_light.get_component<LightComponent>()->set_color(1,1,1);
 
-  Entity& d_light = sm.Get<LightManager>()->CreatelLight(LightComponent::Type::Directional, 0);
+  Entity& d_light = sm.Get<LightManager>()->CreatelLight(LightComponent::Type::Directional);
   d_light.get_component<LightComponent>()->set_color(1, 1, 1);
   d_light.get_component<LightComponent>()->set_direction(glm::vec3(0, -1, 0));
 
+  Entity& s_light = sm.Get<LightManager>()->CreatelLight(LightComponent::Type::Spotlight);
+  s_light.get_component<LightComponent>()->set_color(1, 1, 1);
+  s_light.get_component<LightComponent>()->set_direction(glm::vec3(0, -1, 0));
+  RenderComponent* l_render = s_light.AddComponent<RenderComponent>();
+  l_render->mesh_ = std::make_shared<Mesh>("../../deps/arteluna/data/models/ugandan_sonic.obj");
+  
   std::shared_ptr<Material> material = std::make_shared<Material>("../../deps/arteluna/bin/vertex.glslv",
    "../../deps/arteluna/bin/fragment.glslf", "../../deps/arteluna/data/textures/wavy_COLOR.png","../../deps/arteluna/data/textures/wavy.jpg",
     "../../deps/arteluna/data/textures/wavy_DISP.png",Texture::Type::T_2D);
   std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../deps/arteluna/data/models/sponza.obj");
+
+  l_render->material_ = material;
+
   
   Entity& entity_1 = sm.Get<EntityManager>()->CreateNewEntity();
   TransformComponent* transform_cmp = entity_1.get_component<TransformComponent>();
@@ -43,7 +48,7 @@ int main() {
 
 	
   RenderComponent* render_cmp =  entity_1.AddComponent<RenderComponent>();
-  render_cmp->mesh_ = mesh_sponza;
+  render_cmp->mesh_ = mesh;
 
   render_cmp->material_ = material;
   /*
@@ -55,6 +60,7 @@ int main() {
 
 
   render_cmp = entity_2.AddComponent<RenderComponent>();
+
   render_cmp->mesh_ = mesh_sponza;
   
   render_cmp->material_ = material;
@@ -66,7 +72,7 @@ int main() {
 
 
 	render_cmp =  entity_0.AddComponent<RenderComponent>();
-	render_cmp->mesh_ = mesh_sponza;
+	render_cmp->mesh_ = mesh;
 
 	render_cmp->material_ = material;
   */
