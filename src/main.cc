@@ -33,10 +33,12 @@ int main() {
   l_render->mesh_ = std::make_shared<Mesh>("../../deps/arteluna/data/models/ugandan_sonic.obj");
   
   std::shared_ptr<Material> material = std::make_shared<Material>("../../deps/arteluna/bin/vertex.glslv",
-   "../../deps/arteluna/bin/fragment.glslf", "../../deps/arteluna/data/textures/brick.png","../../deps/arteluna/data/textures/Box002NormalsMap.png", Texture::Type::T_2D);
-  std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("../../deps/arteluna/data/models/cuke.obj");
-  
+   "../../deps/arteluna/bin/fragment.glslf", "../../deps/arteluna/data/textures/wavy_COLOR.png","../../deps/arteluna/data/textures/wavy.jpg",
+    "../../deps/arteluna/data/textures/wavy_DISP.png",Texture::Type::T_2D);
+  std::shared_ptr<Mesh> mesh_sponza = std::make_shared<Mesh>("../../deps/arteluna/data/models/sponza.obj");
+
   l_render->material_ = material;
+
   
   Entity& entity_1 = sm.Get<EntityManager>()->CreateNewEntity();
   TransformComponent* transform_cmp = entity_1.get_component<TransformComponent>();
@@ -49,7 +51,7 @@ int main() {
   render_cmp->mesh_ = mesh;
 
   render_cmp->material_ = material;
-
+  /*
   Entity& entity_2 = sm.Get<EntityManager>()->CreateNewEntity(1);
   transform_cmp = entity_2.get_component<TransformComponent>();
   transform_cmp->set_position({ 0.0 , 0.0f, 10.0f });
@@ -58,8 +60,9 @@ int main() {
 
 
   render_cmp = entity_2.AddComponent<RenderComponent>();
-  render_cmp->mesh_ = mesh;
 
+  render_cmp->mesh_ = mesh_sponza;
+  
   render_cmp->material_ = material;
 	/*Entity& entity_0 = .CreateNewEntity();
 	transform_cmp = entity_0.get_component<TransformComponent>();
