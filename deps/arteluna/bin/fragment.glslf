@@ -170,9 +170,9 @@ void main() {
   N = normalize(N);
 
 
-  //for(int i = 0; i < al_n_dirLight;i++) {
-    //light_result = CalcDir(al_dirLight[0],N,view_dir);
-  //}
+  for(int i = 0; i < al_n_dirLight;i++) {
+    light_result = CalcDir(al_dirLight[i],N,view_dir);
+  }
 
   for(int i = 0; i < al_n_pointLight;i++) {
     light_result += CalcPointLight(al_pointLight[i],N,FragPos,view_dir);
