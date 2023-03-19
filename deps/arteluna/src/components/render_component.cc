@@ -30,9 +30,14 @@ void RenderComponent::RenderObject() const{
 	material_->program_.Use();
   auto& al_uniforms = material_->al_uniforms_;
 
-  auto al_uniform = al_uniforms.find("al_n_pointLight");
-  if (al_uniform != al_uniforms.end()){
+  auto al_uniform = al_uniforms.find("al_n_dirLight");
+  if (al_uniform != al_uniforms.end()) {
     glUniform1i(al_uniform->second.location_, sm.Get<LightManager>()->num_directionals_);
+  }
+
+  al_uniform = al_uniforms.find("al_n_pointLight");
+  if (al_uniform != al_uniforms.end()){
+    glUniform1i(al_uniform->second.location_, sm.Get<LightManager>()->num_points_);
   }
   
   char uniform_name[50] = {'\0'};

@@ -38,7 +38,7 @@ int main() {
   Entity& d_light = l_manager.CreatelLight(LightComponent::Type::Directional);
   d_light.get_component<LightComponent>()->set_direction(
     glm::vec3(0, -1, 0));
-
+    
   Entity& s_light = l_manager.CreatelLight(LightComponent::Type::Spotlight);
   s_light.get_component<LightComponent>()->set_direction(
     glm::vec3(0, -1, 0));

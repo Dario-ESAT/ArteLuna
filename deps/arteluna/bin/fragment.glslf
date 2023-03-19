@@ -134,7 +134,7 @@ vec3 CalcPointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir
   //color  *= attenuation;
   //diffuse  *= attenuation;
   //specular *= attenuation;
-  return (color + diffuse);
+  return (/*color + */diffuse);
 }
 
  vec3 CalcDir(al_DirLight light, vec3 normal, vec3 viewDir) {
