@@ -9,9 +9,8 @@
 #include "engine/service_manager.h"
 
 void TransformComponent::ImguiTree(uint32_t id) {
-  char label[10] = {'\n'};
+  char label[20] = {'\n'};
   glm::vec3 pos_aux = position_;
-  ImGui::Text("Transform");
   sprintf_s(label, "X##P%d", id);
   ImGui::DragFloat(label,&pos_aux.x,0.1f);
   sprintf_s(label, "Y##P%d", id);
@@ -33,7 +32,7 @@ void TransformComponent::ImguiTree(uint32_t id) {
   if (rot_aux != rotation_) {
     set_rotation(rot_aux);
   }
-
+  
   glm::vec3 scale_aux = scale_;
   ImGui::Text("Scale");
   sprintf_s(label, "X##S%d", id);
@@ -47,22 +46,29 @@ void TransformComponent::ImguiTree(uint32_t id) {
   }
   
   const float* transform = glm::value_ptr(local_transform());
-
+  
   ImGui::Text("Local Transform: \n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f",
     transform[0],transform[1],transform[2],transform[3],
     transform[4],transform[5],transform[6],transform[7],
     transform[8],transform[9],transform[10],transform[11],
     transform[12],transform[13],transform[14],transform[15]
   );
-
+  
   transform = glm::value_ptr(world_transform());
-
+  
   ImGui::Text("World Transform: \n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f",
     transform[0],transform[1],transform[2],transform[3],
     transform[4],transform[5],transform[6],transform[7],
     transform[8],transform[9],transform[10],transform[11],
     transform[12],transform[13],transform[14],transform[15]
   );
+  ImGui::Text("Forward: %.3f  %.3f  %.3f",forward_.x,forward_.y,forward_.z);
+  ImGui::Text("Up: %.3f  %.3f  %.3f",up_.x,up_.y,up_.z);
+  ImGui::Text("Right: %.3f  %.3f  %.3f",right_.x,right_.y,right_.z);
+  sprintf_s(label, "Huerfanear##P%d", id);
+  if (ImGui::Button(label)) {
+    DetachFromParent();
+  }
 }
 
 void TransformComponent::set_position(const glm::vec3& position) {

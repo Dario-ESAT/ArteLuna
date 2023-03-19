@@ -36,37 +36,37 @@ Camera::Camera() {
 
   imgui_mode_ = false;
 
-  int cubemap_width = cubemap_.width();
-  int cubemap_height = cubemap_.height();
-  int cubemap_channels = cubemap_.channels();
-  GLuint id_cubemap = cubemap_.get_id();
-  cubemap_.data_ = stbi_load("../../deps/arteluna/data/textures/wavy_COLOR.png", &cubemap_width, &cubemap_height, &cubemap_channels, 0);
-  if (stbi_failure_reason())
-    printf("%f", stbi_failure_reason());
-  //texture_ = texture_data;
-  cubemap_.set_width(cubemap_width);
-  cubemap_.set_height(cubemap_height);
-  cubemap_.set_channels(cubemap_channels);
-  switch (cubemap_.channels()) {
-  case 1:
-    cubemap_.set_format(Texture::R);
-    break;
-  case 2:
-    cubemap_.set_format(Texture::RG);
-    break;
-  case 3:
-    cubemap_.set_format(Texture::RGB);
-    break;
-  case 4:
-    cubemap_.set_format(Texture::RGBA);
-    break;
-  }
-  cubemap_.set_type(Texture::Type::T_Cubemap);
-  //if (id() != 0)
-  glGenTextures(1, &id_cubemap);
-  glBindTexture(GL_TEXTURE_CUBE_MAP, id_cubemap);
-  cubemap_.set_id(id_cubemap);
-  cubemap_.SetData(Texture::UNSIGNED_BYTE, 0);
+  // int cubemap_width = cubemap_.width();
+  // int cubemap_height = cubemap_.height();
+  // int cubemap_channels = cubemap_.channels();
+  // GLuint id_cubemap = cubemap_.get_id();
+  // cubemap_.data_ = stbi_load("../../deps/arteluna/data/textures/wavy_COLOR.png", &cubemap_width, &cubemap_height, &cubemap_channels, 0);
+  // if (stbi_failure_reason())
+  //   printf("%s", stbi_failure_reason());
+  // //texture_ = texture_data;
+  // cubemap_.set_width(cubemap_width);
+  // cubemap_.set_height(cubemap_height);
+  // cubemap_.set_channels(cubemap_channels);
+  // switch (cubemap_.channels()) {
+  // case 1:
+  //   cubemap_.set_format(Texture::R);
+  //   break;
+  // case 2:
+  //   cubemap_.set_format(Texture::RG);
+  //   break;
+  // case 3:
+  //   cubemap_.set_format(Texture::RGB);
+  //   break;
+  // case 4:
+  //   cubemap_.set_format(Texture::RGBA);
+  //   break;
+  // }
+  // cubemap_.set_type(Texture::Type::T_Cubemap);
+  // //if (id() != 0)
+  // glGenTextures(1, &id_cubemap);
+  // glBindTexture(GL_TEXTURE_CUBE_MAP, id_cubemap);
+  // cubemap_.set_id(id_cubemap);
+  // cubemap_.SetData(Texture::UNSIGNED_BYTE, 0);
 
   UpdateTransform();
 }
@@ -260,7 +260,8 @@ void Camera::MenuImgui() {
 
   ImGui::End();
   //EntityManager& e_m = EntityManager::GetManager();
-  std::vector<std::optional<TransformComponent>>* transform_components = sm.Get<EntityManager>()->GetComponentVector<TransformComponent>();
+  auto* transform_components = sm.Get<EntityManager>()->GetComponentVector<TransformComponent>();
+  auto* light_components = sm.Get<EntityManager>()->GetComponentVector<LightComponent>();
 
   char label[20] = { '\n' };
   ImGui::Begin("Entities");
@@ -273,10 +274,17 @@ void Camera::MenuImgui() {
   for (unsigned long long i = 1; i < transform_components->size(); i++) {
     if (ImGui::TreeNode((void*)(intptr_t)i, "Entity %d", i)) {
       auto& t_comp = transform_components->at(i).value();
-      t_comp.ImguiTree((uint32_t)i);
-      sprintf_s(label, "Huerfanear##P%d", (int)i);
-      if (ImGui::Button(label)) {
-        // sm.Get<EntityManager>()->GetEntity((unsigned int)i)->DetachFromParent();
+      if (ImGui::TreeNode(&t_comp, "Transform")){
+        t_comp.ImguiTree((uint32_t)i);
+        ImGui::TreePop();
+      }
+      auto& l_comp = light_components->at(i);
+      if (l_comp.has_value()){
+        if (ImGui::TreeNode(&l_comp, "Light opt")){
+          l_comp->ImguiTree((uint32_t)i);
+          
+          ImGui::TreePop();
+        }
       }
       ImGui::TreePop();
     }

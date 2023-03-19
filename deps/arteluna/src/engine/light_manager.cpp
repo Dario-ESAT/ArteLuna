@@ -65,4 +65,8 @@ void LightManager::OrderLights() {
 LightManager::LightManager() {
   ServiceManager sm = ServiceManager::Manager();
   sm.Get<EntityManager>()->CreateComponentVector<LightComponent>();
+
+  num_directionals_ = 0;
+  num_points_ = 0;
+  num_spots_ = 0;
 }

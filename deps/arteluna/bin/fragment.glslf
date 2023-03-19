@@ -103,7 +103,7 @@ vec3 CalSpotLight(al_SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
 
   if(dot(lightDir,normalize(-light.direction)) < light.cutoff){
     float diff = max(dot(normal, lightDir), 0.0);
-    vec3 diffuse  = diff * vec3(texture(al_texture, uv));
+    vec3 diffuse  = light.color * diff * vec3(texture(al_texture, uv));
     // float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
     // vec3 specular = light.specular * spec * vec3(texture(u_specular, uv));
 
@@ -168,14 +168,11 @@ void main() {
   N = normalize(N);
   N = TBN * N;
   N = normalize(N);
- 
 
 
-
-
-   //for(int i = 0; i < al_n_dirLight;i++) {
-     //light_result = CalcDir(al_dirLight[0],N,view_dir);
-   //}
+  //for(int i = 0; i < al_n_dirLight;i++) {
+    //light_result = CalcDir(al_dirLight[0],N,view_dir);
+  //}
 
   for(int i = 0; i < al_n_pointLight;i++) {
     light_result += CalcPointLight(al_pointLight[i],N,FragPos,view_dir);

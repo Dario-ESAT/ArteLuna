@@ -8,7 +8,7 @@
 
 class Window{
 public:
-  Window( const char* name, int16_t width = 1280, int16_t heigth = 720,
+  Window( const char* name, int16_t width = 1440, int16_t heigth = 900,
       int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
   );
   ~Window();

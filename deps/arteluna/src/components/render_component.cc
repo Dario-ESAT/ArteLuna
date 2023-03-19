@@ -62,7 +62,8 @@ void RenderComponent::RenderObject() const{
 
 
   // ----- Point lights -----
-  for (uint32_t j = sm.Get<LightManager>()->num_directionals_; j < sm.Get<LightManager>()->num_directionals_ + sm.Get<LightManager>()->num_points_; j++){
+  for (uint32_t j = sm.Get<LightManager>()->num_directionals_;
+    j < sm.Get<LightManager>()->num_directionals_ + sm.Get<LightManager>()->num_points_; j++){
     int idx = j - sm.Get<LightManager>()->num_directionals_;
     Entity* entity =  sm.Get<EntityManager>()->GetEntity(sm.Get<LightManager>()->lights_[j]);
     TransformComponent* transform =  entity->get_component<TransformComponent>();
@@ -108,7 +109,7 @@ void RenderComponent::RenderObject() const{
   // ----- Spot lights -----
   for (
     uint32_t j = sm.Get<LightManager>()->num_directionals_ + sm.Get<LightManager>()->num_points_;
-    j < sm.Get<LightManager>()->num_spots_; j++){
+    j < sm.Get<LightManager>()->num_directionals_ + sm.Get<LightManager>()->num_points_ + sm.Get<LightManager>()->num_spots_; j++){
     int idx = j - sm.Get<LightManager>()->num_directionals_ + sm.Get<LightManager>()->num_points_;
     Entity* entity =  sm.Get<EntityManager>()->GetEntity(sm.Get<LightManager>()->lights_[j]);
     TransformComponent* transform =  entity->get_component<TransformComponent>();
@@ -125,6 +126,18 @@ void RenderComponent::RenderObject() const{
         transform->position().z
       );
     }
+
+    sprintf_s(uniform_name,"al_spotLight[%d].direction", idx);
+    al_uniform = al_uniforms.find(uniform_name);
+    if (al_uniform != al_uniforms.end()){
+      glUniform3f(
+        al_uniform->second.location_,
+        transform->forward().x, 
+        transform->forward().y,
+        transform->forward().z
+      );
+    }
+    
     sprintf_s(uniform_name,"al_spotLight[%d].color", idx);
     al_uniform = al_uniforms.find(uniform_name);
     if (al_uniform != al_uniforms.end()){

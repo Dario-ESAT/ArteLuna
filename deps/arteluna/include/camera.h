@@ -2,6 +2,8 @@
 #define __CAMERA_H__ 1
 
 #include "glm.hpp"
+#include "engine/texture.h"
+
 class Camera {
 public:
   enum Modes {
@@ -39,7 +41,7 @@ public:
 
   float mouse_displacement_x_;
   float mouse_displacement_y_;
-  Texture cubemap_;
+  // Texture cubemap_;
 private:
   void Update(double deltatime, class Input* input);
   
