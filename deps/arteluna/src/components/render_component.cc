@@ -29,14 +29,14 @@ void RenderComponent::RenderObject() const{
 
 	material_->program_.Use();
   auto& al_uniforms = material_->al_uniforms_;
+  char uniform_name[50] = {'\0'};
 
-  auto al_uniform = al_uniforms.find("al_n_pointLight");
+  
+  // ----- Directional lights -----
+  auto al_uniform = al_uniforms.find("al_n_dirLight");
   if (al_uniform != al_uniforms.end()){
     glUniform1i(al_uniform->second.location_, sm.Get<LightManager>()->num_directionals_);
   }
-  
-  char uniform_name[50] = {'\0'};
-  // ----- Directional lights -----
   for (uint32_t j = 0; j < sm.Get<LightManager>()->num_directionals_; j++){
     Entity* entity =  sm.Get<EntityManager>()->GetEntity(sm.Get<LightManager>()->lights_[j]);
     TransformComponent* transform =  entity->get_component<TransformComponent>();
@@ -44,7 +44,8 @@ void RenderComponent::RenderObject() const{
     sprintf_s(uniform_name,"al_dirLight[%d].direction",j);
     al_uniform = al_uniforms.find(uniform_name);
     if (al_uniform != al_uniforms.end()){
-      glUniform3f(al_uniform->second.location_, light->direction().x, light->direction().y, light->direction().z);
+      glUniform3f(al_uniform->second.location_, transform->forward().x, 
+      transform->forward().y, transform->forward().z);
     }
     sprintf_s(uniform_name,"al_dirLight[%d].color",j);
     al_uniform = al_uniforms.find(uniform_name);
@@ -59,9 +60,12 @@ void RenderComponent::RenderObject() const{
       glUniform3f(al_uniform->second.location_, diffuse.x, diffuse.y, diffuse.z);
     }
   }
-
-
+  
   // ----- Point lights -----
+  al_uniform = al_uniforms.find("al_n_pointLight");
+  if (al_uniform != al_uniforms.end()){
+    glUniform1i(al_uniform->second.location_, sm.Get<LightManager>()->num_points_);
+  }
   for (uint32_t j = sm.Get<LightManager>()->num_directionals_;
     j < sm.Get<LightManager>()->num_directionals_ + sm.Get<LightManager>()->num_points_; j++){
     int idx = j - sm.Get<LightManager>()->num_directionals_;
@@ -106,7 +110,12 @@ void RenderComponent::RenderObject() const{
     }
   }
 
+  
   // ----- Spot lights -----
+  al_uniform = al_uniforms.find("al_n_spotLight");
+  if (al_uniform != al_uniforms.end()){
+    glUniform1i(al_uniform->second.location_, sm.Get<LightManager>()->num_spots_);
+  }
   for (
     uint32_t j = sm.Get<LightManager>()->num_directionals_ + sm.Get<LightManager>()->num_points_;
     j < sm.Get<LightManager>()->num_directionals_ + sm.Get<LightManager>()->num_points_ + sm.Get<LightManager>()->num_spots_; j++){
@@ -174,7 +183,10 @@ void RenderComponent::RenderObject() const{
       glUniform1f(al_uniform->second.location_, light->outer_cone_radius());
     }    
   }
-        
+
+
+
+  
 	for (auto it = material_->user_uniforms_.begin(); it != material_->user_uniforms_.end(); ++it) {
 
 	  if (it->second.data_) {

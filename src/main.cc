@@ -16,7 +16,9 @@ int main() {
   ServiceManager& sm = ServiceManager::Manager();
   Engine& engine = Engine::GetEngine();
   Window& window = *engine.CreateNewWindow("Aleksander");
-  LightManager l_manager;
+  LightManager l_manager(
+  "../../deps/arteluna/bin/shadow_render.glslv",
+  "../../deps/arteluna/bin/shadow_render.glslf");
   sm.Add(l_manager);
 
   std::shared_ptr<Material> material = std::make_shared<Material>(
@@ -33,25 +35,26 @@ int main() {
 "../../deps/arteluna/data/models/sponza.obj");
   std::shared_ptr<Mesh> cubo = std::make_shared<Mesh>(Mesh::Cube);
   
-  Entity& p_light = l_manager.CreatelLight(LightComponent::Type::Pointlight);
+  // Entity& p_light = l_manager.CreatelLight(LightComponent::Type::Pointlight);
+  // RenderComponent* p_render = p_light.AddComponent<RenderComponent>();
+  // p_render->mesh_ = cubo;
+  // p_render->material_ = material;
   
   Entity& d_light = l_manager.CreatelLight(LightComponent::Type::Directional);
-  d_light.get_component<LightComponent>()->set_direction(
-    glm::vec3(0, -1, 0));
-
-  Entity& s_light = l_manager.CreatelLight(LightComponent::Type::Spotlight);
-  s_light.get_component<LightComponent>()->set_direction(
-    glm::vec3(0, -1, 0));
+  RenderComponent* d_render = d_light.AddComponent<RenderComponent>();
+  d_render->mesh_ = cubo;
+  d_render->material_ = material;
   
-  RenderComponent* l_render = s_light.AddComponent<RenderComponent>();
-  l_render->mesh_ = sonic;
-  l_render->material_ = material;
+  // Entity& s_light = l_manager.CreatelLight(LightComponent::Type::Spotlight);
+  // RenderComponent* l_render = s_light.AddComponent<RenderComponent>();
+  // l_render->mesh_ = sonic;
+  // l_render->material_ = material;
   
   Entity& entity_1 = sm.Get<EntityManager>()->CreateNewEntity();
   TransformComponent* transform_cmp = entity_1.get_component<TransformComponent>();
-  transform_cmp->set_position({ 0.0 , 0.0f, 10.0f });
-  transform_cmp->set_scale({ 5.f, 5.f, 0.1f });
-  transform_cmp->set_rotation({ 0.0f, 3.140f, 0.0f });
+  transform_cmp->set_position({ 0.0 , -10.0f, 0.0f });
+  transform_cmp->set_scale({ 30.f, 0.3f, 30.f });
+  transform_cmp->set_rotation({ 0.0f, 0.f, 0.0f });
 
 	
   RenderComponent* render_cmp =  entity_1.AddComponent<RenderComponent>();

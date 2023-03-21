@@ -98,8 +98,6 @@ vec3 CalSpotLight(al_SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
             light.quadratic * (distance * distance));
 
   // combine results
-  vec3 color  = light.color  * vec3(texture(al_texture, uv));
-  color  *= attenuation;
 
   if(dot(lightDir,normalize(-light.direction)) < light.cutoff){
     float diff = max(dot(normal, lightDir), 0.0);
@@ -109,10 +107,10 @@ vec3 CalSpotLight(al_SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
 
     diffuse  *= attenuation;
     // specular *= attenuation;
-    return (color + diffuse /* + specular */);
+    return (diffuse /* + specular */);
   }
   
-  return color;
+  return vec3(0.0,0.0,0.0);
 }
 
 vec3 CalcPointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
@@ -123,31 +121,29 @@ vec3 CalcPointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir
   // attenuation
 
   float distance = length(light.position - fragPos);
-  //float attenuation = 1.0 / (light.constant + light.linear * distance + 
-   // 0.032f * (distance * distance));    
+  float attenuation = 1.0 / (light.constant + light.linear * distance + 
+   0.032f * (distance * distance));    
   // combine results
   
   
-  vec3 color  = light.color * vec3(texture(al_texture, uv));
   vec3 diffuse  = light.color * diff * vec3(texture(al_texture, uv));
 
-  //color  *= attenuation;
-  //diffuse  *= attenuation;
+  diffuse  *= attenuation;
   //specular *= attenuation;
-  return (color + diffuse);
+  return (diffuse);
 }
 
  vec3 CalcDir(al_DirLight light, vec3 normal, vec3 viewDir) {
 
-  vec3 lightDir = normalize(light.direction - FragPos);
+  vec3 lightDir = normalize(light.direction);
   float diff = max(dot(lightDir, normal), 0.0);
-  vec3 reflectDir = reflect(-lightDir, normal);
+  // vec3 reflectDir = reflect(-lightDir, normal);
   //float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
 
-  vec3 color  = light.color * vec3(texture(al_texture, uv));
-  vec3 diffuse  = light.diffuse * diff * vec3(texture(al_texture, uv));
+  // vec3 color  = light.color * vec3(texture(al_texture, uv));
+  vec3 diffuse  = light.color * diff * vec3(texture(al_texture, uv));
   //vec3 specular = light.specular * spec * vec3(texture(u_specular, uv));
-  return (color + diffuse/* + specular*/);
+  return (/* color +  */diffuse/* + specular*/);
 }
 
 
@@ -170,9 +166,9 @@ void main() {
   N = normalize(N);
 
 
-  //for(int i = 0; i < al_n_dirLight;i++) {
-    //light_result = CalcDir(al_dirLight[0],N,view_dir);
-  //}
+  for(int i = 0; i < al_n_dirLight;i++) {
+    light_result += CalcDir(al_dirLight[i],N,view_dir);
+  }
 
   for(int i = 0; i < al_n_pointLight;i++) {
     light_result += CalcPointLight(al_pointLight[i],N,FragPos,view_dir);

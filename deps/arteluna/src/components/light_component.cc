@@ -2,7 +2,14 @@
 
 #include "components/light_component.h"
 
+#include <ext/matrix_clip_space.hpp>
+#include <ext/matrix_transform.hpp>
+
+#include "entity.h"
 #include "imgui.h"
+#include "components/transform_component.h"
+#include "engine/entity_manager.h"
+#include "engine/service_manager.h"
 
 void LightComponent::ImguiTree(uint32_t id) {
   ImGui::ColorEdit3("Color",&color_.r);
@@ -41,6 +48,18 @@ LightComponent::LightComponent() {
   outer_cone_radius_ = 10.f;
   brightness_ = 255;
   type_ = Directional;
+}
+
+glm::mat4x4 LightComponent::light_transform(TransformComponent& transform) const {
+  ;
+  float near_plane = 1.0f, far_plane = 1400.5f;
+  glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);  
+  glm::mat4 lightView = glm::lookAt(transform.position(),
+                                  transform.position() + transform.forward(), 
+                                  glm::vec3( 0.0f, 1.0f,  0.0f));
+  glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+  
+  return lightSpaceMatrix;
 }
 
 

@@ -68,6 +68,7 @@ private:
   
   friend class RenderComponent;
   friend class Camera;
+  friend class Window;
 };
 
 

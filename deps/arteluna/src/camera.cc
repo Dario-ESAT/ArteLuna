@@ -201,11 +201,10 @@ void Camera::RenderScene(float aspect) {
     if (render_components->at(i).has_value()) {
       const TransformComponent& transform_component = transform_components->at(i).value();
       const RenderComponent& render_component = render_components->at(i).value();
-      auto& material = render_component.material_;
-      auto& al_uniforms = material->al_uniforms_;
-      const GLint program = material->program_.program();
-
-      material->program_.Use();
+      render_component.material_->program_.Use();
+      
+      
+      auto& al_uniforms = render_component.material_->al_uniforms_;
       
       auto al_uniform = al_uniforms.find("al_vp_matrix");
       if (al_uniform != al_uniforms.end()){
