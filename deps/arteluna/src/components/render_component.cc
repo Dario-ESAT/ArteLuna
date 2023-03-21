@@ -30,7 +30,6 @@ void RenderComponent::RenderObject() const{
 	material_->program_.Use();
   auto& al_uniforms = material_->al_uniforms_;
   char uniform_name[50] = {'\0'};
-
   
   // ----- Directional lights -----
   auto al_uniform = al_uniforms.find("al_n_dirLight");
