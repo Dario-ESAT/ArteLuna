@@ -13,10 +13,20 @@ Window* Engine::CreateNewWindow(const char* name, int16_t width, int16_t heigth,
   return window_.get();
 }
 
+
 Engine::Engine(ServiceManager& sm) : systems_(sm), lm_(sm){
   
   sm.Add(em_);
   sm.Add(systems_);
+  
+  sm_ = &sm;
+}
+
+void Engine::SetServiceManager(ServiceManager& sm){
+
+  sm.Add(em_);
+  sm.Add(systems_);
+  
   sm_ = &sm;
 }
 
