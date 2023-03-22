@@ -60,6 +60,7 @@ public:
   Texture texture_;
   Texture normal_texture_;
   Texture displacement_texture_;
+
 private:
   
   std::unordered_map<std::string, Uniform > user_uniforms_;

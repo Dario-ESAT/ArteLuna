@@ -219,6 +219,10 @@ void Window::EndFrame() {
   systems->SystemsUpdate();
   camera_.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
 
+  // Pass the texture and lightSpaceMatrix to the normal shader
+  //glActiveTexture(LightManager::depth_map_text_);
+  //glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
+  
   // Render Imgui
   camera_.MenuImgui();
   ImGui::Render();

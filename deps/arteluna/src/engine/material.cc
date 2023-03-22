@@ -109,7 +109,6 @@ Material::Material(const char* vert, const char* frag, const char* texture_src,c
 	texture_.set_wrap_t(wt);
 	texture_.set_wrap_r(wr);
 	texture_.set_type(t_type);
-  int p = glGetUniformLocation(program_.program(), "u_texture");
   
 	GLuint id_texture = texture_.get_id();
 	texture_.data_ = stbi_load(texture_src, &texture_width, &texture_height, &texture_channels, 0);

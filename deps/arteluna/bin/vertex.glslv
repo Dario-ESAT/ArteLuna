@@ -50,6 +50,8 @@ uniform int al_n_dirLight;
 uniform int al_n_pointLight;
 uniform int al_n_spotLight;
 
+// Shadow uniform
+uniform mat4 lightSpaceMatrix;
 
 out VS_OUT {
     vec3 FragPos;
@@ -57,6 +59,7 @@ out VS_OUT {
     vec3 TangentLightPos;
     vec3 TangentViewPos;
     vec3 TangentFragPos;
+    vec4 FragPosLightSpace;
 } vs_out;
 
 out vec3 normal;
@@ -72,6 +75,9 @@ void main() {
     normal = normalize(mat3(al_m_matrix) * a_normal);
     vs_out.TexCoords = a_uv;   
     vs_out.FragPos   =vec3(al_m_matrix * vec4(a_position, 1.0));
+
+    // Shadows
+    vs_out.FragPosLightSpace = lightSpaceMatrix *  vec4(vs_out.FragPos,1.0); 
     // Normal mapping
     mat3 model3x3 = mat3(al_m_matrix);
     vec3 mT = model3x3 * a_tangent;

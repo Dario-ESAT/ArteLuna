@@ -3,6 +3,7 @@
 uniform sampler2D al_texture;
 uniform sampler2D al_normal;
 uniform sampler2D al_displacement;
+uniform sampler2D al_shadow_texture;
 // uniform sampler2D u_specular;
 // uniform float u_shininess;
 uniform vec3 al_cam_pos;
@@ -22,6 +23,7 @@ in VS_OUT {
     vec3 TangentLightPos;
     vec3 TangentViewPos;
     vec3 TangentFragPos;
+    vec4 FragPosLightSpace;
 } fs_in;
 
 struct al_PointLight {    
@@ -133,6 +135,20 @@ vec3 CalcPointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir
   return (diffuse);
 }
 
+float ShadowCalculation(vec4 fragPosLightSpace)
+{
+    // perform perspective divide
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    projCoords = projCoords * 0.5 + 0.5; 
+    float closestDepth = texture(al_shadow_texture, projCoords.xy).r; 
+
+    float currentDepth = projCoords.z;  
+    float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;  
+
+    return shadow;
+}
+
+
  vec3 CalcDir(al_DirLight light, vec3 normal, vec3 viewDir) {
 
   vec3 lightDir = normalize(light.direction);
@@ -142,8 +158,11 @@ vec3 CalcPointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir
 
   // vec3 color  = light.color * vec3(texture(al_texture, uv));
   vec3 diffuse  = light.color * diff * vec3(texture(al_texture, uv));
+  // Shadow mapping
+  float shadow = ShadowCalculation(fs_in.FragPosLightSpace);
+  vec3 light_res = (1.0 - shadow) * (diffuse) * light.color;
   //vec3 specular = light.specular * spec * vec3(texture(u_specular, uv));
-  return (/* color +  */diffuse/* + specular*/);
+  return (/* color +  diffuse + specular*/light_res);
 }
 
 
@@ -167,11 +186,7 @@ void main() {
 
 
   for(int i = 0; i < al_n_dirLight;i++) {
-<<<<<<< HEAD
-    light_result += CalcDir(al_dirLight[i],N,view_dir);
-=======
     light_result = CalcDir(al_dirLight[i],N,view_dir);
->>>>>>> eb95b880f0ec3d47214c40baa0b51014fd57a8c3
   }
 
   for(int i = 0; i < al_n_pointLight;i++) {
@@ -182,6 +197,8 @@ void main() {
     light_result += CalSpotLight(al_spotLight[i],N,FragPos,view_dir);
   }
 
+   vec4 RawColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
   // vec4 fog_position = vec4(w_pos, 1);
 	//float fog_distance = distance(vec4(CameraPosition, 1.0f), fog_position);
 	// float fog_distance = distance(vec4(al_cam_pos, 1), fog_position);
@@ -191,10 +208,8 @@ void main() {
 	//vec4 objectColor = vec4(light_result, 1);// * texture(al_texture, uv);
 	//gl_FragColor = mix(objectColor, VertexIn.color, alpha);// * texture(al_texture, uv);
   
-  vec3 LD = normalize(al_dirLight[0].direction - FragPos);
-  float i = max(dot(LD, N),0.0f);
 
-  vec4 RawColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+  
 
 
 	gl_FragColor = texture(al_texture, TexCoord) * vec4(light_result,1.0) * RawColor;// SIN NIEBLA

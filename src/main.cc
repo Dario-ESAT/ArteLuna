@@ -24,11 +24,12 @@ int main() {
   std::shared_ptr<Material> material = std::make_shared<Material>(
     "../../deps/arteluna/bin/vertex.glslv",
     "../../deps/arteluna/bin/fragment.glslf",
-    "../../deps/arteluna/data/textures/wavy_COLOR.png",
-    "../../deps/arteluna/data/textures/wavy.jpg",
-    "../../deps/arteluna/data/textures/wavy_DISP.png"
+    "../../deps/arteluna/data/textures/white.jpg",
+    "../../deps/arteluna/data/textures/white.jpg",
+    "../../deps/arteluna/data/textures/white.jpg"
   );
   
+
   std::shared_ptr<Mesh> sonic = std::make_shared<Mesh>(
 "../../deps/arteluna/data/models/ugandan_sonic.obj");
   std::shared_ptr<Mesh> sponza = std::make_shared<Mesh>(
@@ -61,6 +62,17 @@ int main() {
   render_cmp->mesh_ = cubo;
   render_cmp->material_ = material;
   
+
+  Entity& cube_ = sm.Get<EntityManager>()->CreateNewEntity();
+  cube_.get_component<TransformComponent>()->set_position({ 0,-5,0 });
+  cube_.get_component<TransformComponent>()->set_scale({ 1,1,1 });
+  cube_.get_component<TransformComponent>()->set_rotation({ 0,0,0 });
+
+  RenderComponent* cube_render_cmp = cube_.AddComponent<RenderComponent>();
+  cube_render_cmp->mesh_ = cubo;
+  cube_render_cmp->material_ = material;
+
+
   /*
   Entity& entity_2 = sm.Get<EntityManager>()->CreateNewEntity(1);
   transform_cmp = entity_2.get_component<TransformComponent>();

@@ -25,7 +25,9 @@ RenderComponent::RenderComponent(std::shared_ptr<Mesh> mesh, std::shared_ptr<Mat
 }
 
 void RenderComponent::RenderObject() const{
-  ServiceManager sm = ServiceManager::Manager();
+  ServiceManager& sm = ServiceManager::Manager();
+  EntityManager& em = *sm.Get<EntityManager>();
+  LightManager& lm = *sm.Get<LightManager>();
 
 	material_->program_.Use();
   auto& al_uniforms = material_->al_uniforms_;
@@ -211,6 +213,19 @@ void RenderComponent::RenderObject() const{
   material_->displacement_texture_.Bind();
   uniform = glGetUniformLocation(material_->program_.program(), "al_displacement");
   glUniform1i(uniform, material_->displacement_texture_.get_id());
+
+  glActiveTexture(GL_TEXTURE0 + LightManager::depth_map_text_);
+  glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
+  uniform = glGetUniformLocation(material_->program_.program(), "al_shadow_texture");
+  glUniform1i(uniform, LightManager::depth_map_text_);
+
+
+  auto& light= *em.GetEntity(lm.lights_.at(0));
+  glm::mat4x4 light_space = light.get_component<LightComponent>()->light_transform(*light.get_component<TransformComponent>());
+ 
+
+  glUniformMatrix4fv(glGetUniformLocation(material_->program_.program(), "lightSpaceMatrix"),
+    1, GL_FALSE, glm::value_ptr(light_space));
 
 	glBindVertexArray(mesh_->mesh_buffer());
 	glDrawElements(GL_TRIANGLES, (GLsizei)mesh_->indices_.size(),GL_UNSIGNED_INT, 0);
