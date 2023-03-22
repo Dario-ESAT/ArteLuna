@@ -5,11 +5,6 @@
     service_ = nullptr;
   }
 
-  ServiceHolder::ServiceHolder(ServiceHolder& other) {
-    type_ = other.type_;
-    service_= std::move(other.service_);
-  }
-
   ServiceHolder::~ServiceHolder() {
   }
 

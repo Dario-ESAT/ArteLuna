@@ -7,7 +7,6 @@
 
 struct ServiceHolder {
   ServiceHolder();
-  ServiceHolder(ServiceHolder& other);
   ~ServiceHolder();
   ServiceHolder(size_t type, void* service);
   bool operator==(const ServiceHolder& other) const {

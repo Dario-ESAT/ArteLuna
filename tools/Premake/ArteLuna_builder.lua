@@ -81,7 +81,7 @@ project "ArteLuna"
     
     links {
         -- "soloud.lib",
-        "tinyobjloader.lib",
+        -- "tinyobjloader.lib",
         -- "mathlib.lib",
         -- "OpenAL32.lib",
         "imgui.lib",
@@ -169,22 +169,22 @@ project "imgui"
     
     -- https://decovar.dev/blog/2019/08/04/glfw-dear-imgui/
 
-project "tinyobjloader"
-    architecture "x64"
-    location "../../ArteLuna/tinyobjloader"
-    kind "StaticLib"
-    language "C++"
-    cppdialect "C++17"
-    targetdir "../../deps/arteluna/bin/%{cfg.buildcfg}"
+-- project "tinyobjloader"
+--     architecture "x64"
+--     location "../../ArteLuna/tinyobjloader"
+--     kind "StaticLib"
+--     language "C++"
+--     cppdialect "C++17"
+--     targetdir "../../deps/arteluna/bin/%{cfg.buildcfg}"
 
-    includedirs {
-        "../../deps/arteluna/deps/tinyobjloader",
-    }
+--     includedirs {
+--         "../../deps/arteluna/deps/tinyobjloader",
+--     }
 
-    files {
-        "../../deps/arteluna/deps/tinyobjloader/*.cc",
-        "../../deps/arteluna/deps/tinyobjloader/*.h",
-        }
+--     files {
+--         "../../deps/arteluna/deps/tinyobjloader/*.cc",
+--         "../../deps/arteluna/deps/tinyobjloader/*.h",
+--         }
     
 -- project "soloud"
 --     architecture "x64"

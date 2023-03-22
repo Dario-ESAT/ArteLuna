@@ -12,8 +12,7 @@
 #include "systems/systems.h"
 int main() {
   ServiceManager sm;
-  Engine engine;
-  engine.SetServiceManager(sm);
+  Engine engine(sm);
 
   EntityManager& em = *sm.Get<EntityManager>();
   Window& window = *engine.CreateNewWindow("Aleksander");
