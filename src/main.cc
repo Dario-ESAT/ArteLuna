@@ -23,10 +23,7 @@ int main() {
 
   std::shared_ptr<Material> material = std::make_shared<Material>(
     "../../deps/arteluna/bin/vertex.glslv",
-    "../../deps/arteluna/bin/fragment.glslf",
-    "../../deps/arteluna/data/textures/white.jpg",
-    "../../deps/arteluna/data/textures/white.jpg",
-    "../../deps/arteluna/data/textures/white.jpg"
+    "../../deps/arteluna/bin/fragment.glslf"
   );
   
 
@@ -36,15 +33,18 @@ int main() {
 "../../deps/arteluna/data/models/sponza.obj");
   std::shared_ptr<Mesh> cubo = std::make_shared<Mesh>(Mesh::Cube);
   
-  // Entity& p_light = l_manager.CreatelLight(LightComponent::Type::Pointlight);
+   //Entity& p_light = l_manager.CreatelLight(LightComponent::Type::Pointlight);
   // RenderComponent* p_render = p_light.AddComponent<RenderComponent>();
   // p_render->mesh_ = cubo;
   // p_render->material_ = material;
   
   Entity& d_light = l_manager.CreatelLight(LightComponent::Type::Directional);
-  RenderComponent* d_render = d_light.AddComponent<RenderComponent>();
-  d_render->mesh_ = cubo;
-  d_render->material_ = material;
+  TransformComponent* t_comp = d_light.get_component<TransformComponent>();
+  t_comp->set_rotation(0, -1, 0);
+  t_comp->set_position({ 1000.0f, 0.0f, 0.0f });
+ // RenderComponent* d_render = d_light.AddComponent<RenderComponent>();
+ // d_render->mesh_ = sonic;
+ // d_render->material_ = material;
   
   // Entity& s_light = l_manager.CreatelLight(LightComponent::Type::Spotlight);
   // RenderComponent* l_render = s_light.AddComponent<RenderComponent>();
@@ -69,7 +69,7 @@ int main() {
   cube_.get_component<TransformComponent>()->set_rotation({ 0,0,0 });
 
   RenderComponent* cube_render_cmp = cube_.AddComponent<RenderComponent>();
-  cube_render_cmp->mesh_ = cubo;
+  cube_render_cmp->mesh_ = sonic;
   cube_render_cmp->material_ = material;
 
 
