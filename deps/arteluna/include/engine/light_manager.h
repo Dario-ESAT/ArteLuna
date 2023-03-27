@@ -6,15 +6,17 @@
 #include "shader.h"
 #include "components/light_component.h"
 
-class LightManager {
+  class LightManager {
   public:
+
   LightManager() = delete;
 
-  LightManager(const char* vert, const char* frag);
+  LightManager(ServiceManager& sm, const char* vert, const char* frag);
   ~LightManager();
   //static LightManager& GetManager();
   
   Entity& CreatelLight(
+    EntityManager& em,
     LightComponent::Type type = LightComponent::Directional,
     uint32_t parent = 0);
   
@@ -25,7 +27,7 @@ class LightManager {
   static const uint32_t SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 private:
   
-  void OrderLights();
+  void OrderLights(EntityManager& em);
   std::vector<uint32_t> lights_;
   
   uint32_t num_directionals_;
@@ -40,6 +42,9 @@ private:
 };
 
 
+    friend class LightComponent;
+    friend class RenderComponent;
+  };
 
 
 #endif

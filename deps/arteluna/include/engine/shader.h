@@ -1,8 +1,7 @@
 #ifndef __SHADER_H__
 #define __SHADER_H__ 1
-
-class Shader {
-public:
+  class Shader {
+  public:
     Shader();
     Shader(const char* vertex, const char* fragment);
     Shader(const char* vertex, const char* fragment, const char* geometry);
@@ -12,12 +11,11 @@ public:
     unsigned int vertex() const;
     unsigned int fragment() const;
     unsigned int geometry() const;
-private:
+  private:
 
     unsigned int vertex_;
     unsigned int fragment_;
     unsigned int geometry_;
-};
-
+  };
 
 #endif

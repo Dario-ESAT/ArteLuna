@@ -11,11 +11,13 @@
 #include "engine/engine.h"
 #include "engine/entity_manager.h"
 #include "systems/systems.h"
-
 int main() {
-  ServiceManager& sm = ServiceManager::Manager();
-  Engine& engine = Engine::GetEngine();
+  ServiceManager sm;
+  Engine engine(sm);
+  EntityManager& em = *sm.Get<EntityManager>();
+  
   Window& window = *engine.CreateNewWindow("Aleksander");
+  
   LightManager l_manager(
   "../../deps/arteluna/bin/shadow_render.glslv",
   "../../deps/arteluna/bin/shadow_render.glslf");
@@ -60,6 +62,7 @@ int main() {
 	
   RenderComponent* render_cmp =  entity_1.AddComponent<RenderComponent>();
   render_cmp->mesh_ = cubo;
+
   render_cmp->material_ = material;
   
 
@@ -73,28 +76,34 @@ int main() {
   cube_render_cmp->material_ = material;
 
 
-  /*
-  Entity& entity_2 = sm.Get<EntityManager>()->CreateNewEntity(1);
-  transform_cmp = entity_2.get_component<TransformComponent>();
+
+  Entity& entity_2 = sm.Get<EntityManager>()->CreateNewEntity();
+  transform_cmp = entity_2.get_component<TransformComponent>(em);
+
   transform_cmp->set_position({ 0.0 , 0.0f, 10.0f });
   transform_cmp->set_scale({ 0.1f, 0.1f, 0.1f });
   transform_cmp->set_rotation({ 0.0f, 3.140f, 0.0f });
 
 
-  render_cmp = entity_2.AddComponent<RenderComponent>();
+
+  render_cmp = entity_2.AddComponent<RenderComponent>(em);
+  render_cmp->mesh_ = mesh_sponza;
+
 
   render_cmp->mesh_ = mesh_sponza;
   
   render_cmp->material_ = material;
 	/*Entity& entity_0 = .CreateNewEntity();
-	transform_cmp = entity_0.get_component<TransformComponent>();
+	transform_cmp = entity_0.get_component<TransformComponent>(em);
 	transform_cmp->set_position({ 7.0 , 0.0f, 10.0f });
 	transform_cmp->set_scale({ 1.0f, 1.0f, 1.0f });
 	transform_cmp->set_rotation({ 0.0f, 3.140f, 0.0f });
 
 
-	render_cmp =  entity_0.AddComponent<RenderComponent>();
-	render_cmp->mesh_ = mesh;
+
+	render_cmp =  entity_0.AddComponent<RenderComponent>(em);
+	render_cmp->mesh_ = mesh_sponza;
+
 
 	render_cmp->material_ = material;
   */

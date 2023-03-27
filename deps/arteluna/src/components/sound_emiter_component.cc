@@ -3,17 +3,14 @@
 #include "components/sound_emiter_component.h"
 
 #include <cstdio>
-
-
-void SoundEmitterComponent::ImguiTree(uint32_t id) {
+  void SoundEmitterComponent::ImguiTree(uint32_t id) {
 	
-}
+  }
 
-SoundEmitterComponent::SoundEmitterComponent(){
+  SoundEmitterComponent::SoundEmitterComponent(){
 
-}
+  }
 
-SoundEmitterComponent::~SoundEmitterComponent() {
+  SoundEmitterComponent::~SoundEmitterComponent() {
 
-}
-
+  }
