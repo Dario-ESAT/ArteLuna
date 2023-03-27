@@ -161,7 +161,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
   float shadow = ShadowCalculation(fs_in.FragPosLightSpace);
   vec3 light_res = (1.0 - shadow) * (diffuse) * light.color;
   //vec3 specular = light.specular * spec * vec3(texture(u_specular, uv));
-  return light.color * (diffuse/* color +  diffuse + specularlight_res*/);
+  return light.color * (light_res/* color +  diffuse + specularlight_res*/);
 }
 
 
@@ -189,11 +189,11 @@ void main() {
   }
 
   for(int i = 0; i < al_n_pointLight;i++) {
-    light_result += CalcPointLight(al_pointLight[i],N,FragPos,view_dir);
+    //light_result += CalcPointLight(al_pointLight[i],N,FragPos,view_dir);
     //light_result *= diffuse_color;
   }
   for(int i = 0; i < al_n_spotLight;i++) {
-    light_result += CalSpotLight(al_spotLight[i],N,FragPos,view_dir);
+    //light_result += CalSpotLight(al_spotLight[i],N,FragPos,view_dir);
   }
 
    vec4 RawColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);

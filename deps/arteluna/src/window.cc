@@ -188,7 +188,7 @@ void Window::EndFrame() {
   glm::mat4x4 light_space = light.get_component<LightComponent>()->light_transform(*light.get_component<TransformComponent>());
   lm.progam_.Use();
 
-  ///light render scnee
+  ///light render scene
   glUniformMatrix4fv(
     glGetUniformLocation(lm.progam_.program(),"lightSpaceMatrix"),
     1, GL_FALSE, glm::value_ptr(light_space));
