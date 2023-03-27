@@ -1,7 +1,7 @@
 #ifndef __SPOTLIGHT_COMPONENT_H__
 #define __SPOTLIGHT_COMPONENT_H__ 1
 
-#include <vec3.hpp>
+#include "glm.hpp"
 
 #include "component.h"
   class LightComponent : public Component {
@@ -16,8 +16,12 @@
     ~LightComponent() override;
     LightComponent();
   
-    __forceinline uint8_t brightness() const;
-    __forceinline void set_brightness(uint8_t brightness);
+
+  glm::mat4x4 light_transform(class TransformComponent& transform) const;
+
+  __forceinline uint8_t brightness() const;
+  __forceinline void set_brightness(uint8_t brightness);
+
 
     __forceinline float inner_cone_radius() const;
     __forceinline void set_inner_cone_radius(float inner_cone_radius);

@@ -9,6 +9,7 @@ struct ServiceHolder {
   ServiceHolder();
   ~ServiceHolder();
   ServiceHolder(size_t type, void* service);
+
   bool operator==(const ServiceHolder& other) const {
     return other.type_ == type_;
   }
@@ -30,6 +31,7 @@ struct ServiceHolder {
   /*int operator<=>(const ServiceHolder& other) const {
     return static_cast<int>(type - other.type);
   }*/
+
   size_t type_;
   void* service_;
 };

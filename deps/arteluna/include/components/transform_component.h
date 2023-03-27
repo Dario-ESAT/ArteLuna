@@ -25,7 +25,9 @@ public:
   const glm::mat4x4& local_transform() const;
   const glm::mat4x4& world_transform() const;
 
-  bool dirty() const {return dirty_;}
+  
+  uint8_t dirty() const {return dirty_;}
+
 
   glm::vec3 forward() const { return forward_; }
 
@@ -59,8 +61,9 @@ private:
   glm::mat4x4 local_transform_;
   glm::mat4x4 world_transform_;
 
-  bool dirty_;
-  bool was_dirty_;
+
+  uint8_t dirty_;
+
   uint32_t parent_;
 
   friend class EntityManager;

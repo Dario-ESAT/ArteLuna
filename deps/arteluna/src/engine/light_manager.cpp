@@ -1,8 +1,34 @@
 #include "engine/light_manager.h"
 
-#include <set>
-
+#include "utils.h"
 #include "engine/entity_manager.h"
+#include "glad/gl.h"
+
+uint32_t LightManager::depth_map_FBO_ = 0;
+uint32_t LightManager::depth_map_text_ = 0;
+
+static void InitDepthMap() {
+  glGenFramebuffers(1, &LightManager::depth_map_FBO_);
+
+
+
+  glGenTextures(1, &LightManager::depth_map_text_);
+  glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 
+               LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT,
+               0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); 
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+    GL_TEXTURE_2D, LightManager::depth_map_text_, 0);
+  glDrawBuffer(GL_NONE);
+  glReadBuffer(GL_NONE);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0); 
+}
 
 
 LightManager::LightManager(ServiceManager& sm) {
@@ -11,15 +37,14 @@ LightManager::LightManager(ServiceManager& sm) {
   num_points_ = 0;
   num_spots_ = 0;
 }
-
-LightManager::~LightManager() {
-
-}
-
-Entity& LightManager::CreatelLight(EntityManager& em,uint32_t parent, 
-LightComponent::Type type) {
+Entity& LightManager::
+CreatelLight(EntityManager& em, LightComponent::Type type, uint32_t parent) {
+  if (depth_map_FBO_ == 0){
+    InitDepthMap();
+  }
   Entity& light = em.CreateNewEntity(parent);
-  auto* light_component = light.AddComponent<LightComponent>(em);
+   auto* light_component = light.AddComponent<LightComponent>(em);
+
   light_component->type_ = type;
   lights_.push_back(light.id());
   OrderLights(em);
@@ -61,5 +86,3 @@ void LightManager::OrderLights(EntityManager& em) {
   }
   lights_ = lights_aux_;
 }
-
-  

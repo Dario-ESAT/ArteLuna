@@ -3,6 +3,15 @@
 
 #include "glm.hpp"
 
+#include "engine/texture.h"
+
+class Camera {
+public:
+  enum Modes {
+    Perspective,
+    Ortho
+  };
+
   class Input;
   class ServiceManager;
   class Camera {
@@ -40,17 +49,18 @@
   
     void Mode(Modes m);
 
-    float mouse_displacement_x_;
-    float mouse_displacement_y_;
-  private:
-    void Update(double deltatime, Input* input);
-  
-    void UpdateFromInput(double deltatime, Input* input);
-    void UpdateRotation(double deltatime, glm::vec2 cursor_pos);
-    void RenderScene(float aspect);
-    void UpdateTransform();
-    void TransformOrtho(Input* input);
 
+  float mouse_displacement_x_;
+  float mouse_displacement_y_;
+  // Texture cubemap_;
+private:
+  void Update(double deltatime, class Input* input);
+  
+  void UpdateFromInput(double deltatime, class Input* input);
+  void UpdateRotation(double deltatime, glm::vec2 cursor_pos);
+  void RenderScene(float aspect);
+  void UpdateTransform();
+  void TransformOrtho(class Input* input);
 
     ServiceManager* sm_;
     

@@ -4,13 +4,18 @@
 #include "window.h"
 
 #include <ext/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
 
 #include "imgui.h"
 #include "stdio.h"
 #include "input.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
+#include "components/render_component.h"
 #include "engine/entity_manager.h"
+#include "engine/light_manager.h"
+#include "engine/material.h"
+#include "engine/mesh.h"
 #include "engine/service_manager.h"
 #include "systems/systems.h"
   Window::Window() {
@@ -71,6 +76,7 @@
     glfwMakeContextCurrent(window_);
     gladLoadGL(glfwGetProcAddress);
   
+
     ImGui::CreateContext();
     ImGui_ImplOpenGL3_Init("#version 330");
     ImGui_ImplGlfw_InitForOpenGL(window_,true);
@@ -86,6 +92,7 @@
     // ServiceManager& sm = ServiceManager::Manager();
     // sm.Add(manager_ref);
   }
+
 
   Window::~Window() {
     if (window_ != nullptr) {
@@ -172,24 +179,68 @@
     delta_time_ = current_time_ - last_time_;
     last_time_ = current_time_;
   
-    glfwPollEvents();
-    camera_.Update(delta_time_, input_.get());
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(	0.2f,0.2f,0.2f,1.f);
+  glfwPollEvents();
+  camera_.Update(delta_time_, input_.get());
+  ImGui_ImplOpenGL3_NewFrame();
+  ImGui_ImplGlfw_NewFrame();
+  ImGui::NewFrame();
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glClearColor(	0.2f,0.2f,0.2f,1.f);
+  // glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void Window::EndFrame() {
+  ServiceManager& sm = ServiceManager::Manager();
+  EntityManager& em = *sm.Get<EntityManager>();
+  LightManager& lm = *sm.Get<LightManager>();
+
+  // Render Shades
+  glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
+  glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_);
+  glClear(GL_DEPTH_BUFFER_BIT);
+  
+  auto& light= *em.GetEntity(lm.lights_.at(0));
+  glm::mat4x4 light_space = light.get_component<LightComponent>()->light_transform(*light.get_component<TransformComponent>());
+  lm.progam_.Use();
+
+  ///light render scnee
+  glUniformMatrix4fv(
+    glGetUniformLocation(lm.progam_.program(),"lightSpaceMatrix"),
+    1, GL_FALSE, glm::value_ptr(light_space));
+  GLint model_uniform = glGetUniformLocation(lm.progam_.program(),"model");
+  auto* render_components =sm.Get<EntityManager>()->GetComponentVector<RenderComponent>();
+  auto* transform_components = sm.Get<EntityManager>()->GetComponentVector<TransformComponent>();
+  for (uint16_t i = 1; i < sm.Get<EntityManager>()->last_id_; i++) {
+    
+    if (render_components->at(i).has_value()) {
+      const TransformComponent& transform_component = transform_components->at(i).value();
+      const RenderComponent& render_component = render_components->at(i).value();
+      glBindVertexArray(render_component.mesh_->mesh_buffer());
+      glUniformMatrix4fv(model_uniform, 1, false, value_ptr(transform_component.world_transform()));
+      
+      glDrawElements(GL_TRIANGLES, (GLsizei)render_component.mesh_->indices_.size(),GL_UNSIGNED_INT, 0);
+    }
   }
+  
+  /// -----------------------
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  
+  glViewport(0, 0, width_, height_);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
+  
+  // Render Scene --------
+  sm_->Get<Systems>()->SystemsUpdate();
+  camera_.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
 
-  void Window::EndFrame() {
-    // Render Scene --------
-    sm_->Get<Systems>()->SystemsUpdate();
-    camera_.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
-
-    // Render Imgui
-    camera_.MenuImgui();
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+  // Pass the texture and lightSpaceMatrix to the normal shader
+  //glActiveTexture(LightManager::depth_map_text_);
+  //glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
+  
+  // Render Imgui
+  camera_.MenuImgui();
+  ImGui::Render();
+  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   
     // Draw
     glfwSwapBuffers(window_);

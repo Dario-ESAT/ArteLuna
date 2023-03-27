@@ -93,93 +93,136 @@
     InitMaterial(user_uniforms_,al_uniforms_,vert,frag,shader_,program_);
   }
 
-  Material::Material(const char* vert, const char* frag, const char* texture_src,const char* normal_texture_src, Texture::Type t_type, Texture::Filter mag_filter,
-    Texture::Filter min_filter,  Texture::Wrap ws, Texture::Wrap wt, Texture::Wrap wr) {
-  
-    InitMaterial(user_uniforms_,al_uniforms_,vert,frag,shader_,program_);
 
-    // Texture
-    int texture_width = texture_.width();
-    int texture_height = texture_.height();
-    int texture_channels = texture_.channels();
-    texture_.set_min_filter(min_filter);
-    texture_.set_mag_filter(mag_filter);
-    texture_.set_wrap_s(ws);
-    texture_.set_wrap_t(wt);
-    texture_.set_wrap_r(wr);
-    texture_.set_type(t_type);
-    int p = glGetUniformLocation(program_.program(), "u_texture");
+Material::Material(const char* vert, const char* frag, const char* texture_src,const char* normal_texture_src, const char* displacement_texture_src,
+  Texture::Type t_type, Texture::Filter mag_filter,
+	Texture::Filter min_filter,  Texture::Wrap ws, Texture::Wrap wt, Texture::Wrap wr) {
   
-    GLuint id_texture = texture_.get_id();
-    texture_.data_ = stbi_load(texture_src, &texture_width, &texture_height, &texture_channels, 4);
-    //texture_ = texture_data;
-    texture_.set_width(texture_width);
-    texture_.set_height(texture_height);
-    texture_.set_channels(texture_channels);
-    switch (texture_.channels()) {
-    case 1:
-      texture_.set_format(Texture::R);
-      break;
-    case 2:
-      texture_.set_format(Texture::RG);
-      break;
-    case 3:
-      texture_.set_format(Texture::RGB);
-      break;
-    case 4:
-      texture_.set_format(Texture::RGBA);
-      break;
-    }
-    texture_.set_type(t_type);
-    //if (id() != 0)
-    glGenTextures(1, &id_texture);
-    texture_.set_id(id_texture);
-    //glBindTexture(GL_TEXTURE_2D, texture_.get_id());
-    //glActiveTexture(GL_TEXTURE0 + texture_.get_id());
-    texture_.SetData(Texture::UNSIGNED_BYTE, 0);
+  InitMaterial(user_uniforms_,al_uniforms_,vert,frag,shader_,program_);
+
+	// Texture
+  int texture_width = texture_.width();
+  int texture_height = texture_.height();
+  int texture_channels = texture_.channels();
+	texture_.set_min_filter(min_filter);
+	texture_.set_mag_filter(mag_filter);
+	texture_.set_wrap_s(ws);
+	texture_.set_wrap_t(wt);
+	texture_.set_wrap_r(wr);
+	texture_.set_type(t_type);
   
-    // Normal texture
-    int ntexture_width = normal_texture_.width();
-    int ntexture_height = normal_texture_.height();
-    int ntexture_channels = normal_texture_.channels();
-    normal_texture_.set_min_filter(min_filter);
-    normal_texture_.set_mag_filter(mag_filter);
-    normal_texture_.set_wrap_s(ws);
-    normal_texture_.set_wrap_t(wt);
-    normal_texture_.set_wrap_r(wr);
-    normal_texture_.set_type(t_type);
-    GLuint id_ntexture = normal_texture_.get_id();
-    normal_texture_.data_ = stbi_load(normal_texture_src, &ntexture_width, &ntexture_height, &ntexture_channels, 0);
-    if (stbi_failure_reason())
-      std::cout << stbi_failure_reason();
-    //texture_ = texture_data;
-    normal_texture_.set_width(ntexture_width);
-    normal_texture_.set_height(ntexture_height);
-    normal_texture_.set_channels(ntexture_channels);
-    switch (normal_texture_.channels()) {
-    case 1:
-      normal_texture_.set_format(Texture::R);
-      break;
-    case 2:
-      normal_texture_.set_format(Texture::RG);
-      break;
-    case 3:
-      normal_texture_.set_format(Texture::RGB);
-      break;
-    case 4:
-      normal_texture_.set_format(Texture::RGBA);
-      break;
-    }
-    normal_texture_.set_type(t_type);
-    //if (id() != 0)
-    glGenTextures(1, &id_ntexture);
-    normal_texture_.set_id(id_ntexture);
-    //glBindTexture(GL_TEXTURE_2D, texture_.get_id());
-    //glActiveTexture(GL_TEXTURE0 + texture_.get_id());
-    normal_texture_.SetData(Texture::UNSIGNED_BYTE, 0);
+	GLuint id_texture = texture_.get_id();
+	texture_.data_ = stbi_load(texture_src, &texture_width, &texture_height, &texture_channels, 0);
+	//texture_ = texture_data;
+	texture_.set_width(texture_width);
+	texture_.set_height(texture_height);
+	texture_.set_channels(texture_channels);
+	switch (texture_.channels()) {
+	case 1:
+		texture_.set_format(Texture::R);
+		break;
+	case 2:
+		texture_.set_format(Texture::RG);
+		break;
+	case 3:
+		texture_.set_format(Texture::RGB);
+		break;
+	case 4:
+		texture_.set_format(Texture::RGBA);
+		break;
+	}
+	texture_.set_type(t_type);
+	//if (id() != 0)
+	glGenTextures(1, &id_texture);
+	texture_.set_id(id_texture);
+	//glBindTexture(GL_TEXTURE_2D, texture_.get_id());
+	//glActiveTexture(GL_TEXTURE0 + texture_.get_id());
+  texture_.SetData(Texture::UNSIGNED_BYTE, 0);
+  
+  // Normal texture
+  int ntexture_width = normal_texture_.width();
+  int ntexture_height = normal_texture_.height();
+  int ntexture_channels = normal_texture_.channels();
+  normal_texture_.set_min_filter(min_filter);
+  normal_texture_.set_mag_filter(mag_filter);
+  normal_texture_.set_wrap_s(ws);
+  normal_texture_.set_wrap_t(wt);
+  normal_texture_.set_wrap_r(wr);
+  normal_texture_.set_type(t_type);
+  GLuint id_ntexture = normal_texture_.get_id();
+  normal_texture_.data_ = stbi_load(normal_texture_src, &ntexture_width, &ntexture_height, &ntexture_channels, 0);
+  if (stbi_failure_reason())
+    std::cout << stbi_failure_reason();
+  //texture_ = texture_data;
+  normal_texture_.set_width(ntexture_width);
+  normal_texture_.set_height(ntexture_height);
+  normal_texture_.set_channels(ntexture_channels);
+  switch (normal_texture_.channels()) {
+  case 1:
+    normal_texture_.set_format(Texture::R);
+    break;
+  case 2:
+    normal_texture_.set_format(Texture::RG);
+    break;
+  case 3:
+    normal_texture_.set_format(Texture::RGB);
+    break;
+  case 4:
+    normal_texture_.set_format(Texture::RGBA);
+    break;
   }
+  normal_texture_.set_type(t_type);
+  //if (id() != 0)
+  glGenTextures(1, &id_ntexture);
+  normal_texture_.set_id(id_ntexture);
+  //glBindTexture(GL_TEXTURE_2D, texture_.get_id());
+  //glActiveTexture(GL_TEXTURE0 + texture_.get_id());
+  normal_texture_.SetData(Texture::UNSIGNED_BYTE, 0);
 
-  Material::~Material() {}
+
+  // Displacement map
+  int dtexture_width = displacement_texture_.width();
+  int dtexture_height = displacement_texture_.height();
+  int dtexture_channels = displacement_texture_.channels();
+  displacement_texture_.set_min_filter(min_filter);
+  displacement_texture_.set_mag_filter(mag_filter);
+  displacement_texture_.set_wrap_s(ws);
+  displacement_texture_.set_wrap_t(wt);
+  displacement_texture_.set_wrap_r(wr);
+  displacement_texture_.set_type(t_type);
+  GLuint id_dtexture = displacement_texture_.get_id();
+  displacement_texture_.data_ = stbi_load(displacement_texture_src, &dtexture_width, &dtexture_height, &dtexture_channels, 0);
+  if (stbi_failure_reason())
+    std::cout << stbi_failure_reason();
+  //texture_ = texture_data;
+  displacement_texture_.set_width(dtexture_width);
+  displacement_texture_.set_height(dtexture_height);
+  displacement_texture_.set_channels(dtexture_channels);
+  switch (displacement_texture_.channels()) {
+  case 1:
+    displacement_texture_.set_format(Texture::R);
+    break;
+  case 2:
+    displacement_texture_.set_format(Texture::RG);
+    break;
+  case 3:
+    displacement_texture_.set_format(Texture::RGB);
+    break;
+  case 4:
+    displacement_texture_.set_format(Texture::RGBA);
+    break;
+  }
+  displacement_texture_.set_type(t_type);
+  //if (id() != 0)
+  glGenTextures(1, &id_dtexture);
+  displacement_texture_.set_id(id_dtexture);
+  //glBindTexture(GL_TEXTURE_2D, texture_.get_id());
+  //glActiveTexture(GL_TEXTURE0 + texture_.get_id());
+  displacement_texture_.SetData(Texture::UNSIGNED_BYTE, 0);
+}
+
+Material::~Material() {}
+
 
 #pragma region FLOAT
   void Data_Implementation<float>::bind(GLint position) {

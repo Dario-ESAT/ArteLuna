@@ -3,9 +3,10 @@
 #include <memory>
 
 #include "entity_manager.h"
+
 #include "light_manager.h"
 #include "systems/systems.h"
-  
+
 class Window;
 class ServiceManager;
 class Engine {
@@ -20,12 +21,14 @@ public:
     int posx = 110, int posy = 110,
     bool windowed = true, int monitor = 0);
 
+
   ServiceManager* sm_;
   EntityManager em_;
   Systems systems_;
   LightManager lm_;
 protected:
   
+
   std::unique_ptr<Window> window_;
 };
 #endif

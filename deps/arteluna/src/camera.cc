@@ -5,8 +5,10 @@
 #include "engine/entity_manager.h"
 #include "ext.hpp"
 #include "gtc/type_ptr.hpp"
+#include "stb_image.h"
 
 #include "components/render_component.h"
+#include "engine/texture.h"
 #include "components/transform_component.h"
 #include "engine/light_manager.h"
 #include "engine/material.h"
@@ -26,12 +28,45 @@ Camera::Camera() {
   position_.z = 0.0f;
 
   mode_ = Perspective;
-  ortho_x_ = 10.0f;
+  ortho_x_ = 15.0f;
   ortho_y_ = 10.0f;
   near_ = 0.1f;
   far_ = 10000.0f;
 
   imgui_mode_ = false;
+
+  // int cubemap_width = cubemap_.width();
+  // int cubemap_height = cubemap_.height();
+  // int cubemap_channels = cubemap_.channels();
+  // GLuint id_cubemap = cubemap_.get_id();
+  // cubemap_.data_ = stbi_load("../../deps/arteluna/data/textures/wavy_COLOR.png", &cubemap_width, &cubemap_height, &cubemap_channels, 0);
+  // if (stbi_failure_reason())
+  //   printf("%s", stbi_failure_reason());
+  // //texture_ = texture_data;
+  // cubemap_.set_width(cubemap_width);
+  // cubemap_.set_height(cubemap_height);
+  // cubemap_.set_channels(cubemap_channels);
+  // switch (cubemap_.channels()) {
+  // case 1:
+  //   cubemap_.set_format(Texture::R);
+  //   break;
+  // case 2:
+  //   cubemap_.set_format(Texture::RG);
+  //   break;
+  // case 3:
+  //   cubemap_.set_format(Texture::RGB);
+  //   break;
+  // case 4:
+  //   cubemap_.set_format(Texture::RGBA);
+  //   break;
+  // }
+  // cubemap_.set_type(Texture::Type::T_Cubemap);
+  // //if (id() != 0)
+  // glGenTextures(1, &id_cubemap);
+  // glBindTexture(GL_TEXTURE_CUBE_MAP, id_cubemap);
+  // cubemap_.set_id(id_cubemap);
+  // cubemap_.SetData(Texture::UNSIGNED_BYTE, 0);
+
   UpdateTransform();
 }
 
@@ -165,11 +200,10 @@ void Camera::RenderScene(float aspect) {
     if (render_components->at(i).has_value()) {
       const TransformComponent& transform_component = transform_components->at(i).value();
       const RenderComponent& render_component = render_components->at(i).value();
-      auto& material = render_component.material_;
-      auto& al_uniforms = material->al_uniforms_;
-      const GLint program = material->program_.program();
-
-      material->program_.Use();
+      render_component.material_->program_.Use();
+      
+      
+      auto& al_uniforms = render_component.material_->al_uniforms_;
       
       auto al_uniform = al_uniforms.find("al_vp_matrix");
       if (al_uniform != al_uniforms.end()){
@@ -215,9 +249,18 @@ void Camera::MenuImgui() {
       mode_ = Perspective;
   }
 
+  if (mode_ == Ortho) {
+    ImGui::Text("Set ortho size");
+    ImGui::DragFloat("Ortho width", &ortho_x_, 0.01f);
+    ImGui::DragFloat("Ortho height", &ortho_y_, 0.01f);
+  }
+
   ImGui::End();
   //EntityManager& e_m = EntityManager::GetManager();
-  std::vector<std::optional<TransformComponent>>* transform_components = sm_->Get<EntityManager>()->GetComponentVector<TransformComponent>();
+
+  auto* transform_components = sm.Get<EntityManager>()->GetComponentVector<TransformComponent>();
+  auto* light_components = sm.Get<EntityManager>()->GetComponentVector<LightComponent>();
+
 
   char label[20] = { '\n' };
   ImGui::Begin("Entities");
@@ -230,10 +273,17 @@ void Camera::MenuImgui() {
   for (unsigned long long i = 1; i < transform_components->size(); i++) {
     if (ImGui::TreeNode((void*)(intptr_t)i, "Entity %d", i)) {
       auto& t_comp = transform_components->at(i).value();
-      t_comp.ImguiTree((uint32_t)i);
-      sprintf_s(label, "Huerfanear##P%d", (int)i);
-      if (ImGui::Button(label)) {
-        // sm.Get<EntityManager>()->GetEntity((unsigned int)i)->DetachFromParent();
+      if (ImGui::TreeNode(&t_comp, "Transform")){
+        t_comp.ImguiTree((uint32_t)i);
+        ImGui::TreePop();
+      }
+      auto& l_comp = light_components->at(i);
+      if (l_comp.has_value()){
+        if (ImGui::TreeNode(&l_comp, "Light opt")){
+          l_comp->ImguiTree((uint32_t)i);
+          
+          ImGui::TreePop();
+        }
       }
       ImGui::TreePop();
     }

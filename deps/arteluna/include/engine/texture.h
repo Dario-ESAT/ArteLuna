@@ -55,6 +55,7 @@
     Texture(/*int d, */Filter mag_filter, Filter min_filter, Type type, char* texture_src, Wrap ws, Wrap wt, Wrap wr );
     ~Texture();
 
+    static unsigned int create_cubemap(char* cubemap_src);
     void set_texture(char* texture_src/*, int d*/, Filter mag_filter, Filter min_filter, Format format, Type type);
     int width() { return width_; }
     int height() { return height_; }
@@ -63,6 +64,7 @@
 
   
     unsigned char* data_;
+    std::vector<std::string> cubemap_faces_;
     void Bind();
     void SetData(/*Filter mag_filter, Filter min_filter, Format format,/*/DataType d_type, int mip_map_LOD);
     void Active();

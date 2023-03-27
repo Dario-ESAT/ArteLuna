@@ -1,15 +1,17 @@
 #ifndef __SERVICES_H__
 #define __SERVICES_H__ 1
+#include <cstdint>
 
-  class ServiceManager;
-  
-  class Systems{
-  public:
-    Systems() = delete;
-    Systems(ServiceManager& sm);
-    void SetServiceManager(ServiceManager& sm);
-    
-    ~Systems() = default;
+class ServiceManager;
+
+
+class Systems{
+public:
+  Systems() = delete;
+  Systems(ServiceManager& sm);
+  void SetServiceManager(ServiceManager& sm);
+
+  ~Systems() = default;
 
     void SystemsUpdate();
 

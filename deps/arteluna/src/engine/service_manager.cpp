@@ -5,17 +5,15 @@
     service_ = nullptr;
   }
 
+
+ServiceManager::~ServiceManager() = default;
+
+ServiceManager::ServiceManager() = default;
+
   ServiceHolder::~ServiceHolder() {
   }
 
   ServiceHolder::ServiceHolder(size_t type, void* service) {
     type_ = type;
     service_ = service;
-  }
-
-  ServiceManager::~ServiceManager() {
-  }
-
-  ServiceManager::ServiceManager() {
-    
   }
