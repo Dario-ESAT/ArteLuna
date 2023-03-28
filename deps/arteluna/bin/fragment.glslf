@@ -185,7 +185,7 @@ void main() {
 
 
   for(int i = 0; i < al_n_dirLight;i++) {
-    light_result = CalcDir(al_dirLight[i],N,view_dir);
+    light_result = CalcDir(al_dirLight[i],Nnormal,view_dir);
   }
 
   for(int i = 0; i < al_n_pointLight;i++) {

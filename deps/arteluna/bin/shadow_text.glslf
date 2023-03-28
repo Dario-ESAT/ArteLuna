@@ -7,6 +7,6 @@ uniform sampler2D al_shadow_texture;
 
 void main()
 {             
-    float depthValue = texture(al_shadow_texture, TexCoords).r;
-    FragColor = vec4(vec3(depthValue), 1.0);
+    //float depthValue = texture(al_shadow_texture, TexCoords).r;
+    //FragColor = vec4(vec3(depthValue), 1.0);
 }  
