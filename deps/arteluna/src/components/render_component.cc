@@ -193,7 +193,7 @@ void RenderComponent::RenderObject() const{
 	  if (it->second.data_) {
 		    it->second.data_->bind(it->second.location_);
     } else{
-      printf("\nUniform %s is null",it->first.c_str());
+      //printf("\nUniform %s is null",it->first.c_str());
     }
 	}
 

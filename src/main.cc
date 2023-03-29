@@ -54,11 +54,12 @@ int main() {
   
   Entity& d_light = l_manager.CreatelLight(LightComponent::Type::Directional);
   TransformComponent* t_comp = d_light.get_component<TransformComponent>();
-  t_comp->set_rotation(-1, 0, 0);
+  t_comp->set_rotation(1, 0, 0);
   t_comp->set_position({ 0.f, 10.0f, 0.0f });
- // RenderComponent* d_render = d_light.AddComponent<RenderComponent>();
- // d_render->mesh_ = sonic;
- // d_render->material_ = material;
+
+  RenderComponent* d_render = d_light.AddComponent<RenderComponent>();
+  d_render->mesh_ = sonic;
+  d_render->material_ = material;
   
   // Entity& s_light = l_manager.CreatelLight(LightComponent::Type::Spotlight);
   // RenderComponent* l_render = s_light.AddComponent<RenderComponent>();
@@ -67,8 +68,8 @@ int main() {
   
   Entity& entity_1 = sm.Get<EntityManager>()->CreateNewEntity();
   TransformComponent* transform_cmp = entity_1.get_component<TransformComponent>();
-  transform_cmp->set_position({ 0.0 , -10.0f, 0.0f });
-  transform_cmp->set_scale({ 100.f, 0.3f, 100.f });
+  transform_cmp->set_position({ 0.0 , -6.0f, 0.0f });
+  transform_cmp->set_scale({ 20.f, 1.0f, 20.f });
   transform_cmp->set_rotation({ 0.0f, 0.f, 0.0f });
 
   RenderComponent* render_cmp = entity_1.AddComponent<RenderComponent>();
