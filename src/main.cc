@@ -18,7 +18,7 @@ int main() {
   
   Window& window = *engine.CreateNewWindow("Aleksander");
   
-  LightManager l_manager(
+  LightManager l_manager(em,
   "../../deps/arteluna/bin/shadow_render.glslv",
   "../../deps/arteluna/bin/shadow_render.glslf");
   sm.Add(l_manager);
@@ -43,8 +43,8 @@ int main() {
   // p_render->mesh_ = cubo;
   // p_render->material_ = material;
   
-  Entity& d_light = l_manager.CreatelLight(LightComponent::Type::Directional);
-  RenderComponent* d_render = d_light.AddComponent<RenderComponent>();
+  Entity& d_light = l_manager.CreatelLight(em, LightComponent::Type::Directional);
+  RenderComponent* d_render = d_light.AddComponent<RenderComponent>(em);
   d_render->mesh_ = cubo;
   d_render->material_ = material;
   
@@ -54,24 +54,25 @@ int main() {
   // l_render->material_ = material;
   
   Entity& entity_1 = sm.Get<EntityManager>()->CreateNewEntity();
-  TransformComponent* transform_cmp = entity_1.get_component<TransformComponent>();
+  TransformComponent* transform_cmp = entity_1
+  .get_component<TransformComponent>(em);
   transform_cmp->set_position({ 0.0 , -10.0f, 0.0f });
   transform_cmp->set_scale({ 30.f, 0.3f, 30.f });
   transform_cmp->set_rotation({ 0.0f, 0.f, 0.0f });
 
 	
-  RenderComponent* render_cmp =  entity_1.AddComponent<RenderComponent>();
+  RenderComponent* render_cmp =  entity_1.AddComponent<RenderComponent>(em);
   render_cmp->mesh_ = cubo;
 
   render_cmp->material_ = material;
   
 
   Entity& cube_ = sm.Get<EntityManager>()->CreateNewEntity();
-  cube_.get_component<TransformComponent>()->set_position({ 0,-5,0 });
-  cube_.get_component<TransformComponent>()->set_scale({ 1,1,1 });
-  cube_.get_component<TransformComponent>()->set_rotation({ 0,0,0 });
+  cube_.get_component<TransformComponent>(em)->set_position({ 0,-5,0 });
+  cube_.get_component<TransformComponent>(em)->set_scale({ 1,1,1 });
+  cube_.get_component<TransformComponent>(em)->set_rotation({ 0,0,0 });
 
-  RenderComponent* cube_render_cmp = cube_.AddComponent<RenderComponent>();
+  RenderComponent* cube_render_cmp = cube_.AddComponent<RenderComponent>(em);
   cube_render_cmp->mesh_ = cubo;
   cube_render_cmp->material_ = material;
 
@@ -87,11 +88,9 @@ int main() {
 
 
   render_cmp = entity_2.AddComponent<RenderComponent>(em);
-  render_cmp->mesh_ = mesh_sponza;
+  render_cmp->mesh_ = sponza;
 
 
-  render_cmp->mesh_ = mesh_sponza;
-  
   render_cmp->material_ = material;
 	/*Entity& entity_0 = .CreateNewEntity();
 	transform_cmp = entity_0.get_component<TransformComponent>(em);

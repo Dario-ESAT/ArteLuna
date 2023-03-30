@@ -8,7 +8,7 @@
   {
     FILE* in_file = 0;
     int err = fopen_s(&in_file, filename, "rb");
-    assert(in_file);
+    assert(err == 0 && filename);
     struct stat sb;
     assert(stat(filename, &sb) != -1);
     std::unique_ptr<char[]> file_contents = std::make_unique<char[]>(sb.st_size+1);

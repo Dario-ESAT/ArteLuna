@@ -46,8 +46,7 @@
     try {
       if (!glfwInit())
         throw 14;
-    }
-    catch (int e) {
+    } catch (int e) {
       printf("There was an error on glfw, the window couldn't be initialize %d",e);
     }
 
@@ -57,9 +56,9 @@
       if (!window_) {
         printf("There was an error on the window, the window couldn't be initialize");
         glfwTerminate();
+        throw 14;
       }
-    }
-    catch (int e) {
+    } catch (int e) {
       printf("There was an error on the window, the window couldn't be created %d",e);
     }
 
@@ -90,7 +89,7 @@
     // EntityManager& manager_ref = EntityManager::GetManager();
     // Systems
     // ServiceManager& sm = ServiceManager::Manager();
-    // sm.Add(manager_ref);
+    // sm_->Add(manager_ref);
   }
 
 
@@ -190,9 +189,8 @@
 }
 
 void Window::EndFrame() {
-  ServiceManager& sm = ServiceManager::Manager();
-  EntityManager& em = *sm.Get<EntityManager>();
-  LightManager& lm = *sm.Get<LightManager>();
+  EntityManager& em = *sm_->Get<EntityManager>();
+  LightManager& lm = *sm_->Get<LightManager>();
 
   // Render Shades
   glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
@@ -200,7 +198,8 @@ void Window::EndFrame() {
   glClear(GL_DEPTH_BUFFER_BIT);
   
   auto& light= *em.GetEntity(lm.lights_.at(0));
-  glm::mat4x4 light_space = light.get_component<LightComponent>()->light_transform(*light.get_component<TransformComponent>());
+  glm::mat4x4 light_space = light.get_component<LightComponent>(em)
+  ->light_transform(*light.get_component<TransformComponent>(em));
   lm.progam_.Use();
 
   ///light render scnee
@@ -208,9 +207,11 @@ void Window::EndFrame() {
     glGetUniformLocation(lm.progam_.program(),"lightSpaceMatrix"),
     1, GL_FALSE, glm::value_ptr(light_space));
   GLint model_uniform = glGetUniformLocation(lm.progam_.program(),"model");
-  auto* render_components =sm.Get<EntityManager>()->GetComponentVector<RenderComponent>();
-  auto* transform_components = sm.Get<EntityManager>()->GetComponentVector<TransformComponent>();
-  for (uint16_t i = 1; i < sm.Get<EntityManager>()->last_id_; i++) {
+  auto* render_components =sm_->Get<EntityManager>()
+  ->GetComponentVector<RenderComponent>();
+  auto* transform_components = sm_->Get<EntityManager>()
+  ->GetComponentVector<TransformComponent>();
+  for (uint16_t i = 1; i < sm_->Get<EntityManager>()->last_id_; i++) {
     
     if (render_components->at(i).has_value()) {
       const TransformComponent& transform_component = transform_components->at(i).value();

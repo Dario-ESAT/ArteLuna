@@ -5,13 +5,6 @@
 
 #include "engine/texture.h"
 
-class Camera {
-public:
-  enum Modes {
-    Perspective,
-    Ortho
-  };
-
   class Input;
   class ServiceManager;
   class Camera {

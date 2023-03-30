@@ -38,9 +38,9 @@ void RenderComponent::RenderObject(EntityManager& em, LightManager& lm) const{
   
   // ----- Directional lights -----
 
-  auto al_uniform = al_uniforms.find("al_n_dirLight");
+  al_uniform = al_uniforms.find("al_n_dirLight");
   if (al_uniform != al_uniforms.end()){
-    glUniform1i(al_uniform->second.location_, sm.Get<LightManager>()->num_directionals_);
+    glUniform1i(al_uniform->second.location_, lm.num_directionals_);
   }
 
   for (uint32_t j = 0; j < lm.num_directionals_; j++){
@@ -71,14 +71,15 @@ void RenderComponent::RenderObject(EntityManager& em, LightManager& lm) const{
 
   al_uniform = al_uniforms.find("al_n_pointLight");
   if (al_uniform != al_uniforms.end()){
-    glUniform1i(al_uniform->second.location_, sm.Get<LightManager>()->num_points_);
+    glUniform1i(al_uniform->second.location_, lm.num_points_);
   }
 
   for (uint32_t j = lm.num_directionals_; j < lm.num_points_; j++){
     Entity* entity =  em.GetEntity(lm.lights_[j]);
     const auto* transform =  entity->get_component<TransformComponent>(em);
     const auto* light = entity->get_component<LightComponent>(em);
-  
+    int idx = j - lm.num_directionals_;
+
     sprintf_s(uniform_name,"al_pointLight[%d].position",j);
     al_uniform = al_uniforms.find(uniform_name);
     if (al_uniform != al_uniforms.end()){
@@ -120,7 +121,7 @@ void RenderComponent::RenderObject(EntityManager& em, LightManager& lm) const{
   // ----- Spot lights -----
   al_uniform = al_uniforms.find("al_n_spotLight");
   if (al_uniform != al_uniforms.end()){
-    glUniform1i(al_uniform->second.location_, sm.Get<LightManager>()->num_spots_);
+    glUniform1i(al_uniform->second.location_, lm.num_spots_);
   }
   for (
 
@@ -227,7 +228,7 @@ void RenderComponent::RenderObject(EntityManager& em, LightManager& lm) const{
 
 
   auto& light= *em.GetEntity(lm.lights_.at(0));
-  glm::mat4x4 light_space = light.get_component<LightComponent>()->light_transform(*light.get_component<TransformComponent>());
+  glm::mat4x4 light_space = light.get_component<LightComponent>(em)->light_transform(*light.get_component<TransformComponent>(em));
  
 
   glUniformMatrix4fv(glGetUniformLocation(material_->program_.program(), "lightSpaceMatrix"),

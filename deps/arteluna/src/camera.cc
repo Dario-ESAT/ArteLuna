@@ -256,10 +256,9 @@ void Camera::MenuImgui() {
   }
 
   ImGui::End();
-  //EntityManager& e_m = EntityManager::GetManager();
 
-  auto* transform_components = sm.Get<EntityManager>()->GetComponentVector<TransformComponent>();
-  auto* light_components = sm.Get<EntityManager>()->GetComponentVector<LightComponent>();
+  auto* transform_components = sm_->Get<EntityManager>()->GetComponentVector<TransformComponent>();
+  auto* light_components = sm_->Get<EntityManager>()->GetComponentVector<LightComponent>();
 
 
   char label[20] = { '\n' };

@@ -43,7 +43,7 @@ public:
   ServiceManager();
   
   template<typename t> void Add(t& service) {
-    if (Get<t>() != nullptr){
+    if (Get<t>() == nullptr){
       services_.emplace_back(typeid(t).hash_code(),&service);
       std::sort(services_.begin(), services_.end());
     }

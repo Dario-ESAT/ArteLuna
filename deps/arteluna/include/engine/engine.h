@@ -21,11 +21,9 @@ public:
     int posx = 110, int posy = 110,
     bool windowed = true, int monitor = 0);
 
-
   ServiceManager* sm_;
   EntityManager em_;
   Systems systems_;
-  LightManager lm_;
 protected:
   
 

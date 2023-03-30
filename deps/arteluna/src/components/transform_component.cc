@@ -67,7 +67,7 @@ void TransformComponent::ImguiTree(uint32_t id) {
   ImGui::Text("Right: %.3f  %.3f  %.3f",right_.x,right_.y,right_.z);
   sprintf_s(label, "Huerfanear##P%d", id);
   if (ImGui::Button(label)) {
-    DetachFromParent();
+    // DetachFromParent(sm);
   }
 }
 
