@@ -2,9 +2,8 @@
 #define __PROGRAM_H__ 1
 
 #include "glad/gl.h"
-
-class Program {
-public:
+  class Program {
+  public:
     Program();
     Program(unsigned int vertex_,unsigned int fragment_);
     ~Program();
@@ -12,17 +11,15 @@ public:
     //void linkProgram(std::string link_log);
     //void attachShader();
     void Use() const{
-        glUseProgram(id_);
+      glUseProgram(id_);
     }
     GLint program() const{
-        return id_;
+      return id_;
     }
 
     // void attachShader()
-private:
+    private:
     GLint id_;
   
-};
-
-
+  };
 #endif

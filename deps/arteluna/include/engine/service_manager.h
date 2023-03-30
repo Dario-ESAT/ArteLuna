@@ -7,68 +7,69 @@
 
 struct ServiceHolder {
   ServiceHolder();
-  ServiceHolder(size_t type_, void* service_) {
-    type = type_;
-    service = service_;
-  }
+  ~ServiceHolder();
+  ServiceHolder(size_t type, void* service);
+
   bool operator==(const ServiceHolder& other) const {
-    return other.type == type;
+    return other.type_ == type_;
   }
   bool operator!=(const ServiceHolder& other) const {
-    return other.type != type;
+    return other.type_ != type_;
   }
   bool operator<(const ServiceHolder& other) const {
-    return other.type < type;
+    return other.type_ < type_;
   }
   bool operator>(const ServiceHolder& other) const{
-    return other.type > type;
+    return other.type_ > type_;
   }
   bool operator<=(const ServiceHolder& other) const {
-    return other.type <= type;
+    return other.type_ <= type_;
   }
   bool operator>=(const ServiceHolder& other) const {
-    return other.type >= type;
+    return other.type_ >= type_;
   }
   /*int operator<=>(const ServiceHolder& other) const {
     return static_cast<int>(type - other.type);
   }*/
-  size_t type;
-  void* service;
-};
 
+  size_t type_;
+  void* service_;
+};
 
 class ServiceManager {
 public:
   ~ServiceManager();
 
+  ServiceManager();
+  
   template<typename t> void Add(t& service) {
-    services_.emplace_back(typeid(t).hash_code(),&service);
-    std::sort(services_.begin(), services_.end());
+    if (Get<t>() != nullptr){
+      services_.emplace_back(typeid(t).hash_code(),&service);
+      std::sort(services_.begin(), services_.end());
+    }
   }
 
   template<typename t> t* Get()
   {
     auto hash = typeid(t).hash_code();
-    auto result = std::lower_bound(services_.begin(), services_.end(),ServiceHolder{ hash, nullptr});
+    auto result = std::lower_bound(
+      services_.begin(),
+      services_.end(),
+      ServiceHolder{ hash, nullptr}
+    );
 
-    if(result == services_.end() || result->type != hash)
-    {
+    if(result == services_.end() || result->type_ != hash){
       return nullptr;
-    }else
-    {
-      return static_cast<t*>(result->service);
     }
+    return static_cast<t*>(result->service_);
   }
 
-  static ServiceManager& Manager()
-  {
-    static ServiceManager sm;
-    return sm;
-  }
 private:
-  ServiceManager();
   std::vector<ServiceHolder> services_;
+  friend class TransformComponent;
 };
+
+
 
 #endif
 

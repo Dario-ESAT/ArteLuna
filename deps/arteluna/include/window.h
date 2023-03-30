@@ -6,12 +6,12 @@
 #include "camera.h"
 #include "stdint.h"
 
+  
 class Window{
 public:
-  Window( const char* name, int16_t width = 1440, int16_t heigth = 900,
-      int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
-  );
+
   ~Window();
+  Window(Window& other);
 
   //Parameters
   int16_t width();
@@ -20,20 +20,22 @@ public:
   void set_height(int16_t heigth);
   void set_windowed(bool windowed);
   bool windowed();
-  
+
   int posx() const;
   void set_posx(int posx);
   int posy() const;
   void set_posy(int posy);
 
+  void set_service_manager(class ServiceManager& sm);
+  
   void BeginFrame();
-  
+
   void EndFrame();
-  
+
   bool ShouldClose();
 
   static double GetTime();
-  
+
   __forceinline double delta_time() const;
 
   struct GLFWwindow* window_;
@@ -43,8 +45,11 @@ public:
 
 private:
 
-  Window();
+  Window( const char* name, int16_t width = 1280, int16_t height = 720,
+      int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
+  );
 
+  Window();
   int16_t width_;
   int16_t height_;
 
@@ -52,9 +57,12 @@ private:
   int posy_;
   bool windowed_;
 
-   
+ 
   double delta_time_;
   double last_time_;
+
+  class ServiceManager* sm_;
+  
   friend class Engine;
   friend std::unique_ptr<Window> std::make_unique<Window>();
 };
@@ -62,5 +70,4 @@ private:
 double Window::delta_time() const {
   return delta_time_;
 }
-
 #endif

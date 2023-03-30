@@ -2,17 +2,16 @@
 
 #include "components/rigid_body_component.h"
 
-
-
-void RigidBodyComponent::ImguiTree(uint32_t id) {
   
-}
+  void RigidBodyComponent::ImguiTree(uint32_t id) {
+  
+  }
 
-RigidBodyComponent::RigidBodyComponent(){
+  RigidBodyComponent::RigidBodyComponent(){
 
-}
+  }
 
-RigidBodyComponent::~RigidBodyComponent() {
+  RigidBodyComponent::~RigidBodyComponent() {
 
-}
-
+  }
+  

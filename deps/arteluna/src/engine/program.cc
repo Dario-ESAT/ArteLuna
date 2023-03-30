@@ -2,16 +2,15 @@
 
 #include "engine/Program.h"
 #include "stdio.h"
-
-
-Program::Program() {
-  id_ = 0;
-}
-
 #include<string>
 #include<iostream>
 
-bool check_program(GLuint program) {
+  Program::Program() {
+    id_ = 0;
+  }
+
+
+  bool check_program(GLuint program) {
     GLint success;
     glGetProgramiv(program, GL_LINK_STATUS, &success);
     if (success == GL_TRUE) return true;
@@ -23,45 +22,45 @@ bool check_program(GLuint program) {
     std::cerr << buf << std::endl;
     return false;
 
-}
+  }
 
-
-Program::Program(unsigned int vertex_,unsigned int fragment_) {
+  Program::Program(unsigned int vertex_,unsigned int fragment_) {
     try {
-        if (vertex_ == 0 || fragment_ == 0) {
-            throw -1;
-        }
-        id_ = glCreateProgram();
+      if (vertex_ == 0 || fragment_ == 0) {
+        throw -1;
+      }
+      id_ = glCreateProgram();
 
-        glAttachShader(id_, vertex_);
-        glAttachShader(id_, fragment_);
-        glLinkProgram(id_);
-        check_program(id_);
+      glAttachShader(id_, vertex_);
+      glAttachShader(id_, fragment_);
+      glLinkProgram(id_);
+      check_program(id_);
     }
     catch(int e){
-        printf("There was an error on the program, invalid shader %d", e);
+      printf("There was an error on the program, invalid shader %d", e);
     }
-}
+  }
 
-Program::~Program() {
-	glDeleteProgram(id_);
-}
-void Program::Init(unsigned int vertex_,unsigned int fragment_) {
+  Program::~Program() {
+    glDeleteProgram(id_);
+  }
+  
+  void Program::Init(unsigned int vertex_,unsigned int fragment_) {
     try {
-        if (vertex_ == 0 || fragment_ == 0) {
-            throw - 1;
-        }
-        id_ = glCreateProgram();
+      if (vertex_ == 0 || fragment_ == 0) {
+        throw - 1;
+      }
+      id_ = glCreateProgram();
 
-        glAttachShader(id_, vertex_);
-        glAttachShader(id_, fragment_);
-        glLinkProgram(id_);
-        check_program(id_);
+      glAttachShader(id_, vertex_);
+      glAttachShader(id_, fragment_);
+      glLinkProgram(id_);
+      check_program(id_);
     }
     catch (int e) {
-        printf("There was an error on the program, invalid shader %d", e);
+      printf("There was an error on the program, invalid shader %d", e);
     }
-}
+  }
 /*
 void program::linkProgram(std::string link_log)
 {
