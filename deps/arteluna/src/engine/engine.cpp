@@ -18,7 +18,10 @@ Window* Engine::CreateNewWindow(const char* name, int16_t width, int16_t heigth,
 Engine::Engine(ServiceManager& sm) : systems_(sm){
 
   sm.Add(em_);
+  assert(sm.Get<EntityManager>());
+  
   sm.Add(systems_);
+  assert(sm.Get<Systems>());
   
   sm_ = &sm;
 }
