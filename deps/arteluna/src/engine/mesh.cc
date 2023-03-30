@@ -372,9 +372,9 @@
     glBindVertexArray(0);
   }
 
-  void Mesh::CreateDefaultQuad()
-  {
-    unsigned int quad_indices[] = { 0,1,2, 1,2,3 };
+void Mesh::CreateDefaultQuad()
+{
+    unsigned int quad_indices[] = { 0,1,2, 3,0,2 };
 
     float quad_vertices[] = {
       0.5f,  0.5f, 0.0f,  

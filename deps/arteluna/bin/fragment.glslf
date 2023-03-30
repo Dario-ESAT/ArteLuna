@@ -64,7 +64,6 @@ in vec3 normal;
 in vec2 uv;
 in vec3 FragPos;
 in mat3 TBN;
-in vec2 TexCoord;
 
 float DepthScale; // this could be a uniform
 
@@ -135,15 +134,29 @@ vec3 CalcPointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir
   return (diffuse);
 }
 
-float ShadowCalculation(vec4 fragPosLightSpace)
+float ShadowCalculation(vec4 fragPosLightSpace, al_DirLight light, vec3 normal)
 {
     // perform perspective divide
+    float bias = max(0.015 * (1.0 - dot(normal, light.direction)), 0.005); 
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     projCoords = projCoords * 0.5 + 0.5; 
+ 
     float closestDepth = texture(al_shadow_texture, projCoords.xy).r; 
 
     float currentDepth = projCoords.z;  
-    float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;  
+    float shadow;
+    vec2 texelSize = vec2(0.001,0.001);//1.0f / textureSize(al_shadow_texture, 0);
+
+    for(int x = -1; x <= 1; ++x){
+      for(int y = -1; y <= 1; ++y){
+          float pcf = texture(al_shadow_texture, projCoords.xy + vec2(x,y) * texelSize).r;
+          shadow += currentDepth - bias > closestDepth  ? 1.0 : 0.0;  
+      }
+    }
+    shadow /= 9.0;
+    if(projCoords.z > 1)
+      return shadow = 0.0;
+
 
     return shadow;
 }
@@ -151,23 +164,23 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 
  vec3 CalcDir(al_DirLight light, vec3 normal, vec3 viewDir) {
 
-  vec3 lightDir = normalize(light.direction);
-  float diff = max(dot(lightDir, normal), 0.0);
+  vec3 lightDir = normalize(-light.direction);
+  float diff = max(dot(normal, lightDir), 0.0);
   // vec3 reflectDir = reflect(-lightDir, normal);
   //float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
 
   // vec3 color  = light.color * vec3(texture(al_texture, uv));
-  vec3 diffuse  = light.color * diff * vec3(texture(al_texture, uv));
+  vec3 diffuse  = diff * vec3(texture(al_texture, uv));
   // Shadow mapping
-  float shadow = ShadowCalculation(fs_in.FragPosLightSpace);
-  vec3 light_res = (1.0 - shadow) * (diffuse) * light.color;
+  //float shadow = ShadowCalculation(fs_in.FragPosLightSpace);
+  //vec3 light_res = (1.0 - shadow) * (diffuse) * light.color;
   //vec3 specular = light.specular * spec * vec3(texture(u_specular, uv));
-  return (/* color +  diffuse + specular*/light_res);
+  return light.color * (diffuse/* color +  diffuse + specularlight_res*/);
 }
 
 
 void main() {
-  DepthScale = 5.9;
+  DepthScale = 0.6;
 
   vec3 view_dir = normalize(fs_in.TangentViewPos - fs_in.TangentFragPos);
   vec3 light_result = vec3(0.0,0.0,0.0);
@@ -176,25 +189,26 @@ void main() {
   // Parallax mapping
   vec2 texCoord_ = ParallaxMapping(fs_in.TexCoords, view_dir);
 
-  vec3 diffuse_color = texture(al_texture, texCoord_).rgb;
-   vec3 normals_mapping = texture(al_normal, texCoord_).xyz;
+  //vec3 diffuse_color = texture(al_texture, texCoord_).rgb;
+   vec3 normals_mapping = texture(al_normal, uv).rgb;
   normals_mapping.z = sqrt(1 - normals_mapping.x * normals_mapping.x + normals_mapping.y * normals_mapping.y);
-  vec3 N = normals_mapping * 2.0 - 1.0;
-  N = normalize(N);
+  vec3 N = normalize(normals_mapping * 2.0 - 1.0);
+  //N = normalize(N);
   N = TBN * N;
-  N = normalize(N);
-
+  //N = normalize(N);
+  float shadow; 
 
   for(int i = 0; i < al_n_dirLight;i++) {
-    light_result = CalcDir(al_dirLight[i],N,view_dir);
+    light_result = CalcDir(al_dirLight[i],Nnormal,view_dir);
+    shadow = ShadowCalculation(fs_in.FragPosLightSpace,al_dirLight[i], Nnormal);
   }
 
   for(int i = 0; i < al_n_pointLight;i++) {
-    light_result += CalcPointLight(al_pointLight[i],N,FragPos,view_dir);
+    //light_result += CalcPointLight(al_pointLight[i],N,FragPos,view_dir);
     //light_result *= diffuse_color;
   }
   for(int i = 0; i < al_n_spotLight;i++) {
-    light_result += CalSpotLight(al_spotLight[i],N,FragPos,view_dir);
+    //light_result += CalSpotLight(al_spotLight[i],N,FragPos,view_dir);
   }
 
    vec4 RawColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -208,10 +222,15 @@ void main() {
 	//vec4 objectColor = vec4(light_result, 1);// * texture(al_texture, uv);
 	//gl_FragColor = mix(objectColor, VertexIn.color, alpha);// * texture(al_texture, uv);
   
-
   
 
+  vec3 light_res = (1.0 - shadow) * (light_result) * al_dirLight[0].color;
 
-	gl_FragColor = texture(al_texture, TexCoord) * vec4(light_result,1.0) * RawColor;// SIN NIEBLA
+  /*
+   vec3 LD = normalize(al_dirLight[0].direction - FragPos);
+  float i = max(dot(LD, N),0.0f);
+  */
+
+	gl_FragColor = texture(al_texture, uv) * vec4(light_res,1.0);// * RawColor;// SIN NIEBLA
 	// gl_FragColor = mix( vec4(light_result, 1), VertexIn.color, alpha); // CON NIEBLA 
 } 
