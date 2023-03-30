@@ -11,38 +11,37 @@
 #include "shader.h"
 #include "program.h"
 #include "texture.h"
+  struct Data{
+    virtual void CopyData(const void * data) = 0;
+    virtual void bind(GLint location) = 0;
+    virtual ~Data() {}
+  };
+  template<typename T>
+  struct Data_Implementation : Data{
+    void CopyData(const void * data) override;
+    void bind(GLint location) override;
+    ~Data_Implementation() override = default;
+    T value_;
+  };
+  template <typename T>
+  void Data_Implementation<T>::CopyData(const void* data) {
+    memcpy(&value_, data,sizeof(T));
+  }
 
-struct Data{
-  virtual void CopyData(const void * data) = 0;
-  virtual void bind(GLint location) = 0;
-  virtual ~Data() {}
-};
-template<typename T>
-struct Data_Implementation : Data{
-  void CopyData(const void * data) override;
-  void bind(GLint location) override;
-  ~Data_Implementation() override = default;
-  T value_;
-};
-template <typename T>
-void Data_Implementation<T>::CopyData(const void* data) {
-  memcpy(&value_, data,sizeof(T));
-}
+  struct ALUniform{
+    int32_t location_;
+    friend class Material;
+  };
 
-struct ALUniform{
-  int32_t location_;
-  friend class Material;
-};
+  struct Uniform : ALUniform{
+    GLenum type_;
+    std::unique_ptr<Data> data_;
+  };
 
-struct Uniform : ALUniform{
-  GLenum type_;
-  std::unique_ptr<Data> data_;
-};
+  struct LightUniforms{
+    GLuint position;
+    GLuint color;
 
-struct LightUniforms{
-  GLuint position;
-  GLuint color;
-  
 };
 class Material {
 public:
@@ -64,12 +63,13 @@ public:
   Texture normal_texture_;
   Texture displacement_texture_;
 
-private:
+
+  private:
   
-  std::unordered_map<std::string, Uniform > user_uniforms_;
-  std::unordered_map<std::string, ALUniform > al_uniforms_;
-  std::vector<LightUniforms> lights;
-  
+    std::unordered_map<std::string, Uniform > user_uniforms_;
+    std::unordered_map<std::string, ALUniform > al_uniforms_;
+    std::vector<LightUniforms> lights;
+
   friend class RenderComponent;
   friend class Camera;
   friend class Window;

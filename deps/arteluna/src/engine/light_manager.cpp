@@ -32,78 +32,61 @@ static void InitDepthMap() {
   glBindFramebuffer(GL_FRAMEBUFFER, 0); 
 }
 
-LightManager::~LightManager() {
-  
+
+LightManager::LightManager(EntityManager& sm, const char* vert, const char* frag) {
+  sm.CreateComponentVector<LightComponent>();
+  num_directionals_ = 0;
+  num_points_ = 0;
+  num_spots_ = 0;
+  shader_.Init(ReadFile(vert).get(),ReadFile(frag).get());
+  progam_.Init(shader_.vertex(),shader_.fragment());
 }
-/*
-LightManager& LightManager::GetManager() {
-  static LightManager manager;
-  return manager;
-}
-*/
-Entity& LightManager::
-CreatelLight(LightComponent::Type type, uint32_t parent) {
+
+Entity& LightManager::CreatelLight(EntityManager& em, LightComponent::Type type, uint32_t parent) {
   if (depth_map_FBO_ == 0){
     InitDepthMap();
   }
-  
-  ServiceManager sm = ServiceManager::Manager();
-  Entity& light = sm.Get<EntityManager>()->CreateNewEntity(parent);
-  LightComponent* light_component = light.AddComponent<LightComponent>();
+  Entity& light = em.CreateNewEntity(parent);
+   auto* light_component = light.AddComponent<LightComponent>(em);
+
   light_component->type_ = type;
   lights_.push_back(light.id());
-  OrderLights();
+  OrderLights(em);
   return light;
 }
 
 void LightManager::DestroyLight(size_t index) {
-  
 }
 
-void LightManager::OrderLights() {
-  ServiceManager sm = ServiceManager::Manager();
+void LightManager::OrderLights(EntityManager& em) {
   std::vector<uint32_t> lights_aux_;
   num_directionals_ = 0;
   num_points_ = 0;
   num_spots_ = 0;
-  
+
   for (unsigned long long i = 0; i < lights_.size(); i++){
-    Entity* entity = sm.Get<EntityManager>()->GetEntity(lights_.at(i));
-    LightComponent* light = entity->get_component<LightComponent>();
+    Entity* entity = em.GetEntity(lights_.at(i));
+    LightComponent* light = entity->get_component<LightComponent>(em);
     if (light->type_ == LightComponent::Directional){
       num_directionals_++;
       lights_aux_.emplace_back(entity->id());
     }
   }
   for (unsigned long long i = 0; i < lights_.size(); i++){
-    Entity* entity = sm.Get<EntityManager>()->GetEntity(lights_.at(i));
-    LightComponent* light = entity->get_component<LightComponent>();
+    Entity* entity = em.GetEntity(lights_.at(i));
+    LightComponent* light = entity->get_component<LightComponent>(em);
     if (light->type_ == LightComponent::Pointlight){
       num_points_++;
       lights_aux_.emplace_back(entity->id());
     }
   }
   for (unsigned long long i = 0; i < lights_.size(); i++){
-    Entity* entity = sm.Get<EntityManager>()->GetEntity(lights_.at(i));
-    LightComponent* light = entity->get_component<LightComponent>();
+    Entity* entity = em.GetEntity(lights_.at(i));
+    LightComponent* light = entity->get_component<LightComponent>(em);
     if (light->type_ == LightComponent::Spotlight){
       num_spots_++;
       lights_aux_.emplace_back(entity->id());
     }
   }
   lights_ = lights_aux_;
-}
-
-LightManager::LightManager(const char* vert, const char* frag) {
-  ServiceManager sm = ServiceManager::Manager();
-  sm.Get<EntityManager>()->CreateComponentVector<LightComponent>();
-
-  num_directionals_ = 0;
-  num_points_ = 0;
-  num_spots_ = 0;
-
-  std::unique_ptr<char[]> vert_ = ReadFile(vert);
-  std::unique_ptr<char[]> frag_ = ReadFile(frag);
-  shader_.Init(vert_.get(), frag_.get());
-  progam_.Init(shader_.vertex(), shader_.fragment());
 }

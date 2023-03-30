@@ -2,22 +2,26 @@
 #define __SERVICES_H__ 1
 #include <cstdint>
 
+class ServiceManager;
+
 
 class Systems{
 public:
-  Systems();
-  ~Systems();
+  Systems() = delete;
+  Systems(ServiceManager& sm);
+  void SetServiceManager(ServiceManager& sm);
 
-  void SystemsUpdate() const;
-  
+  ~Systems() = default;
 
-private:
-  void ClearTransformComponents() const;
-  static uint64_t TravelTreeUp(class Entity* entity, uint64_t cycle);
-  
-  class ServiceManager* service_manager_;
+    void SystemsUpdate();
 
-  friend class EntityManager;
-};
+  private:
+    void ClearTransformComponents();
+    bool TravelTreeUp(class Entity* entity);
 
+    ServiceManager* service_manager_;
+
+    friend class EntityManager;
+    friend class Engine;
+  };
 #endif
