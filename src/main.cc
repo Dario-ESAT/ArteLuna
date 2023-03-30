@@ -55,12 +55,12 @@ int main() {
   // p_render->mesh_ = cubo;
   // p_render->material_ = material;
 
-  Entity& d_light = l_manager.CreatelLight(LightComponent::Type::Directional);
-  TransformComponent* t_comp = d_light.get_component<TransformComponent>();
+  Entity& d_light = l_manager.CreatelLight(em,LightComponent::Type::Directional);
+  TransformComponent* t_comp = d_light.get_component<TransformComponent>(em);
   t_comp->set_rotation(1, 0, 0);
   t_comp->set_position({ 0.f, 10.0f, 0.0f });
 
-  RenderComponent* d_render = d_light.AddComponent<RenderComponent>();
+  RenderComponent* d_render = d_light.AddComponent<RenderComponent>(em);
   d_render->mesh_ = sonic;
 
   d_render->material_ = material;
@@ -84,12 +84,12 @@ int main() {
   render_cmp->material_ = material;
 
   Entity& entity_2 = sm.Get<EntityManager>()->CreateNewEntity();
-  TransformComponent* trcmp = entity_2.get_component<TransformComponent>();
+  TransformComponent* trcmp = entity_2.get_component<TransformComponent>(em);
   trcmp->set_position({ 5.0 , 5.0f, 0.0f });
   trcmp->set_scale({ 5.f, 5.0f, 5.f });
   trcmp->set_rotation({ 0.0f, 0.f, 0.0f });
 	
-  RenderComponent* rcmp = entity_2.AddComponent<RenderComponent>();
+  RenderComponent* rcmp = entity_2.AddComponent<RenderComponent>(em);
   rcmp->mesh_ = quad;
   rcmp->material_ = material;
   shadow_material->texture_.set_id(LightManager::depth_map_text_);
@@ -106,8 +106,8 @@ int main() {
 
 
 
-  Entity& entity_2 = sm.Get<EntityManager>()->CreateNewEntity();
-  transform_cmp = entity_2.get_component<TransformComponent>(em);
+  Entity& entity_3 = em.CreateNewEntity();
+  transform_cmp = entity_3.get_component<TransformComponent>(em);
 
   transform_cmp->set_position({ 0.0 , 0.0f, 10.0f });
   transform_cmp->set_scale({ 0.1f, 0.1f, 0.1f });
@@ -115,7 +115,7 @@ int main() {
 
 
 
-  render_cmp = entity_2.AddComponent<RenderComponent>(em);
+  render_cmp = entity_3.AddComponent<RenderComponent>(em);
   render_cmp->mesh_ = sponza;
 
 
