@@ -20,6 +20,7 @@ public:
     
     void ReadDefaultGeometries(std::string src);
     void CreateDefaultQuad();
+    void CreateCubeMapBox();
     std::vector<float> vertices_;
     std::vector<float> normal_;
     std::vector<unsigned int> indices_;

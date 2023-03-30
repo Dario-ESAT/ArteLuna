@@ -53,12 +53,37 @@ Texture::~Texture() {
 
 }
 
-unsigned int Texture::create_cubemap(char* cubemap_src)
+unsigned int Texture::create_cubemap(const char* right_face, const char* left_face, const char* top_face,
+																		 const char* bottom_face, const char* back_face, const char* front_face)
 {
-	Texture t;
-	glGenTextures(1,&t.id_texture_);
+	std::shared_ptr<Texture> t = std::make_shared<Texture>();
+	glGenTextures(1,&t->id_texture_);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, t->id_texture_);
 
 
+	t->data_ = stbi_load(right_face, &t->width_, &t->height_, &t->channels_, 0);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X ,0, GL_RGB, t->width_, t->height_, 0, GL_RGB, GL_UNSIGNED_BYTE, t->data_);
+
+	t->data_ = stbi_load(left_face, &t->width_, &t->height_, &t->channels_, 0);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, t->width_, t->height_, 0, GL_RGB, GL_UNSIGNED_BYTE, t->data_);
+
+	t->data_ = stbi_load(top_face, &t->width_, &t->height_, &t->channels_, 0);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, t->width_, t->height_, 0, GL_RGB, GL_UNSIGNED_BYTE, t->data_);
+
+	t->data_ = stbi_load(bottom_face, &t->width_, &t->height_, &t->channels_, 0);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, t->width_, t->height_, 0, GL_RGB, GL_UNSIGNED_BYTE, t->data_);
+
+	t->data_ = stbi_load(back_face, &t->width_, &t->height_, &t->channels_, 0);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, t->width_, t->height_, 0, GL_RGB, GL_UNSIGNED_BYTE, t->data_);
+
+	t->data_ = stbi_load(front_face, &t->width_, &t->height_, &t->channels_, 0);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, t->width_, t->height_, 0, GL_RGB, GL_UNSIGNED_BYTE, t->data_);
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	return 0;
 }
