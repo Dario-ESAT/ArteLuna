@@ -1,12 +1,12 @@
 #version 330 core
-out vec4 gl_FragColor;
+out vec4 FragColor;
   
 in vec2 TexCoords;
 
-uniform sampler2D depthMap;
+uniform sampler2D al_shadow_texture;
 
 void main()
 {             
-    float depthValue = texture(depthMap, TexCoords).r;
-    gl_FragColor = vec4(vec3(depthValue), 1.0);
+    //float depthValue = texture(al_shadow_texture, TexCoords).r;
+    //FragColor = vec4(vec3(depthValue), 1.0);
 }  

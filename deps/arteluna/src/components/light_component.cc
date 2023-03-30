@@ -45,8 +45,8 @@
 
 glm::mat4x4 LightComponent::light_transform(TransformComponent& transform) const {
   ;
-  float near_plane = 1.0f, far_plane = 1400.5f;
-  glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);  
+  float near_plane = 1.0f, far_plane = 100;
+  glm::mat4 lightProjection = glm::ortho(-20.f, 20.0f, -20.0f, 20.0f, near_plane, far_plane);  
   glm::mat4 lightView = glm::lookAt(transform.position(),
                                   transform.position() + transform.forward(), 
                                   glm::vec3( 0.0f, 1.0f,  0.0f));
