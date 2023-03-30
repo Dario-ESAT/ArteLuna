@@ -12,6 +12,7 @@
 #include "components/transform_component.h"
 #include "engine/light_manager.h"
 #include "engine/material.h"
+#include "engine/mesh.h"
 #include "engine/service_manager.h"
 Camera::Camera() {
   movement_speed_ = 10.0f;
@@ -34,7 +35,8 @@ Camera::Camera() {
   far_ = 10000.0f;
 
   imgui_mode_ = false;
-
+  cubemap_mesh_->CreateCubeMapBox();
+ // cubemap_->texture_.create_cubemap();
   // int cubemap_width = cubemap_.width();
   // int cubemap_height = cubemap_.height();
   // int cubemap_channels = cubemap_.channels();
@@ -256,6 +258,7 @@ void Camera::MenuImgui() {
   }
 
   ImGui::End();
+  //EntityManager& e_m = EntityManager::GetManager();
 
   auto* transform_components = sm_->Get<EntityManager>()->GetComponentVector<TransformComponent>();
   auto* light_components = sm_->Get<EntityManager>()->GetComponentVector<LightComponent>();
