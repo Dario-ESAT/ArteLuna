@@ -203,25 +203,28 @@ void Window::EndFrame() {
   glm::mat4x4 light_space = light.get_component<LightComponent>()->light_transform(*light.get_component<TransformComponent>());
   lm.progam_.Use();
 
-  ///light render scnee
+  ///light render scene
   glUniformMatrix4fv(
     glGetUniformLocation(lm.progam_.program(),"lightSpaceMatrix"),
     1, GL_FALSE, glm::value_ptr(light_space));
   GLint model_uniform = glGetUniformLocation(lm.progam_.program(),"model");
-  auto* render_components =sm.Get<EntityManager>()->GetComponentVector<RenderComponent>();
-  auto* transform_components = sm.Get<EntityManager>()->GetComponentVector<TransformComponent>();
-  for (uint16_t i = 1; i < sm.Get<EntityManager>()->last_id_; i++) {
+  auto* render_components = em.GetComponentVector<RenderComponent>();
+  auto* transform_components = em.GetComponentVector<TransformComponent>();
+  auto* light_components = em.GetComponentVector<LightComponent>();
+  //glCullFace(GL_FRONT);
+  for (uint16_t i = 1; i < em.last_id_; i++) {
     
-    if (render_components->at(i).has_value()) {
+    if (render_components->at(i).has_value() && !light_components->at(i).has_value()) {
       const TransformComponent& transform_component = transform_components->at(i).value();
       const RenderComponent& render_component = render_components->at(i).value();
+      
       glBindVertexArray(render_component.mesh_->mesh_buffer());
       glUniformMatrix4fv(model_uniform, 1, false, value_ptr(transform_component.world_transform()));
       
       glDrawElements(GL_TRIANGLES, (GLsizei)render_component.mesh_->indices_.size(),GL_UNSIGNED_INT, 0);
     }
   }
-  
+  //glCullFace(GL_BACK);
   /// -----------------------
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   
