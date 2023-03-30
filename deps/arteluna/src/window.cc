@@ -171,6 +171,7 @@
 
   void Window::set_service_manager(ServiceManager& sm) {
     sm_ = &sm;
+    camera_.sm_ = &sm;
   }
 
   void Window::BeginFrame() {
