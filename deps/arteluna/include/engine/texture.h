@@ -52,10 +52,17 @@
   };
 
     Texture();
-    Texture(/*int d, */Filter mag_filter, Filter min_filter, Type type, char* texture_src, Wrap ws, Wrap wt, Wrap wr );
+    Texture(/*int d, */Filter mag_filter, Filter min_filter, Type type, 
+           char* texture_src, Wrap ws, Wrap wt, Wrap wr );
     ~Texture();
 
-    static unsigned int create_cubemap(char* cubemap_src);
+    static unsigned int create_cubemap(const char* right_face, 
+                                       const char* left_face, 
+                                       const char* top_face,
+                                       const char* bottom_face, 
+                                       const char* back_face, 
+                                       const char* front_face);
+
     void set_texture(char* texture_src/*, int d*/, Filter mag_filter, Filter min_filter, Format format, Type type);
     int width() { return width_; }
     int height() { return height_; }

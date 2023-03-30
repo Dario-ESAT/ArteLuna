@@ -45,7 +45,8 @@
 
   float mouse_displacement_x_;
   float mouse_displacement_y_;
-  // Texture cubemap_;
+  Texture cubemap_;
+
 private:
   void Update(double deltatime, class Input* input);
   
