@@ -4,23 +4,22 @@
 
 #include "component.h"
 #include "glm.hpp"
+  class Mesh;
+  class Material;
+  class program;
+  class Shader;
 
-class Mesh;
-class Material;
-class program;
-class Shader;
-
-class RenderComponent : public Component {
-public:
+  class RenderComponent : public Component {
+  public:
     void ImguiTree(uint32_t id) override;
     std::shared_ptr<Mesh> mesh_;
     std::shared_ptr<Material> material_;
-    void RenderObject() const;
+    void RenderObject(class EntityManager& sm,class LightManager& lm) const;
     ~RenderComponent() override;
     RenderComponent();
     RenderComponent(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
-protected:
-};
+  protected:
+  };
 
 
 #endif

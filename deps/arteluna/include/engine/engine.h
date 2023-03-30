@@ -3,25 +3,30 @@
 #include <memory>
 
 #include "entity_manager.h"
-#include "systems/systems.h"
-class Window;
-class Engine {
-    
-public:
-  static Engine& GetEngine() {
-    static Engine game_instance;
-    return  game_instance;
-  }
 
-  Window* CreateNewWindow(const char* name, int16_t width = 1440, int16_t heigth = 900,
-      int posx = 110, int posy = 110, bool windowed = true, int monitor = 0);
+#include "light_manager.h"
+#include "systems/systems.h"
+
+class Window;
+class ServiceManager;
+class Engine {
   
-protected:
-    Engine();
-    ~Engine();
-  
+public:
+  Engine() = delete;
+  Engine(ServiceManager& sm);
+  void SetServiceManager(ServiceManager& sm);
+  ~Engine();
+  Window* CreateNewWindow(const char* name,
+    int16_t width = 1280, int16_t heigth = 720,
+    int posx = 110, int posy = 110,
+    bool windowed = true, int monitor = 0);
+
+  ServiceManager* sm_;
   EntityManager em_;
   Systems systems_;
+protected:
+  
+
   std::unique_ptr<Window> window_;
 };
 #endif

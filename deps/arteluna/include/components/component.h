@@ -4,9 +4,8 @@
 #include "stdint.h"
 
 
-
-class Component {
-public:
+  class Component {
+  public:
     void enable();
     void disable();
     bool isEnabled() const;
@@ -14,12 +13,12 @@ public:
     virtual void ImguiTree(uint32_t id) = 0;
     virtual ~Component();
     Component();
-protected:
+  protected:
 
     bool enabled_;
 
-  friend class Entity;
-};
+    friend class Entity;
+  };
 
 
 #endif

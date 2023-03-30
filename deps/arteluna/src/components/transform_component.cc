@@ -3,10 +3,10 @@
 #include <gtc/type_ptr.hpp>
 #include "gtx/matrix_decompose.hpp"
 
-
 #include "imgui.h"
 #include "engine/entity_manager.h"
 #include "engine/service_manager.h"
+
 
 void TransformComponent::ImguiTree(uint32_t id) {
   char label[20] = {'\n'};
@@ -20,7 +20,7 @@ void TransformComponent::ImguiTree(uint32_t id) {
   if (pos_aux != position_) {
     set_position(pos_aux);
   }
-  
+
   glm::vec3 rot_aux = rotation_;
   ImGui::Text("Rotation");
   sprintf_s(label, "X##R%d", id);
@@ -44,7 +44,7 @@ void TransformComponent::ImguiTree(uint32_t id) {
   if (scale_aux != scale_) {
     set_scale(scale_aux);
   }
-  
+
   const float* transform = glm::value_ptr(local_transform());
   
   ImGui::Text("Local Transform: \n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f\n%.3f  %.3f  %.3f  %.3f",
@@ -67,7 +67,7 @@ void TransformComponent::ImguiTree(uint32_t id) {
   ImGui::Text("Right: %.3f  %.3f  %.3f",right_.x,right_.y,right_.z);
   sprintf_s(label, "Huerfanear##P%d", id);
   if (ImGui::Button(label)) {
-    DetachFromParent();
+    // DetachFromParent(sm);
   }
 }
 
@@ -100,44 +100,45 @@ TransformComponent::TransformComponent() {
   dirty_ = true;
 }
 
-Entity& TransformComponent::parent() const {
-  return *ServiceManager::Manager().Get<EntityManager>()->GetEntity(parent_);
+Entity& TransformComponent::parent(EntityManager& em) const {
+  return *em.GetEntity(parent_);
 }
 
-TransformComponent& TransformComponent::parent_transform_component() const {
-  return ServiceManager::Manager().Get<EntityManager>()
-  ->GetComponentVector<TransformComponent>()->at(parent_).value();
+TransformComponent& TransformComponent::parent_transform_component(class EntityManager& em) const {
+  return em.GetComponentVector<TransformComponent>()->at(parent_).value();
 }
 
-void TransformComponent::AttachToParent(uint32_t p) {
-  if (p >= ServiceManager::Manager().Get<EntityManager>()->last_id_) p = 0;
-  
+void TransformComponent::AttachToParent(EntityManager& em, uint32_t p) {
+  if (p >= em.last_id_) p = 0;
+
   parent_ = p;
 }
 
 
 void TransformComponent::DetachFromParent(
+    ServiceManager& sm,
     bool keep_worl_position,
     bool keep_world_rotation,
     bool keep_world_scale) {
-  
+
   if (keep_worl_position || keep_world_rotation || keep_world_scale){
-    
+  
     if (dirty_){
+      
     }
-    
+  
     glm::vec3 scale;
     glm::quat q_rotation;
     glm::vec3 translation;
     glm::vec3 skew;
     glm::vec4 perspective;
-    
+  
     glm::decompose(world_transform_, scale, q_rotation,
       translation, skew, perspective
     );
-    
+  
     glm::vec3 e_rotation = glm::eulerAngles(q_rotation);
-    
+  
     if (keep_worl_position){
       set_position(translation);
     }

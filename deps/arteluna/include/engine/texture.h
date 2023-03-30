@@ -5,52 +5,51 @@
 #include <vector>
 
 #include "glad/gl.h"
-
-class Texture {
+  class Texture {
   
-public:
+  public:
     enum Filter {
-        Linear = GL_LINEAR,
-        Nearest = GL_NEAREST,
-        Nearest_Mipmap_Nearest = GL_NEAREST_MIPMAP_NEAREST,
-        Linear_Mipmap_Nearest = GL_LINEAR_MIPMAP_NEAREST,
-        Nearest_mipmap_linear = GL_NEAREST_MIPMAP_LINEAR,
-        Linear_mipmap_linear = GL_LINEAR_MIPMAP_LINEAR
-    };
+      Linear = GL_LINEAR,
+      Nearest = GL_NEAREST,
+      Nearest_Mipmap_Nearest = GL_NEAREST_MIPMAP_NEAREST,
+      Linear_Mipmap_Nearest = GL_LINEAR_MIPMAP_NEAREST,
+      Nearest_mipmap_linear = GL_NEAREST_MIPMAP_LINEAR,
+      Linear_mipmap_linear = GL_LINEAR_MIPMAP_LINEAR
+  };
 
     enum DataType {
-        BYTE = GL_BYTE,
-        UNSIGNED_BYTE = GL_UNSIGNED_BYTE,
-        FLOAT = GL_FLOAT,
-        INT = GL_INT,
-        UNSIGNED_INT = GL_UNSIGNED_INT,
-        SHORT = GL_SHORT,
-        UNSIGNED_SHORT = GL_UNSIGNED_SHORT,
-    };
+      BYTE = GL_BYTE,
+      UNSIGNED_BYTE = GL_UNSIGNED_BYTE,
+      FLOAT = GL_FLOAT,
+      INT = GL_INT,
+      UNSIGNED_INT = GL_UNSIGNED_INT,
+      SHORT = GL_SHORT,
+      UNSIGNED_SHORT = GL_UNSIGNED_SHORT,
+  };
 
     enum Wrap {
-        Repeat = GL_REPEAT,
-        Mirrored_repeat = GL_MIRRORED_REPEAT,
-        Clamp_to_edge = GL_CLAMP_TO_EDGE,
-    };
+      Repeat = GL_REPEAT,
+      Mirrored_repeat = GL_MIRRORED_REPEAT,
+      Clamp_to_edge = GL_CLAMP_TO_EDGE,
+  };
 
     enum Type {
-        T_Invalid = 0,
-        T_1D = GL_TEXTURE_1D,
-        T_2D = GL_TEXTURE_2D,
-        T_3D = GL_TEXTURE_3D,
-        T_Cubemap,
-    };
+      T_Invalid = 0,
+      T_1D = GL_TEXTURE_1D,
+      T_2D = GL_TEXTURE_2D,
+      T_3D = GL_TEXTURE_3D,
+      T_Cubemap,
+  };
 
     enum Format {
-        None = 0,
-        R = GL_R,
-        RG = GL_RG,
-        RGB = GL_RGB,
-        RGBA = GL_RGBA,
-        Depth = GL_DEPTH_COMPONENT24,
-        Depth32 = GL_DEPTH_COMPONENT32F,
-    };
+      None = 0,
+      R = GL_R,
+      RG = GL_RG,
+      RGB = GL_RGB,
+      RGBA = GL_RGBA,
+      Depth = GL_DEPTH_COMPONENT24,
+      Depth32 = GL_DEPTH_COMPONENT32F,
+  };
 
     Texture();
     Texture(/*int d, */Filter mag_filter, Filter min_filter, Type type, 
@@ -89,12 +88,12 @@ public:
     void set_wrap_t(Wrap w) { wrap_t_ = w; }
     void set_wrap_r(Wrap w) { wrap_r_ = w; }
     void set_id(unsigned int id) {
-        id_texture_ = id;
+      id_texture_ = id;
     }
     void set_width(int w) { width_ = w; }
     void set_height(int h) { height_ = h; }
     void set_channels(int c) { channels_ = c; }
-private:
+  private:
     int width_;
     int height_;
     int depth_;
@@ -109,6 +108,6 @@ private:
     Type type_;
 
     unsigned int id_texture_;
-};
+  };
 
 #endif

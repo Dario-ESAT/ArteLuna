@@ -4,14 +4,13 @@
 #include <string>
 #include <vec3.hpp>
 #include <vector>
-
-class Mesh {
-public:
+  class Mesh {
+  public:
     enum Geometries {
-        Cube,
-        Sphere,
-        Quad
-    };
+      Cube,
+      Sphere,
+      Quad
+  };
 
     Mesh();
     Mesh(Geometries g);
@@ -33,12 +32,12 @@ public:
     unsigned int u_v_array() { return u_v_array_; }
     unsigned int normals_array() { return normals_array_; }
     
-private:
+  private:
     unsigned int mesh_buffer_;
     unsigned int vertex_array_;
     unsigned int tangent_array_;
     unsigned int u_v_array_;
     unsigned int normals_array_;
     unsigned int indices_array_;
-};
+  };
 #endif
