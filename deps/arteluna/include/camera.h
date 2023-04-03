@@ -1,10 +1,13 @@
 #ifndef __CAMERA_H__
 #define __CAMERA_H__ 1
 
+#include <memory>
+
 #include "glm.hpp"
+#include "engine/material.h"
 
 #include "engine/texture.h"
-
+  class Mesh;
   class Input;
   class ServiceManager;
   class Camera {
@@ -45,8 +48,10 @@
 
   float mouse_displacement_x_;
   float mouse_displacement_y_;
-  Texture cubemap_;
-
+    
+    std::shared_ptr<Material> cubemap_;
+  std::shared_ptr<Mesh> cubemap_mesh_;
+    
 private:
   void Update(double deltatime, class Input* input);
   
