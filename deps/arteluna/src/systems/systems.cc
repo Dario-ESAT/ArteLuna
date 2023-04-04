@@ -8,12 +8,10 @@ Systems::Systems(ServiceManager& sm) {
   service_manager_ = &sm;
 }
 
-Systems::~Systems() = default;
-
 void Systems::SetServiceManager(ServiceManager& sm) {
 }
 
-void Systems::SystemsUpdate() const {
+void Systems::SystemsUpdate() {
   ClearTransformComponents();
 }
 
@@ -25,23 +23,23 @@ bool Systems::TravelTreeUp(Entity* entity){
 
 
   if (entity->id() > 0){
-    TravelTreeUp(parent,cycle);
+    TravelTreeUp(parent);
       transform_component->update_local_transform();
 
       transform_component->update_world_transform(parent->get_component<TransformComponent>(em)->world_transform_);
       return true;
-    }
-  } else{
-      transform_component->update_local_transform();
-      transform_component->update_world_transform(glm::mat4x4(1.0f));
   }
+  
+  transform_component->update_local_transform();
+  transform_component->update_world_transform(glm::mat4x4(1.0f));
+  
   return false;
 }
 
 void Systems::ClearTransformComponents() {
   auto* em = service_manager_->Get<EntityManager>();
   for (size_t i = 0; i < em->entities_.size(); i++){
-    TravelTreeUp(&em->entities_[i], i);
+    TravelTreeUp(&em->entities_[i]);
   }
 
   for (size_t i = 0; i < em->entities_.size(); i++){

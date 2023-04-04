@@ -1,6 +1,8 @@
 #ifndef __SHADER_H__
 #define __SHADER_H__ 1
-  class Shader {
+#include <cstdint>
+
+class Shader {
   public:
     Shader();
     Shader(const char* vertex, const char* fragment);
@@ -8,14 +10,14 @@
     ~Shader();
     void Init(const char* vertex, const char* fragment);
     void Init(const char* vertex, const char* fragment, const char* geometry);
-    unsigned int vertex() const;
-    unsigned int fragment() const;
-    unsigned int geometry() const;
+    uint32_t vertex() const;
+    uint32_t fragment() const;
+    uint32_t geometry() const;
   private:
 
-    unsigned int vertex_;
-    unsigned int fragment_;
-    unsigned int geometry_;
+    uint32_t vertex_;
+    uint32_t fragment_;
+    uint32_t geometry_;
   };
 
 #endif

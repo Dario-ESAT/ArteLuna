@@ -8,17 +8,20 @@ Window* Engine::CreateNewWindow(const char* name, int16_t width, int16_t heigth,
 
 
   window_ = std::make_unique<Window>(
-    *(new Window(name,width,heigth,posx,posy,windowed,monitor))
+    name,width,heigth,posx,posy,windowed,monitor
   );
   window_->set_service_manager(*sm_);
   return window_.get();
 }
 
 
-Engine::Engine(ServiceManager& sm) : systems_(sm), lm_(sm){
+Engine::Engine(ServiceManager& sm) : systems_(sm){
 
   sm.Add(em_);
+  assert(sm.Get<EntityManager>());
+  
   sm.Add(systems_);
+  assert(sm.Get<Systems>());
   
   sm_ = &sm;
 }

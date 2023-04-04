@@ -8,17 +8,15 @@
 
   class LightManager {
   public:
+    LightManager() = delete;
+    ~LightManager() = default;
 
-  LightManager() = delete;
-
-  LightManager(ServiceManager& sm, const char* vert, const char* frag);
-  ~LightManager();
-  //static LightManager& GetManager();
+    LightManager(EntityManager& sm, const char* vert, const char* frag);
   
-  Entity& CreatelLight(
-    EntityManager& em,
-    LightComponent::Type type = LightComponent::Directional,
-    uint32_t parent = 0);
+    Entity& CreatelLight(
+      EntityManager& em,
+      LightComponent::Type type = LightComponent::Directional,
+      uint32_t parent = 0);
   
   void DestroyLight(size_t index);
 
@@ -40,11 +38,5 @@ private:
   friend class Window;
   friend class RenderComponent;
 };
-
-
-    friend class LightComponent;
-    friend class RenderComponent;
-  };
-
 
 #endif

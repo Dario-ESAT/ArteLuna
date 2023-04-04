@@ -12,7 +12,7 @@ public:
 
   ~Window();
   Window(Window& other);
-
+  
   //Parameters
   int16_t width();
   void set_width(int16_t width);
@@ -43,11 +43,11 @@ public:
   
   Camera camera_;
 
-private:
-
   Window( const char* name, int16_t width = 1280, int16_t height = 720,
       int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
   );
+private:
+
 
   Window();
   int16_t width_;

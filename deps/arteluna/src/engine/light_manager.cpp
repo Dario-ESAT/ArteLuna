@@ -33,14 +33,16 @@ static void InitDepthMap() {
 }
 
 
-LightManager::LightManager(ServiceManager& sm) {
-  sm.Get<EntityManager>()->CreateComponentVector<LightComponent>();
+LightManager::LightManager(EntityManager& sm, const char* vert, const char* frag) {
+  sm.CreateComponentVector<LightComponent>();
   num_directionals_ = 0;
   num_points_ = 0;
   num_spots_ = 0;
+  shader_.Init(ReadFile(vert).get(),ReadFile(frag).get());
+  progam_.Init(shader_.vertex(),shader_.fragment());
 }
-Entity& LightManager::
-CreatelLight(EntityManager& em, LightComponent::Type type, uint32_t parent) {
+
+Entity& LightManager::CreatelLight(EntityManager& em, LightComponent::Type type, uint32_t parent) {
   if (depth_map_FBO_ == 0){
     InitDepthMap();
   }

@@ -6,7 +6,9 @@
   }
 
 
-ServiceManager::~ServiceManager() = default;
+ServiceManager::~ServiceManager() {
+ int hola = 9;   
+}
 
 ServiceManager::ServiceManager() = default;
 

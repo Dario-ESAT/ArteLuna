@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include "engine/Shader.h"
 #include "glad/gl.h"
 #include<string>
@@ -26,7 +28,7 @@
     GLint success;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
     if (success == GL_TRUE) return true;
-    GLsizei length = -1;
+    GLsizei length = 100;
     glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
     std::string buf;
     buf.resize(length);
@@ -63,11 +65,14 @@
   void Shader::Init(const char* vertex, const char* fragment)
   {
     vertex_ = glCreateShader(GL_VERTEX_SHADER);
+    glGetError();
+    check_shader(vertex_);
+    assert(vertex_ && "Error creando vertex");
     glShaderSource(vertex_, 1, &vertex, nullptr);
     glCompileShader(vertex_);
-    check_shader(vertex_);
 
     fragment_ = glCreateShader(GL_FRAGMENT_SHADER);
+    assert(fragment_ && "Error creando fragment");
     glShaderSource(fragment_, 1, &fragment, nullptr);
     glCompileShader(fragment_);
     check_shader(fragment_);
@@ -90,15 +95,15 @@
     glCompileShader(geometry_);
   }
 
-  unsigned int Shader::vertex() const {
+  uint32_t Shader::vertex() const {
     return vertex_;
   }
 
-  unsigned int Shader::fragment() const {
+  uint32_t Shader::fragment() const {
     return fragment_;
   }
 
-  unsigned int Shader::geometry() const {
+  uint32_t Shader::geometry() const {
     return geometry_;
   }
 

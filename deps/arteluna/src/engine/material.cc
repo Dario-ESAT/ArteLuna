@@ -86,14 +86,13 @@
   }
 
 
+Material::Material() {}
+/*
+Material::Material(const char* vert, const char* frag) {
 
-  Material::Material() {}
-
-  Material::Material(const char* vert, const char* frag) {
-
-    InitMaterial(user_uniforms_,al_uniforms_,vert,frag,shader_,program_);
-  }
-
+  InitMaterial(user_uniforms_,al_uniforms_,vert,frag,shader_,program_);
+}
+*/
 
 Material::Material(const char* vert, const char* frag, const char* texture_src,const char* normal_texture_src, const char* displacement_texture_src,
   Texture::Type t_type, Texture::Filter mag_filter,
