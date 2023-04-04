@@ -9,7 +9,7 @@
 #define _SF(A)   A,A+1,A+2,A+2,A+3,A+0
 #define _CF(A)   A,A+2,A+1,A+2,A+0,A+3   // Ad-hoc clockwise order change
   Mesh::Mesh() {
-  
+ /*
     std::string inputfile = "../../data/models/ELCUBO.obj";  // El path en el que tenemos el .obj. Esto se eliminara de aqui y se pondr� como un parametro al constructor.
     tinyobj::ObjReaderConfig reader_config;
     reader_config.mtl_search_path = "./"; // Path to material files
@@ -144,6 +144,7 @@
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices_.size(), indices_.data(), GL_STATIC_DRAW);
 
     glBindVertexArray(0);
+    */
   }
 
   Mesh::Mesh(Geometries g)
@@ -158,6 +159,9 @@
       break;
     case Mesh::Quad:
       CreateDefaultQuad();
+      break;
+    case Cubemap:
+      CreateCubeMapBox();
       break;
     default:
       break;
@@ -485,7 +489,7 @@ void Mesh::CreateCubeMapBox()
   glBindBuffer(GL_ARRAY_BUFFER, vertex_array_);
   glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float) * 3, (void*)0);
 
 
 }

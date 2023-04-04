@@ -35,8 +35,8 @@ Camera::Camera() {
   far_ = 10000.0f;
 
   imgui_mode_ = false;
-  cubemap_mesh_->CreateCubeMapBox();
- // cubemap_->texture_.create_cubemap();
+
+
   // int cubemap_width = cubemap_.width();
   // int cubemap_height = cubemap_.height();
   // int cubemap_channels = cubemap_.channels();
@@ -162,6 +162,40 @@ void Camera::UpdateRotation(double deltatime, glm::vec<2,float> cursor_pos) {
   }
 }
 
+void Camera::InitCubeMap()
+{
+  cubemap_mesh_ = std::make_shared<Mesh>(Mesh::Geometries::Cubemap);
+  cubemap_ = std::make_shared<Material>();
+ 
+  cubemap_->InitCubemapMaterial(
+    "../../deps/arteluna/bin/skybox_v.glslv",
+    "../../deps/arteluna/bin/skybox_f.glslf");
+
+  cubemap_->texture_ = Texture::create_cubemap("../../deps/arteluna/data/textures/cubemap/right.jpg", "../../deps/arteluna/data/textures/cubemap/left.jpg",
+                                               "../../deps/arteluna/data/textures/cubemap/top.jpg", "../../deps/arteluna/data/textures/cubemap/bottom.jpg",
+                                               "../../deps/arteluna/data/textures/cubemap/back.jpg", "../../deps/arteluna/data/textures/cubemap/front.jpg");
+  cubemap_->program_.Use();
+  int uniform = glGetUniformLocation(cubemap_->program_.program(), "skybox");
+  glUniform1i(uniform, cubemap_->texture_.get_id());
+}
+
+void Camera::RenderCubemap()
+{
+  //glDisable(GL_DEPTH_TEST);
+  glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+  cubemap_->program_.Use();
+  int uniform = glGetUniformLocation(cubemap_->program_.program(), "al_vp_matrix");
+  glUniformMatrix4fv(uniform, 1, false, value_ptr(vp_matrix));
+  // skybox cube
+  glBindVertexArray(cubemap_mesh_->mesh_buffer());
+  glActiveTexture(GL_TEXTURE0); //+ cubemap_->texture_.get_id());
+  glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap_->texture_.get_id());
+  glDrawArrays(GL_TRIANGLES, 0, 36);
+  glBindVertexArray(0);
+  //glEnable(GL_DEPTH_TEST);
+  glDepthFunc(GL_LESS); // set depth function back to default
+}
+
 void Camera::Update(double deltatime, Input* input) {
   glm::vec<2,double> mouse_pos = input->cursor_pos();
   mouse_displacement_x_ = (float)(mouse_pos.x - mouse_pos_buffer_.x);
@@ -183,7 +217,7 @@ void Camera::TransformOrtho(Input* input)
 
 void Camera::RenderScene(float aspect) {
   //EntityManager& entity_manager = EntityManager::GetManager();
-  glm::mat4x4 vp_matrix;
+  //glm::mat4x4 vp_matrix;
   LightManager& lm = *sm_->Get<LightManager>();
   if (mode_ == Ortho) {
     auto ortho_perspective = glm::ortho(-ortho_x(), ortho_x(), -ortho_y(), ortho_y(), near(), far());

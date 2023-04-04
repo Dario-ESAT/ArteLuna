@@ -61,7 +61,7 @@
     } catch (int e) {
       printf("There was an error on the window, the window couldn't be created %d",e);
     }
-
+    
 
     std::vector<int> keys;
     for(int i = 0; i < 348; i++){
@@ -84,7 +84,7 @@
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glEnable(GL_DEPTH_TEST);
-
+    camera_.InitCubeMap();
 
     // EntityManager& manager_ref = EntityManager::GetManager();
     // Systems
@@ -236,6 +236,7 @@ void Window::EndFrame() {
   // Render Scene --------
   sm_->Get<Systems>()->SystemsUpdate();
   camera_.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
+  camera_.RenderCubemap();
 
   // Pass the texture and lightSpaceMatrix to the normal shader
   //glActiveTexture(LightManager::depth_map_text_);

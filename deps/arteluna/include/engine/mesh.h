@@ -9,7 +9,8 @@
     enum Geometries {
       Cube,
       Sphere,
-      Quad
+      Quad,
+      Cubemap
   };
 
     Mesh();
@@ -18,8 +19,6 @@
     ~Mesh();
     
     void ReadDefaultGeometries(std::string src);
-    void CreateDefaultQuad();
-    void CreateCubeMapBox();
     std::vector<float> vertices_;
     std::vector<float> normal_;
     std::vector<unsigned int> indices_;
@@ -33,6 +32,8 @@
     unsigned int normals_array() { return normals_array_; }
     
   private:
+    void CreateDefaultQuad();
+    void CreateCubeMapBox();
     unsigned int mesh_buffer_;
     unsigned int vertex_array_;
     unsigned int tangent_array_;

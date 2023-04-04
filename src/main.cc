@@ -105,7 +105,7 @@ int main() {
   cube_render_cmp->material_ = material;
 
 
-
+  /*
   Entity& entity_3 = em.CreateNewEntity();
   transform_cmp = entity_3.get_component<TransformComponent>(em);
 
@@ -138,13 +138,10 @@ int main() {
   while (!window.ShouldClose()) {
  
     window.BeginFrame();
-    glActiveTexture(GL_TEXTURE0 + material_prueba->texture_.get_id());
-    glBindTexture(GL_TEXTURE_2D, material_prueba->texture_.get_id());
-    
     // --------ImGui--------
 
     // ----------------------
-    
+   
     window.EndFrame();
   }
 

@@ -66,7 +66,7 @@
     GLint size; // size of the variable
     GLenum type; // type of the variable (float, vec3 or mat4, etc)
 
-    const GLsizei bufSize = 40; // maximum name length
+    const GLsizei bufSize = 50; // maximum name length
     GLchar name[bufSize]; // variable name in GLSL
     GLsizei length;
 
@@ -86,7 +86,9 @@
   }
 
 
-Material::Material() {}
+Material::Material() {
+
+}
 /*
 Material::Material(const char* vert, const char* frag) {
 
@@ -222,6 +224,11 @@ Material::Material(const char* vert, const char* frag, const char* texture_src,c
 }
 
 Material::~Material() {}
+
+void Material::InitCubemapMaterial(char* vert, char* frag)
+{
+  InitMaterial(user_uniforms_, al_uniforms_, vert, frag, shader_, program_);
+}
 
 
 #pragma region FLOAT
