@@ -51,10 +51,9 @@
     
   std::shared_ptr<Material> cubemap_;
   std::shared_ptr<Mesh> cubemap_mesh_;
-  void RenderCubemap();
-private:
+  void RenderCubemap(glm::mat4x4 &vp_matrix, glm::mat4x4& perspective);
   void InitCubeMap();
-  glm::mat4x4 vp_matrix;
+private:
   void Update(double deltatime, class Input* input);
   
   void UpdateFromInput(double deltatime, class Input* input);

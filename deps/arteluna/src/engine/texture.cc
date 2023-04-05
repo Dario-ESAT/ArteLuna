@@ -55,7 +55,7 @@
 Texture Texture::create_cubemap(const char* right_face, const char* left_face, const char* top_face,
 																		 const char* bottom_face, const char* back_face, const char* front_face)
 {
-   Texture t;
+  Texture t;
 	glGenTextures(1,&t.id_texture_);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, t.id_texture_);
 

@@ -7,5 +7,5 @@ uniform samplerCube skybox;
 
 
 void main() {
-  gl_FragColor = texture(skybox, TexCoords);
+  FragColor = texture(skybox, TexCoords);
 } 

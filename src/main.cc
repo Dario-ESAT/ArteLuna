@@ -23,7 +23,7 @@ int main() {
   "../../deps/arteluna/bin/shadow_render.glslf");
   sm.Add(l_manager);
   assert(sm.Get<LightManager>());
-
+  window.camera_.InitCubeMap();
   std::shared_ptr<Material> material = std::make_shared<Material>(
     "../../deps/arteluna/bin/vertex.glslv",
     "../../deps/arteluna/bin/fragment.glslf"

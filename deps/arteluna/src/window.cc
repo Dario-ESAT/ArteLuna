@@ -236,7 +236,6 @@ void Window::EndFrame() {
   // Render Scene --------
   sm_->Get<Systems>()->SystemsUpdate();
   camera_.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
-  camera_.RenderCubemap();
 
   // Pass the texture and lightSpaceMatrix to the normal shader
   //glActiveTexture(LightManager::depth_map_text_);
