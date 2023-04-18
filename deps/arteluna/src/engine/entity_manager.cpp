@@ -6,6 +6,7 @@
 #include "components/render_component.h"
 #include "engine/material.h"
 #include "engine/mesh.h"
+namespace al{
   EntityManager::~EntityManager() {
     
   }
@@ -64,3 +65,4 @@
     transform->at(0).emplace(TransformComponent());
   
   }
+}

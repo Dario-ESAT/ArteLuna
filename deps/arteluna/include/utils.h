@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
+namespace al{
   static std::unique_ptr<char[]> ReadFile(const char* filename)
   {
     FILE* in_file = 0;
@@ -19,5 +20,5 @@
     }
     return file_contents;
   }
-
+}
 #endif

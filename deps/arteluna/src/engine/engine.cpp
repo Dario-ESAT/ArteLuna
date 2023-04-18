@@ -2,38 +2,39 @@
 
 #include "window.h"
 #include "engine/service_manager.h"
-
-Window* Engine::CreateNewWindow(const char* name, int16_t width, int16_t heigth,
-                                int posx, int posy, bool windowed, int monitor) {
-
-
-  window_ = std::make_unique<Window>(
-    name,width,heigth,posx,posy,windowed,monitor
-  );
-  window_->set_service_manager(*sm_);
-  return window_.get();
-}
+namespace al{
+  Window* Engine::CreateNewWindow(const char* name, int16_t width, int16_t heigth,
+                                  int posx, int posy, bool windowed, int monitor) {
 
 
-Engine::Engine(ServiceManager& sm) : systems_(sm){
+    window_ = std::make_unique<Window>(
+      name,width,heigth,posx,posy,windowed,monitor
+    );
+    window_->set_service_manager(*sm_);
+    return window_.get();
+  }
 
-  sm.Add(em_);
-  assert(sm.Get<EntityManager>());
+
+  Engine::Engine(ServiceManager& sm) : systems_(sm){
+
+    sm.Add(em_);
+    assert(sm.Get<EntityManager>());
   
-  sm.Add(systems_);
-  assert(sm.Get<Systems>());
+    sm.Add(systems_);
+    assert(sm.Get<Systems>());
   
-  sm_ = &sm;
-}
+    sm_ = &sm;
+  }
 
-void Engine::SetServiceManager(ServiceManager& sm){
+  void Engine::SetServiceManager(ServiceManager& sm){
 
-  sm.Add(em_);
-  sm.Add(systems_);
+    sm.Add(em_);
+    sm.Add(systems_);
   
-  sm_ = &sm;
-}
+    sm_ = &sm;
+  }
 
-Engine::~Engine() {
+  Engine::~Engine() {
   
+  }
 }

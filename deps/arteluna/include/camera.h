@@ -7,6 +7,7 @@
 #include "engine/material.h"
 
 #include "engine/texture.h"
+namespace al{
   class Mesh;
   class Input;
   class ServiceManager;
@@ -46,21 +47,21 @@
     void Mode(Modes m);
 
 
-  float mouse_displacement_x_;
-  float mouse_displacement_y_;
+    float mouse_displacement_x_;
+    float mouse_displacement_y_;
     
-  std::shared_ptr<Material> cubemap_;
-  std::shared_ptr<Mesh> cubemap_mesh_;
-  void RenderCubemap(glm::mat4x4 &vp_matrix, glm::mat4x4& perspective);
-  void InitCubeMap();
-private:
-  void Update(double deltatime, class Input* input);
+    std::shared_ptr<Material> cubemap_;
+    std::shared_ptr<Mesh> cubemap_mesh_;
+    void RenderCubemap(glm::mat4x4 &vp_matrix, glm::mat4x4& perspective);
+    void InitCubeMap();
+  private:
+    void Update(double deltatime, class Input* input);
   
-  void UpdateFromInput(double deltatime, class Input* input);
-  void UpdateRotation(double deltatime, glm::vec2 cursor_pos);
-  void RenderScene(float aspect);
-  void UpdateTransform();
-  void TransformOrtho(class Input* input);
+    void UpdateFromInput(double deltatime, class Input* input);
+    void UpdateRotation(double deltatime, glm::vec2 cursor_pos);
+    void RenderScene(float aspect);
+    void UpdateTransform();
+    void TransformOrtho(class Input* input);
 
     ServiceManager* sm_;
     
@@ -107,43 +108,36 @@ private:
     return up_;
   }
 
-  inline float Camera::ortho_x()
-  {
+  inline float Camera::ortho_x() {
     return ortho_x_;
   }
 
-  inline float Camera::ortho_y()
-  {
+  inline float Camera::ortho_y() {
     return ortho_y_;
   }
 
-  inline float Camera::near()
-  {
+  inline float Camera::near() {
     return near_;
   }
 
-  inline float Camera::far()
-  {
+  inline float Camera::far() {
     return far_;
   }
 
-  inline void Camera::set_ortho_x(float x)
-  {
+  inline void Camera::set_ortho_x(float x) {
     ortho_x_ = x;
   }
 
-  inline void Camera::set_ortho_y(float m)
-  {
+  inline void Camera::set_ortho_y(float m) {
     ortho_y_ = m;
   }
 
-  inline void Camera::set_near(float m)
-  {
+  inline void Camera::set_near(float m) {
     near_ = m;
   }
 
-  inline void Camera::set_far(float m)
-  {
+  inline void Camera::set_far(float m) {
     far_ = m;
   }
+}
 #endif

@@ -4,7 +4,7 @@
 #include "stdio.h"
 #include<string>
 #include<iostream>
-
+namespace al{
   Program::Program() {
     id_ = 0;
   }
@@ -61,26 +61,27 @@
       printf("There was an error on the program, invalid shader %d", e);
     }
   }
-/*
-void program::linkProgram(std::string link_log)
-{
-	int linked = 0;
-	glLinkProgram(id_);
-	
-    glGetProgramiv(id_, GL_LINK_STATUS, &linked);
-
-    //if (!link_log.empty()) {
-       
-    //}
-    if (!linked) {
-        glGetProgramInfoLog(id_, link_log.size(), NULL, link_log.data());
-    }
-    else {
-        link_log = "Linked";
-    }
+  /*
+  void program::linkProgram(std::string link_log)
+  {
+    int linked = 0;
+    glLinkProgram(id_);
+    
+      glGetProgramiv(id_, GL_LINK_STATUS, &linked);
+  
+      //if (!link_log.empty()) {
+         
+      //}
+      if (!linked) {
+          glGetProgramInfoLog(id_, link_log.size(), NULL, link_log.data());
+      }
+      else {
+          link_log = "Linked";
+      }
+  }
+  
+  void program::attachShader()
+  {
+  }
+  */
 }
-
-void program::attachShader()
-{
-}
-*/

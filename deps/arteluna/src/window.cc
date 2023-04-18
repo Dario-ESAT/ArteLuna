@@ -18,6 +18,7 @@
 #include "engine/mesh.h"
 #include "engine/service_manager.h"
 #include "systems/systems.h"
+namespace al{
   Window::Window() {
     window_ = nullptr;
     width_ = 0;
@@ -179,73 +180,74 @@
     delta_time_ = current_time_ - last_time_;
     last_time_ = current_time_;
   
-  glfwPollEvents();
-  camera_.Update(delta_time_, input_.get());
-  ImGui_ImplOpenGL3_NewFrame();
-  ImGui_ImplGlfw_NewFrame();
-  ImGui::NewFrame();
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glClearColor(	0.2f,0.2f,0.2f,1.f);
-  // glClear(GL_COLOR_BUFFER_BIT);
-}
+    glfwPollEvents();
+    camera_.Update(delta_time_, input_.get());
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(	0.2f,0.2f,0.2f,1.f);
+    // glClear(GL_COLOR_BUFFER_BIT);
+  }
 
-void Window::EndFrame() {
-  EntityManager& em = *sm_->Get<EntityManager>();
-  LightManager& lm = *sm_->Get<LightManager>();
+  void Window::EndFrame() {
+    EntityManager& em = *sm_->Get<EntityManager>();
+    LightManager& lm = *sm_->Get<LightManager>();
 
-  // Render Shades
-  glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
-  glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_);
-  glClear(GL_DEPTH_BUFFER_BIT);
+    // Render Shades
+    glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
+    glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_);
+    glClear(GL_DEPTH_BUFFER_BIT);
   
-  auto& light= *em.GetEntity(lm.lights_.at(0));
-  glm::mat4x4 light_space = light.get_component<LightComponent>(em)
-  ->light_transform(*light.get_component<TransformComponent>(em));
-  lm.progam_.Use();
+    auto& light= *em.GetEntity(lm.lights_.at(0));
+    glm::mat4x4 light_space = light.get_component<LightComponent>(em)
+    ->light_transform(*light.get_component<TransformComponent>(em));
+    lm.progam_.Use();
 
-  ///light render scene
-  glUniformMatrix4fv(
-    glGetUniformLocation(lm.progam_.program(),"lightSpaceMatrix"),
-    1, GL_FALSE, glm::value_ptr(light_space));
-  GLint model_uniform = glGetUniformLocation(lm.progam_.program(),"model");
-  auto* render_components = em.GetComponentVector<RenderComponent>();
-  auto* transform_components = em.GetComponentVector<TransformComponent>();
-  auto* light_components = em.GetComponentVector<LightComponent>();
-  //glCullFace(GL_FRONT);
-  for (uint16_t i = 1; i < em.last_id_; i++) {
+    ///light render scene
+    glUniformMatrix4fv(
+      glGetUniformLocation(lm.progam_.program(),"lightSpaceMatrix"),
+      1, GL_FALSE, glm::value_ptr(light_space));
+    GLint model_uniform = glGetUniformLocation(lm.progam_.program(),"model");
+    auto* render_components = em.GetComponentVector<RenderComponent>();
+    auto* transform_components = em.GetComponentVector<TransformComponent>();
+    auto* light_components = em.GetComponentVector<LightComponent>();
+    //glCullFace(GL_FRONT);
+    for (uint16_t i = 1; i < em.last_id_; i++) {
 
     
-    if (render_components->at(i).has_value() && !light_components->at(i).has_value()) {
-      const TransformComponent& transform_component = transform_components->at(i).value();
-      const RenderComponent& render_component = render_components->at(i).value();
+      if (render_components->at(i).has_value() && !light_components->at(i).has_value()) {
+        const TransformComponent& transform_component = transform_components->at(i).value();
+        const RenderComponent& render_component = render_components->at(i).value();
       
-      glBindVertexArray(render_component.mesh_->mesh_buffer());
-      glUniformMatrix4fv(model_uniform, 1, false, value_ptr(transform_component.world_transform()));
+        glBindVertexArray(render_component.mesh_->mesh_buffer());
+        glUniformMatrix4fv(model_uniform, 1, false, value_ptr(transform_component.world_transform()));
       
-      glDrawElements(GL_TRIANGLES, (GLsizei)render_component.mesh_->indices_.size(),GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, (GLsizei)render_component.mesh_->indices_.size(),GL_UNSIGNED_INT, 0);
+      }
     }
-  }
-  //glCullFace(GL_BACK);
-  /// -----------------------
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    //glCullFace(GL_BACK);
+    /// -----------------------
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
   
-  glViewport(0, 0, width_, height_);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
+    glViewport(0, 0, width_, height_);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
   
-  // Render Scene --------
-  sm_->Get<Systems>()->SystemsUpdate();
-  camera_.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
+    // Render Scene --------
+    sm_->Get<Systems>()->SystemsUpdate();
+    camera_.RenderScene(static_cast<float>(width_)/static_cast<float>(height_));
 
-  // Pass the texture and lightSpaceMatrix to the normal shader
-  //glActiveTexture(LightManager::depth_map_text_);
-  //glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
+    // Pass the texture and lightSpaceMatrix to the normal shader
+    //glActiveTexture(LightManager::depth_map_text_);
+    //glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
   
-  // Render Imgui
-  camera_.MenuImgui();
-  ImGui::Render();
-  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    // Render Imgui
+    camera_.MenuImgui();
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   
     // Draw
     glfwSwapBuffers(window_);
   }
+}

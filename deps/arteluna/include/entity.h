@@ -6,7 +6,7 @@
 #include "stdint.h"
 #include "engine/service_manager.h"
 #include "engine/entity_manager.h"
-
+namespace al{
   class Entity {
   public:
     ~Entity();
@@ -74,5 +74,5 @@
 
     return nullptr;
   }
-  
+}
 #endif

@@ -2,6 +2,7 @@
 
 #include "input.h"
 #include "stdio.h"
+namespace al{
   std::vector<Input*> Input::instances_;
 
   Input::Input(std::vector<int> keys){
@@ -113,3 +114,4 @@
     }
 
   }
+}

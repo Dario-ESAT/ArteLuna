@@ -1,6 +1,7 @@
 #define GLFW_INCLUDE_NONE
 
 #include "components/component.h"
+namespace al{
   void Component::enable() {
     enabled_ = true;
   }
@@ -21,3 +22,4 @@
   Component::~Component() {
 
   }
+}

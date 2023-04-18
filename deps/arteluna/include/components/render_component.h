@@ -4,6 +4,8 @@
 
 #include "component.h"
 #include "glm.hpp"
+
+namespace al{
   class Mesh;
   class Material;
   class program;
@@ -20,6 +22,6 @@
     RenderComponent(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
   protected:
   };
-
+}
 
 #endif

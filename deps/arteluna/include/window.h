@@ -6,68 +6,69 @@
 #include "camera.h"
 #include "stdint.h"
 
+namespace al{
+  class Window{
+  public:
+
+    ~Window();
+    Window(Window& other);
   
-class Window{
-public:
+    //Parameters
+    int16_t width();
+    void set_width(int16_t width);
+    int16_t height();
+    void set_height(int16_t heigth);
+    void set_windowed(bool windowed);
+    bool windowed();
 
-  ~Window();
-  Window(Window& other);
+    int posx() const;
+    void set_posx(int posx);
+    int posy() const;
+    void set_posy(int posy);
+
+    void set_service_manager(class ServiceManager& sm);
   
-  //Parameters
-  int16_t width();
-  void set_width(int16_t width);
-  int16_t height();
-  void set_height(int16_t heigth);
-  void set_windowed(bool windowed);
-  bool windowed();
+    void BeginFrame();
 
-  int posx() const;
-  void set_posx(int posx);
-  int posy() const;
-  void set_posy(int posy);
+    void EndFrame();
 
-  void set_service_manager(class ServiceManager& sm);
+    bool ShouldClose();
+
+    static double GetTime();
+
+    __forceinline double delta_time() const;
+
+    struct GLFWwindow* window_;
+    std::unique_ptr<class Input>input_;
   
-  void BeginFrame();
+    Camera camera_;
 
-  void EndFrame();
-
-  bool ShouldClose();
-
-  static double GetTime();
-
-  __forceinline double delta_time() const;
-
-  struct GLFWwindow* window_;
-  std::unique_ptr<class Input>input_;
-  
-  Camera camera_;
-
-  Window( const char* name, int16_t width = 1280, int16_t height = 720,
-      int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
-  );
-private:
+    Window( const char* name, int16_t width = 1280, int16_t height = 720,
+        int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
+    );
+  private:
 
 
-  Window();
-  int16_t width_;
-  int16_t height_;
+    Window();
+    int16_t width_;
+    int16_t height_;
 
-  int posx_;
-  int posy_;
-  bool windowed_;
+    int posx_;
+    int posy_;
+    bool windowed_;
 
  
-  double delta_time_;
-  double last_time_;
+    double delta_time_;
+    double last_time_;
 
-  class ServiceManager* sm_;
+    class ServiceManager* sm_;
   
-  friend class Engine;
-  friend std::unique_ptr<Window> std::make_unique<Window>();
-};
+    friend class Engine;
+    friend std::unique_ptr<Window> std::make_unique<Window>();
+  };
 
-double Window::delta_time() const {
-  return delta_time_;
+  double Window::delta_time() const {
+    return delta_time_;
+  }
 }
 #endif

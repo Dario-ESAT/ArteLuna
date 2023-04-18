@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "glad/gl.h"
+namespace al{
   class Texture {
   
   public:
@@ -112,5 +113,5 @@
 
     unsigned int id_texture_;
   };
-
+}
 #endif

@@ -4,6 +4,8 @@
 #include <string>
 #include <vec3.hpp>
 #include <vector>
+
+namespace al{
   class Mesh {
   public:
     enum Geometries {
@@ -52,4 +54,5 @@
     unsigned int normals_array_;
     unsigned int indices_array_;
   };
+}
 #endif

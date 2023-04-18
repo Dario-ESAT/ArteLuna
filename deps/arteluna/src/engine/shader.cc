@@ -4,7 +4,7 @@
 #include "glad/gl.h"
 #include<string>
 #include <iostream>
-
+namespace al{
   Shader::Shader() {
     geometry_ = 0;
     fragment_ = 0;
@@ -106,4 +106,4 @@
   uint32_t Shader::geometry() const {
     return geometry_;
   }
-
+}

@@ -2,6 +2,8 @@
 #define __PROGRAM_H__ 1
 
 #include "glad/gl.h"
+
+namespace al{
   class Program {
   public:
     Program();
@@ -22,4 +24,5 @@
     GLint id_;
   
   };
+}
 #endif

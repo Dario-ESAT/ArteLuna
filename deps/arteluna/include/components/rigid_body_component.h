@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "component.h"
-
+namespace al{
   class Mesh;
 
   class RigidBodyComponent : public Component {
@@ -16,5 +16,5 @@
   protected:
     RigidBodyComponent();
   };
-
+}
 #endif

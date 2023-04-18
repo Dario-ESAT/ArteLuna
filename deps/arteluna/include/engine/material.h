@@ -11,6 +11,7 @@
 #include "shader.h"
 #include "program.h"
 #include "texture.h"
+namespace al{
   struct Data{
     virtual void CopyData(const void * data) = 0;
     virtual void bind(GLint location) = 0;
@@ -42,27 +43,27 @@
     GLuint position;
     GLuint color;
 
-};
-class Material {
-public:
-  Material();
-  //Material(const char* frag, const char* vert);
-  Material(const char* vert, const char* frag,const char* texture_src = "../../deps/arteluna/data/textures/white.jpg",
-   const char* normal_texture_src = "../../deps/arteluna/data/textures/white.jpg",
-   const char* displacement_texture_src = "../../deps/arteluna/data/textures/white.jpg", 
-   Texture::Type t_type = Texture::Type::T_2D,
-   Texture::Filter mag_filter = Texture::Filter::Linear, Texture::Filter min_filter = Texture::Filter::Linear,
-   Texture::Wrap ws = Texture::Wrap::Clamp_to_edge, Texture::Wrap wt = Texture::Wrap::Clamp_to_edge, Texture::Wrap wr = Texture::Wrap::Clamp_to_edge);
-  ~Material();
-  void InitCubemapMaterial(char* vert, char* frag);
-  template<typename T>
-  void set_uniform_data(const std::string& name, const T* data);
+  };
+  class Material {
+  public:
+    Material();
+    //Material(const char* frag, const char* vert);
+    Material(const char* vert, const char* frag,const char* texture_src = "../../deps/arteluna/data/textures/white.jpg",
+     const char* normal_texture_src = "../../deps/arteluna/data/textures/white.jpg",
+     const char* displacement_texture_src = "../../deps/arteluna/data/textures/white.jpg", 
+     Texture::Type t_type = Texture::Type::T_2D,
+     Texture::Filter mag_filter = Texture::Filter::Linear, Texture::Filter min_filter = Texture::Filter::Linear,
+     Texture::Wrap ws = Texture::Wrap::Clamp_to_edge, Texture::Wrap wt = Texture::Wrap::Clamp_to_edge, Texture::Wrap wr = Texture::Wrap::Clamp_to_edge);
+    ~Material();
+    void InitCubemapMaterial(char* vert, char* frag);
+    template<typename T>
+    void set_uniform_data(const std::string& name, const T* data);
   
-  Shader shader_;
-  Program program_;
-  Texture texture_;
-  Texture normal_texture_;
-  Texture displacement_texture_;
+    Shader shader_;
+    Program program_;
+    Texture texture_;
+    Texture normal_texture_;
+    Texture displacement_texture_;
 
 
   private:
@@ -71,11 +72,10 @@ public:
     std::unordered_map<std::string, ALUniform > al_uniforms_;
     std::vector<LightUniforms> lights;
 
-  friend class RenderComponent;
-  friend class Camera;
-  friend class Window;
-};
-
-
+    friend class RenderComponent;
+    friend class Camera;
+    friend class Window;
+  };
+}
 
 #endif

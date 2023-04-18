@@ -7,6 +7,8 @@
 #include <memory>
 
 #include "components/transform_component.h"
+
+namespace al{
   class ComponentVector{
   public:
     virtual ~ComponentVector() = default;
@@ -77,6 +79,6 @@
     }
     return vector;
   }
-
+}
 #endif
 

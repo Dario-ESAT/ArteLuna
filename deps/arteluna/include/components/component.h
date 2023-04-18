@@ -2,8 +2,7 @@
 #define __COMPONENT_H__ 1
 
 #include "stdint.h"
-
-
+namespace al{
   class Component {
   public:
     void enable();
@@ -19,6 +18,6 @@
 
     friend class Entity;
   };
-
+}
 
 #endif

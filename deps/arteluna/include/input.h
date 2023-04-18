@@ -6,7 +6,7 @@
 #include <vector>
 #include "glad/gl.h"
 #include "GLFW/glfw3.h"
-
+namespace al{
   enum InputKeyboard
   {
     UNKNOWN = -1,
@@ -174,5 +174,5 @@
   
     friend class Window;
   };
-
+}
 #endif

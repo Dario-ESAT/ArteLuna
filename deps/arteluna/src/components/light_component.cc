@@ -11,7 +11,7 @@
 #include "components/transform_component.h"
 #include "engine/entity_manager.h"
 #include "engine/service_manager.h"
-
+namespace al{
   void LightComponent::ImguiTree(uint32_t id) {
     ImGui::ColorPicker3("Color",&color_.r,ImGuiColorEditFlags_Float);
     int b = brightness_;
@@ -43,17 +43,17 @@
   LightComponent::~LightComponent(){}
 
 
-glm::mat4x4 LightComponent::light_transform(TransformComponent& transform) const {
-  ;
-  float near_plane = 1.0f, far_plane = 100;
-  glm::mat4 lightProjection = glm::ortho(-20.f, 20.0f, -20.0f, 20.0f, near_plane, far_plane);  
-  glm::mat4 lightView = glm::lookAt(transform.position(),
-                                  transform.position() + transform.forward(), 
-                                  glm::vec3( 0.0f, 1.0f,  0.0f));
-  glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+  glm::mat4x4 LightComponent::light_transform(TransformComponent& transform) const {
+    ;
+    float near_plane = 1.0f, far_plane = 100;
+    glm::mat4 lightProjection = glm::ortho(-20.f, 20.0f, -20.0f, 20.0f, near_plane, far_plane);  
+    glm::mat4 lightView = glm::lookAt(transform.position(),
+                                    transform.position() + transform.forward(), 
+                                    glm::vec3( 0.0f, 1.0f,  0.0f));
+    glm::mat4 lightSpaceMatrix = lightProjection * lightView;
   
-  return lightSpaceMatrix;
-}
+    return lightSpaceMatrix;
+  }
 
 
   LightComponent::LightComponent() {
@@ -65,9 +65,7 @@ glm::mat4x4 LightComponent::light_transform(TransformComponent& transform) const
     brightness_ = 255;
     type_ = Directional;
   }
-
-
-
+}
 
 
 
