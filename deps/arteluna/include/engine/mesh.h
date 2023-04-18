@@ -18,7 +18,17 @@
     ~Mesh();
     
     void ReadDefaultGeometries(std::string src);
-    void CreateDefaultQuad();
+    void CreateDefaultGeometry(
+      const float* vertices,
+      long long v_size,
+      const float* normals, 
+      long long n_size,
+      const float* uv,
+      long long uv_size,
+      const unsigned int* indices,
+      long long i_size
+    );
+
     void CreateCubeMapBox();
     std::vector<float> vertices_;
     std::vector<float> normal_;

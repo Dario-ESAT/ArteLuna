@@ -35,7 +35,7 @@ Camera::Camera() {
   far_ = 10000.0f;
 
   imgui_mode_ = false;
-  cubemap_mesh_->CreateCubeMapBox();
+  // cubemap_mesh_->CreateCubeMapBox();
  // cubemap_->texture_.create_cubemap();
   // int cubemap_width = cubemap_.width();
   // int cubemap_height = cubemap_.height();
@@ -197,7 +197,7 @@ void Camera::RenderScene(float aspect) {
   auto& em = *sm_->Get<EntityManager>();
   const auto* render_components = em.GetComponentVector<RenderComponent>();
   const auto* transform_components = em.GetComponentVector<TransformComponent>();
-  for (uint16_t i = 1; i < em.last_id_; i++) {
+  for (uint32_t i = 1; i < em.last_id_; i++) {
   
     if (render_components->at(i).has_value()) {
       const TransformComponent& transform_component = transform_components->at(i).value();
