@@ -56,7 +56,7 @@
            char* texture_src, Wrap ws, Wrap wt, Wrap wr );
     ~Texture();
 
-    static unsigned int create_cubemap(const char* right_face, 
+    static Texture create_cubemap(const char* right_face,
                                        const char* left_face, 
                                        const char* top_face,
                                        const char* bottom_face, 
@@ -93,6 +93,7 @@
     void set_width(int w) { width_ = w; }
     void set_height(int h) { height_ = h; }
     void set_channels(int c) { channels_ = c; }
+
   private:
     int width_;
     int height_;
@@ -101,6 +102,8 @@
     Wrap wrap_s_;
     Wrap wrap_t_;
     Wrap wrap_r_;
+
+   
 
     Filter min_filter_;
     Filter mag_filter_;

@@ -49,9 +49,10 @@
   float mouse_displacement_x_;
   float mouse_displacement_y_;
     
-    std::shared_ptr<Material> cubemap_;
+  std::shared_ptr<Material> cubemap_;
   std::shared_ptr<Mesh> cubemap_mesh_;
-    
+  void RenderCubemap(glm::mat4x4 &vp_matrix, glm::mat4x4& perspective);
+  void InitCubeMap();
 private:
   void Update(double deltatime, class Input* input);
   

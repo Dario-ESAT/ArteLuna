@@ -54,6 +54,7 @@ public:
    Texture::Filter mag_filter = Texture::Filter::Linear, Texture::Filter min_filter = Texture::Filter::Linear,
    Texture::Wrap ws = Texture::Wrap::Clamp_to_edge, Texture::Wrap wt = Texture::Wrap::Clamp_to_edge, Texture::Wrap wr = Texture::Wrap::Clamp_to_edge);
   ~Material();
+  void InitCubemapMaterial(char* vert, char* frag);
   template<typename T>
   void set_uniform_data(const std::string& name, const T* data);
   

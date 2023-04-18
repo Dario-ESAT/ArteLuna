@@ -61,7 +61,7 @@
     } catch (int e) {
       printf("There was an error on the window, the window couldn't be created %d",e);
     }
-
+    
 
     std::vector<int> keys;
     for(int i = 0; i < 348; i++){
@@ -84,7 +84,7 @@
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glEnable(GL_DEPTH_TEST);
-
+    camera_.InitCubeMap();
 
     // EntityManager& manager_ref = EntityManager::GetManager();
     // Systems

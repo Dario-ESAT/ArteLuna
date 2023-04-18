@@ -201,7 +201,7 @@ float skyboxVertices[] = {
 #pragma endregion 
 
   Mesh::Mesh() {
-  
+ /*
     std::string inputfile = "../../data/models/ELCUBO.obj";  // El path en el que tenemos el .obj. Esto se eliminara de aqui y se pondr� como un parametro al constructor.
     tinyobj::ObjReaderConfig reader_config;
     reader_config.mtl_search_path = "./"; // Path to material files
@@ -336,6 +336,7 @@ float skyboxVertices[] = {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices_.size(), indices_.data(), GL_STATIC_DRAW);
 
     glBindVertexArray(0);
+    */
   }
 
   Mesh::Mesh(Geometries g) {
@@ -359,6 +360,9 @@ float skyboxVertices[] = {
         quad_uv,  sizeof(quad_uv),
         quad_indices,sizeof(quad_indices)
         );
+      break;
+    case Cubemap:
+      CreateCubeMapBox();
       break;
     default:
       break;

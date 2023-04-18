@@ -9,7 +9,8 @@
     enum Geometries {
       Cube,
       Sphere,
-      Quad
+      Quad,
+      Cubemap
   };
 
     Mesh();
@@ -18,6 +19,7 @@
     ~Mesh();
     
     void ReadDefaultGeometries(std::string src);
+
     void CreateDefaultGeometry(
       const float* vertices,
       long long v_size,

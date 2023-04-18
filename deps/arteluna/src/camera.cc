@@ -35,8 +35,6 @@ Camera::Camera() {
   far_ = 10000.0f;
 
   imgui_mode_ = false;
-  // cubemap_mesh_->CreateCubeMapBox();
- // cubemap_->texture_.create_cubemap();
   // int cubemap_width = cubemap_.width();
   // int cubemap_height = cubemap_.height();
   // int cubemap_channels = cubemap_.channels();
@@ -162,6 +160,44 @@ void Camera::UpdateRotation(double deltatime, glm::vec<2,float> cursor_pos) {
   }
 }
 
+void Camera::InitCubeMap()
+{
+  cubemap_mesh_ = std::make_shared<Mesh>(Mesh::Geometries::Cubemap);
+  cubemap_ = std::make_shared<Material>();
+ 
+  cubemap_->InitCubemapMaterial(
+    "../../deps/arteluna/bin/skybox_v.glslv",
+    "../../deps/arteluna/bin/skybox_f.glslf");
+
+  cubemap_->texture_ = Texture::create_cubemap("../../deps/arteluna/data/textures/cubemap/default/right.jpg", "../../deps/arteluna/data/textures/cubemap/default/left.jpg",
+                                               "../../deps/arteluna/data/textures/cubemap/default/top.jpg", "../../deps/arteluna/data/textures/cubemap/default/bottom.jpg",
+                                               "../../deps/arteluna/data/textures/cubemap/default/front.jpg", "../../deps/arteluna/data/textures/cubemap/default/back.jpg");
+  cubemap_->program_.Use();
+  //int uniform = glGetUniformLocation(cubemap_->program_.program(), "skybox");
+  //glUniform1i(uniform, cubemap_->texture_.get_id());
+  glUniform1i(glGetUniformLocation(cubemap_->program_.program(), "skybox"), 0);
+}
+
+void Camera::RenderCubemap(glm::mat4x4 &view_matrix, glm::mat4x4 &perspective)
+{
+  //glDisable(GL_DEPTH_TEST);
+  glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+  cubemap_->program_.Use();
+  int uniform = glGetUniformLocation(cubemap_->program_.program(), "al_view");
+  glUniformMatrix4fv(uniform, 1, false, value_ptr(view_matrix));
+
+  uniform = glGetUniformLocation(cubemap_->program_.program(), "al_perspective");
+  glUniformMatrix4fv(uniform, 1, false, value_ptr(perspective));
+  // skybox cube
+  glBindVertexArray(cubemap_mesh_->mesh_buffer());
+  glActiveTexture(GL_TEXTURE0); //+ cubemap_->texture_.get_id());
+  glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap_->texture_.get_id());
+  glDrawArrays(GL_TRIANGLES, 0, 36);
+  glBindVertexArray(0);
+  //glEnable(GL_DEPTH_TEST);
+  glDepthFunc(GL_LESS); // set depth function back to default
+}
+
 void Camera::Update(double deltatime, Input* input) {
   glm::vec<2,double> mouse_pos = input->cursor_pos();
   mouse_displacement_x_ = (float)(mouse_pos.x - mouse_pos_buffer_.x);
@@ -183,17 +219,24 @@ void Camera::TransformOrtho(Input* input)
 
 void Camera::RenderScene(float aspect) {
   //EntityManager& entity_manager = EntityManager::GetManager();
-  glm::mat4x4 vp_matrix;
+  //glm::mat4x4 vp_matrix;
   LightManager& lm = *sm_->Get<LightManager>();
+  glm::mat4x4 vp_matrix;
+  glm::mat4x4 view;
+  glm::mat4x4 perspective;
   if (mode_ == Ortho) {
     auto ortho_perspective = glm::ortho(-ortho_x(), ortho_x(), -ortho_y(), ortho_y(), near(), far());
-    auto view = glm::lookAt(position_,position_ + glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f));
+    view = glm::lookAt(position_,position_ + glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f));
     vp_matrix = ortho_perspective * view;
   } else if (mode_ == Perspective) {
-    auto perspective = glm::perspective(fov_, aspect, 0.01f, 15000.0f);
-    auto view = glm::lookAt(position_, position_ + forward_, glm::vec3(0.f, 1.f, 0.f));
+    perspective = glm::perspective(fov_, aspect, 0.01f, 15000.0f);
+    view = glm::lookAt(position_, position_ + forward_, glm::vec3(0.f, 1.f, 0.f));
     vp_matrix = perspective * view;
+
   }
+  view = glm::mat4(glm::mat3(view));
+
+
   auto& em = *sm_->Get<EntityManager>();
   const auto* render_components = em.GetComponentVector<RenderComponent>();
   const auto* transform_components = em.GetComponentVector<TransformComponent>();
@@ -224,6 +267,7 @@ void Camera::RenderScene(float aspect) {
       render_component.RenderObject(em,lm);
     }
   }
+  RenderCubemap(view, perspective);
 }
 
 void Camera::MenuImgui() {
