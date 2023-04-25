@@ -9,7 +9,10 @@
 namespace al{
   class Window{
   public:
-
+    Window() = delete;
+    Window( const char* name, int16_t width = 1280, int16_t height = 720,
+        int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
+    );
     ~Window();
     Window(Window& other);
   
@@ -43,13 +46,12 @@ namespace al{
   
     Camera camera_;
 
-    Window( const char* name, int16_t width = 1280, int16_t height = 720,
-        int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
-    );
-  private:
+  protected:
+    void InitReferredRender();
+    
+    uint32_t gBuffer;
+    uint32_t gPosition, gNormal, gColorSpec;
 
-
-    Window();
     int16_t width_;
     int16_t height_;
 

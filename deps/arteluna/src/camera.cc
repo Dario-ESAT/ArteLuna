@@ -36,37 +36,6 @@ namespace al{
     far_ = 10000.0f;
 
     imgui_mode_ = false;
-    // int cubemap_width = cubemap_.width();
-    // int cubemap_height = cubemap_.height();
-    // int cubemap_channels = cubemap_.channels();
-    // GLuint id_cubemap = cubemap_.get_id();
-    // cubemap_.data_ = stbi_load("../../deps/arteluna/data/textures/wavy_COLOR.png", &cubemap_width, &cubemap_height, &cubemap_channels, 0);
-    // if (stbi_failure_reason())
-    //   printf("%s", stbi_failure_reason());
-    // //texture_ = texture_data;
-    // cubemap_.set_width(cubemap_width);
-    // cubemap_.set_height(cubemap_height);
-    // cubemap_.set_channels(cubemap_channels);
-    // switch (cubemap_.channels()) {
-    // case 1:
-    //   cubemap_.set_format(Texture::R);
-    //   break;
-    // case 2:
-    //   cubemap_.set_format(Texture::RG);
-    //   break;
-    // case 3:
-    //   cubemap_.set_format(Texture::RGB);
-    //   break;
-    // case 4:
-    //   cubemap_.set_format(Texture::RGBA);
-    //   break;
-    // }
-    // cubemap_.set_type(Texture::Type::T_Cubemap);
-    // //if (id() != 0)
-    // glGenTextures(1, &id_cubemap);
-    // glBindTexture(GL_TEXTURE_CUBE_MAP, id_cubemap);
-    // cubemap_.set_id(id_cubemap);
-    // cubemap_.SetData(Texture::UNSIGNED_BYTE, 0);
 
     UpdateTransform();
   }
