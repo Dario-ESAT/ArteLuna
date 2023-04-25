@@ -104,7 +104,8 @@ int main() {
   cube_render_cmp->mesh_ = sonic;
   cube_render_cmp->material_ = material;
 
-
+  al::Entity& bobo = sm.Get<al::EntityManager>()->CreateNewEntity();
+  sm.Get<al::EntityManager>()->DeleteEntity(bobo.id());
   /*
   al::Entity& entity_3 = em.CreateNewEntity();
   transform_cmp = entity_3.get_component<al::TransformComponent>(em);

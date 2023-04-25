@@ -17,20 +17,26 @@ namespace al{
   }
   */
   Entity& EntityManager::CreateNewEntity(uint32_t parent) {
-    for (
-      auto it=component_map_.begin();
-      it!=component_map_.end();
-      ++it){
-    
-      it->second->Grow();
-      }
+  if (parent >= last_id_) parent = 0;
+  Entity* new_entity;
+  if (removed_id_.empty()){
     entities_.emplace_back(Entity(last_id_));
-    if (parent >= last_id_) parent = 0;
-
-    Entity& new_entity = entities_.back();
-    new_entity.AddComponent<TransformComponent>(*this)->parent_ = parent;
+    new_entity = &entities_.back();
+    for ( auto it=component_map_.begin(); it!=component_map_.end(); ++it){
+      it->second->Grow();
+    }
     last_id_++;
-    return new_entity;
+    
+  } else{
+    new_entity = &entities_.at(removed_id_.at(0));
+    removed_id_.erase(removed_id_.begin());
+  }
+  
+  new_entity->gen_ = last_gen_;
+  new_entity->AddComponent<TransformComponent>(*this)->parent_ = parent;
+
+  last_gen_++;
+  return *new_entity;
   }
 
   Entity& EntityManager::CreateCubeEntity(uint32_t parent)
@@ -54,7 +60,15 @@ namespace al{
     return &entities_.at(pos);
   }
 
+  void EntityManager::DeleteEntity(uint32_t id) {
+    if (id == 0 || id >= last_id_) return;
 
+    removed_id_.emplace_back(id);
+    for (auto it=component_map_.begin();it!=component_map_.end();++it){
+      it->second->Remove(id);
+    }
+  }
+  
   EntityManager::EntityManager() {
     last_id_ = 0;
     entities_.emplace_back(Entity());

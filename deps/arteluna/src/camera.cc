@@ -319,10 +319,12 @@ namespace al{
 
     for (unsigned long long i = 1; i < transform_components->size(); i++) {
       if (ImGui::TreeNode((void*)(intptr_t)i, "Entity %d", i)) {
-        auto& t_comp = transform_components->at(i).value();
-        if (ImGui::TreeNode(&t_comp, "Transform")){
-          t_comp.ImguiTree((uint32_t)i);
-          ImGui::TreePop();
+        auto& t_comp = transform_components->at(i);
+        if (t_comp.has_value()){
+          if (ImGui::TreeNode(&t_comp, "Transform")){
+            t_comp->ImguiTree((uint32_t)i);
+            ImGui::TreePop();
+          }
         }
         auto& l_comp = light_components->at(i);
         if (l_comp.has_value()){

@@ -12,13 +12,19 @@ namespace al{
   class ComponentVector{
   public:
     virtual ~ComponentVector() = default;
+  protected:
     virtual void Grow() = 0;
+    virtual void Remove(uint32_t pos) = 0;
+    friend class EntityManager;
   };
   template<typename T>
   class ComponentVector_Implementation : public ComponentVector{
   public:
     void Grow() override {
       vector.emplace_back(std::nullopt);
+    }
+    void Remove(uint32_t pos) override {
+      vector.at(pos).reset();
     }
     std::vector<std::optional<T> > vector;
   };
@@ -33,7 +39,9 @@ namespace al{
     Entity& CreateCubeEntity(uint32_t parent = 0);
 
     Entity* GetEntity(uint32_t pos);
-  
+    
+    void DeleteEntity(uint32_t id);
+    
     template<class T>
     __forceinline std::vector<std::optional<T>>* GetComponentVector();
 
@@ -43,8 +51,11 @@ namespace al{
   private:
 
     uint32_t last_id_;
+    uint32_t last_gen_;
 
     std::vector<Entity> entities_;
+    std::vector<uint32_t> removed_id_;
+
     std::map<size_t, std::unique_ptr<ComponentVector> > component_map_;
 
     friend class Camera;

@@ -34,7 +34,8 @@ namespace al{
     Entity(uint32_t id);
   
     uint32_t id_;
-
+    uint32_t gen_;
+    
     friend class EntityManager;
   };
 

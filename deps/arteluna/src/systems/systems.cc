@@ -18,20 +18,23 @@ namespace al{
 
   bool Systems::TravelTreeUp(Entity* entity){
     EntityManager& em = *(service_manager_->Get<EntityManager>());
-    auto* transform_component = entity->get_component<TransformComponent>(em);
-    Entity* parent = &transform_component->parent(em);
+    if (auto* transform_component = entity->get_component<TransformComponent>(em)){
+      Entity* parent = &transform_component->parent(em);
 
 
-    if (entity->id() > 0){
-      TravelTreeUp(parent);
+      if (entity->id() > 0){
+        if (!TravelTreeUp(parent)){
+          transform_component->parent_ = 0;
+        }
+        transform_component->update_local_transform();
+
+        transform_component->update_world_transform(parent->get_component<TransformComponent>(em)->world_transform_);
+      }
+    
       transform_component->update_local_transform();
-
-      transform_component->update_world_transform(parent->get_component<TransformComponent>(em)->world_transform_);
+      transform_component->update_world_transform(glm::mat4x4(1.0f));
       return true;
     }
-  
-    transform_component->update_local_transform();
-    transform_component->update_world_transform(glm::mat4x4(1.0f));
   
     return false;
   }
@@ -43,7 +46,10 @@ namespace al{
     }
 
     for (size_t i = 0; i < em->entities_.size(); i++){
-      em->entities_[i].get_component<TransformComponent>(*service_manager_->Get<EntityManager>())->dirty_ = false;
+      TransformComponent* transform = em->entities_[i].get_component<TransformComponent>(*service_manager_->Get<EntityManager>());
+      if (transform){
+        transform->dirty_ = false;
+      }
     }
 
   }
