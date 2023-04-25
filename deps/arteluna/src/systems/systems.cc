@@ -20,8 +20,7 @@ namespace al{
     EntityManager& em = *(service_manager_->Get<EntityManager>());
     if (auto* transform_component = entity->get_component<TransformComponent>(em)){
       Entity* parent = &transform_component->parent(em);
-
-
+      
       if (entity->id() > 0){
         if (!TravelTreeUp(parent)){
           transform_component->parent_ = 0;
