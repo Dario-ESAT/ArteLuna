@@ -23,7 +23,7 @@ namespace al{
     is_moving_ = true;
     rotate_x_ = 0;
     rotate_y_ = 0;
-    fov_ = glm::radians(90.0f);
+    fov_ = 90;
 
     position_.x = 0.0f;
     position_.y = 0.0f;
@@ -130,8 +130,7 @@ namespace al{
     }
   }
 
-  void Camera::InitCubeMap()
-  {
+  void Camera::InitCubeMap() {
     cubemap_mesh_ = std::make_shared<Mesh>(Mesh::Geometries::Cubemap);
     cubemap_ = std::make_shared<Material>();
  
@@ -148,8 +147,7 @@ namespace al{
     glUniform1i(glGetUniformLocation(cubemap_->program_.program(), "skybox"), 0);
   }
 
-  void Camera::RenderCubemap(glm::mat4x4 &view_matrix, glm::mat4x4 &perspective)
-  {
+  void Camera::RenderCubemap(glm::mat4x4 &view_matrix, glm::mat4x4 &perspective) {
     //glDisable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
     cubemap_->program_.Use();
@@ -187,7 +185,7 @@ namespace al{
     }
   }
 
-  void Camera::RenderScene(float aspect) {
+  void Camera::RenderSceneForward(float aspect) {
     //EntityManager& entity_manager = EntityManager::GetManager();
     //glm::mat4x4 vp_matrix;
     LightManager& lm = *sm_->Get<LightManager>();
@@ -199,7 +197,7 @@ namespace al{
       view = glm::lookAt(position_,position_ + glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f));
       vp_matrix = ortho_perspective * view;
     } else if (mode_ == Perspective) {
-      perspective = glm::perspective(fov_, aspect, 0.01f, 15000.0f);
+      perspective = glm::perspective(glm::radians(fov_), aspect, 0.01f, 15000.0f);
       view = glm::lookAt(position_, position_ + forward_, glm::vec3(0.f, 1.f, 0.f));
       vp_matrix = perspective * view;
 
@@ -234,79 +232,84 @@ namespace al{
           glUniform3f(al_uniform->second.location_, position_.x, position_.y, position_.z);
         }
       
-        render_component.RenderObject(em,lm);
+        render_component.RenderForward(em,lm);
       }
     }
     RenderCubemap(view, perspective);
   }
 
   void Camera::MenuImgui() {
-    ImGui::Begin("Camera controls");
 
-    ImGui::Text("Position");
-    ImGui::DragFloat("X##PC", &position_.x, 0.1f);
-    ImGui::DragFloat("Y##PC", &position_.y, 0.1f);
-    ImGui::DragFloat("Z##PC", &position_.z, 0.1f);
+    ImGui::Begin("Camera controls");{
 
-    ImGui::Text("Rotation");
-    ImGui::DragFloat("X##RC", &rotate_x_, 0.01f);
-    ImGui::DragFloat("Y##RC", &rotate_y_, 0.01f);
+      ImGui::Text("Position");
+      ImGui::DragFloat("X##PC", &position_.x, 0.1f);
+      ImGui::DragFloat("Y##PC", &position_.y, 0.1f);
+      ImGui::DragFloat("Z##PC", &position_.z, 0.1f);
 
-    ImGui::Text("Config");
-    // ImGui::DragFloat("FOV", &fov_);
-    ImGui::DragFloat("Movement Speed", &movement_speed_);
-    ImGui::DragFloat("Rotation Speed", &rotation_speed_);
-    ImGui::Text("Forward x:%f y:%f z:%f", forward_.x, forward_.y, forward_.z);
+      ImGui::Text("Rotation");
+      ImGui::DragFloat("X##RC", &rotate_x_, 0.01f);
+      ImGui::DragFloat("Y##RC", &rotate_y_, 0.01f);
 
-    if (ImGui::Button(mode_ == Perspective ? "Perspective" : "Orthographic")) {
-      if (mode_ == Perspective)
-        mode_ = Ortho;
-      else
-        mode_ = Perspective;
+      ImGui::Text("Config");
+      // ImGui::DragFloat("FOV", &fov_);
+      ImGui::DragFloat("Movement Speed", &movement_speed_);
+      ImGui::DragFloat("Rotation Speed", &rotation_speed_);
+      ImGui::DragFloat("Fov", &fov_,1,30,120);
+      
+
+      ImGui::Text("Forward x:%f y:%f z:%f", forward_.x, forward_.y, forward_.z);
+
+      if (ImGui::Button(mode_ == Perspective ? "Perspective" : "Orthographic")) {
+        if (mode_ == Perspective)
+          mode_ = Ortho;
+        else
+          mode_ = Perspective;
+      }
+
+      if (mode_ == Ortho) {
+        ImGui::Text("Set ortho size");
+        ImGui::DragFloat("Ortho width", &ortho_x_, 0.01f);
+        ImGui::DragFloat("Ortho height", &ortho_y_, 0.01f);
+      }
+
+      ImGui::End();
     }
-
-    if (mode_ == Ortho) {
-      ImGui::Text("Set ortho size");
-      ImGui::DragFloat("Ortho width", &ortho_x_, 0.01f);
-      ImGui::DragFloat("Ortho height", &ortho_y_, 0.01f);
-    }
-
-    ImGui::End();
     //EntityManager& e_m = EntityManager::GetManager();
 
     auto* transform_components = sm_->Get<EntityManager>()->GetComponentVector<TransformComponent>();
     auto* light_components = sm_->Get<EntityManager>()->GetComponentVector<LightComponent>();
 
 
-    char label[20] = { '\n' };
-    ImGui::Begin("Entities");
-    if (ImGui::TreeNode((void*)(intptr_t)0, "Root")) {
-      auto& t_comp = transform_components->at(0).value();
-      t_comp.ImguiTree(0);
-      ImGui::TreePop();
-    }
-
-    for (unsigned long long i = 1; i < transform_components->size(); i++) {
-      if (ImGui::TreeNode((void*)(intptr_t)i, "Entity %d", i)) {
-        auto& t_comp = transform_components->at(i);
-        if (t_comp.has_value()){
-          if (ImGui::TreeNode(&t_comp, "Transform")){
-            t_comp->ImguiTree((uint32_t)i);
-            ImGui::TreePop();
-          }
-        }
-        auto& l_comp = light_components->at(i);
-        if (l_comp.has_value()){
-          if (ImGui::TreeNode(&l_comp, "Light opt")){
-            l_comp->ImguiTree((uint32_t)i);
-          
-            ImGui::TreePop();
-          }
-        }
+    ImGui::Begin("Entities");  {
+      if (ImGui::TreeNode((void*)(intptr_t)0, "Root")) {
+        auto& t_comp = transform_components->at(0).value();
+        t_comp.ImguiTree(0);
         ImGui::TreePop();
       }
+
+      for (unsigned long long i = 1; i < transform_components->size(); i++) {
+        if (ImGui::TreeNode((void*)(intptr_t)i, "Entity %d", i)) {
+          auto& t_comp = transform_components->at(i);
+          if (t_comp.has_value()){
+            if (ImGui::TreeNode(&t_comp, "Transform")){
+              t_comp->ImguiTree((uint32_t)i);
+              ImGui::TreePop();
+            }
+          }
+          auto& l_comp = light_components->at(i);
+          if (l_comp.has_value()){
+            if (ImGui::TreeNode(&l_comp, "Light opt")){
+              l_comp->ImguiTree((uint32_t)i);
+            
+              ImGui::TreePop();
+            }
+          }
+          ImGui::TreePop();
+        }
+      }
+      ImGui::End();
     }
-    ImGui::End();
 
   }
 

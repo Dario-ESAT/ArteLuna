@@ -113,8 +113,7 @@ namespace al{
     return height_;
   }
 
-  void Window::set_height(int16_t height)
-  {
+  void Window::set_height(int16_t height) {
     height_ = height;
     if (windowed_) {
       glfwSetWindowAspectRatio(window_,width_,height_);
@@ -129,7 +128,6 @@ namespace al{
     return windowed_;
   }
 
-
   bool Window::ShouldClose() {
     return glfwWindowShouldClose(window_);
   }
@@ -138,7 +136,7 @@ namespace al{
     return glfwGetTime();
   }
 
-  void Window::InitReferredRender() {
+  void Window::InitDeferredRender() {
     glGenFramebuffers(1, &gBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
   
@@ -265,6 +263,7 @@ namespace al{
     //glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
   
     // Render Imgui
+    MenuImgui();
     camera_.MenuImgui();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -272,4 +271,22 @@ namespace al{
     // Draw
     glfwSwapBuffers(window_);
   }
+  void Window::MenuImgui() {
+        
+    ImGui::Begin("Deferred textures");{
+      ImGui::Text("pointer = %p##1", gPosition);
+      ImGui::Text("size = %d x %d##1", width_, height_);
+      ImGui::Image((void*)(intptr_t)gPosition, ImVec2(width_, height_));
+
+      ImGui::Text("pointer = %p##2", gNormal);
+      ImGui::Text("size = %d x %d##2", width_, height_);
+      ImGui::Image((void*)(intptr_t)gNormal, ImVec2(width_, height_));
+
+      ImGui::Text("pointer = %p##3", gColorSpec);
+      ImGui::Text("size = %d x %d##3", width_, height_);
+      ImGui::Image((void*)(intptr_t)gColorSpec, ImVec2(width_, height_));
+      ImGui::End();
+    }
+  }
+
 }

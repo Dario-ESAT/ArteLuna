@@ -21,8 +21,6 @@ namespace al{
     Camera();
     ~Camera();
   
-
-
     void MenuImgui();
 
     __forceinline glm::vec3 position() const;
@@ -59,7 +57,7 @@ namespace al{
   
     void UpdateFromInput(double deltatime, class Input* input);
     void UpdateRotation(double deltatime, glm::vec2 cursor_pos);
-    void RenderScene(float aspect);
+    void RenderSceneForward(float aspect);
     void UpdateTransform();
     void TransformOrtho(class Input* input);
 

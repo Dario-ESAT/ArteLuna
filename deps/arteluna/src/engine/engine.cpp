@@ -30,6 +30,7 @@ namespace al{
 
     sm.Add(em_);
     sm.Add(systems_);
+    if(window_) window_->set_service_manager(sm);
   
     sm_ = &sm;
   }

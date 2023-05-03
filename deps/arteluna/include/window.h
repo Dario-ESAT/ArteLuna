@@ -37,6 +37,9 @@ namespace al{
 
     bool ShouldClose();
 
+    void MenuImgui();
+
+
     static double GetTime();
 
     __forceinline double delta_time() const;
@@ -47,7 +50,7 @@ namespace al{
     Camera camera_;
 
   protected:
-    void InitReferredRender();
+    void InitDeferredRender();
     
     uint32_t gBuffer;
     uint32_t gPosition, gNormal, gColorSpec;
@@ -65,6 +68,9 @@ namespace al{
 
     class ServiceManager* sm_;
   
+    class Shader geometry_pass_;
+    class Shader lightning_pass_;
+
     friend class Engine;
     friend std::unique_ptr<Window> std::make_unique<Window>();
   };
