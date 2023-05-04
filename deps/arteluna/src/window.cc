@@ -197,6 +197,8 @@ namespace al{
     camera_.sm_ = &sm;
   }
   void Window::RenderForward() {
+    EntityManager& em = *sm_->Get<EntityManager>();
+    LightManager& lm = *sm_->Get<LightManager>();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(	0.2f,0.2f,0.2f,1.f);
 
@@ -251,6 +253,8 @@ namespace al{
   }
 
   void Window::RenderDeferred() {
+    EntityManager& em = *sm_->Get<EntityManager>();
+    LightManager& lm = *sm_->Get<LightManager>();
     glClearColor(.2f, .2f, .2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -258,32 +262,59 @@ namespace al{
         // -----------------------------------------------------------------
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glm::mat4 projection = camera_.Perspective();
+    glm::mat4 projection = camera_.Perspective(static_cast<float>(width_) / static_cast<float>(height_));
     glm::mat4 view = camera_.ViewMatrix_Perspective();
     glm::mat4 model = glm::mat4(1.0f);
-    geometry_pass_.use();
-    geometry_pass_.setMat4("projection", projection);
-    geometry_pass_.setMat4("view", view);
-    for (unsigned int i = 0; i < objectPositions.size(); i++)
+    geometry_program_.Use();
+    //geometry_pass_.setMat4("projection", projection);
+    glUniformMatrix4fv(glGetUniformLocation(geometry_program_.program(), "al_vp_matrix"),
+    1, false, glm::value_ptr(view * projection));
+
+    //geometry_pass_.setMat4("view", view);
+    const auto* render_components = em.GetComponentVector<RenderComponent>();
+    const auto* transform_components = em.GetComponentVector<TransformComponent>();
+    for (uint32_t i = 1; i < em.last_id_; i++) {
     {
-        model = glm::mat4(1.0f);
+        /*model = glm::mat4(1.0f);
         model = glm::translate(model, objectPositions[i]);
         model = glm::scale(model, glm::vec3(0.25f));
-        shaderGeometryPass.setMat4("model", model);
-        backpack.Draw(shaderGeometryPass);
+        shaderGeometryPass.setMat4("model", model);*/
+        //backpack.Draw(shaderGeometryPass);
+        if (render_components->at(i).has_value()) {
+          const TransformComponent& transform_component = transform_components->at(i).value();
+          const RenderComponent& render_component = render_components->at(i).value();
+          render_component.material_->program_.Use();
+
+
+          auto& al_uniforms = render_component.material_->al_uniforms_;
+
+          auto al_uniform = al_uniforms.find("al_vp_matrix");
+          if (al_uniform != al_uniforms.end()) {
+            glUniformMatrix4fv(al_uniform->second.location_, 1, false, value_ptr(view * projection));
+          }
+
+          al_uniform = al_uniforms.find("al_m_matrix");
+          if (al_uniform != al_uniforms.end()) {
+            glUniformMatrix4fv(al_uniform->second.location_, 1, false, value_ptr(transform_component.world_transform()));
+          }
+
+          //render_component.RenderForward(em, lm);
+        }
+      }
+    camera_.RenderCubemap(view,projection);
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // 2. lighting pass: calculate lighting by iterating over a screen filled quad pixel-by-pixel using the gbuffer's content.
     // -----------------------------------------------------------------------------------------------------------------------
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    shaderLightingPass.use();
+    lightning_program_.Use();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, gPosition);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, gNormal);
     glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
+    glBindTexture(GL_TEXTURE_2D, gAlbedo);
     // send light relevant uniforms
     for (unsigned int i = 0; i < lightPositions.size(); i++)
     {

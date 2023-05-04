@@ -30,7 +30,7 @@ namespace al{
     void set_posy(int posy);
 
     void set_service_manager(class ServiceManager& sm);
-  
+
     void BeginFrame();
 
     void EndFrame();

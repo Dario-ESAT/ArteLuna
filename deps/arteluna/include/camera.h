@@ -43,7 +43,7 @@ namespace al{
     float fov_;
   
     void Mode(Modes m);
-    glm::mat4 Perspective();
+    glm::mat4 Perspective(float aspect);
     glm::mat4 ViewMatrix_Perspective();
     glm::mat4 Orthographic();
     glm::mat4 ViewMatrix_Orthographic();

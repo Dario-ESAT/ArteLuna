@@ -29,7 +29,7 @@ namespace al{
     position_.y = 0.0f;
     position_.z = 0.0f;
 
-    mode_ = Perspective;
+    mode_ = Modes::Perspective;
     ortho_x_ = 15.0f;
     ortho_y_ = 10.0f;
     near_ = 0.1f;
@@ -62,22 +62,22 @@ namespace al{
       }
 
       if (input->IsKeyDown(LEFT) ||
-        input->IsKeyDown(A) && mode_ == Perspective) {
+        input->IsKeyDown(A) && mode_ == Modes::Perspective) {
         position_ += right_ * speed * delta_time;
         }
 
       if (input->IsKeyDown(RIGHT) ||
-        input->IsKeyDown(D) && mode_ == Perspective) {
+        input->IsKeyDown(D) && mode_ == Modes::Perspective) {
         position_ -= right_ * speed * delta_time;
         }
 
       if (input->IsKeyDown(UP) ||
-        input->IsKeyDown(W) && mode_ == Perspective) {
+        input->IsKeyDown(W) && mode_ == Modes::Perspective) {
         position_ += (forward_) * speed * delta_time;
         }
 
       if (input->IsKeyDown(DOWN) ||
-        input->IsKeyDown(S) && mode_ == Perspective) {
+        input->IsKeyDown(S) && mode_ == Modes::Perspective) {
         position_ -= (forward_) * speed * delta_time;
         }
 
@@ -113,7 +113,7 @@ namespace al{
   void Camera::UpdateRotation(double deltatime, glm::vec<2,float> cursor_pos) {
     if (is_moving_) {
   
-      if (mode_ == Perspective) {
+      if (mode_ == Modes::Perspective) {
         rotate_x_ += mouse_displacement_y_ * rotation_speed_ * static_cast<float>(deltatime);
         if (rotate_x_ > 1.57f) {
           rotate_x_ = 1.57f;
@@ -195,8 +195,8 @@ namespace al{
       auto ortho_perspective = Orthographic();
       view = ViewMatrix_Orthographic();
       vp_matrix = ortho_perspective * view;
-    } else if (mode_ == Perspective) {
-      perspective = Perspective();
+    } else if (mode_ == Modes::Perspective) {
+      perspective = Perspective(aspect);
       view = ViewMatrix_Perspective();
       vp_matrix = perspective * view;
     }
@@ -236,7 +236,7 @@ namespace al{
     RenderCubemap(view, perspective);
   }
 
-  glm::mat4 Camera::Perspective() {
+  glm::mat4 Camera::Perspective(float aspect) {
     return glm::perspective(glm::radians(fov_), aspect, near_, far_);
   }
 
@@ -274,11 +274,11 @@ namespace al{
 
       ImGui::Text("Forward x:%f y:%f z:%f", forward_.x, forward_.y, forward_.z);
 
-      if (ImGui::Button(mode_ == Perspective ? "Perspective" : "Orthographic")) {
-        if (mode_ == Perspective)
+      if (ImGui::Button(mode_ == Modes::Perspective ? "Perspective" : "Orthographic")) {
+        if (mode_ == Modes::Perspective)
           mode_ = Ortho;
         else
-          mode_ = Perspective;
+          mode_ = Modes::Perspective;
       }
 
       if (mode_ == Ortho) {
@@ -335,7 +335,7 @@ namespace al{
   void Camera::UpdateTransform() {
     if (is_moving_) {
       glm::mat4x4 transform_aux(1.0f);
-      if (mode_ == Perspective) {
+      if (mode_ == Modes::Perspective) {
         transform_aux = glm::scale(transform_aux, glm::vec3(1.0f, 1.0f, 1.0f));
         transform_aux = glm::rotate(transform_aux, rotate_y_, glm::vec3(0.0f, 1.0f, 0.0f));
         transform_aux = glm::translate(transform_aux, position_);
