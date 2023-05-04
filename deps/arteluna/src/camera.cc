@@ -178,8 +178,7 @@ namespace al{
     mouse_pos_buffer_ = input->cursor_pos();
   }
 
-  void Camera::TransformOrtho(Input* input)
-  {
+  void Camera::TransformOrtho(Input* input) {
     if (mode_ == Ortho) {
       // printf("%f \n", input->scrollback_y_value_);
     }
@@ -193,14 +192,13 @@ namespace al{
     glm::mat4x4 view;
     glm::mat4x4 perspective;
     if (mode_ == Ortho) {
-      auto ortho_perspective = glm::ortho(-ortho_x(), ortho_x(), -ortho_y(), ortho_y(), near(), far());
-      view = glm::lookAt(position_,position_ + glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f));
+      auto ortho_perspective = Orthographic();
+      view = ViewMatrix_Orthographic();
       vp_matrix = ortho_perspective * view;
     } else if (mode_ == Perspective) {
-      perspective = glm::perspective(glm::radians(fov_), aspect, 0.01f, 15000.0f);
-      view = glm::lookAt(position_, position_ + forward_, glm::vec3(0.f, 1.f, 0.f));
+      perspective = Perspective();
+      view = ViewMatrix_Perspective();
       vp_matrix = perspective * view;
-
     }
     view = glm::mat4(glm::mat3(view));
 
@@ -236,6 +234,22 @@ namespace al{
       }
     }
     RenderCubemap(view, perspective);
+  }
+
+  glm::mat4 Camera::Perspective() {
+    return glm::perspective(glm::radians(fov_), aspect, near_, far_);
+  }
+
+  glm::mat4 Camera::ViewMatrix_Orthographic() {
+    return glm::lookAt(position_,position_ + glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f));
+  }
+
+  glm::mat4 Camera::ViewMatrix_Perspective() {
+    glm::lookAt(position_, position_ + forward_, glm::vec3(0.f, 1.f, 0.f));
+  }
+
+  glm::mat4 Camera::Orthographic() {
+    return glm::ortho(-ortho_x_, ortho_x_, -ortho_y_, ortho_y_, near_, far_);;
   }
 
   void Camera::MenuImgui() {

@@ -13,17 +13,17 @@ in vec2 TexCoords;
 
 
 //uniform vec4 u_color;
-uniform sampler2D al_position;
-uniform sampler2D al_normal;
-uniform sampler2D al_albedo;
+uniform sampler2D gPosition;
+uniform sampler2D gNormal;
+uniform sampler2D gAlbedo;
 
 uniform vec3 al_cam_pos;
 
 void main() {
  
-  vec3 FragPos = texture(al_position, TexCoords).rgb;
-  vec3 Normal = texture(al_normal, TexCoords).rgb;
-  vec3 Diffuse = texture(al_albedo, TexCoords).rgb;
+  vec3 FragPos = texture(gPosition, TexCoords).rgb;
+  vec3 Normal = texture(gNormal, TexCoords).rgb;
+  vec3 Diffuse = texture(gAlbedo, TexCoords).rgb;
 
   vec3 lighting  = Diffuse * 0.1;
   vec3 viewDir = normalize(al_cam_pos - FragPos);
@@ -32,7 +32,7 @@ void main() {
     // diffuse
     vec3 lightDir = normalize(-light.direction);
     float diff = max(dot(normal, lightDir), 0.0);
-    vec3 diffuse  = diff * vec3(texture(al_albedo, TexCoords));
+    vec3 diffuse  = diff * vec3(texture(gAlbedo, TexCoords));
     
     lighting += diffuse;  
   }

@@ -52,8 +52,12 @@ namespace al{
   protected:
     void InitDeferredRender();
     
+    void RenderForward();
+
+    void RenderDeferred();
+
     uint32_t gBuffer;
-    uint32_t gPosition, gNormal, gColorSpec;
+    uint32_t gPosition, gNormal, gAlbedo;
 
     int16_t width_;
     int16_t height_;
@@ -62,13 +66,14 @@ namespace al{
     int posy_;
     bool windowed_;
 
- 
+    unsigned int rboDepth;
     double delta_time_;
     double last_time_;
 
     class ServiceManager* sm_;
-  
+    class Program geometry_program_; 
     class Shader geometry_pass_;
+    class Program lightning_program_;
     class Shader lightning_pass_;
 
     friend class Engine;
