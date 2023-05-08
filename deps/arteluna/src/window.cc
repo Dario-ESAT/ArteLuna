@@ -316,7 +316,7 @@ namespace al{
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, gAlbedo);
     // send light relevant uniforms
-    for (unsigned int i = 0; i < lightPositions.size(); i++)
+    for (unsigned int i = 0; i < lm.lights_.size(); i++)
     {
         shaderLightingPass.setVec3("lights[" + std::to_string(i) + "].Position", lightPositions[i]);
         shaderLightingPass.setVec3("lights[" + std::to_string(i) + "].Color", lightColors[i]);
