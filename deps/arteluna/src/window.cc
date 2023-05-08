@@ -75,7 +75,7 @@ namespace al{
     glCullFace(GL_BACK);
     glEnable(GL_DEPTH_TEST);
     camera_.InitCubeMap();
-
+    InitDeferredRender();
     
   }
 
@@ -172,6 +172,8 @@ namespace al{
     glDrawBuffers(3, attachments);
 
     glGenRenderbuffers(1, &rboDepth);
+    geometry_pass_.Init("../../deps/arteluna/bin/vertex.glslv","");
+    geometry_program_.Init(geometry_pass_.fragment(),geometry_pass_.vertex());
   }
 
   int Window::posx() const {
@@ -262,12 +264,12 @@ namespace al{
         // -----------------------------------------------------------------
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glm::mat4 projection = camera_.Perspective(static_cast<float>(width_) / static_cast<float>(height_));
+    glm::mat4 projection = camera_.Perspective(static_cast<float>(width_) / 
+    static_cast<float>(height_));
     glm::mat4 view = camera_.ViewMatrix_Perspective();
-    glm::mat4 model = glm::mat4(1.0f);
     geometry_program_.Use();
     //geometry_pass_.setMat4("projection", projection);
-    glUniformMatrix4fv(glGetUniformLocation(geometry_program_.program(), "al_vp_matrix"),
+    glUniformMatrix4fv(glGetUniformLocation(geometry_program_.program(), "al_vp_matrix"), 
     1, false, glm::value_ptr(view * projection));
 
     //geometry_pass_.setMat4("view", view);
@@ -316,25 +318,29 @@ namespace al{
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, gAlbedo);
     // send light relevant uniforms
-    for (unsigned int i = 0; i < lm.lights_.size(); i++)
-    {
-        shaderLightingPass.setVec3("lights[" + std::to_string(i) + "].Position", lightPositions[i]);
-        shaderLightingPass.setVec3("lights[" + std::to_string(i) + "].Color", lightColors[i]);
-        // update attenuation parameters and calculate radius
-        const float constant = 1.0f; // note that we don't send this to the shader, we assume it is always 1.0 (in our case)
-        const float linear = 0.7f;
-        const float quadratic = 1.8f;
-        shaderLightingPass.setFloat("lights[" + std::to_string(i) + "].Linear", linear);
-        shaderLightingPass.setFloat("lights[" + std::to_string(i) + "].Quadratic", quadratic);
-        // then calculate radius of light volume/sphere
-        const float maxBrightness = std::fmaxf(std::fmaxf(lightColors[i].r, lightColors[i].g), lightColors[i].b);
-        float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (256.0f / 5.0f) * maxBrightness))) / (2.0f * quadratic);
-        shaderLightingPass.setFloat("lights[" + std::to_string(i) + "].Radius", radius);
+    for (unsigned int i = 0; i < lm.lights_.size(); i++) {
+      auto& light= *em.GetEntity(lm.lights_.at(i));
+      TransformComponent& l_transform = *light.get_component<TransformComponent>(em);
+      LightComponent& l_light = *light.get_component<LightComponent>(em);
+      const glm::vec3 forward = l_transform.forward();
+      glUniform3f(glGetUniformLocation(
+                      lightning_program_.program(),
+                      "al_DirLight[0].direction" ),
+        forward.x, forward.y, forward.z);
+      glUniform3f(glGetUniformLocation(
+                      lightning_program_.program(),
+                      "al_DirLight[0].color" ),
+        l_light.color().x, l_light.color().y, l_light.color().z);
+      
+      glUniform3f(glGetUniformLocation(
+                      lightning_program_.program(),
+                      "al_DirLight[0].diffuse" ), 0.5f, 0.5f, 0.5f);
     }
-    shaderLightingPass.setVec3("viewPos", camera.Position);
-    // finally render quad
-    renderQuad();
-
+    glm::vec3 cam_pos = camera_.position();
+    glUniform3f(glGetUniformLocation(
+                lightning_program_.program(),
+                "al_cam_pos" ), cam_pos.x, cam_pos.y, cam_pos.z);
+    
     // 2.5. copy content of geometry's depth buffer to default framebuffer's depth buffer
     // ----------------------------------------------------------------------------------
     glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);
@@ -342,23 +348,24 @@ namespace al{
     // blit to default framebuffer. Note that this may or may not work as the internal formats of both the FBO and default framebuffer have to match.
     // the internal formats are implementation defined. This works on all of my systems, but if it doesn't on yours you'll likely have to write to the 		
     // depth buffer in another shader stage (or somehow see to match the default framebuffer's internal format with the FBO's internal format).
-    glBlitFramebuffer(0, 0, SCR_WIDTH, SCR_HEIGHT, 0, 0, SCR_WIDTH, SCR_HEIGHT, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+    glBlitFramebuffer(0, 0, width_, height_, 0, 0, width_, height_, 
+    GL_DEPTH_BUFFER_BIT, GL_NEAREST);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // 3. render lights on top of scene
     // --------------------------------
-    shaderLightBox.use();
-    shaderLightBox.setMat4("projection", projection);
-    shaderLightBox.setMat4("view", view);
-    for (unsigned int i = 0; i < lightPositions.size(); i++)
-    {
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPositions[i]);
-        model = glm::scale(model, glm::vec3(0.125f));
-        shaderLightBox.setMat4("model", model);
-        shaderLightBox.setVec3("lightColor", lightColors[i]);
-        renderCube();
-    }
+    // shaderLightBox.use();
+    // shaderLightBox.setMat4("projection", projection);
+    // shaderLightBox.setMat4("view", view);
+    // for (unsigned int i = 0; i < lightPositions.size(); i++)
+    // {
+    //     model = glm::mat4(1.0f);
+    //     model = glm::translate(model, lightPositions[i]);
+    //     model = glm::scale(model, glm::vec3(0.125f));
+    //     shaderLightBox.setMat4("model", model);
+    //     shaderLightBox.setVec3("lightColor", lightColors[i]);
+    //     renderCube();
+    // }
   }
 
   void Window::BeginFrame() {
@@ -379,7 +386,7 @@ namespace al{
     LightManager& lm = *sm_->Get<LightManager>();
 
 
-    RenderForward();
+    RenderDeferred();
     // Render Imgui
     MenuImgui();
     camera_.MenuImgui();

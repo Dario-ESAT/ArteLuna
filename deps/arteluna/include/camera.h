@@ -14,8 +14,8 @@ namespace al{
   class Camera {
   public:
     enum Modes {
-      Perspective,
-      Ortho
+      PERSPECTIVE,
+      ORTHO
     };
 
     Camera();

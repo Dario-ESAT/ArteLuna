@@ -29,7 +29,7 @@ namespace al{
     position_.y = 0.0f;
     position_.z = 0.0f;
 
-    mode_ = Modes::Perspective;
+    mode_ = Modes::PERSPECTIVE;
     ortho_x_ = 15.0f;
     ortho_y_ = 10.0f;
     near_ = 0.1f;
@@ -62,22 +62,22 @@ namespace al{
       }
 
       if (input->IsKeyDown(LEFT) ||
-        input->IsKeyDown(A) && mode_ == Modes::Perspective) {
+        input->IsKeyDown(A) && mode_ == Modes::PERSPECTIVE) {
         position_ += right_ * speed * delta_time;
         }
 
       if (input->IsKeyDown(RIGHT) ||
-        input->IsKeyDown(D) && mode_ == Modes::Perspective) {
+        input->IsKeyDown(D) && mode_ == Modes::PERSPECTIVE) {
         position_ -= right_ * speed * delta_time;
         }
 
       if (input->IsKeyDown(UP) ||
-        input->IsKeyDown(W) && mode_ == Modes::Perspective) {
+        input->IsKeyDown(W) && mode_ == Modes::PERSPECTIVE) {
         position_ += (forward_) * speed * delta_time;
         }
 
       if (input->IsKeyDown(DOWN) ||
-        input->IsKeyDown(S) && mode_ == Modes::Perspective) {
+        input->IsKeyDown(S) && mode_ == Modes::PERSPECTIVE) {
         position_ -= (forward_) * speed * delta_time;
         }
 
@@ -113,7 +113,7 @@ namespace al{
   void Camera::UpdateRotation(double deltatime, glm::vec<2,float> cursor_pos) {
     if (is_moving_) {
   
-      if (mode_ == Modes::Perspective) {
+      if (mode_ == Modes::PERSPECTIVE) {
         rotate_x_ += mouse_displacement_y_ * rotation_speed_ * static_cast<float>(deltatime);
         if (rotate_x_ > 1.57f) {
           rotate_x_ = 1.57f;
@@ -124,7 +124,7 @@ namespace al{
         rotate_y_ += mouse_displacement_x_ * rotation_speed_ * static_cast<float>(deltatime);
       }
 
-      if (mode_ == Ortho) {
+      if (mode_ == ORTHO) {
    
       }
     }
@@ -179,7 +179,7 @@ namespace al{
   }
 
   void Camera::TransformOrtho(Input* input) {
-    if (mode_ == Ortho) {
+    if (mode_ == ORTHO) {
       // printf("%f \n", input->scrollback_y_value_);
     }
   }
@@ -191,11 +191,11 @@ namespace al{
     glm::mat4x4 vp_matrix;
     glm::mat4x4 view;
     glm::mat4x4 perspective;
-    if (mode_ == Ortho) {
+    if (mode_ == ORTHO) {
       auto ortho_perspective = Orthographic();
       view = ViewMatrix_Orthographic();
       vp_matrix = ortho_perspective * view;
-    } else if (mode_ == Modes::Perspective) {
+    } else if (mode_ == Modes::PERSPECTIVE) {
       perspective = Perspective(aspect);
       view = ViewMatrix_Perspective();
       vp_matrix = perspective * view;
@@ -245,7 +245,7 @@ namespace al{
   }
 
   glm::mat4 Camera::ViewMatrix_Perspective() {
-    glm::lookAt(position_, position_ + forward_, glm::vec3(0.f, 1.f, 0.f));
+    return glm::lookAt(position_, position_ + forward_, glm::vec3(0.f, 1.f, 0.f));
   }
 
   glm::mat4 Camera::Orthographic() {
@@ -274,14 +274,14 @@ namespace al{
 
       ImGui::Text("Forward x:%f y:%f z:%f", forward_.x, forward_.y, forward_.z);
 
-      if (ImGui::Button(mode_ == Modes::Perspective ? "Perspective" : "Orthographic")) {
-        if (mode_ == Modes::Perspective)
-          mode_ = Ortho;
+      if (ImGui::Button(mode_ == Modes::PERSPECTIVE ? "Perspective" : "Orthographic")) {
+        if (mode_ == Modes::PERSPECTIVE)
+          mode_ = ORTHO;
         else
-          mode_ = Modes::Perspective;
+          mode_ = Modes::PERSPECTIVE;
       }
 
-      if (mode_ == Ortho) {
+      if (mode_ == ORTHO) {
         ImGui::Text("Set ortho size");
         ImGui::DragFloat("Ortho width", &ortho_x_, 0.01f);
         ImGui::DragFloat("Ortho height", &ortho_y_, 0.01f);
@@ -335,7 +335,7 @@ namespace al{
   void Camera::UpdateTransform() {
     if (is_moving_) {
       glm::mat4x4 transform_aux(1.0f);
-      if (mode_ == Modes::Perspective) {
+      if (mode_ == Modes::PERSPECTIVE) {
         transform_aux = glm::scale(transform_aux, glm::vec3(1.0f, 1.0f, 1.0f));
         transform_aux = glm::rotate(transform_aux, rotate_y_, glm::vec3(0.0f, 1.0f, 0.0f));
         transform_aux = glm::translate(transform_aux, position_);
