@@ -190,16 +190,18 @@ void main() {
   vec2 texCoord_ = ParallaxMapping(fs_in.TexCoords, view_dir);
 
   //vec3 diffuse_color = texture(al_texture, texCoord_).rgb;
-   vec3 normals_mapping = texture(al_normal, uv).rgb;
-  normals_mapping.z = sqrt(1 - normals_mapping.x * normals_mapping.x + normals_mapping.y * normals_mapping.y);
-  vec3 N = normalize(normals_mapping * 2.0 - 1.0);
+   //vec3 normals_mapping = texture(al_normal, uv).rgb;
+   vec3 normals_mapping = texture(al_normal, uv).rgb * 2.0 - 1.0;
+   vec3 N = normalize(TBN * normals_mapping);
+  //normals_mapping.z = sqrt(1 - normals_mapping.x * normals_mapping.x + normals_mapping.y * normals_mapping.y);
+  //vec3 N = normalize(normals_mapping * 2.0 - 1.0);
   //N = normalize(N);
-  N = TBN * N;
+  //N = TBN * N;
   //N = normalize(N);
   float shadow; 
 
   for(int i = 0; i < al_n_dirLight;i++) {
-    light_result = CalcDir(al_dirLight[i],Nnormal,view_dir);
+    light_result = CalcDir(al_dirLight[i],N,view_dir);
     shadow = ShadowCalculation(fs_in.FragPosLightSpace,al_dirLight[i], Nnormal);
   }
 

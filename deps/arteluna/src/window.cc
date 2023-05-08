@@ -172,8 +172,8 @@ namespace al{
     glDrawBuffers(3, attachments);
 
     glGenRenderbuffers(1, &rboDepth);
-    geometry_pass_.Init("../../deps/arteluna/bin/vertex.glslv","");
-    geometry_program_.Init(geometry_pass_.fragment(),geometry_pass_.vertex());
+    //geometry_pass_.Init("../../deps/arteluna/bin/vertex.glslv","");
+    //geometry_program_.Init(geometry_pass_.fragment(),geometry_pass_.vertex());
   }
 
   int Window::posx() const {
@@ -386,7 +386,7 @@ namespace al{
     LightManager& lm = *sm_->Get<LightManager>();
 
 
-    RenderDeferred();
+    RenderForward();
     // Render Imgui
     MenuImgui();
     camera_.MenuImgui();
