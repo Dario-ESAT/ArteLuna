@@ -6,7 +6,7 @@ layout (location=3) in vec3 a_tangent;
 
 uniform mat4 al_m_matrix;
 uniform mat4 al_vp_matrix;
-
+uniform vec3 al_cam_pos;
 
 struct al_DirLight {
   vec3 direction;
@@ -79,15 +79,26 @@ void main() {
     // Shadows
     vs_out.FragPosLightSpace = lightSpaceMatrix *  vec4(vs_out.FragPos,1.0); 
     // Normal mapping
-    mat3 model3x3 = mat3(al_m_matrix);
-    vec3 mT = model3x3 * a_tangent;
-    vec3 mN = model3x3 * a_normal;
+    //mat3 model3x3 = mat3(al_m_matrix);
+  /*
+    vec3 normal_ = mat3(transpose(inverse(al_m_matrix))) * a_normal;
+    vec3 tangent_ = mat3(transpose(inverse(al_m_matrix))) * a_tangent;
+    vec3 bitangent_ = cross(normal_,tangent_);
+  
+    TBN = mat3(tangent_,bitangent_, normal_);
+  */
+    mat3 normal_matrix =  transpose(inverse(mat3(al_m_matrix)));
+    vec3 normal_ =  normal_matrix * a_normal;
+
+    vec3 mT = normalize(normal_matrix * a_tangent);
+    vec3 mN = normalize(normal_);
+    mT = normalize(mT - dot(mT,mN) * mN);
     vec3 mB = cross(mN, mT);
 
     TBN = mat3(mT, mB, mN);
 
-    vs_out.TangentLightPos = TBN * vec3(0,5,0);
-    vs_out.TangentViewPos  = TBN * vec3(0,-1,0);
+    vs_out.TangentLightPos = TBN * (-al_dirLight[0].direction);
+    vs_out.TangentViewPos  = TBN *  (al_cam_pos - vs_out.FragPos);
     vs_out.TangentFragPos  = TBN * vs_out.FragPos;
 
     TexCoord = a_uv;

@@ -14,15 +14,13 @@ namespace al{
   class Camera {
   public:
     enum Modes {
-      Perspective,
-      Ortho
+      PERSPECTIVE,
+      ORTHO
     };
 
     Camera();
     ~Camera();
   
-
-
     void MenuImgui();
 
     __forceinline glm::vec3 position() const;
@@ -45,7 +43,10 @@ namespace al{
     float fov_;
   
     void Mode(Modes m);
-
+    glm::mat4 Perspective(float aspect);
+    glm::mat4 ViewMatrix_Perspective();
+    glm::mat4 Orthographic();
+    glm::mat4 ViewMatrix_Orthographic();
 
     float mouse_displacement_x_;
     float mouse_displacement_y_;
@@ -59,7 +60,7 @@ namespace al{
   
     void UpdateFromInput(double deltatime, class Input* input);
     void UpdateRotation(double deltatime, glm::vec2 cursor_pos);
-    void RenderScene(float aspect);
+    void RenderSceneForward(float aspect);
     void UpdateTransform();
     void TransformOrtho(class Input* input);
 

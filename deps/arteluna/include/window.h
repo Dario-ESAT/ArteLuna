@@ -9,7 +9,10 @@
 namespace al{
   class Window{
   public:
-
+    Window() = delete;
+    Window( const char* name, int16_t width = 1280, int16_t height = 720,
+        int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
+    );
     ~Window();
     Window(Window& other);
   
@@ -27,12 +30,15 @@ namespace al{
     void set_posy(int posy);
 
     void set_service_manager(class ServiceManager& sm);
-  
+
     void BeginFrame();
 
     void EndFrame();
 
     bool ShouldClose();
+
+    void MenuImgui();
+
 
     static double GetTime();
 
@@ -43,13 +49,16 @@ namespace al{
   
     Camera camera_;
 
-    Window( const char* name, int16_t width = 1280, int16_t height = 720,
-        int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
-    );
-  private:
+  protected:
+    void InitDeferredRender();
+    
+    void RenderForward();
 
+    void RenderDeferred();
 
-    Window();
+    uint32_t gBuffer;
+    uint32_t gPosition, gNormal, gAlbedo;
+
     int16_t width_;
     int16_t height_;
 
@@ -57,12 +66,16 @@ namespace al{
     int posy_;
     bool windowed_;
 
- 
+    unsigned int rboDepth;
     double delta_time_;
     double last_time_;
 
     class ServiceManager* sm_;
-  
+    class Program geometry_program_; 
+    class Shader geometry_pass_;
+    class Program lightning_program_;
+    class Shader lightning_pass_;
+
     friend class Engine;
     friend std::unique_ptr<Window> std::make_unique<Window>();
   };

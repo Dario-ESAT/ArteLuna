@@ -66,10 +66,10 @@ namespace al{
   {
     vertex_ = glCreateShader(GL_VERTEX_SHADER);
     glGetError();
-    check_shader(vertex_);
     assert(vertex_ && "Error creando vertex");
     glShaderSource(vertex_, 1, &vertex, nullptr);
     glCompileShader(vertex_);
+    check_shader(vertex_);
 
     fragment_ = glCreateShader(GL_FRAGMENT_SHADER);
     assert(fragment_ && "Error creando fragment");

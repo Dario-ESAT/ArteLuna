@@ -24,22 +24,17 @@ namespace al{
     material_ = material;
   }
 
-  void RenderComponent::RenderObject(EntityManager& em, LightManager& lm) const{
+  void RenderComponent::RenderForward(EntityManager& em, LightManager& lm) const{
 
 
     material_->program_.Use();
     auto& al_uniforms = material_->al_uniforms_;
 
-    auto al_uniform = al_uniforms.find("al_n_pointLight");
-    if (al_uniform != al_uniforms.end()){
-      glUniform1i(al_uniform->second.location_, lm.num_directionals_);
-    }
-
     char uniform_name[50] = {'\0'};
   
     // ----- Directional lights -----
 
-    al_uniform = al_uniforms.find("al_n_dirLight");
+    auto al_uniform = al_uniforms.find("al_n_dirLight");
     if (al_uniform != al_uniforms.end()){
       glUniform1i(al_uniform->second.location_, lm.num_directionals_);
     }
@@ -238,6 +233,43 @@ namespace al{
     glBindVertexArray(mesh_->mesh_buffer());
     glDrawElements(GL_TRIANGLES, (GLsizei)mesh_->indices_.size(),GL_UNSIGNED_INT, 0);
 
+  }
+  void RenderComponent::RenderDeferred(EntityManager& em, LightManager& lm) const{
+    material_->program_.Use();
+    auto& al_uniforms = material_->al_uniforms_;
+
+    char uniform_name[50] = {'\0'};
+  
+    // ----- Directional lights -----
+
+    auto al_uniform = al_uniforms.find("al_n_dirLight");
+    if (al_uniform != al_uniforms.end()){
+      glUniform1i(al_uniform->second.location_, lm.num_directionals_);
+    }
+
+    for (uint32_t j = 0; j < lm.num_directionals_; j++){
+      Entity* entity = em.GetEntity(lm.lights_[j]);
+      const auto* transform = entity->get_component<TransformComponent>(em);
+      const auto* light = entity->get_component<LightComponent>(em);
+      sprintf_s(uniform_name,"al_dirLight[%d].direction",j);
+      al_uniform = al_uniforms.find(uniform_name);
+      if (al_uniform != al_uniforms.end()){
+        const glm::vec3 forward = transform->forward();
+        glUniform3f(al_uniform->second.location_,  forward.x ,forward.y, forward.z);
+      }
+      sprintf_s(uniform_name,"al_dirLight[%d].color",j);
+      al_uniform = al_uniforms.find(uniform_name);
+      if (al_uniform != al_uniforms.end()){
+        glUniform3f(al_uniform->second.location_,  light->color().r , light->color().g, light->color().b);
+      }
+
+      sprintf_s(uniform_name, "al_dirLight[%d].diffuse", j);
+      al_uniform = al_uniforms.find(uniform_name);
+      if (al_uniform != al_uniforms.end()) {
+        glm::vec3 diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
+        glUniform3f(al_uniform->second.location_, diffuse.x, diffuse.y, diffuse.z);
+      }
+    }
   }
 
   RenderComponent::~RenderComponent() {
