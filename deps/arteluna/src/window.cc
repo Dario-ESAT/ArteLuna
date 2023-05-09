@@ -172,8 +172,10 @@ namespace al{
     glDrawBuffers(3, attachments);
 
     glGenRenderbuffers(1, &rboDepth);
-    geometry_pass_.Init("../../deps/arteluna/bin/vertex.glslv","");
-    geometry_program_.Init(geometry_pass_.fragment(),geometry_pass_.vertex());
+    geometry_pass_.Init("../../deps/arteluna/bin/deferredGeometry.glslv","../../deps/arteluna/bin/deferredGeometry.glslf");
+    geometry_program_.Init(geometry_pass_.vertex(),geometry_pass_.fragment());
+    lightning_pass_.Init("../../deps/arteluna/bin/deferredLightning.glslv","../../deps/arteluna/bin/deferredLightning.glslf");
+    lightning_program_.Init(lightning_pass_.vertex(),lightning_pass_.fragment());
   }
 
   int Window::posx() const {

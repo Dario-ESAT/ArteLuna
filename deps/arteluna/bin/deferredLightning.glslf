@@ -1,12 +1,12 @@
-#version 330
-
-const int n_lights = 1;
+#version 330 core
 
 struct al_DirLight {
   vec3 direction;
   vec3 diffuse;
   vec3 color;
 };
+const int n_lights = 1;
+
 
 uniform al_DirLight al_DirLight[n_lights];
 in vec2 TexCoords;
