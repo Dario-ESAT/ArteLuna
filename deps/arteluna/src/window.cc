@@ -388,7 +388,7 @@ namespace al{
     LightManager& lm = *sm_->Get<LightManager>();
 
 
-    RenderDeferred();
+    RenderForward();
     // Render Imgui
     MenuImgui();
     camera_.MenuImgui();
