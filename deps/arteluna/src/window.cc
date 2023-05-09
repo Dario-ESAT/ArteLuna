@@ -213,7 +213,6 @@ namespace al{
     glm::mat4x4 light_space = light.get_component<LightComponent>(em)
     ->light_transform(*light.get_component<TransformComponent>(em));
     lm.progam_.Use();
-
     ///light render scene
     glUniformMatrix4fv(
       glGetUniformLocation(lm.progam_.program(),"lightSpaceMatrix"),
@@ -222,6 +221,7 @@ namespace al{
     auto* render_components = em.GetComponentVector<RenderComponent>();
     auto* transform_components = em.GetComponentVector<TransformComponent>();
     auto* light_components = em.GetComponentVector<LightComponent>();
+
     //glCullFace(GL_FRONT);
     for (uint16_t i = 1; i < em.last_id_; i++) {
 

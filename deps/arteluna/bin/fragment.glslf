@@ -65,12 +65,12 @@ in vec2 uv;
 in vec3 FragPos;
 in mat3 TBN;
 
-float DepthScale; // this could be a uniform
+uniform float al_DepthScale; // this could be a uniform
 
 
 vec2 ParallaxMapping(vec2 textCoords, vec3 viewdir){
     float height =  texture(al_displacement, textCoords).r;    
-    vec2 parallax_offset = viewdir.xy * viewdir.z * (height * DepthScale);
+    vec2 parallax_offset = viewdir.xy * viewdir.z * (height * al_DepthScale);
     return textCoords - parallax_offset;  
     
 }
@@ -182,7 +182,7 @@ float ShadowCalculation(vec4 fragPosLightSpace, al_DirLight light, vec3 normal)
 
 
 void main() {
-  DepthScale = 0.1;
+  //DepthScale = 0.1;
 
   vec3 view_dir = normalize(fs_in.TangentViewPos - fs_in.TangentFragPos);
   vec3 light_result = vec3(0.0,0.0,0.0);

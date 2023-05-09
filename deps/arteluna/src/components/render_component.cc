@@ -31,7 +31,7 @@ namespace al{
     auto& al_uniforms = material_->al_uniforms_;
 
     char uniform_name[50] = {'\0'};
-  
+
     // ----- Directional lights -----
 
     auto al_uniform = al_uniforms.find("al_n_dirLight");
@@ -190,6 +190,13 @@ namespace al{
 
       }
       
+    // Parallax depth scale
+
+    al_uniform = al_uniforms.find("al_DepthScale");
+    if (al_uniform != al_uniforms.end()) {
+      glUniform1f(al_uniform->second.location_, material_->depth_scale_);
+    }
+
     for (auto it = material_->user_uniforms_.begin(); it != material_->user_uniforms_.end(); ++it) {
 
 

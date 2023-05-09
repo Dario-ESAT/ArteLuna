@@ -29,15 +29,13 @@ int main() {
     "../../deps/arteluna/bin/fragment.glslf",
     "../../deps/arteluna/data/textures/bricks2.jpg",
     "../../deps/arteluna/data/textures/bricks2_normal.jpg",
-    "../../deps/arteluna/data/textures/bricks2_disp.jpg"
-
-    
+    "../../deps/arteluna/data/textures/bricks2_disp.jpg",
+    0.1f
   );
 
   std::shared_ptr<al::Material> material_prueba = std::make_shared<al::Material>(
     "../../deps/arteluna/bin/vertex.glslv",
-    "../../deps/arteluna/bin/fragment.glslf",
-    "../../deps/arteluna/data/textures/muse.jpg"
+    "../../deps/arteluna/bin/fragment.glslf"
     );
 
   std::shared_ptr<al::Material> shadow_material = std::make_shared<al::Material>(
@@ -86,7 +84,7 @@ int main() {
 
   render_cmp->mesh_ = cubo;
 
-  render_cmp->material_ = material;
+  render_cmp->material_ = material_prueba;
 
   al::Entity& entity_2 = sm.Get<al::EntityManager>()->CreateNewEntity();
   al::TransformComponent* trcmp = entity_2.get_component<al::TransformComponent>(em);

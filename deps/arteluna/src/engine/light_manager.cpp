@@ -10,8 +10,6 @@ namespace al{
   static void InitDepthMap() {
     glGenFramebuffers(1, &LightManager::depth_map_FBO_);
 
-
-
     glGenTextures(1, &LightManager::depth_map_text_);
     glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 
@@ -32,6 +30,24 @@ namespace al{
     glBindFramebuffer(GL_FRAMEBUFFER, 0); 
   }
 
+  static void InitPointLightDepthMap() {
+    glGenFramebuffers(1, &LightManager::depth_map_FBO_PointLight_);
+
+    glGenTextures(1, &LightManager::pointlight_depth_map_text_);
+    glBindTexture(GL_TEXTURE_CUBE_MAP,LightManager::pointlight_depth_map_text_);
+
+    for(int i=0;i<6;i++)
+      glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
+      1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL); // Change 1024 for some parameter
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+
+  }
 
   LightManager::LightManager(EntityManager& sm, const char* vert, const char* frag) {
     sm.CreateComponentVector<LightComponent>();
@@ -40,11 +56,18 @@ namespace al{
     num_spots_ = 0;
     shader_.Init(ReadFile(vert).get(),ReadFile(frag).get());
     progam_.Init(shader_.vertex(),shader_.fragment());
+
+    InitDepthMap();
+    InitPointLightDepthMap();
   }
 
   Entity& LightManager::CreatelLight(EntityManager& em, LightComponent::Type type, uint32_t parent) {
     if (depth_map_FBO_ == 0){
       InitDepthMap();
+    }
+
+    if (depth_map_FBO_PointLight_ == 0) {
+
     }
     Entity& light = em.CreateNewEntity(parent);
     auto* light_component = light.AddComponent<LightComponent>(em);
