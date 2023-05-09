@@ -27,8 +27,11 @@ int main() {
   std::shared_ptr<al::Material> material = std::make_shared<al::Material>(
     "../../deps/arteluna/bin/vertex.glslv",
     "../../deps/arteluna/bin/fragment.glslf",
-    "../../deps/arteluna/data/textures/white.jpg",
-    "../../deps/arteluna/data/textures/Box002NormalsMap.png"
+    "../../deps/arteluna/data/textures/bricks2.jpg",
+    "../../deps/arteluna/data/textures/bricks2_normal.jpg",
+    "../../deps/arteluna/data/textures/bricks2_disp.jpg"
+
+    
   );
 
   std::shared_ptr<al::Material> material_prueba = std::make_shared<al::Material>(
@@ -107,12 +110,12 @@ int main() {
   cube_render_cmp->material_ = material;
 
   al::Entity& c = sm.Get<al::EntityManager>()->CreateNewEntity();
-  c.get_component<al::TransformComponent>(em)->set_position({ 0,-3,0 });
+  c.get_component<al::TransformComponent>(em)->set_position({ 0,3,0 });
   c.get_component<al::TransformComponent>(em)->set_scale({ 1,1,1 });
   c.get_component<al::TransformComponent>(em)->set_rotation({ 0,0,0 });
 
-  al::RenderComponent* c_render = cube_.AddComponent<al::RenderComponent>(em);
-  c_render->mesh_ = cuke;
+  al::RenderComponent* c_render = c.AddComponent<al::RenderComponent>(em);
+  c_render->mesh_ = cubo;
   c_render->material_ = material;
 
   al::Entity& bobo = sm.Get<al::EntityManager>()->CreateNewEntity();

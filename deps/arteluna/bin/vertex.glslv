@@ -80,7 +80,13 @@ void main() {
     vs_out.FragPosLightSpace = lightSpaceMatrix *  vec4(vs_out.FragPos,1.0); 
     // Normal mapping
     //mat3 model3x3 = mat3(al_m_matrix);
-
+  /*
+    vec3 normal_ = mat3(transpose(inverse(al_m_matrix))) * a_normal;
+    vec3 tangent_ = mat3(transpose(inverse(al_m_matrix))) * a_tangent;
+    vec3 bitangent_ = cross(normal_,tangent_);
+  
+    TBN = mat3(tangent_,bitangent_, normal_);
+  */
     mat3 normal_matrix =  transpose(inverse(mat3(al_m_matrix)));
     vec3 normal_ =  normal_matrix * a_normal;
 
@@ -92,7 +98,7 @@ void main() {
     TBN = mat3(mT, mB, mN);
 
     vs_out.TangentLightPos = TBN * (-al_dirLight[0].direction);
-    vs_out.TangentViewPos  = TBN * al_cam_pos;
+    vs_out.TangentViewPos  = TBN *  (al_cam_pos - vs_out.FragPos);
     vs_out.TangentFragPos  = TBN * vs_out.FragPos;
 
     TexCoord = a_uv;
