@@ -46,7 +46,12 @@ namespace al{
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-
+    glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_PointLight_);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 
+                         LightManager::pointlight_depth_map_text_, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
   }
 
   LightManager::LightManager(EntityManager& sm, const char* vert, const char* frag) {
@@ -54,21 +59,22 @@ namespace al{
     num_directionals_ = 0;
     num_points_ = 0;
     num_spots_ = 0;
+    // Directional shadow
     shader_.Init(ReadFile(vert).get(),ReadFile(frag).get());
     progam_.Init(shader_.vertex(),shader_.fragment());
 
+    // Point Shadow
+    point_shader_.Init("../../deps/arteluna/bin/point_shadow_render.glslv",
+      "../../deps/arteluna/bin/point_shadow_render.glslf");
+    point_program_.Init(point_shader_.vertex(), point_shader_.fragment());
+
+    // Create both FBO for cubemap and point shadow
     InitDepthMap();
     InitPointLightDepthMap();
   }
 
   Entity& LightManager::CreatelLight(EntityManager& em, LightComponent::Type type, uint32_t parent) {
-    if (depth_map_FBO_ == 0){
-      InitDepthMap();
-    }
 
-    if (depth_map_FBO_PointLight_ == 0) {
-
-    }
     Entity& light = em.CreateNewEntity(parent);
     auto* light_component = light.AddComponent<LightComponent>(em);
 

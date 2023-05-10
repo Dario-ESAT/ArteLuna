@@ -22,6 +22,9 @@ namespace al{
 
     static uint32_t depth_map_FBO_PointLight_;
     static uint32_t pointlight_depth_map_text_;
+    static  float near_;
+    static  float far_;
+    
 
     static uint32_t depth_map_FBO_;
     static uint32_t depth_map_text_;
@@ -35,8 +38,14 @@ namespace al{
     uint32_t num_points_;
     uint32_t num_spots_;
 
+    // Cubemap
     Program progam_;
     Shader shader_;
+
+    // Shadow Point
+    Program point_program_;
+    Shader point_shader_;
+
     friend class LightComponent;
     friend class Window;
     friend class RenderComponent;

@@ -222,6 +222,46 @@ namespace al{
     auto* transform_components = em.GetComponentVector<TransformComponent>();
     auto* light_components = em.GetComponentVector<LightComponent>();
 
+
+    // ------------------ Point Shadow ---------------------
+    glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
+    glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_PointLight_);
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    float aspect = (float)(LightManager::SHADOW_WIDTH / (float)LightManager::SHADOW_HEIGHT);
+    glm::mat4 PshadowProjection = glm::perspective(glm::radians(90.f),aspect,
+      LightManager::near_, LightManager::far_);
+
+    std::vector<glm::mat4> shadowTransforms;
+
+    for (int i = lm.num_directionals_; i < lm.num_directionals_ + lm.num_points_; i++) {
+      Entity* entity = em.GetEntity(lm.lights_[i]);
+      const auto* transform = entity->get_component<TransformComponent>(em);
+      shadowTransforms.push_back(PshadowProjection * glm::lookAt(transform->position(),
+        transform->position() + glm::vec3(1, 0, 0), glm::vec3(0, -1, 0)));
+      shadowTransforms.push_back(PshadowProjection * glm::lookAt(transform->position(),
+          transform->position() + glm::vec3(-1, 0, 0), glm::vec3(0, -1, 0)));
+      shadowTransforms.push_back(PshadowProjection * glm::lookAt(transform->position(),
+        transform->position() + glm::vec3(0, 1, 0), glm::vec3(0, 0, 1)));
+      shadowTransforms.push_back(PshadowProjection * glm::lookAt(transform->position(),
+        transform->position() + glm::vec3(0, -1, 1), glm::vec3(0, 0, -1)));
+      shadowTransforms.push_back(PshadowProjection * glm::lookAt(transform->position(),
+        transform->position() + glm::vec3(0, 0, 1), glm::vec3(0, -1, 0)));
+      shadowTransforms.push_back(PshadowProjection * glm::lookAt(transform->position(),
+        transform->position() + glm::vec3(0, 0, -1), glm::vec3(0, -1, 0)));
+    }
+    lm.point_program_.Use();
+
+    std::string uniform_nameBase;
+    for (int i = 0; i < 6; i++) {
+      uniform_nameBase = "shadowMatrices[" + std::to_string(i) + "]";
+      glUniformMatrix4fv(glGetUniformLocation(lm.point_program_.program(), uniform_nameBase.c_str()), 1, GL_FALSE, &shadowTransforms[i][0][0]);
+    }
+    glUniform1f(glGetUniformLocation(lm.point_program_.program(), "far_plane"), LightManager::far_);
+    glUniform1f(glGetUniformLocation(lm.point_program_.program(), "near_plane"), LightManager::near_);
+
+    glActiveTexture(GL_TEXTURE0 + LightManager::pointlight_depth_map_text_);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, LightManager::pointlight_depth_map_text_);
     //glCullFace(GL_FRONT);
     for (uint16_t i = 1; i < em.last_id_; i++) {
 
