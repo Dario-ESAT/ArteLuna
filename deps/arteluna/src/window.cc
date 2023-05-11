@@ -199,14 +199,17 @@ namespace al{
     camera_.sm_ = &sm;
   }
   void Window::RenderForward() {
+
     EntityManager& em = *sm_->Get<EntityManager>();
     LightManager& lm = *sm_->Get<LightManager>();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(	0.2f,0.2f,0.2f,1.f);
+    glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 
     // Render Shades
     glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
     glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_);
+    glClear(GL_DEPTH_BUFFER_BIT);
+
     glClear(GL_DEPTH_BUFFER_BIT);
   
     auto& light= *em.GetEntity(lm.lights_.at(0));
@@ -222,8 +225,21 @@ namespace al{
     auto* transform_components = em.GetComponentVector<TransformComponent>();
     auto* light_components = em.GetComponentVector<LightComponent>();
 
+    for (uint16_t i = 1; i < em.last_id_; i++) {
 
+
+      if (render_components->at(i).has_value() && !light_components->at(i).has_value()) {
+        const TransformComponent& transform_component = transform_components->at(i).value();
+        const RenderComponent& render_component = render_components->at(i).value();
+
+        glBindVertexArray(render_component.mesh_->mesh_buffer());
+        glUniformMatrix4fv(model_uniform, 1, false, value_ptr(transform_component.world_transform()));
+
+        glDrawElements(GL_TRIANGLES, (GLsizei)render_component.mesh_->indices_.size(), GL_UNSIGNED_INT, 0);
+      }
+    }
     // ------------------ Point Shadow ---------------------
+    
     glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
     glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_PointLight_);
     glClear(GL_DEPTH_BUFFER_BIT);
@@ -233,8 +249,8 @@ namespace al{
       LightManager::near_, LightManager::far_);
 
     std::vector<glm::mat4> shadowTransforms;
-
-    for (int i = lm.num_directionals_; i < lm.num_directionals_ + lm.num_points_; i++) {
+    lm.point_program_.Use();
+    for (unsigned int i = lm.num_directionals_; i < lm.num_directionals_ + lm.num_points_; i++) {
       Entity* entity = em.GetEntity(lm.lights_[i]);
       const auto* transform = entity->get_component<TransformComponent>(em);
       shadowTransforms.push_back(PshadowProjection * glm::lookAt(transform->position(),
@@ -249,33 +265,31 @@ namespace al{
         transform->position() + glm::vec3(0, 0, 1), glm::vec3(0, -1, 0)));
       shadowTransforms.push_back(PshadowProjection * glm::lookAt(transform->position(),
         transform->position() + glm::vec3(0, 0, -1), glm::vec3(0, -1, 0)));
+
+      // Pass model matrix to shader
+      glUniformMatrix4fv(glGetUniformLocation(lm.point_program_.program(), "model"),1, 
+                         GL_FALSE, glm::value_ptr(transform->world_transform()));
+      glUniform3fv(glGetUniformLocation(lm.point_program_.program(), "lightPosition"),1,
+                                        glm::value_ptr(transform->position()));
     }
-    lm.point_program_.Use();
+    
 
     std::string uniform_nameBase;
+    
     for (int i = 0; i < 6; i++) {
       uniform_nameBase = "shadowMatrices[" + std::to_string(i) + "]";
       glUniformMatrix4fv(glGetUniformLocation(lm.point_program_.program(), uniform_nameBase.c_str()), 1, GL_FALSE, &shadowTransforms[i][0][0]);
     }
     glUniform1f(glGetUniformLocation(lm.point_program_.program(), "far_plane"), LightManager::far_);
-    glUniform1f(glGetUniformLocation(lm.point_program_.program(), "near_plane"), LightManager::near_);
+    glUniform1ui(glGetUniformLocation(lm.point_program_.program(), "n_pointlights"), lm.num_points_);
+    //glUniform1f(glGetUniformLocation(lm.point_program_.program(), "near_plane"), LightManager::near_);
 
     glActiveTexture(GL_TEXTURE0 + LightManager::pointlight_depth_map_text_);
     glBindTexture(GL_TEXTURE_CUBE_MAP, LightManager::pointlight_depth_map_text_);
-    //glCullFace(GL_FRONT);
-    for (uint16_t i = 1; i < em.last_id_; i++) {
-
+    //glCullFace(GL_FRONT);*/
     
-      if (render_components->at(i).has_value() && !light_components->at(i).has_value()) {
-        const TransformComponent& transform_component = transform_components->at(i).value();
-        const RenderComponent& render_component = render_components->at(i).value();
-      
-        glBindVertexArray(render_component.mesh_->mesh_buffer());
-        glUniformMatrix4fv(model_uniform, 1, false, value_ptr(transform_component.world_transform()));
-      
-        glDrawElements(GL_TRIANGLES, (GLsizei)render_component.mesh_->indices_.size(),GL_UNSIGNED_INT, 0);
-      }
-    }
+    //lm.progam_.Use();
+
     //glCullFace(GL_BACK);
     /// -----------------------
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

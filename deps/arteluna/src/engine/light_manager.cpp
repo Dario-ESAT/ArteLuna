@@ -6,18 +6,24 @@
 namespace al{
   uint32_t LightManager::depth_map_FBO_ = 0;
   uint32_t LightManager::depth_map_text_ = 0;
+  uint32_t LightManager::depth_map_FBO_PointLight_ = 0;
+  uint32_t LightManager::pointlight_depth_map_text_ = 0;
+  float LightManager::near_ = 1;
+  float LightManager::far_ = 25;
 
   static void InitDepthMap() {
     glGenFramebuffers(1, &LightManager::depth_map_FBO_);
 
+
+
     glGenTextures(1, &LightManager::depth_map_text_);
     glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 
-                 LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT,
-                 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+      LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT,
+      0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER); 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
     glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
@@ -27,7 +33,8 @@ namespace al{
       GL_TEXTURE_2D, LightManager::depth_map_text_, 0);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0); 
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
   }
 
   static void InitPointLightDepthMap() {
@@ -64,13 +71,13 @@ namespace al{
     progam_.Init(shader_.vertex(),shader_.fragment());
 
     // Point Shadow
-    point_shader_.Init("../../deps/arteluna/bin/point_shadow_render.glslv",
-      "../../deps/arteluna/bin/point_shadow_render.glslf");
+    point_shader_.Init(ReadFile("../../deps/arteluna/bin/point_shadow_render.glslv").get(),
+      ReadFile("../../deps/arteluna/bin/point_shadow_render.glslf").get());
     point_program_.Init(point_shader_.vertex(), point_shader_.fragment());
 
     // Create both FBO for cubemap and point shadow
     InitDepthMap();
-    InitPointLightDepthMap();
+    //InitPointLightDepthMap();
   }
 
   Entity& LightManager::CreatelLight(EntityManager& em, LightComponent::Type type, uint32_t parent) {

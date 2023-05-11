@@ -1,5 +1,8 @@
 #version 330
 
-void main() {
-  //gl_FragDepth = gl_FragCoord.z;
+  in float FragDepth;
+
+void main()
+{
+  gl_FragDepth = FragDepth;
 }  

@@ -62,16 +62,17 @@ int main() {
   al::TransformComponent* t_comp = d_light.get_component<al::TransformComponent>(em);
   t_comp->set_rotation(1, 0, 0);
   t_comp->set_position({ 0.f, 10.0f, 0.0f });
-
   al::RenderComponent* d_render = d_light.AddComponent<al::RenderComponent>(em);
   d_render->mesh_ = sonic;
-
   d_render->material_ = material;
   
-  // al::Entity& s_light = l_manager.CreatelLight(LightComponent::Type::Spotlight);
-  // al::RenderComponent* l_render = s_light.AddComponent<al::RenderComponent>();
-  // l_render->mesh_ = sonic;
-  // l_render->material_ = material;
+   al::Entity& s_light = l_manager.CreatelLight(em,al::LightComponent::Type::Pointlight);
+   al::TransformComponent* t_comp_p = s_light.get_component<al::TransformComponent>(em);
+   t_comp_p->set_rotation(1, 0, 0);
+   t_comp_p->set_position({ 5.f, 10.0f, 0.0f });
+   al::RenderComponent* l_render = s_light.AddComponent<al::RenderComponent>(em);
+   l_render->mesh_ = sonic;
+   l_render->material_ = material;
   
   al::Entity& entity_1 = sm.Get<al::EntityManager>()->CreateNewEntity();
 

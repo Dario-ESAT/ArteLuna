@@ -204,7 +204,7 @@ void main() {
   }
 
   for(int i = 0; i < al_n_pointLight;i++) {
-    //light_result += CalcPointLight(al_pointLight[i],N,FragPos,view_dir);
+    light_result += CalcPointLight(al_pointLight[i],N,FragPos,view_dir);
     //light_result *= diffuse_color;
   }
   for(int i = 0; i < al_n_spotLight;i++) {
