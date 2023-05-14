@@ -70,13 +70,13 @@ namespace al{
       glUniform1i(al_uniform->second.location_, lm.num_points_);
     }
 
-    for (uint32_t j = lm.num_directionals_; j < lm.num_points_; j++){
+    for (uint32_t j = lm.num_directionals_; j < lm.num_points_ + lm.num_directionals_; j++){
       Entity* entity =  em.GetEntity(lm.lights_[j]);
       const auto* transform =  entity->get_component<TransformComponent>(em);
       const auto* light = entity->get_component<LightComponent>(em);
       int idx = j - lm.num_directionals_;
 
-      sprintf_s(uniform_name,"al_pointLight[%d].position",j);
+      sprintf_s(uniform_name,"al_pointLight[%d].position",idx);
       al_uniform = al_uniforms.find(uniform_name);
       if (al_uniform != al_uniforms.end()){
         glUniform3f(

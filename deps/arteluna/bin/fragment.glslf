@@ -129,9 +129,9 @@ vec3 CalcPointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir
   // combine results
   
   
-  vec3 diffuse  = light.color * diff * vec3(texture(al_texture, uv));
+  vec3 diffuse  = light.color * diff * vec3(texture(al_texture, uv)) * attenuation;
 
-  diffuse  *= attenuation;
+  //diffuse  *= attenuation;
   //specular *= attenuation;
   return (diffuse);
 }
@@ -204,7 +204,7 @@ void main() {
   }
 
   for(int i = 0; i < al_n_pointLight;i++) {
-    light_result += CalcPointLight(al_pointLight[i],N,FragPos,view_dir);
+    light_result += CalcPointLight(al_pointLight[i],Nnormal,FragPos,view_dir);
     //light_result *= diffuse_color;
   }
   for(int i = 0; i < al_n_spotLight;i++) {

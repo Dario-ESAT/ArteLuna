@@ -63,7 +63,6 @@ out VS_OUT {
 } vs_out;
 
 out vec3 normal;
-out vec2 TexCoord;
 out vec2 uv;
 out vec3 FragPos;
 out mat3 TBN;
@@ -100,7 +99,6 @@ void main() {
     vs_out.TangentLightPos = TBN * (-al_dirLight[0].direction);
     vs_out.TangentViewPos  = TBN *  (al_cam_pos - vs_out.FragPos);
     vs_out.TangentFragPos  = TBN * vs_out.FragPos;
-
-    TexCoord = a_uv;
+    
     gl_Position = al_vp_matrix * al_m_matrix * vec4(a_position, 1.0f);
 };
