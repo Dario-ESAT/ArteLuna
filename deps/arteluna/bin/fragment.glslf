@@ -4,6 +4,7 @@ uniform sampler2D al_texture;
 uniform sampler2D al_normal;
 uniform sampler2D al_displacement;
 uniform sampler2D al_shadow_texture;
+uniform samplerCube al_point_shadow_cube[MAX_p_LIGHTS];
 // uniform sampler2D u_specular;
 // uniform float u_shininess;
 uniform vec3 al_cam_pos;

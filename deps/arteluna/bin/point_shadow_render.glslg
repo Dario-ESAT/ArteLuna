@@ -2,9 +2,8 @@
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 18) out;
 
-uniform int n_pointlights;
 uniform mat4 shadowMatrices[6];
-uniform vec3 lightPosition[];
+uniform vec3 lightPosition;
 uniform float far_plane;
 
 out float FragDepth;
@@ -12,22 +11,21 @@ out float FragDepth;
 void EmitVertex(vec4 position, int layer)
 {
     gl_Position = position;
-    FragDepth = length(position.xyz - lightPosition) / far_plane;
+    FragDepth = length(position.xyz - l_pos) / far_plane;
     gl_Layer = layer;
     EmitVertex();
 }
 
 void main()
 {
-    for(int j=0;j<n_pointlights;j++){
-        for (int face = 0; face < 6; ++face)
+    for (int face = 0; face < 6; ++face)
+    {
+        for (int i = 0; i < 3; ++i)
         {
-            for (int i = 0; i < 3; ++i)
-            {
-                vec4 worldPos = gl_in[i].gl_Position;
-                EmitVertex(shadowMatrices[face] * worldPos, face);
-            }
-            EndPrimitive();
+            vec4 worldPos = gl_in[i].gl_Position;
+            EmitVertex(shadowMatrices[face] * worldPos, face);
         }
+        EndPrimitive();
     }
+    
 }

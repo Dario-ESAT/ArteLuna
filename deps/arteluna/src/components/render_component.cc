@@ -229,7 +229,15 @@ namespace al{
     uniform = glGetUniformLocation(material_->program_.program(), "al_shadow_texture");
     glUniform1i(uniform, LightManager::depth_map_text_);
 
+    std::string uniform_nameBase;
+    for (int i = 0; i < lm.num_points_; i++) {
+      uniform_nameBase = "al_point_shadow_cube[" + std::to_string(i) + "]";
 
+      glActiveTexture(GL_TEXTURE0 + LightManager::pointlight_depth_map_text_.at(i));
+      glBindTexture(GL_TEXTURE_CUBE_MAP, LightManager::pointlight_depth_map_text_.at(i));
+      uniform = glGetUniformLocation(lm.point_program_.program(), uniform_nameBase.c_str());
+      glUniform1i(uniform, LightManager::pointlight_depth_map_text_.at(i) - GL_TEXTURE0);
+    }
     auto& light= *em.GetEntity(lm.lights_.at(0));
     glm::mat4x4 light_space = light.get_component<LightComponent>(em)->light_transform(*light.get_component<TransformComponent>(em));
  

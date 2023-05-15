@@ -20,11 +20,10 @@ namespace al{
   
     void DestroyLight(size_t index);
 
-    static uint32_t depth_map_FBO_PointLight_;
-    static uint32_t pointlight_depth_map_text_;
-    static  float near_;
-    static  float far_;
-    
+    static std::vector<uint32_t> depth_map_FBO_PointLight_;
+    static std::vector<uint32_t> pointlight_depth_map_text_;
+    static float near_;
+    static float far_;
 
     static uint32_t depth_map_FBO_;
     static uint32_t depth_map_text_;
