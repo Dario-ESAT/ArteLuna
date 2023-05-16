@@ -8,7 +8,7 @@ namespace al{
   uint32_t LightManager::depth_map_text_ = 0;
   std::vector <uint32_t> LightManager::depth_map_FBO_PointLight_ = std::vector<uint32_t>();
   std::vector <uint32_t> LightManager::pointlight_depth_map_text_ = std::vector<uint32_t>();
-  float LightManager::near_ = 1;
+  float LightManager::near_ = 0.1f;
   float LightManager::far_ = 25;
 
   static void InitDepthMap() {
@@ -40,14 +40,26 @@ namespace al{
   static void InitPointLightDepthMap() {
     uint32_t idx_aux;
     glGenFramebuffers(1, &idx_aux);
+    if (glGetError() != GL_NO_ERROR) {
+      printf("Error creating framebuffer");
+      return;
+    }
     LightManager::depth_map_FBO_PointLight_.push_back(idx_aux);
     glGenTextures(1, &idx_aux);
+    if (glGetError() != GL_NO_ERROR) {
+      printf("Error creating texture");
+      return;
+    }
     LightManager::pointlight_depth_map_text_.push_back(idx_aux);
     glBindTexture(GL_TEXTURE_CUBE_MAP,LightManager::pointlight_depth_map_text_.back());
-    for(int i=0;i<6;i++)
+    for (int i = 0; i < 6; i++) {
       glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
-      1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL); // Change 1024 for some parameter
-
+        1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL); // Change 1024 for some parameter
+      if (glGetError() != GL_NO_ERROR) {
+        printf("Error allocating texture");
+        return;
+      }
+    }
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -57,9 +69,18 @@ namespace al{
     glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_PointLight_.back());
     glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 
                          LightManager::pointlight_depth_map_text_.back(), 0);
+    if (glGetError() != GL_NO_ERROR) {
+      printf("Error attaching depth texture to framebuffer");
+      return;
+    }
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+      printf("Framebuffer is not complete");
+      return;
+    }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
   }
 
   LightManager::LightManager(EntityManager& sm, const char* vert, const char* frag) {

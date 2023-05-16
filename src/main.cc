@@ -97,12 +97,12 @@ int main() {
   trcmp->set_scale({ 5.f, 5.0f, 5.f });
   trcmp->set_rotation({ 0.0f, 0.f, 0.0f });
 	
-  al::RenderComponent* rcmp = entity_2.AddComponent<al::RenderComponent>(em);
+  /*al::RenderComponent* rcmp = entity_2.AddComponent<al::RenderComponent>(em);
   rcmp->mesh_ = quad;
   rcmp->material_ = material;
   shadow_material->texture_.set_id(al::LightManager::depth_map_text_);
   glBindTexture(GL_TEXTURE_2D, al::LightManager::depth_map_text_);
-
+  */
   al::Entity& cube_ = sm.Get<al::EntityManager>()->CreateNewEntity();
   cube_.get_component<al::TransformComponent>(em)->set_position({ 0,-5,0 });
   cube_.get_component<al::TransformComponent>(em)->set_scale({ 1,1,1 });

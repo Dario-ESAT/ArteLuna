@@ -102,16 +102,17 @@ vec3 CalSpotLight(al_SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
 }
 
 vec3 CalcPointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
+  float intensity = 1.5;
   vec3 lightDir = normalize(light.position - fragPos);
   float diff = max(dot(lightDir, normal), 0.0);
 
   // attenuation
   float distance = length(light.position - fragPos);
   float attenuation = 1.0 / (light.constant + light.linear * distance + 
-   0.032f * (distance * distance));    
+   light.quadratic * (distance * distance));    
   // combine results
-  vec3 ambientLight = vec3(0.1, 0.1, 0.1);
-  vec3 diffuse  = light.color * diff * vec3(texture(al_texture, uv)) * attenuation;
+  vec3 ambientLight = vec3(0.1, 0.1, 0.1) * intensity;
+  vec3 diffuse  = light.color * diff * vec3(texture(al_texture, uv)) * attenuation * intensity;
 
   return (diffuse + ambientLight);
 }
@@ -126,7 +127,7 @@ float CalcPointShadow(al_PointLight light, vec3 fragPos, int index)
     // now get current linear depth as the length between the fragment and light position
     float currentDepth = length(fragToLight);
     // test for shadows
-    float bias = 0.5; // we use a much larger bias since depth is now in [near_plane, far_plane] range
+    float bias = 0.005; // we use a much larger bias since depth is now in [near_plane, far_plane] range
     float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;        
 
     return shadow;
@@ -196,7 +197,7 @@ void main() {
   float shadow; 
 
   for(int i = 0; i < al_n_dirLight;i++) {
-    //light_result = CalcDir(al_dirLight[i],N,view_dir);
+    //¡¡light_result = CalcDir(al_dirLight[i],N,view_dir);
     //shadow = ShadowCalculation(fs_in.FragPosLightSpace,al_dirLight[i], N/*Nnormal*/);
   }
   

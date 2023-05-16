@@ -231,13 +231,15 @@ namespace al{
 
     std::string uniform_nameBase;
     for (int i = 0; i < lm.num_points_; i++) {
+      int texture_unit_index = i + 4; // 4 debido a que hay otras 4 texturas haciendo el bind antes
       uniform_nameBase = "al_point_shadow_cube[" + std::to_string(i) + "]";
 
-      glActiveTexture(GL_TEXTURE0 + LightManager::pointlight_depth_map_text_.at(i));
+      glActiveTexture(GL_TEXTURE0 + texture_unit_index);
       glBindTexture(GL_TEXTURE_CUBE_MAP, LightManager::pointlight_depth_map_text_.at(i));
-      uniform = glGetUniformLocation(lm.point_program_.program(), uniform_nameBase.c_str());
-      glUniform1i(uniform, LightManager::pointlight_depth_map_text_.at(i) - GL_TEXTURE0);
+      uniform = glGetUniformLocation(material_->program_.program(), uniform_nameBase.c_str());
+      glUniform1i(uniform, texture_unit_index);
     }
+    
     auto& light= *em.GetEntity(lm.lights_.at(0));
     glm::mat4x4 light_space = light.get_component<LightComponent>(em)->light_transform(*light.get_component<TransformComponent>(em));
  
