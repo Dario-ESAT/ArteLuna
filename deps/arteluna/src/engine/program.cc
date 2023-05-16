@@ -61,6 +61,24 @@ namespace al{
       printf("There was an error on the program, invalid shader %d", e);
     }
   }
+  void Program::Init(unsigned int vertex_, unsigned int fragment_, unsigned int geometry_)
+  {
+    try {
+      if (vertex_ == 0 || fragment_ == 0) {
+        throw - 1;
+      }
+      id_ = glCreateProgram();
+
+      glAttachShader(id_, vertex_);
+      glAttachShader(id_, fragment_);
+      glAttachShader(id_, geometry_);
+      glLinkProgram(id_);
+      check_program(id_);
+    }
+    catch (int e) {
+      printf("There was an error on the program, invalid shader %d", e);
+    }
+  }
   /*
   void program::linkProgram(std::string link_log)
   {

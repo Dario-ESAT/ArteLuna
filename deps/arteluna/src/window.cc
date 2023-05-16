@@ -206,7 +206,7 @@ namespace al{
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 
     // Render Shades
-    glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
+    /*glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
     glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_);
     glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -224,7 +224,7 @@ namespace al{
     auto* render_components = em.GetComponentVector<RenderComponent>();
     auto* transform_components = em.GetComponentVector<TransformComponent>();
     auto* light_components = em.GetComponentVector<LightComponent>();
-
+    glCullFace(GL_FRONT)
     for (uint16_t i = 1; i < em.last_id_; i++) {
 
 
@@ -237,7 +237,7 @@ namespace al{
 
         glDrawElements(GL_TRIANGLES, (GLsizei)render_component.mesh_->indices_.size(), GL_UNSIGNED_INT, 0);
       }
-    }
+    }*/
     // ------------------ Point Shadow ---------------------
     for (int i = 0; i < lm.num_points_;i++) {
       glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
@@ -292,6 +292,25 @@ namespace al{
       
       glActiveTexture(GL_TEXTURE0 + LightManager::pointlight_depth_map_text_.at(i));
       glBindTexture(GL_TEXTURE_CUBE_MAP, LightManager::pointlight_depth_map_text_.at(i));
+      glCullFace(GL_FRONT);
+      auto* render_components = em.GetComponentVector<RenderComponent>();
+      auto* transform_components = em.GetComponentVector<TransformComponent>();
+      auto* light_components = em.GetComponentVector<LightComponent>();
+      GLint model_uniform = glGetUniformLocation(lm.point_program_.program(), "model");
+      ;
+      for (uint16_t i = 1; i < em.last_id_; i++) {
+
+
+        if (render_components->at(i).has_value() && !light_components->at(i).has_value()) {
+          const TransformComponent& transform_component = transform_components->at(i).value();
+          const RenderComponent& render_component = render_components->at(i).value();
+
+          glBindVertexArray(render_component.mesh_->mesh_buffer());
+          glUniformMatrix4fv(model_uniform, 1, false, value_ptr(transform_component.world_transform()));
+
+          glDrawElements(GL_TRIANGLES, (GLsizei)render_component.mesh_->indices_.size(), GL_UNSIGNED_INT, 0);
+        }
+      }
       
       //glCullFace(GL_FRONT);*/
 
@@ -300,11 +319,12 @@ namespace al{
       //glCullFace(GL_BACK);
       /// -----------------------
     }
+    glCullFace(GL_BACK);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     glViewport(0, 0, width_, height_);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
+
+    //glBindTexture(GL_TEXTURE_CUBE_MAP , LightManager::depth_map_text_);
     // Render Scene --------
     sm_->Get<Systems>()->SystemsUpdate();
     camera_.RenderSceneForward(static_cast<float>(width_)/static_cast<float>(height_));
@@ -471,6 +491,11 @@ namespace al{
       ImGui::Text("pointer = %p##3", gAlbedo);
       ImGui::Text("size = %d x %d##3", width_, height_);
       ImGui::Image((void*)(intptr_t)gAlbedo, ImVec2(width_, height_));
+      ImGui::End();
+    }
+
+    ImGui::Begin("PointLight textures"); {
+      ImGui::Image((void*)(intptr_t)LightManager::pointlight_depth_map_text_.at(0), ImVec2(1024, 1024));
       ImGui::End();
     }
   }

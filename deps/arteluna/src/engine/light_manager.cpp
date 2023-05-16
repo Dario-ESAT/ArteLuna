@@ -6,8 +6,8 @@
 namespace al{
   uint32_t LightManager::depth_map_FBO_ = 0;
   uint32_t LightManager::depth_map_text_ = 0;
-  //uint32_t LightManager::depth_map_FBO_PointLight_ = 0;
-  //uint32_t LightManager::pointlight_depth_map_text_ = 0;
+  std::vector <uint32_t> LightManager::depth_map_FBO_PointLight_ = std::vector<uint32_t>();
+  std::vector <uint32_t> LightManager::pointlight_depth_map_text_ = std::vector<uint32_t>();
   float LightManager::near_ = 1;
   float LightManager::far_ = 25;
 
@@ -73,8 +73,10 @@ namespace al{
 
     // Point Shadow
     point_shader_.Init(ReadFile("../../deps/arteluna/bin/point_shadow_render.glslv").get(),
-      ReadFile("../../deps/arteluna/bin/point_shadow_render.glslf").get());
-    point_program_.Init(point_shader_.vertex(), point_shader_.fragment());
+                       ReadFile("../../deps/arteluna/bin/point_shadow_render.glslf").get(), 
+                       ReadFile("../../deps/arteluna/bin/point_shadow_render.glslg").get());
+
+    point_program_.Init(point_shader_.vertex(), point_shader_.fragment(), point_shader_.geometry());
 
     // Create both FBO for cubemap and point shadow
     InitDepthMap();
@@ -84,8 +86,9 @@ namespace al{
 
     Entity& light = em.CreateNewEntity(parent);
     auto* light_component = light.AddComponent<LightComponent>(em);
-
-    InitPointLightDepthMap();
+    if (type == LightComponent::Pointlight) {
+      InitPointLightDepthMap();
+    }
     light_component->type_ = type;
     lights_.push_back(light.id());
     OrderLights(em);
