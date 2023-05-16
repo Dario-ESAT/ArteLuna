@@ -206,7 +206,7 @@ namespace al{
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 
     // Render Shades
-    /*
+    
     glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
     glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_);
     glClear(GL_DEPTH_BUFFER_BIT);
@@ -239,7 +239,7 @@ namespace al{
         glDrawElements(GL_TRIANGLES, (GLsizei)render_component.mesh_->indices_.size(), GL_UNSIGNED_INT, 0);
       }
     }
-    glCullFace(GL_BACK);*/
+    glCullFace(GL_BACK);
     // ------------------ Point Shadow ---------------------
     for (int i = lm.num_directionals_; i < lm.num_directionals_ + lm.num_points_;i++) {
       int idx = i;
@@ -266,7 +266,7 @@ namespace al{
       shadowTransforms.push_back(PshadowProjection * glm::lookAt(transform->position(),
         transform->position() + glm::vec3(0, 1, 0), glm::vec3(0, 0, 1)));
       shadowTransforms.push_back(PshadowProjection * glm::lookAt(transform->position(),
-        transform->position() + glm::vec3(0, -1, 1), glm::vec3(0, 0, -1)));
+        transform->position() + glm::vec3(0, -1, 0), glm::vec3(0, 0, -1)));
       shadowTransforms.push_back(PshadowProjection * glm::lookAt(transform->position(),
         transform->position() + glm::vec3(0, 0, 1), glm::vec3(0, -1, 0)));
       shadowTransforms.push_back(PshadowProjection * glm::lookAt(transform->position(),

@@ -197,8 +197,8 @@ void main() {
   float shadow; 
 
   for(int i = 0; i < al_n_dirLight;i++) {
-    //¡¡light_result = CalcDir(al_dirLight[i],N,view_dir);
-    //shadow = ShadowCalculation(fs_in.FragPosLightSpace,al_dirLight[i], N/*Nnormal*/);
+    light_result = CalcDir(al_dirLight[i],N,view_dir);
+    shadow = ShadowCalculation(fs_in.FragPosLightSpace,al_dirLight[i], N/*Nnormal*/);
   }
   
   for(int i = 0; i < al_n_pointLight;i++) {
@@ -218,7 +218,7 @@ void main() {
   
   
 
-  vec3 light_res = /*(1.0 - shadow) * */(light_result) /** al_dirLight[0].color*/;
+  vec3 light_res = (1.0 - shadow) * (light_result) * al_dirLight[0].color;
 
 
 
