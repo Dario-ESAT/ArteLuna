@@ -16,7 +16,7 @@ int main() {
   al::Engine engine(sm);
   al::EntityManager& em = *sm.Get<al::EntityManager>();
 
-  al::Window& window = *engine.CreateNewWindow("Aleksander");
+  al::Window& window = *engine.CreateNewWindow("Aleksander",1600,900);
   
   al::LightManager l_manager(em,
   "../../deps/arteluna/bin/shadow_render.glslv",
@@ -30,8 +30,6 @@ int main() {
     "../../deps/arteluna/data/textures/bricks2.jpg",
     "../../deps/arteluna/data/textures/bricks2_normal.jpg",
     "../../deps/arteluna/data/textures/bricks2_disp.jpg"
-
-    
   );
 
   std::shared_ptr<al::Material> material_prueba = std::make_shared<al::Material>(

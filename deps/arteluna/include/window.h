@@ -58,6 +58,7 @@ namespace al{
 
     uint32_t gBuffer;
     uint32_t gPosition, gNormal, gAlbedo;
+    Texture TgPosition, TgNormal, TgAlbedo;
 
     int16_t width_;
     int16_t height_;

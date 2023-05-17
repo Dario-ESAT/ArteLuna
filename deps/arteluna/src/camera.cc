@@ -142,12 +142,10 @@ namespace al{
                                                  "../../deps/arteluna/data/textures/cubemap/default/top.jpg", "../../deps/arteluna/data/textures/cubemap/default/bottom.jpg",
                                                  "../../deps/arteluna/data/textures/cubemap/default/front.jpg", "../../deps/arteluna/data/textures/cubemap/default/back.jpg");
     cubemap_->program_.Use();
-    //int uniform = glGetUniformLocation(cubemap_->program_.program(), "skybox");
-    //glUniform1i(uniform, cubemap_->texture_.get_id());
     glUniform1i(glGetUniformLocation(cubemap_->program_.program(), "skybox"), 0);
   }
 
-  void Camera::RenderCubemap(glm::mat4x4 &view_matrix, glm::mat4x4 &perspective) {
+  void Camera::RenderCubemap(glm::mat4x4& view_matrix, glm::mat4x4& perspective) {
     //glDisable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
     cubemap_->program_.Use();

@@ -136,8 +136,7 @@ vec3 CalcPointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir
   return (diffuse);
 }
 
-float ShadowCalculation(vec4 fragPosLightSpace, al_DirLight light, vec3 normal)
-{
+float ShadowCalculation(vec4 fragPosLightSpace, al_DirLight light, vec3 normal) {
     // perform perspective divide
     float bias = max(0.015 * (1.0 - dot(normal, light.direction)), 0.005); 
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;

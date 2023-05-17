@@ -1,4 +1,4 @@
-#define GLFW_INCLUDE_NONE
+ #define GLFW_INCLUDE_NONE
 #include "glad/gl.h"
 #include "GLFW/glfw3.h"
 #include "window.h"
@@ -9,6 +9,7 @@
 #include "imgui.h"
 #include "stdio.h"
 #include "input.h"
+#include "utils.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "components/render_component.h"
@@ -143,8 +144,7 @@ namespace al{
     // - position color buffer
     glGenTextures(1, &gPosition);
     glBindTexture(GL_TEXTURE_2D, gPosition);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width_, height_, 0, GL_RGBA, 
-    GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width_, height_, 0, GL_RGBA, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
@@ -152,8 +152,7 @@ namespace al{
     // - normal color buffer
     glGenTextures(1, &gNormal);
     glBindTexture(GL_TEXTURE_2D, gNormal);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width_, height_, 0, GL_RGBA, 
-    GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width_, height_, 0, GL_RGBA, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
@@ -161,8 +160,7 @@ namespace al{
     // - color + specular color buffer
     glGenTextures(1, &gAlbedo);
     glBindTexture(GL_TEXTURE_2D, gAlbedo);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width_, height_, 0, GL_RGBA, 
-    GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width_, height_, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedo, 0);
@@ -172,10 +170,16 @@ namespace al{
     glDrawBuffers(3, attachments);
 
     glGenRenderbuffers(1, &rboDepth);
-    /*geometry_pass_.Init("../../deps/arteluna/bin/deferredGeometry.glslv", "../../deps/arteluna/bin/deferredGeometry.glslf");
+
+    const auto geometry_vert = ReadFile("../../deps/arteluna/bin/deferredGeometry.glslv");
+    const auto geometry_frag = ReadFile("../../deps/arteluna/bin/deferredGeometry.glslf");
+    const auto light_vert = ReadFile("../../deps/arteluna/bin/deferredLightning.glslv");
+    const auto light_frag = ReadFile("../../deps/arteluna/bin/deferredLightning.glslf");
+    
+    geometry_pass_.Init(geometry_vert.get(), geometry_frag.get());
     geometry_program_.Init(geometry_pass_.vertex(),geometry_pass_.fragment());
-    lightning_pass_.Init("../../deps/arteluna/bin/deferredLightning.glslv","../../deps/arteluna/bin/deferredLightning.glslf");
-    lightning_program_.Init(lightning_pass_.vertex(),lightning_pass_.fragment());*/
+    lightning_pass_.Init(light_vert.get(),light_frag.get());
+    lightning_program_.Init(lightning_pass_.vertex(),lightning_pass_.fragment());
   }
 
   int Window::posx() const {
@@ -200,6 +204,7 @@ namespace al{
     sm_ = &sm;
     camera_.sm_ = &sm;
   }
+
   void Window::RenderForward() {
     EntityManager& em = *sm_->Get<EntityManager>();
     LightManager& lm = *sm_->Get<LightManager>();
@@ -266,46 +271,31 @@ namespace al{
         // -----------------------------------------------------------------
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glm::mat4 projection = camera_.Perspective(static_cast<float>(width_) / 
+    glm::mat4 perspective = camera_.Perspective(static_cast<float>(width_) / 
     static_cast<float>(height_));
     glm::mat4 view = camera_.ViewMatrix_Perspective();
+    glm::mat4 vp = perspective * view;
     geometry_program_.Use();
-    //geometry_pass_.setMat4("projection", projection);
-    glUniformMatrix4fv(glGetUniformLocation(geometry_program_.program(), "al_vp_matrix"), 
-    1, false, glm::value_ptr(view * projection));
+    glUniformMatrix4fv(
+      glGetUniformLocation(geometry_program_.program(), "al_vp_matrix"), 1,
+      false, glm::value_ptr(vp));
 
-    //geometry_pass_.setMat4("view", view);
-    const auto* render_components = em.GetComponentVector<RenderComponent>();
     const auto* transform_components = em.GetComponentVector<TransformComponent>();
+    const auto* render_components = em.GetComponentVector<RenderComponent>();
     for (uint32_t i = 1; i < em.last_id_; i++) {
-    {
-        /*model = glm::mat4(1.0f);
-        model = glm::translate(model, objectPositions[i]);
-        model = glm::scale(model, glm::vec3(0.25f));
-        shaderGeometryPass.setMat4("model", model);*/
-        //backpack.Draw(shaderGeometryPass);
-        if (render_components->at(i).has_value()) {
-          const TransformComponent& transform_component = transform_components->at(i).value();
-          const RenderComponent& render_component = render_components->at(i).value();
-          render_component.material_->program_.Use();
+      if (render_components->at(i).has_value()) {
+        const TransformComponent& transform_component = transform_components->at(i).value();
+        const RenderComponent& render_component = render_components->at(i).value();
 
+        glUniformMatrix4fv(
+          glGetUniformLocation(geometry_program_.program(), "al_m_matrix"),
+          1, false, value_ptr(transform_component.world_transform()));
 
-          auto& al_uniforms = render_component.material_->al_uniforms_;
-
-          auto al_uniform = al_uniforms.find("al_vp_matrix");
-          if (al_uniform != al_uniforms.end()) {
-            glUniformMatrix4fv(al_uniform->second.location_, 1, false, value_ptr(view * projection));
-          }
-
-          al_uniform = al_uniforms.find("al_m_matrix");
-          if (al_uniform != al_uniforms.end()) {
-            glUniformMatrix4fv(al_uniform->second.location_, 1, false, value_ptr(transform_component.world_transform()));
-          }
-
-          //render_component.RenderForward(em, lm);
-        }
+        glUniform1i(glGetUniformLocation(lightning_program_.program(),"al_texture"),
+          render_component.material_->texture_.get_id());
+        
+        render_component.RenderDeferred(em, lm);
       }
-    camera_.RenderCubemap(view,projection);
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -320,11 +310,19 @@ namespace al{
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, gAlbedo);
     // send light relevant uniforms
+
+    glUniform1i(glGetUniformLocation(lightning_program_.program(),"al_n_dirLight"),
+      lm.num_directionals_);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
     for (unsigned int i = 0; i < lm.lights_.size(); i++) {
       auto& light= *em.GetEntity(lm.lights_.at(i));
       TransformComponent& l_transform = *light.get_component<TransformComponent>(em);
       LightComponent& l_light = *light.get_component<LightComponent>(em);
       const glm::vec3 forward = l_transform.forward();
+      
       glUniform3f(glGetUniformLocation(
                       lightning_program_.program(),
                       "al_DirLight[0].direction" ),
@@ -338,11 +336,11 @@ namespace al{
                       lightning_program_.program(),
                       "al_DirLight[0].diffuse" ), 0.5f, 0.5f, 0.5f);
     }
-    glm::vec3 cam_pos = camera_.position();
-    glUniform3f(glGetUniformLocation(
-                lightning_program_.program(),
-                "al_cam_pos" ), cam_pos.x, cam_pos.y, cam_pos.z);
-    
+    // glm::vec3 cam_pos = camera_.position();
+    // glUniform3f(glGetUniformLocation(
+    //             lightning_program_.program(),
+    //             "al_cam_pos" ), cam_pos.x, cam_pos.y, cam_pos.z);
+    //
     // 2.5. copy content of geometry's depth buffer to default framebuffer's depth buffer
     // ----------------------------------------------------------------------------------
     glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);
@@ -368,6 +366,8 @@ namespace al{
     //     shaderLightBox.setVec3("lightColor", lightColors[i]);
     //     renderCube();
     // }
+    // camera_.RenderCubemap(view,perspective);
+
   }
 
   void Window::BeginFrame() {
@@ -388,7 +388,8 @@ namespace al{
     LightManager& lm = *sm_->Get<LightManager>();
 
 
-    RenderForward();
+    // RenderForward();
+    RenderDeferred();
     // Render Imgui
     MenuImgui();
     camera_.MenuImgui();
@@ -398,20 +399,27 @@ namespace al{
     // Draw
     glfwSwapBuffers(window_);
   }
+
   void Window::MenuImgui() {
         
     ImGui::Begin("Deferred textures");{
-      ImGui::Text("pointer = %p##1", gPosition);
-      ImGui::Text("size = %d x %d##1", width_, height_);
-      ImGui::Image((void*)(intptr_t)gPosition, ImVec2(width_, height_));
+      ImGui::Text("Positions:");
+      ImGui::Text("pointer = %p", gPosition);
+      ImGui::Text("size = %d x %d", width_, height_);
+      ImGui::Image((void*)(intptr_t)gPosition,
+        ImVec2(width_ / 4.f, height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
 
-      ImGui::Text("pointer = %p##2", gNormal);
-      ImGui::Text("size = %d x %d##2", width_, height_);
-      ImGui::Image((void*)(intptr_t)gNormal, ImVec2(width_, height_));
+      ImGui::Text("Normals:");
+      ImGui::Text("pointer = %p", gNormal);
+      ImGui::Text("size = %d x %d", width_, height_);
+      ImGui::Image((void*)(intptr_t)gNormal,
+        ImVec2(width_ / 4.f, height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
 
-      ImGui::Text("pointer = %p##3", gAlbedo);
-      ImGui::Text("size = %d x %d##3", width_, height_);
-      ImGui::Image((void*)(intptr_t)gAlbedo, ImVec2(width_, height_));
+      ImGui::Text("Albedo:");
+      ImGui::Text("pointer = %p", gAlbedo);
+      ImGui::Text("size = %d x %d", width_, height_);
+      ImGui::Image((void*)(intptr_t)gAlbedo,
+        ImVec2(width_ / 4.f, height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
       ImGui::End();
     }
   }
