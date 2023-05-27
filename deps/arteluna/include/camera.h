@@ -6,7 +6,6 @@
 #include "glm.hpp"
 #include "engine/material.h"
 
-#include "engine/texture.h"
 namespace al{
   class Mesh;
   class Input;
@@ -33,6 +32,7 @@ namespace al{
     __forceinline float near();
     __forceinline float far();
 
+    __forceinline void set_position(glm::vec3 pos);
     __forceinline void set_ortho_x(float m);
     __forceinline void set_ortho_y(float m);
     __forceinline void set_near(float m);
@@ -123,6 +123,9 @@ namespace al{
 
   inline float Camera::far() {
     return far_;
+  }
+  void Camera::set_position(glm::vec3 pos) {
+    position_ = pos;
   }
 
   inline void Camera::set_ortho_x(float x) {

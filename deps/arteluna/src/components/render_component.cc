@@ -26,7 +26,6 @@ namespace al{
 
   void RenderComponent::RenderForward(EntityManager& em, LightManager& lm) const{
 
-
     material_->program_.Use();
     auto& al_uniforms = material_->al_uniforms_;
 

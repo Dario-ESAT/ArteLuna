@@ -118,38 +118,21 @@ namespace al{
     //glActiveTexture(GL_TEXTURE0 + get_id());
   }
 
-  void Texture::Bind()
-  {
-    try {
-		
-      switch (type_) {
-      case Type::T_1D:
-        glBindTexture(GL_TEXTURE_1D, get_id());
-        break;
-      case Type::T_2D:
-        glBindTexture(GL_TEXTURE_2D, get_id());
-        break;
-      case Type::T_3D:
-        glBindTexture(GL_TEXTURE_3D, get_id());
-        break;
-      }
-      //glActiveTexture(GL_TEXTURE0 + get_id());
-    }
-    catch (int e) {
-      if (e == 10) {
-        printf("There was an error on the textue, %d", e);
-      }
-      if (e == 11) {
-        printf("There was an error on the textue, %d", e);
-      }
-      if (e == 12) {
-        printf("There was an error on the textue, %d", e);
-      }
+  void Texture::Bind() {
+    switch (type_) {
+    case Type::T_1D:
+      glBindTexture(GL_TEXTURE_1D, get_id());
+      break;
+    case Type::T_2D:
+      glBindTexture(GL_TEXTURE_2D, get_id());
+      break;
+    case Type::T_3D:
+      glBindTexture(GL_TEXTURE_3D, get_id());
+      break;
     }
   }
 
-  void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */DataType d_type, int mip_map_LOD)
-  {
+  void Texture::SetData(/*Filter mag_filter, Filter min_filter, Format format, */DataType d_type, int mip_map_LOD) {
     glBindTexture(type_, get_id());
 
     glTexParameteri(type_, GL_TEXTURE_MIN_FILTER, min_filter_);

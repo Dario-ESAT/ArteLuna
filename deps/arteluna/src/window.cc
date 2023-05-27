@@ -3,7 +3,7 @@
 #include "GLFW/glfw3.h"
 #include "window.h"
 
-#include <ext/matrix_transform.hpp>
+#include <memory>
 #include <gtc/type_ptr.hpp>
 
 #include "imgui.h"
@@ -19,21 +19,17 @@
 #include "engine/mesh.h"
 #include "engine/service_manager.h"
 #include "systems/systems.h"
+
 namespace al{
-  Window::Window(
-          const char* name,
-          int16_t width,
-          int16_t height,
-          int posx,
-          int posy,
-          bool windowed,
-          int monitor
-      ) {
+  Window::Window( const char* name,int16_t width,int16_t height,
+                  int posx,int posy,bool windowed,int monitor) {
     width_ = width;
     height_ = height;
     posx_ = posx;
     posy_ = posy;
     windowed_ = windowed;
+    sm_ = nullptr;
+    gBuffer = gAlbedo = gPosition = gNormal = rboDepth = 0;
     try {
       if (!glfwInit())
         throw 14;
@@ -97,6 +93,15 @@ namespace al{
     camera_ = other.camera_;
     windowed_ = other.window_;
     input_ = std::move(other.input_);
+    sm_ = nullptr;
+    gBuffer = other.gBuffer;
+    gAlbedo = other.gAlbedo;
+    gPosition = other.gPosition;
+    gNormal = other.gNormal;
+    rboDepth =  other.rboDepth;
+    delta_time_ = other.delta_time_;
+    window_ = other.window_;
+    last_time_ = other.last_time_;
   }
 
   int16_t Window::width() {
@@ -138,8 +143,10 @@ namespace al{
   }
 
   void Window::InitDeferredRender() {
+    
     glGenFramebuffers(1, &gBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
+
   
     // - position color buffer
     glGenTextures(1, &gPosition);
@@ -157,14 +164,14 @@ namespace al{
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
   
-    // - color + specular color buffer
     glGenTextures(1, &gAlbedo);
     glBindTexture(GL_TEXTURE_2D, gAlbedo);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width_, height_, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width_, height_, 0, GL_RGBA, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedo, 0);
-  
+    
+    // - color + specular color buffer
     // - tell OpenGL which color attachments we'll use (of this framebuffer) for rendering 
     unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
     glDrawBuffers(3, attachments);
@@ -180,6 +187,7 @@ namespace al{
     geometry_program_.Init(geometry_pass_.vertex(),geometry_pass_.fragment());
     lightning_pass_.Init(light_vert.get(),light_frag.get());
     lightning_program_.Init(lightning_pass_.vertex(),lightning_pass_.fragment());
+    render_quad_ = std::make_shared<Mesh>(Mesh::Quad);
   }
 
   int Window::posx() const {
@@ -279,93 +287,73 @@ namespace al{
     glUniformMatrix4fv(
       glGetUniformLocation(geometry_program_.program(), "al_vp_matrix"), 1,
       false, glm::value_ptr(vp));
-
+    
     const auto* transform_components = em.GetComponentVector<TransformComponent>();
     const auto* render_components = em.GetComponentVector<RenderComponent>();
     for (uint32_t i = 1; i < em.last_id_; i++) {
       if (render_components->at(i).has_value()) {
         const TransformComponent& transform_component = transform_components->at(i).value();
         const RenderComponent& render_component = render_components->at(i).value();
-
+        glActiveTexture(GL_TEXTURE0);
+        render_component.material_->texture_.Bind();
         glUniformMatrix4fv(
           glGetUniformLocation(geometry_program_.program(), "al_m_matrix"),
           1, false, value_ptr(transform_component.world_transform()));
 
-        glUniform1i(glGetUniformLocation(lightning_program_.program(),"al_texture"),
-          render_component.material_->texture_.get_id());
-        
         render_component.RenderDeferred(em, lm);
       }
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+    glEnable(GL_DEPTH_TEST);
     // 2. lighting pass: calculate lighting by iterating over a screen filled quad pixel-by-pixel using the gbuffer's content.
     // -----------------------------------------------------------------------------------------------------------------------
+    glClearColor(.2f, .2f, .2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     lightning_program_.Use();
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, gPosition);
-    glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, gNormal);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, gPosition);
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, gAlbedo);
     // send light relevant uniforms
-
-    glUniform1i(glGetUniformLocation(lightning_program_.program(),"al_n_dirLight"),
-      lm.num_directionals_);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    for (unsigned int i = 0; i < lm.lights_.size(); i++) {
+    char uniform_name[50] = {'\0'};
+  glUniform1i(glGetUniformLocation(lightning_program_.program(),"al_position_tex"),
+    0);
+    glUniform1i(glGetUniformLocation(lightning_program_.program(),"al_normal_tex"),
+  1);
+    glUniform1i(glGetUniformLocation(lightning_program_.program(),"al_albedo_tex"),
+  2);
+    glUniform1i(glGetUniformLocation(lightning_program_.program(),
+      "al_n_dirLight"),(GLint)lm.num_directionals_);
+    for (unsigned int i = 0; i < lm.num_directionals_; i++) {
       auto& light= *em.GetEntity(lm.lights_.at(i));
       TransformComponent& l_transform = *light.get_component<TransformComponent>(em);
       LightComponent& l_light = *light.get_component<LightComponent>(em);
       const glm::vec3 forward = l_transform.forward();
-      
+      sprintf_s(uniform_name,"al_dirLight[%d].direction",i);
       glUniform3f(glGetUniformLocation(
                       lightning_program_.program(),
-                      "al_DirLight[0].direction" ),
+                      uniform_name),
         forward.x, forward.y, forward.z);
+
+      sprintf_s(uniform_name,"al_dirLight[%d].color",i);
       glUniform3f(glGetUniformLocation(
                       lightning_program_.program(),
-                      "al_DirLight[0].color" ),
+                      uniform_name ),
         l_light.color().x, l_light.color().y, l_light.color().z);
       
+      sprintf_s(uniform_name,"al_dirLight[%d].diffuse",i);
       glUniform3f(glGetUniformLocation(
                       lightning_program_.program(),
-                      "al_DirLight[0].diffuse" ), 0.5f, 0.5f, 0.5f);
+                      uniform_name ), 0.5f, 0.5f, 0.5f);
     }
-    // glm::vec3 cam_pos = camera_.position();
-    // glUniform3f(glGetUniformLocation(
-    //             lightning_program_.program(),
-    //             "al_cam_pos" ), cam_pos.x, cam_pos.y, cam_pos.z);
-    //
-    // 2.5. copy content of geometry's depth buffer to default framebuffer's depth buffer
-    // ----------------------------------------------------------------------------------
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
-    // blit to default framebuffer. Note that this may or may not work as the internal formats of both the FBO and default framebuffer have to match.
-    // the internal formats are implementation defined. This works on all of my systems, but if it doesn't on yours you'll likely have to write to the 		
-    // depth buffer in another shader stage (or somehow see to match the default framebuffer's internal format with the FBO's internal format).
-    glBlitFramebuffer(0, 0, width_, height_, 0, 0, width_, height_, 
-    GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindVertexArray(render_quad_->mesh_buffer());
+    glDrawElements(GL_TRIANGLES, (GLsizei)render_quad_->indices_.size()
+      ,GL_UNSIGNED_INT, nullptr);
 
-    // 3. render lights on top of scene
-    // --------------------------------
-    // shaderLightBox.use();
-    // shaderLightBox.setMat4("projection", projection);
-    // shaderLightBox.setMat4("view", view);
-    // for (unsigned int i = 0; i < lightPositions.size(); i++)
-    // {
-    //     model = glm::mat4(1.0f);
-    //     model = glm::translate(model, lightPositions[i]);
-    //     model = glm::scale(model, glm::vec3(0.125f));
-    //     shaderLightBox.setMat4("model", model);
-    //     shaderLightBox.setVec3("lightColor", lightColors[i]);
-    //     renderCube();
-    // }
+    glBindVertexArray(0);
+
     // camera_.RenderCubemap(view,perspective);
 
   }
@@ -384,8 +372,8 @@ namespace al{
   }
 
   void Window::EndFrame() {
-    EntityManager& em = *sm_->Get<EntityManager>();
-    LightManager& lm = *sm_->Get<LightManager>();
+    // EntityManager& em = *sm_->Get<EntityManager>();
+    // LightManager& lm = *sm_->Get<LightManager>();
 
 
     // RenderForward();
@@ -404,22 +392,22 @@ namespace al{
         
     ImGui::Begin("Deferred textures");{
       ImGui::Text("Positions:");
-      ImGui::Text("pointer = %p", gPosition);
+      ImGui::Text("pointer = %d", gPosition);
       ImGui::Text("size = %d x %d", width_, height_);
       ImGui::Image((void*)(intptr_t)gPosition,
-        ImVec2(width_ / 4.f, height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
+        ImVec2((float)width_ / 4.f, (float)height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
 
       ImGui::Text("Normals:");
-      ImGui::Text("pointer = %p", gNormal);
+      ImGui::Text("pointer = %d", gNormal);
       ImGui::Text("size = %d x %d", width_, height_);
       ImGui::Image((void*)(intptr_t)gNormal,
-        ImVec2(width_ / 4.f, height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
+        ImVec2((float)width_ / 4.f, (float)height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
 
       ImGui::Text("Albedo:");
-      ImGui::Text("pointer = %p", gAlbedo);
+      ImGui::Text("pointer = %d", gAlbedo);
       ImGui::Text("size = %d x %d", width_, height_);
       ImGui::Image((void*)(intptr_t)gAlbedo,
-        ImVec2(width_ / 4.f, height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
+        ImVec2((float)width_ / 4.f, (float)height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
       ImGui::End();
     }
   }
