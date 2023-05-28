@@ -5,8 +5,10 @@
 
 #include "camera.h"
 #include "stdint.h"
+#include "engine/mesh.h"
 
 namespace al{
+  // class Mesh;
   class Window{
   public:
     Window() = delete;
@@ -57,8 +59,8 @@ namespace al{
     void RenderDeferred();
 
     uint32_t gBuffer;
-    uint32_t gPosition, gNormal, gAlbedo;
-
+    uint32_t gAlbedo, gPosition, gNormal;
+    
     int16_t width_;
     int16_t height_;
 
@@ -70,14 +72,15 @@ namespace al{
     double delta_time_;
     double last_time_;
 
-    class ServiceManager* sm_;
-    class Program geometry_program_; 
-    class Shader geometry_pass_;
-    class Program lightning_program_;
-    class Shader lightning_pass_;
-
+    ServiceManager* sm_;
+    Program geometry_program_; 
+    Shader geometry_pass_;
+    Program lightning_program_;
+    Shader lightning_pass_;
+    std::shared_ptr<Mesh> render_quad_;
+    
     friend class Engine;
-    friend std::unique_ptr<Window> std::make_unique<Window>();
+    // friend std::unique_ptr<Window> std::make_unique<Window>();
   };
 
   double Window::delta_time() const {

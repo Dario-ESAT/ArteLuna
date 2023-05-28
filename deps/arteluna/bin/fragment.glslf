@@ -133,7 +133,6 @@ float CalcPointShadow(al_PointLight light, vec3 fragPos, int index)
     return shadow;
 }
 
-
 float ShadowCalculation(vec4 fragPosLightSpace, al_DirLight light, vec3 normal)
 {
     // perform perspective divide
