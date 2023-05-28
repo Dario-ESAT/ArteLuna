@@ -177,6 +177,9 @@ namespace al{
     glDrawBuffers(3, attachments);
 
     glGenRenderbuffers(1, &rboDepth);
+    glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width_, height_);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
 
     const auto geometry_vert = ReadFile("../../deps/arteluna/bin/deferredGeometry.glslv");
     const auto geometry_frag = ReadFile("../../deps/arteluna/bin/deferredGeometry.glslf");
@@ -228,7 +231,7 @@ namespace al{
     glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_);
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    glClear(GL_DEPTH_BUFFER_BIT);
+    //glClear(GL_DEPTH_BUFFER_BIT);
   
     auto& light= *em.GetEntity(lm.lights_.at(0));
     glm::mat4x4 light_space = light.get_component<LightComponent>(em)

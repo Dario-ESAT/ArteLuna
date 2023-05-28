@@ -60,8 +60,8 @@ int main() {
   
   al::Entity& d_light = l_manager.CreatelLight(em, al::LightComponent::Type::Directional);
   al::TransformComponent* t_comp = d_light.get_component<al::TransformComponent>(em);
-  t_comp->set_rotation(1, 0, 0);
-  t_comp->set_position({ 0.f, 10.0f, 0.0f });
+  t_comp->set_rotation(-1, 0, 0);
+  t_comp->set_position({ 0.f, 20.0f, 0.0f });
   al::RenderComponent* d_render = d_light.AddComponent<al::RenderComponent>(em);
   d_render->mesh_ = sonic;
   d_render->material_ = material;
