@@ -118,10 +118,8 @@ namespace al{
     if (al_uniform != al_uniforms.end()){
       glUniform1i(al_uniform->second.location_, lm.num_spots_);
     }
-    for (
-
-      uint32_t j = lm.num_directionals_ + lm.num_points_;
-      j < lm.num_spots_; j++){
+    for (uint32_t j = lm.num_directionals_ + lm.num_points_;
+        j < lm.num_spots_; j++){
       int idx = j - (lm.num_directionals_ + lm.num_points_);
       Entity* entity =  em.GetEntity(lm.lights_[j]);
       const auto* transform =  entity->get_component<TransformComponent>(em);
@@ -185,12 +183,10 @@ namespace al{
       al_uniform = al_uniforms.find(uniform_name);
       if (al_uniform != al_uniforms.end()){
         glUniform1f(al_uniform->second.location_, light->outer_cone_radius());
-      }    
-
       }
+    }
       
     for (auto it = material_->user_uniforms_.begin(); it != material_->user_uniforms_.end(); ++it) {
-
 
       if (it->second.data_) {
         it->second.data_->bind(it->second.location_);
@@ -198,8 +194,6 @@ namespace al{
         //printf("\nUniform %s is null",it->first.c_str());
       }
     }
-
-
 
     material_->texture_.Active();
     material_->texture_.Bind();
@@ -221,10 +215,8 @@ namespace al{
     uniform = glGetUniformLocation(material_->program_.program(), "al_shadow_texture");
     glUniform1i(uniform, LightManager::depth_map_text_);
 
-
     auto& light= *em.GetEntity(lm.lights_.at(0));
     glm::mat4x4 light_space = light.get_component<LightComponent>(em)->light_transform(*light.get_component<TransformComponent>(em));
- 
 
     glUniformMatrix4fv(glGetUniformLocation(material_->program_.program(), "lightSpaceMatrix"),
       1, GL_FALSE, glm::value_ptr(light_space));

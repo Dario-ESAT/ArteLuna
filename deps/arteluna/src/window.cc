@@ -216,6 +216,8 @@ namespace al{
   void Window::RenderForward() {
     EntityManager& em = *sm_->Get<EntityManager>();
     LightManager& lm = *sm_->Get<LightManager>();
+    sm_->Get<Systems>()->SystemsUpdate();
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(	0.2f,0.2f,0.2f,1.f);
 
@@ -260,7 +262,6 @@ namespace al{
     glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
   
     // Render Scene --------
-    sm_->Get<Systems>()->SystemsUpdate();
     camera_.RenderSceneForward(static_cast<float>(width_)/static_cast<float>(height_));
 
     // Pass the texture and lightSpaceMatrix to the normal shader
@@ -272,6 +273,8 @@ namespace al{
   void Window::RenderDeferred() {
     EntityManager& em = *sm_->Get<EntityManager>();
     LightManager& lm = *sm_->Get<LightManager>();
+    sm_->Get<Systems>()->SystemsUpdate();
+
     glClearColor(.2f, .2f, .2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -348,6 +351,67 @@ namespace al{
                       lightning_program_.program(),
                       uniform_name ), 0.5f, 0.5f, 0.5f);
     }
+
+    for (uint32_t j = lm.num_directionals_;
+        j < lm.num_directionals_ + lm.num_points_; j++){
+      int idx = j - (lm.num_directionals_ + lm.num_points_);
+      Entity* entity =  em.GetEntity(lm.lights_[j]);
+      const auto* transform =  entity->get_component<TransformComponent>(em);
+      const auto* light = entity->get_component<LightComponent>(em);
+
+  
+      sprintf_s(uniform_name,"al_spotLight[%d].position",idx);
+      glUniform3f(
+      glGetUniformLocation(
+                    lightning_program_.program(),
+                    uniform_name ),
+        transform->position().x, 
+        transform->position().y,
+        transform->position().z
+      );
+
+      sprintf_s(uniform_name,"al_spotLight[%d].direction", idx);
+
+        glUniform3f(
+        glGetUniformLocation(
+                    lightning_program_.program(),
+                    uniform_name ),
+          transform->forward().x, 
+          transform->forward().y,
+          transform->forward().z
+        );
+    
+        glUniform3f(
+        glGetUniformLocation(
+                    lightning_program_.program(),
+                    uniform_name ),
+          light->color().r,
+          light->color().g,
+          light->color().b
+        );
+      sprintf_s(uniform_name,"al_spotLight[%d].constant", idx);
+        glUniform1f(glGetUniformLocation(
+                    lightning_program_.program(),
+                    uniform_name ), light->constant());
+      sprintf_s(uniform_name,"al_spotLight[%d].linear", idx);
+        glUniform1f(glGetUniformLocation(
+                    lightning_program_.program(),
+                    uniform_name ), light->linear());
+      sprintf_s(uniform_name,"al_spotLight[%d].quadratic", idx);
+        glUniform1f(glGetUniformLocation(
+                    lightning_program_.program(),
+                    uniform_name ), light->quadratic());
+      // sprintf_s(uniform_name,"al_spotLight[%d].cutoff", idx);
+      //   glUniform1f(glGetUniformLocation(
+      //               lightning_program_.program(),
+      //               uniform_name ), light->inner_cone_radius());
+      // sprintf_s(uniform_name,"al_spotLight[%d].outerCutOff", idx);
+      //   glUniform1f(glGetUniformLocation(
+      //               lightning_program_.program(),
+      //               uniform_name ), light->outer_cone_radius());
+    }
+
+    
     glBindVertexArray(render_quad_->mesh_buffer());
     glDrawElements(GL_TRIANGLES, (GLsizei)render_quad_->indices_.size()
       ,GL_UNSIGNED_INT, nullptr);
