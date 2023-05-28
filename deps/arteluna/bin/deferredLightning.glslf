@@ -99,7 +99,7 @@ vec3 CalcPointLight(al_PointLight light, vec3 normal, vec3 fragPos/* , vec3 view
 void main() {
  
   vec3 FragPos = texture(al_position_tex, UV).rgb;
-  vec3 Normal = texture(al_normal_tex, UV).rgb;
+  vec3 Normal = normalize(texture(al_normal_tex, UV).rgb);
   vec3 Albedo = texture(al_albedo_tex, UV).rgb;
 
   vec3 lighting  = Albedo * 0.1;
