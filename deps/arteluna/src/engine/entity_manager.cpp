@@ -44,7 +44,7 @@ namespace al{
     Entity& e = CreateNewEntity(parent);
     
     std::shared_ptr<Material> material = std::make_shared<Material>("../../deps/arteluna/bin/vertex.glslv",
-        "../../deps/arteluna/bin/fragment.glslf", "../../deps/arteluna/data/muse.jpg","../../deps/arteluna/data/wavy.jpg", "../../deps/arteluna/data/wavy.jpg", Texture::T_2D);
+        "../../deps/arteluna/bin/fragment.glslf", "../../deps/arteluna/data/muse.jpg","../../deps/arteluna/data/wavy.jpg", "../../deps/arteluna/data/wavy.jpg",0.01, Texture::T_2D);
     std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("../../deps/arteluna/data/models/ELCUBO.obj");
     material->texture_.SetData(Texture::UNSIGNED_BYTE, 0);
     e.get_component<RenderComponent>(*this)->material_ = material;

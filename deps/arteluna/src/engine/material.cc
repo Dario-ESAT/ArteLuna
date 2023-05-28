@@ -98,11 +98,12 @@ namespace al{
   */
 
   Material::Material(const char* vert, const char* frag, const char* texture_src,const char* normal_texture_src, const char* displacement_texture_src,
-    Texture::Type t_type, Texture::Filter mag_filter,
+    float depthScale, Texture::Type t_type, Texture::Filter mag_filter,
     Texture::Filter min_filter,  Texture::Wrap ws, Texture::Wrap wt, Texture::Wrap wr) {
   
     InitMaterial(user_uniforms_,al_uniforms_,vert,frag,shader_,program_);
 
+    depth_scale_ = depthScale;
     // Texture
     int texture_width = texture_.width();
     int texture_height = texture_.height();

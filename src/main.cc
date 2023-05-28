@@ -29,13 +29,13 @@ int main() {
     "../../deps/arteluna/bin/fragment.glslf",
     "../../deps/arteluna/data/textures/bricks2.jpg",
     "../../deps/arteluna/data/textures/bricks2_normal.jpg",
-    "../../deps/arteluna/data/textures/bricks2_disp.jpg"
+    "../../deps/arteluna/data/textures/bricks2_disp.jpg",
+    0.1f
   );
 
   std::shared_ptr<al::Material> material_prueba = std::make_shared<al::Material>(
     "../../deps/arteluna/bin/vertex.glslv",
-    "../../deps/arteluna/bin/fragment.glslf",
-    "../../deps/arteluna/data/textures/muse.jpg"
+    "../../deps/arteluna/bin/fragment.glslf"
     );
 
   std::shared_ptr<al::Material> shadow_material = std::make_shared<al::Material>(
@@ -57,22 +57,30 @@ int main() {
   // al::RenderComponent* p_render = p_light.AddComponent<al::RenderComponent>();
   // p_render->mesh_ = cubo;
   // p_render->material_ = material;
-
+  
   al::Entity& d_light = l_manager.CreatelLight(em, al::LightComponent::Type::Directional);
   al::TransformComponent* t_comp = d_light.get_component<al::TransformComponent>(em);
   t_comp->set_rotation(1, 0, 0);
   t_comp->set_position({ 0.f, 10.0f, 0.0f });
-
   al::RenderComponent* d_render = d_light.AddComponent<al::RenderComponent>(em);
   d_render->mesh_ = sonic;
-
   d_render->material_ = material;
   
-  // al::Entity& s_light = l_manager.CreatelLight(LightComponent::Type::Spotlight);
-  // al::RenderComponent* l_render = s_light.AddComponent<al::RenderComponent>();
-  // l_render->mesh_ = sonic;
-  // l_render->material_ = material;
+   al::Entity& s_light = l_manager.CreatelLight(em, al::LightComponent::Type::Pointlight);
+   al::TransformComponent* t_comp_p = s_light.get_component<al::TransformComponent>(em);
+   al::LightComponent* l_comp = s_light.get_component<al::LightComponent>(em);
+   l_comp->set_color(0, 1, 0);
+   t_comp_p->set_rotation(1, 0, 0);
+   t_comp_p->set_position({ 5.f, 10.0f, 0.0f });
+   t_comp_p->set_scale({ 0.1f, 0.1f, 0.1f });
+   al::RenderComponent* l_render = s_light.AddComponent<al::RenderComponent>(em);
+   
+   l_render->mesh_ = sonic;
+   l_render->material_ = material;
   
+
+
+
   al::Entity& entity_1 = sm.Get<al::EntityManager>()->CreateNewEntity();
 
   al::TransformComponent* transform_cmp = entity_1.get_component<al::TransformComponent>(em);
@@ -84,7 +92,7 @@ int main() {
 
   render_cmp->mesh_ = cubo;
 
-  render_cmp->material_ = material;
+  render_cmp->material_ = material;//material_prueba;
 
   al::Entity& entity_2 = sm.Get<al::EntityManager>()->CreateNewEntity();
   al::TransformComponent* trcmp = entity_2.get_component<al::TransformComponent>(em);
@@ -92,12 +100,12 @@ int main() {
   trcmp->set_scale({ 5.f, 5.0f, 5.f });
   trcmp->set_rotation({ 0.0f, 0.f, 0.0f });
 	
-  al::RenderComponent* rcmp = entity_2.AddComponent<al::RenderComponent>(em);
+  /*al::RenderComponent* rcmp = entity_2.AddComponent<al::RenderComponent>(em);
   rcmp->mesh_ = quad;
   rcmp->material_ = material;
   shadow_material->texture_.set_id(al::LightManager::depth_map_text_);
   glBindTexture(GL_TEXTURE_2D, al::LightManager::depth_map_text_);
-
+  */
   al::Entity& cube_ = sm.Get<al::EntityManager>()->CreateNewEntity();
   cube_.get_component<al::TransformComponent>(em)->set_position({ 0,-5,0 });
   cube_.get_component<al::TransformComponent>(em)->set_scale({ 1,1,1 });

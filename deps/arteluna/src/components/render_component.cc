@@ -30,7 +30,7 @@ namespace al{
     auto& al_uniforms = material_->al_uniforms_;
 
     char uniform_name[50] = {'\0'};
-  
+
     // ----- Directional lights -----
 
     auto al_uniform = al_uniforms.find("al_n_dirLight");
@@ -69,13 +69,13 @@ namespace al{
       glUniform1i(al_uniform->second.location_, lm.num_points_);
     }
 
-    for (uint32_t j = lm.num_directionals_; j < lm.num_points_; j++){
+    for (uint32_t j = lm.num_directionals_; j < lm.num_points_ + lm.num_directionals_; j++){
       Entity* entity =  em.GetEntity(lm.lights_[j]);
       const auto* transform =  entity->get_component<TransformComponent>(em);
       const auto* light = entity->get_component<LightComponent>(em);
       int idx = j - lm.num_directionals_;
 
-      sprintf_s(uniform_name,"al_pointLight[%d].position",j);
+      sprintf_s(uniform_name,"al_pointLight[%d].position",idx);
       al_uniform = al_uniforms.find(uniform_name);
       if (al_uniform != al_uniforms.end()){
         glUniform3f(
@@ -186,6 +186,13 @@ namespace al{
       }
     }
       
+    // Parallax depth scale
+
+    al_uniform = al_uniforms.find("al_DepthScale");
+    if (al_uniform != al_uniforms.end()) {
+      glUniform1f(al_uniform->second.location_, material_->depth_scale_);
+    }
+
     for (auto it = material_->user_uniforms_.begin(); it != material_->user_uniforms_.end(); ++it) {
 
       if (it->second.data_) {
@@ -214,6 +221,18 @@ namespace al{
     glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
     uniform = glGetUniformLocation(material_->program_.program(), "al_shadow_texture");
     glUniform1i(uniform, LightManager::depth_map_text_);
+
+
+    std::string uniform_nameBase;
+    for (int i = 0; i < lm.num_points_; i++) {
+      int texture_unit_index = i + 4; // 4 debido a que hay otras 4 texturas haciendo el bind antes
+      uniform_nameBase = "al_point_shadow_cube[" + std::to_string(i) + "]";
+
+      glActiveTexture(GL_TEXTURE0 + texture_unit_index);
+      glBindTexture(GL_TEXTURE_CUBE_MAP, LightManager::pointlight_depth_map_text_.at(i));
+      uniform = glGetUniformLocation(material_->program_.program(), uniform_nameBase.c_str());
+      glUniform1i(uniform, texture_unit_index);
+    }
 
     auto& light= *em.GetEntity(lm.lights_.at(0));
     glm::mat4x4 light_space = light.get_component<LightComponent>(em)->light_transform(*light.get_component<TransformComponent>(em));
