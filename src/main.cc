@@ -63,7 +63,7 @@ int main() {
   al::RenderComponent* d_render = d_light.AddComponent<al::RenderComponent>(em);
   d_render->mesh_ = sonic;
   d_render->material_ = material;
-  
+  /*
    al::Entity& s_light = l_manager.CreatelLight(em,"PointLight", al::LightComponent::Type::Pointlight);
    al::TransformComponent* t_comp_p = s_light.get_component<al::TransformComponent>(em);
    al::LightComponent* l_comp = s_light.get_component<al::LightComponent>(em);
@@ -75,7 +75,7 @@ int main() {
    
    l_render->mesh_ = sonic;
    l_render->material_ = material;
-  
+  */
 
 
 

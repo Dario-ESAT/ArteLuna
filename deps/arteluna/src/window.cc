@@ -443,16 +443,16 @@ namespace al{
 
     glViewport(0, 0, width_, height_);
     lightning_program_.Use();
-    glActiveTexture(GL_TEXTURE0 + LightManager::depth_map_text_);
-    glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
-    GLuint uniform = glGetUniformLocation(lightning_program_.program(), "al_shadow_texture");
-    glUniform1i(uniform, LightManager::depth_map_text_);
+   
+  
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, gNormal);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, gPosition);
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, gAlbedo);
+    glActiveTexture(GL_TEXTURE0 + LightManager::depth_map_text_);
+    glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
     // send light relevant uniforms
     char uniform_name[50] = {'\0'};
     glUniformMatrix4fv(
@@ -464,6 +464,8 @@ namespace al{
   1);
     glUniform1i(glGetUniformLocation(lightning_program_.program(),"al_albedo_tex"),
   2);
+    GLuint uniform = glGetUniformLocation(lightning_program_.program(), "al_shadow_texture");
+    glUniform1i(uniform, LightManager::depth_map_text_);
     glUniform1i(glGetUniformLocation(lightning_program_.program(),
       "al_n_dirLight"),(GLint)lm.num_directionals_);
     for (unsigned int i = 0; i < lm.num_directionals_; i++) {
