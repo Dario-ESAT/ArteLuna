@@ -18,9 +18,7 @@ int main() {
 
   al::Window& window = *engine.CreateNewWindow("Aleksander",1600,900);
   window.camera_.set_position({0,2.5f,-5.f});
-  al::LightManager l_manager(em,
-  "../../deps/arteluna/bin/shadow_render.glslv",
-  "../../deps/arteluna/bin/shadow_render.glslf");
+  al::LightManager l_manager(em);
   sm.Add(l_manager);
   assert(sm.Get<al::LightManager>());
   window.camera_.InitCubeMap();
@@ -60,8 +58,8 @@ int main() {
   
   al::Entity& d_light = l_manager.CreatelLight(em,"Directional", al::LightComponent::Type::Directional);
   al::TransformComponent* t_comp = d_light.get_component<al::TransformComponent>(em);
-  t_comp->set_rotation(1, 0, 0);
-  t_comp->set_position({ 0.f, 10.0f, 0.0f });
+  t_comp->set_rotation(-1, 0, 0);
+  t_comp->set_position({ 0.f, 20.0f, 0.0f });
   al::RenderComponent* d_render = d_light.AddComponent<al::RenderComponent>(em);
   d_render->mesh_ = sonic;
   d_render->material_ = material;

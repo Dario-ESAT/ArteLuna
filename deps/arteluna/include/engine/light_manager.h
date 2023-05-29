@@ -11,7 +11,7 @@ namespace al{
     LightManager() = delete;
     ~LightManager() = default;
 
-    LightManager(EntityManager& sm, const char* vert, const char* frag);
+    LightManager(EntityManager& sm, const char* vert = "../../deps/arteluna/bin/shadow_render.glslv", const char* frag = "../../deps/arteluna/bin/shadow_render.glslf");
   
     Entity& CreatelLight(
       EntityManager& em, const char* name,

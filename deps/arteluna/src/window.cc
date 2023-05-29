@@ -177,6 +177,9 @@ namespace al{
     glDrawBuffers(3, attachments);
 
     glGenRenderbuffers(1, &rboDepth);
+    glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width_, height_);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
 
     const auto geometry_vert = ReadFile("../../deps/arteluna/bin/deferredGeometry.glslv");
     const auto geometry_frag = ReadFile("../../deps/arteluna/bin/deferredGeometry.glslf");
@@ -228,7 +231,7 @@ namespace al{
     glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_);
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    glClear(GL_DEPTH_BUFFER_BIT);
+    //glClear(GL_DEPTH_BUFFER_BIT);
   
     auto& light= *em.GetEntity(lm.lights_.at(0));
     glm::mat4x4 light_space = light.get_component<LightComponent>(em)
@@ -402,9 +405,48 @@ namespace al{
     glEnable(GL_DEPTH_TEST);
     // 2. lighting pass: calculate lighting by iterating over a screen filled quad pixel-by-pixel using the gbuffer's content.
     // -----------------------------------------------------------------------------------------------------------------------
+
     glClearColor(.2f, .2f, .2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Shadow mapping
+    glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
+    glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_);
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    //glClear(GL_DEPTH_BUFFER_BIT);
+
+    auto& light = *em.GetEntity(lm.lights_.at(0));
+    glm::mat4x4 light_space = light.get_component<LightComponent>(em)->light_transform(*light.get_component<TransformComponent>(em));
+    lm.progam_.Use();
+
+    ///light render scene
+    glUniformMatrix4fv(
+      glGetUniformLocation(lm.progam_.program(), "lightSpaceMatrix"),
+      1, GL_FALSE, glm::value_ptr(light_space));
+    GLint model_uniform = glGetUniformLocation(lm.progam_.program(), "model");
+    auto* light_components = em.GetComponentVector<LightComponent>();
+    glCullFace(GL_FRONT);
+    for (uint16_t i = 1; i < em.last_id_; i++) {
+      if (render_components->at(i).has_value() && !light_components->at(i).has_value()) {
+        const TransformComponent& transform_component = transform_components->at(i).value();
+        const RenderComponent& render_component = render_components->at(i).value();
+
+        glBindVertexArray(render_component.mesh_->mesh_buffer());
+        glUniformMatrix4fv(model_uniform, 1, false, value_ptr(transform_component.world_transform()));
+
+        glDrawElements(GL_TRIANGLES, (GLsizei)render_component.mesh_->indices_.size(), GL_UNSIGNED_INT, 0);
+      }
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glCullFace(GL_BACK);
+
+    glViewport(0, 0, width_, height_);
     lightning_program_.Use();
+    glActiveTexture(GL_TEXTURE0 + LightManager::depth_map_text_);
+    glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
+    GLuint uniform = glGetUniformLocation(lightning_program_.program(), "al_shadow_texture");
+    glUniform1i(uniform, LightManager::depth_map_text_);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, gNormal);
     glActiveTexture(GL_TEXTURE1);
@@ -413,6 +455,9 @@ namespace al{
     glBindTexture(GL_TEXTURE_2D, gAlbedo);
     // send light relevant uniforms
     char uniform_name[50] = {'\0'};
+    glUniformMatrix4fv(
+      glGetUniformLocation(lightning_program_.program(), "lightSpaceMatrix"),
+      1, GL_FALSE, glm::value_ptr(light_space));
   glUniform1i(glGetUniformLocation(lightning_program_.program(),"al_position_tex"),
     0);
     glUniform1i(glGetUniformLocation(lightning_program_.program(),"al_normal_tex"),
@@ -532,7 +577,7 @@ namespace al{
     // LightManager& lm = *sm_->Get<LightManager>();
 
 
-    // RenderForward();
+    //RenderForward();
     RenderDeferred();
     // Render Imgui
     MenuImgui();
@@ -564,6 +609,12 @@ namespace al{
       ImGui::Text("size = %d x %d", width_, height_);
       ImGui::Image((void*)(intptr_t)gAlbedo,
         ImVec2((float)width_ / 4.f, (float)height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
+
+      ImGui::Text("ShadowMap:");
+      ImGui::Text("pointer = %d", LightManager::depth_map_text_);
+      ImGui::Text("size = %d x %d", width_, height_);
+      ImGui::Image((void*)(intptr_t)LightManager::depth_map_text_,
+        ImVec2((float)LightManager::SHADOW_HEIGHT / 4.f, (float)LightManager::SHADOW_HEIGHT / 4.f), ImVec2(0, 1), ImVec2(1, 0));
       ImGui::End();
     }
   }
