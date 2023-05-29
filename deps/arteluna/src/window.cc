@@ -446,9 +446,9 @@ namespace al{
    
   
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, gNormal);
-    glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, gPosition);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, gNormal);
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, gAlbedo);
     glActiveTexture(GL_TEXTURE0 + LightManager::depth_map_text_);
@@ -458,12 +458,12 @@ namespace al{
     glUniformMatrix4fv(
       glGetUniformLocation(lightning_program_.program(), "lightSpaceMatrix"),
       1, GL_FALSE, glm::value_ptr(light_space));
-  glUniform1i(glGetUniformLocation(lightning_program_.program(),"al_position_tex"),
-    0);
-    glUniform1i(glGetUniformLocation(lightning_program_.program(),"al_normal_tex"),
-  1);
-    glUniform1i(glGetUniformLocation(lightning_program_.program(),"al_albedo_tex"),
-  2);
+    glUniform1i(
+      glGetUniformLocation(lightning_program_.program(),"al_position_tex"),0);
+    glUniform1i(
+      glGetUniformLocation(lightning_program_.program(),"al_normal_tex"),1);
+    glUniform1i(
+      glGetUniformLocation(lightning_program_.program(),"al_albedo_tex"),2);
     GLuint uniform = glGetUniformLocation(lightning_program_.program(), "al_shadow_texture");
     glUniform1i(uniform, LightManager::depth_map_text_);
     glUniform1i(glGetUniformLocation(lightning_program_.program(),
@@ -490,67 +490,6 @@ namespace al{
                       lightning_program_.program(),
                       uniform_name ), 0.5f, 0.5f, 0.5f);
     }
-
-    for (uint32_t j = lm.num_directionals_;
-        j < lm.num_directionals_ + lm.num_points_; j++){
-      int idx = j - (lm.num_directionals_ + lm.num_points_);
-      Entity* entity =  em.GetEntity(lm.lights_[j]);
-      const auto* transform =  entity->get_component<TransformComponent>(em);
-      const auto* light = entity->get_component<LightComponent>(em);
-
-  
-      sprintf_s(uniform_name,"al_spotLight[%d].position",idx);
-      glUniform3f(
-      glGetUniformLocation(
-                    lightning_program_.program(),
-                    uniform_name ),
-        transform->position().x, 
-        transform->position().y,
-        transform->position().z
-      );
-
-      sprintf_s(uniform_name,"al_spotLight[%d].direction", idx);
-
-        glUniform3f(
-        glGetUniformLocation(
-                    lightning_program_.program(),
-                    uniform_name ),
-          transform->forward().x, 
-          transform->forward().y,
-          transform->forward().z
-        );
-    
-        glUniform3f(
-        glGetUniformLocation(
-                    lightning_program_.program(),
-                    uniform_name ),
-          light->color().r,
-          light->color().g,
-          light->color().b
-        );
-      sprintf_s(uniform_name,"al_spotLight[%d].constant", idx);
-        glUniform1f(glGetUniformLocation(
-                    lightning_program_.program(),
-                    uniform_name ), light->constant());
-      sprintf_s(uniform_name,"al_spotLight[%d].linear", idx);
-        glUniform1f(glGetUniformLocation(
-                    lightning_program_.program(),
-                    uniform_name ), light->linear());
-      sprintf_s(uniform_name,"al_spotLight[%d].quadratic", idx);
-        glUniform1f(glGetUniformLocation(
-                    lightning_program_.program(),
-                    uniform_name ), light->quadratic());
-      // sprintf_s(uniform_name,"al_spotLight[%d].cutoff", idx);
-      //   glUniform1f(glGetUniformLocation(
-      //               lightning_program_.program(),
-      //               uniform_name ), light->inner_cone_radius());
-      // sprintf_s(uniform_name,"al_spotLight[%d].outerCutOff", idx);
-      //   glUniform1f(glGetUniformLocation(
-      //               lightning_program_.program(),
-      //               uniform_name ), light->outer_cone_radius());
-    }
-
-    
     glBindVertexArray(render_quad_->mesh_buffer());
     glDrawElements(GL_TRIANGLES, (GLsizei)render_quad_->indices_.size()
       ,GL_UNSIGNED_INT, nullptr);
@@ -579,7 +518,7 @@ namespace al{
     // LightManager& lm = *sm_->Get<LightManager>();
 
 
-    //RenderForward();
+    // RenderForward();
     RenderDeferred();
     // Render Imgui
     MenuImgui();

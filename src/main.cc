@@ -58,7 +58,7 @@ int main() {
   
   al::Entity& d_light = l_manager.CreatelLight(em,"Directional", al::LightComponent::Type::Directional);
   al::TransformComponent* t_comp = d_light.get_component<al::TransformComponent>(em);
-  t_comp->set_rotation(-1, 0, 0);
+  t_comp->set_rotation(1.5, 0, 0);
   t_comp->set_position({ 0.f, 20.0f, 0.0f });
   al::RenderComponent* d_render = d_light.AddComponent<al::RenderComponent>(em);
   d_render->mesh_ = sonic;
@@ -82,8 +82,8 @@ int main() {
   al::Entity& entity_1 = sm.Get<al::EntityManager>()->CreateNewEntity("Cube");
 
   al::TransformComponent* transform_cmp = entity_1.get_component<al::TransformComponent>(em);
-  transform_cmp->set_position({ 0.0 , -6.0f, 0.0f });
-  transform_cmp->set_scale({ 20.f, 1.0f, 20.f });
+  transform_cmp->set_position({ 0.0 , -26.0f, 0.0f });
+  transform_cmp->set_scale({ 20.f, 20.0f, 20.f });
   transform_cmp->set_rotation({ 0.0f, 0.f, 0.0f });
 
   al::RenderComponent* render_cmp = entity_1.AddComponent<al::RenderComponent>(em);
@@ -104,16 +104,16 @@ int main() {
   shadow_material->texture_.set_id(al::LightManager::depth_map_text_);
   glBindTexture(GL_TEXTURE_2D, al::LightManager::depth_map_text_);
   */
-  al::Entity& cube_ = sm.Get<al::EntityManager>()->CreateNewEntity("Sonic");
-  cube_.get_component<al::TransformComponent>(em)->set_position({ 0,-5,0 });
+  al::Entity& cube_ = sm.Get<al::EntityManager>()->CreateNewEntity("Cubo2");
+  cube_.get_component<al::TransformComponent>(em)->set_position({ 0,8,0 });
   cube_.get_component<al::TransformComponent>(em)->set_scale({ 1,1,1 });
   cube_.get_component<al::TransformComponent>(em)->set_rotation({ 0,0,0 });
 
   al::RenderComponent* cube_render_cmp = cube_.AddComponent<al::RenderComponent>(em);
-  cube_render_cmp->mesh_ = sonic;
+  cube_render_cmp->mesh_ = cubo;
   cube_render_cmp->material_ = material;
 
-  al::Entity& c = sm.Get<al::EntityManager>()->CreateNewEntity("Cubo2");
+  al::Entity& c = sm.Get<al::EntityManager>()->CreateNewEntity("Cubo3");
   c.get_component<al::TransformComponent>(em)->set_position({ 0,3,0 });
   c.get_component<al::TransformComponent>(em)->set_scale({ 1,1,1 });
   c.get_component<al::TransformComponent>(em)->set_rotation({ 0,0,0 });
