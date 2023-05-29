@@ -34,9 +34,7 @@ namespace al{
     EntityManager();
     ~EntityManager();
 
-    Entity& CreateNewEntity(uint32_t parent = 0);
-
-    Entity& CreateCubeEntity(uint32_t parent = 0);
+    Entity& CreateNewEntity(const char* name, uint32_t parent = 0);
 
     Entity* GetEntity(uint32_t pos);
     

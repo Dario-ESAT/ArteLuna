@@ -14,11 +14,11 @@ namespace al{
     LightManager(EntityManager& sm, const char* vert, const char* frag);
   
     Entity& CreatelLight(
-      EntityManager& em,
+      EntityManager& em, const char* name,
       LightComponent::Type type = LightComponent::Directional,
       uint32_t parent = 0);
   
-    void DestroyLight(size_t index);
+    void DestroyLight(EntityManager& em, size_t index);
 
     static std::vector<uint32_t> depth_map_FBO_PointLight_;
     static std::vector<uint32_t> pointlight_depth_map_text_;

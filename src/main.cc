@@ -58,7 +58,7 @@ int main() {
   // p_render->mesh_ = cubo;
   // p_render->material_ = material;
   
-  al::Entity& d_light = l_manager.CreatelLight(em, al::LightComponent::Type::Directional);
+  al::Entity& d_light = l_manager.CreatelLight(em,"Directional", al::LightComponent::Type::Directional);
   al::TransformComponent* t_comp = d_light.get_component<al::TransformComponent>(em);
   t_comp->set_rotation(1, 0, 0);
   t_comp->set_position({ 0.f, 10.0f, 0.0f });
@@ -66,7 +66,7 @@ int main() {
   d_render->mesh_ = sonic;
   d_render->material_ = material;
   
-   al::Entity& s_light = l_manager.CreatelLight(em, al::LightComponent::Type::Pointlight);
+   al::Entity& s_light = l_manager.CreatelLight(em,"PointLight", al::LightComponent::Type::Pointlight);
    al::TransformComponent* t_comp_p = s_light.get_component<al::TransformComponent>(em);
    al::LightComponent* l_comp = s_light.get_component<al::LightComponent>(em);
    l_comp->set_color(0, 1, 0);
@@ -81,7 +81,7 @@ int main() {
 
 
 
-  al::Entity& entity_1 = sm.Get<al::EntityManager>()->CreateNewEntity();
+  al::Entity& entity_1 = sm.Get<al::EntityManager>()->CreateNewEntity("Cube");
 
   al::TransformComponent* transform_cmp = entity_1.get_component<al::TransformComponent>(em);
   transform_cmp->set_position({ 0.0 , -6.0f, 0.0f });
@@ -94,11 +94,11 @@ int main() {
 
   render_cmp->material_ = material;//material_prueba;
 
-  al::Entity& entity_2 = sm.Get<al::EntityManager>()->CreateNewEntity();
-  al::TransformComponent* trcmp = entity_2.get_component<al::TransformComponent>(em);
-  trcmp->set_position({ 5.0 , 5.0f, 0.0f });
-  trcmp->set_scale({ 5.f, 5.0f, 5.f });
-  trcmp->set_rotation({ 0.0f, 0.f, 0.0f });
+  // al::Entity& entity_2 = sm.Get<al::EntityManager>()->CreateNewEntity("Quad");
+  // al::TransformComponent* trcmp = entity_2.get_component<al::TransformComponent>(em);
+  // trcmp->set_position({ 5.0 , 5.0f, 0.0f });
+  // trcmp->set_scale({ 5.f, 5.0f, 5.f });
+  // trcmp->set_rotation({ 0.0f, 0.f, 0.0f });
 	
   /*al::RenderComponent* rcmp = entity_2.AddComponent<al::RenderComponent>(em);
   rcmp->mesh_ = quad;
@@ -106,7 +106,7 @@ int main() {
   shadow_material->texture_.set_id(al::LightManager::depth_map_text_);
   glBindTexture(GL_TEXTURE_2D, al::LightManager::depth_map_text_);
   */
-  al::Entity& cube_ = sm.Get<al::EntityManager>()->CreateNewEntity();
+  al::Entity& cube_ = sm.Get<al::EntityManager>()->CreateNewEntity("Sonic");
   cube_.get_component<al::TransformComponent>(em)->set_position({ 0,-5,0 });
   cube_.get_component<al::TransformComponent>(em)->set_scale({ 1,1,1 });
   cube_.get_component<al::TransformComponent>(em)->set_rotation({ 0,0,0 });
@@ -115,7 +115,7 @@ int main() {
   cube_render_cmp->mesh_ = sonic;
   cube_render_cmp->material_ = material;
 
-  al::Entity& c = sm.Get<al::EntityManager>()->CreateNewEntity();
+  al::Entity& c = sm.Get<al::EntityManager>()->CreateNewEntity("Cubo2");
   c.get_component<al::TransformComponent>(em)->set_position({ 0,3,0 });
   c.get_component<al::TransformComponent>(em)->set_scale({ 1,1,1 });
   c.get_component<al::TransformComponent>(em)->set_rotation({ 0,0,0 });
@@ -124,7 +124,7 @@ int main() {
   c_render->mesh_ = cubo;
   c_render->material_ = material;
 
-  al::Entity& bobo = sm.Get<al::EntityManager>()->CreateNewEntity();
+  al::Entity& bobo = sm.Get<al::EntityManager>()->CreateNewEntity("Bobo");
   sm.Get<al::EntityManager>()->DeleteEntity(bobo.id());
   /*
   al::Entity& entity_3 = em.CreateNewEntity();

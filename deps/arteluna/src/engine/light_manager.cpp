@@ -103,9 +103,10 @@ namespace al{
     InitDepthMap();
   }
 
-  Entity& LightManager::CreatelLight(EntityManager& em, LightComponent::Type type, uint32_t parent) {
+  Entity& LightManager::CreatelLight(EntityManager& em, const char* name,
+    LightComponent::Type type, uint32_t parent) {
 
-    Entity& light = em.CreateNewEntity(parent);
+    Entity& light = em.CreateNewEntity(name,parent);
     auto* light_component = light.AddComponent<LightComponent>(em);
     if (type == LightComponent::Pointlight) {
       InitPointLightDepthMap();
@@ -116,7 +117,12 @@ namespace al{
     return light;
   }
 
-  void LightManager::DestroyLight(size_t index) {
+  void LightManager::DestroyLight(EntityManager& em,size_t index) {
+    em.DeleteEntity(index);
+    auto it = std::find(lights_.begin(), lights_.end(), index);
+    if (it != lights_.end()){
+      lights_.erase(it);
+    }
   }
 
   void LightManager::OrderLights(EntityManager& em) {

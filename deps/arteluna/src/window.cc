@@ -368,6 +368,7 @@ namespace al{
 
     glClearColor(.2f, .2f, .2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
 
     // 1. geometry pass: render scene's geometry/color data into gbuffer
         // -----------------------------------------------------------------

@@ -288,10 +288,10 @@ namespace al{
       ImGui::End();
     }
     //EntityManager& e_m = EntityManager::GetManager();
-
-    auto* transform_components = sm_->Get<EntityManager>()->GetComponentVector<TransformComponent>();
-    auto* light_components = sm_->Get<EntityManager>()->GetComponentVector<LightComponent>();
-
+    auto em = sm_->Get<EntityManager>();
+    auto* transform_components = em->GetComponentVector<TransformComponent>();
+    auto* light_components = em->GetComponentVector<LightComponent>();
+    
 
     ImGui::Begin("Entities");  {
       if (ImGui::TreeNode((void*)(intptr_t)0, "Root")) {
@@ -301,23 +301,23 @@ namespace al{
       }
 
       for (unsigned long long i = 1; i < transform_components->size(); i++) {
-        if (ImGui::TreeNode((void*)(intptr_t)i, "Entity %d", i)) {
-          auto& t_comp = transform_components->at(i);
-          if (t_comp.has_value()){
+        auto& t_comp = transform_components->at(i);
+        if (t_comp.has_value()) {
+          if (ImGui::TreeNode((void*)(intptr_t)i, "%s", em->entities_.at(i).name().c_str())) {
             if (ImGui::TreeNode(&t_comp, "Transform")){
               t_comp->ImguiTree((uint32_t)i);
               ImGui::TreePop();
             }
-          }
-          auto& l_comp = light_components->at(i);
-          if (l_comp.has_value()){
-            if (ImGui::TreeNode(&l_comp, "Light opt")){
-              l_comp->ImguiTree((uint32_t)i);
-            
-              ImGui::TreePop();
+            auto& l_comp = light_components->at(i);
+            if (l_comp.has_value()){
+              if (ImGui::TreeNode(&l_comp, "Light opt")){
+                l_comp->ImguiTree((uint32_t)i);
+              
+                ImGui::TreePop();
+              }
             }
+            ImGui::TreePop();
           }
-          ImGui::TreePop();
         }
       }
       ImGui::End();
