@@ -226,37 +226,40 @@ namespace al{
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 
     // Render Shades
-    
-    glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
-    glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_);
-    glClear(GL_DEPTH_BUFFER_BIT);
+    for (int i = 0; i < lm.num_directionals_; i++) {
+      glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
+      glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_.at(i));
+      glClear(GL_DEPTH_BUFFER_BIT);
 
-    //glClear(GL_DEPTH_BUFFER_BIT);
-  
-    auto& light= *em.GetEntity(lm.lights_.at(0));
-    glm::mat4x4 light_space = light.get_component<LightComponent>(em)
-    ->light_transform(*light.get_component<TransformComponent>(em));
-    lm.progam_.Use();
-    ///light render scene
-    glUniformMatrix4fv(
-      glGetUniformLocation(lm.progam_.program(),"lightSpaceMatrix"),
-      1, GL_FALSE, glm::value_ptr(light_space));
-    GLint model_uniform = glGetUniformLocation(lm.progam_.program(),"model");
-    auto* render_components = em.GetComponentVector<RenderComponent>();
-    auto* transform_components = em.GetComponentVector<TransformComponent>();
-    auto* light_components = em.GetComponentVector<LightComponent>();
-    glCullFace(GL_FRONT);
-    for (uint16_t i = 1; i < em.last_id_; i++) {
+      //glClear(GL_DEPTH_BUFFER_BIT);
+
+      auto& light = *em.GetEntity(lm.lights_.at(0));
+      glm::mat4x4 light_space = light.get_component<LightComponent>(em)
+        ->light_transform(*light.get_component<TransformComponent>(em));
+      lm.progam_.Use();
+      ///light render scene
+      std::string uniform_nameBase;
+      uniform_nameBase = "lightSpaceMatrix[" + std::to_string(i) + "]";
+      glUniformMatrix4fv(
+        glGetUniformLocation(lm.progam_.program(), uniform_nameBase.c_str()),
+        1, GL_FALSE, glm::value_ptr(light_space));
+      GLint model_uniform = glGetUniformLocation(lm.progam_.program(), "model");
+      auto* render_components = em.GetComponentVector<RenderComponent>();
+      auto* transform_components = em.GetComponentVector<TransformComponent>();
+      auto* light_components = em.GetComponentVector<LightComponent>();
+      glCullFace(GL_FRONT);
+      for (uint16_t i = 1; i < em.last_id_; i++) {
 
 
-      if (render_components->at(i).has_value() && !light_components->at(i).has_value()) {
-        const TransformComponent& transform_component = transform_components->at(i).value();
-        const RenderComponent& render_component = render_components->at(i).value();
+        if (render_components->at(i).has_value() && !light_components->at(i).has_value()) {
+          const TransformComponent& transform_component = transform_components->at(i).value();
+          const RenderComponent& render_component = render_components->at(i).value();
 
-        glBindVertexArray(render_component.mesh_->mesh_buffer());
-        glUniformMatrix4fv(model_uniform, 1, false, value_ptr(transform_component.world_transform()));
+          glBindVertexArray(render_component.mesh_->mesh_buffer());
+          glUniformMatrix4fv(model_uniform, 1, false, value_ptr(transform_component.world_transform()));
 
-        glDrawElements(GL_TRIANGLES, (GLsizei)render_component.mesh_->indices_.size(), GL_UNSIGNED_INT, 0);
+          glDrawElements(GL_TRIANGLES, (GLsizei)render_component.mesh_->indices_.size(), GL_UNSIGNED_INT, 0);
+        }
       }
     }
     glCullFace(GL_BACK);
@@ -410,35 +413,40 @@ namespace al{
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Shadow mapping
-    glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
-    glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_);
-    glClear(GL_DEPTH_BUFFER_BIT);
+    for (int i = 0; i < lm.num_directionals_; i++) {
+      glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
+      glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_.at(i));
+      glClear(GL_DEPTH_BUFFER_BIT);
 
-    //glClear(GL_DEPTH_BUFFER_BIT);
+      //glClear(GL_DEPTH_BUFFER_BIT);
 
-    auto& light = *em.GetEntity(lm.lights_.at(0));
-    glm::mat4x4 light_space = light.get_component<LightComponent>(em)->light_transform(*light.get_component<TransformComponent>(em));
-    lm.progam_.Use();
+      auto& light = *em.GetEntity(lm.lights_.at(i));
+      glm::mat4x4 light_space = light.get_component<LightComponent>(em)->light_transform(*light.get_component<TransformComponent>(em));
+      lm.progam_.Use();
 
-    ///light render scene
-    glUniformMatrix4fv(
-      glGetUniformLocation(lm.progam_.program(), "lightSpaceMatrix"),
-      1, GL_FALSE, glm::value_ptr(light_space));
-    GLint model_uniform = glGetUniformLocation(lm.progam_.program(), "model");
-    auto* light_components = em.GetComponentVector<LightComponent>();
-    glCullFace(GL_FRONT);
-    for (uint16_t i = 1; i < em.last_id_; i++) {
-      if (render_components->at(i).has_value() && !light_components->at(i).has_value()) {
-        const TransformComponent& transform_component = transform_components->at(i).value();
-        const RenderComponent& render_component = render_components->at(i).value();
+      ///light render scene
+      std::string uniform_nameBase2;
+      uniform_nameBase2 = "lightSpaceMatrix[" + std::to_string(i) + "]";
+      glUniformMatrix4fv(
+        glGetUniformLocation(lm.progam_.program(), uniform_nameBase2.c_str()),
+        1, GL_FALSE, glm::value_ptr(light_space));
+      GLint model_uniform = glGetUniformLocation(lm.progam_.program(), "model");
+      auto* light_components = em.GetComponentVector<LightComponent>();
+      glCullFace(GL_FRONT);
+      for (uint16_t i = 1; i < em.last_id_; i++) {
+        if (render_components->at(i).has_value() && !light_components->at(i).has_value()) {
+          const TransformComponent& transform_component = transform_components->at(i).value();
+          const RenderComponent& render_component = render_components->at(i).value();
 
-        glBindVertexArray(render_component.mesh_->mesh_buffer());
-        glUniformMatrix4fv(model_uniform, 1, false, value_ptr(transform_component.world_transform()));
+          glBindVertexArray(render_component.mesh_->mesh_buffer());
+          glUniformMatrix4fv(model_uniform, 1, false, value_ptr(transform_component.world_transform()));
 
-        glDrawElements(GL_TRIANGLES, (GLsizei)render_component.mesh_->indices_.size(), GL_UNSIGNED_INT, 0);
+          glDrawElements(GL_TRIANGLES, (GLsizei)render_component.mesh_->indices_.size(), GL_UNSIGNED_INT, 0);
+        }
       }
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
     glCullFace(GL_BACK);
 
     glViewport(0, 0, width_, height_);
@@ -451,21 +459,39 @@ namespace al{
     glBindTexture(GL_TEXTURE_2D, gNormal);
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, gAlbedo);
-    glActiveTexture(GL_TEXTURE0 + LightManager::depth_map_text_);
-    glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
+
+    std::string uniform_nameBase;
+    std::string uniform_nameBase2;
+    for (int i = 0; i < lm.num_directionals_; i++) {
+      auto& light = *em.GetEntity(lm.lights_.at(i));
+      glm::mat4x4 light_space = light.get_component<LightComponent>(em)->light_transform(*light.get_component<TransformComponent>(em));
+      uniform_nameBase = "lightSpaceMatrix[" + std::to_string(i) + "]";
+      uniform_nameBase2 = "al_shadow_texture[" + std::to_string(i) + "]";
+      glActiveTexture(GL_TEXTURE0 + LightManager::depth_map_text_.at(i));
+      glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_.at(i));
+      glUniformMatrix4fv(
+        glGetUniformLocation(lightning_program_.program(), uniform_nameBase.c_str()),
+        1, GL_FALSE, glm::value_ptr(light_space));
+
+      GLuint uniform = glGetUniformLocation(lightning_program_.program(), uniform_nameBase2.c_str());
+      glUniform1i(uniform, LightManager::depth_map_text_.at(i));
+    }
+
+
     // send light relevant uniforms
     char uniform_name[50] = {'\0'};
-    glUniformMatrix4fv(
-      glGetUniformLocation(lightning_program_.program(), "lightSpaceMatrix"),
-      1, GL_FALSE, glm::value_ptr(light_space));
+
     glUniform1i(
       glGetUniformLocation(lightning_program_.program(),"al_position_tex"),0);
     glUniform1i(
       glGetUniformLocation(lightning_program_.program(),"al_normal_tex"),1);
     glUniform1i(
       glGetUniformLocation(lightning_program_.program(),"al_albedo_tex"),2);
-    GLuint uniform = glGetUniformLocation(lightning_program_.program(), "al_shadow_texture");
-    glUniform1i(uniform, LightManager::depth_map_text_);
+
+
+
+
+
     glUniform1i(glGetUniformLocation(lightning_program_.program(),
       "al_n_dirLight"),(GLint)lm.num_directionals_);
     for (unsigned int i = 0; i < lm.num_directionals_; i++) {
@@ -555,6 +581,11 @@ namespace al{
         ImGui::Image((void*)(intptr_t)gAlbedo,
           ImVec2((float)width_ / 4.f, (float)height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
        
+        ImGui::Text("ShadowTexture:");
+        ImGui::Text("pointer = %d", LightManager::depth_map_text_);
+        ImGui::Text("size = %d x %d", LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
+        ImGui::Image((void*)(intptr_t)LightManager::depth_map_text_.at(0),
+          ImVec2((float)width_ / 4.f, (float)height_ / 4.f), ImVec2(0, 1), ImVec2(1, 0));
         ImGui::End();
       }
     }

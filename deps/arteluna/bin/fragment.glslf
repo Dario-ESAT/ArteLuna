@@ -7,7 +7,7 @@ const int MAX_s_LIGHTS = 5;
 uniform sampler2D al_texture;
 uniform sampler2D al_normal;
 uniform sampler2D al_displacement;
-uniform sampler2D al_shadow_texture;
+uniform sampler2D al_shadow_texture[MAX_D_LIGHTS];
 uniform samplerCube al_point_shadow_cube[MAX_p_LIGHTS];
 // uniform sampler2D u_specular;
 // uniform float u_shininess;
@@ -96,14 +96,14 @@ float CalcPointShadow(al_PointLight light, vec3 fragPos, int index)
     return shadow;
 }
 
-float ShadowCalculation(vec4 fragPosLightSpace, al_DirLight light, vec3 normal)
+float ShadowCalculation(vec4 fragPosLightSpace, al_DirLight light, vec3 normal, int index)
 {
     // perform perspective divide
     float bias = max(0.015 * (1.0 - dot(normal, light.direction)), 0.005); 
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     projCoords = projCoords * 0.5 + 0.5; 
  
-    float closestDepth = texture(al_shadow_texture, projCoords.xy).r; 
+    float closestDepth = texture(al_shadow_texture[index], projCoords.xy).r; 
 
     float currentDepth = projCoords.z;  
     float shadow;
@@ -111,7 +111,7 @@ float ShadowCalculation(vec4 fragPosLightSpace, al_DirLight light, vec3 normal)
 
     for(int x = -1; x <= 1; ++x){
       for(int y = -1; y <= 1; ++y){
-          float pcf = texture(al_shadow_texture, projCoords.xy + vec2(x,y) * texelSize).r;
+          float pcf = texture(al_shadow_texture[index], projCoords.xy + vec2(x,y) * texelSize).r;
           shadow += currentDepth - bias > closestDepth  ? 1.0 : 0.0;  
       }
     }
@@ -160,7 +160,7 @@ void main() {
 
   for(int i = 0; i < al_n_dirLight;i++) {
     light_result = CalcDir(al_dirLight[i],N,view_dir);
-    shadow = ShadowCalculation(fs_in.FragPosLightSpace,al_dirLight[i], N/*Nnormal*/);
+    shadow = ShadowCalculation(fs_in.FragPosLightSpace,al_dirLight[i], N, i/*Nnormal*/);
   }
   
   for(int i = 0; i < al_n_pointLight;i++) {

@@ -4,20 +4,21 @@
 #include "engine/entity_manager.h"
 #include "glad/gl.h"
 namespace al{
-  uint32_t LightManager::depth_map_FBO_ = 0;
-  uint32_t LightManager::depth_map_text_ = 0;
+  std::vector<uint32_t> LightManager::depth_map_FBO_ = std::vector<uint32_t>();
+  std::vector <uint32_t> LightManager::depth_map_text_ = std::vector<uint32_t>();
   std::vector <uint32_t> LightManager::depth_map_FBO_PointLight_ = std::vector<uint32_t>();
   std::vector <uint32_t> LightManager::pointlight_depth_map_text_ = std::vector<uint32_t>();
   float LightManager::near_ = 0.1f;
   float LightManager::far_ = 25;
 
   static void InitDepthMap() {
-    glGenFramebuffers(1, &LightManager::depth_map_FBO_);
+    uint32_t idx_aux;
+    glGenFramebuffers(1, &idx_aux);
+    LightManager::depth_map_FBO_.push_back(idx_aux);
 
-
-
-    glGenTextures(1, &LightManager::depth_map_text_);
-    glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
+    glGenTextures(1, &idx_aux);
+    LightManager::depth_map_text_.push_back(idx_aux);
+    glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_.back());
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
       LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT,
       0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
@@ -28,9 +29,9 @@ namespace al{
     float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
     glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_);
+    glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_.back());
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-      GL_TEXTURE_2D, LightManager::depth_map_text_, 0);
+      GL_TEXTURE_2D, LightManager::depth_map_text_.back(), 0);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -99,7 +100,7 @@ namespace al{
     point_program_.Init(point_shader_.vertex(), point_shader_.fragment(), point_shader_.geometry());
 
     // Create both FBO for cubemap and point shadow
-    InitDepthMap();
+    //InitDepthMap();
   }
 
   Entity& LightManager::CreatelLight(EntityManager& em, const char* name,
@@ -110,6 +111,10 @@ namespace al{
     if (type == LightComponent::Pointlight) {
       InitPointLightDepthMap();
     }
+    if (type == LightComponent::Directional) {
+      InitDepthMap();
+    }
+    
     light_component->type_ = type;
     lights_.push_back(light.id());
     OrderLights(em);

@@ -25,8 +25,8 @@ namespace al{
     static float near_;
     static float far_;
 
-    static uint32_t depth_map_FBO_;
-    static uint32_t depth_map_text_;
+    static std::vector<uint32_t> depth_map_FBO_;
+    static std::vector<uint32_t> depth_map_text_;
     static const uint32_t SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
   private:
   
