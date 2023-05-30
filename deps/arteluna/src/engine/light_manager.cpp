@@ -87,7 +87,6 @@ namespace al{
     sm.CreateComponentVector<LightComponent>();
     num_directionals_ = 0;
     num_points_ = 0;
-    num_spots_ = 0;
     // Directional shadow
     shader_.Init(ReadFile(vert).get(),ReadFile(frag).get());
     progam_.Init(shader_.vertex(),shader_.fragment());
@@ -129,7 +128,6 @@ namespace al{
     std::vector<uint32_t> lights_aux_;
     num_directionals_ = 0;
     num_points_ = 0;
-    num_spots_ = 0;
 
     for (unsigned long long i = 0; i < lights_.size(); i++){
       Entity* entity = em.GetEntity(lights_.at(i));

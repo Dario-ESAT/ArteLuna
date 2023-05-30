@@ -41,27 +41,13 @@ struct al_PointLight {
   vec3 color;
 };
 
-struct al_SpotLight {    
-  vec3 position;
-  vec3 direction;
-  
-  float constant;
-  float linear;
-  float quadratic;
-  float cutoff;
-  float outerCutOff;
-
-  vec3 color;
-};
 
 
 uniform al_DirLight al_dirLight[MAX_D_LIGHTS];
 uniform al_PointLight al_pointLight[MAX_p_LIGHTS];
-uniform al_SpotLight al_spotLight[MAX_s_LIGHTS];
 
 uniform int al_n_dirLight;
 uniform int al_n_pointLight;
-uniform int al_n_spotLight;
 
 in vec3 normal;
 in vec2 uv;
@@ -77,8 +63,6 @@ vec2 ParallaxMapping(vec2 textCoords, vec3 viewdir){
     return textCoords - parallax_offset;  
     
 }
-
-
 
 vec3 CalcPointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
   float intensity = 1.5;

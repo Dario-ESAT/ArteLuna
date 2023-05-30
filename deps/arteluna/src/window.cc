@@ -521,8 +521,7 @@ namespace al{
 
     if (camera_.render_mode_) {
       RenderForward();
-    }
-    else {
+    } else {
       RenderDeferred();
     }
     // Render Imgui
@@ -536,32 +535,28 @@ namespace al{
   }
 
   void Window::MenuImgui() {
-        
-    ImGui::Begin("Deferred textures");{
-      ImGui::Text("Positions:");
-      ImGui::Text("pointer = %d", gPosition);
-      ImGui::Text("size = %d x %d", width_, height_);
-      ImGui::Image((void*)(intptr_t)gPosition,
-        ImVec2((float)width_ / 4.f, (float)height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
+    if (!camera_.render_mode_){
+      ImGui::Begin("Deferred textures");{
+        ImGui::Text("Positions:");
+        ImGui::Text("pointer = %d", gPosition);
+        ImGui::Text("size = %d x %d", width_, height_);
+        ImGui::Image((void*)(intptr_t)gPosition,
+          ImVec2((float)width_ / 4.f, (float)height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
 
-      ImGui::Text("Normals:");
-      ImGui::Text("pointer = %d", gNormal);
-      ImGui::Text("size = %d x %d", width_, height_);
-      ImGui::Image((void*)(intptr_t)gNormal,
-        ImVec2((float)width_ / 4.f, (float)height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
+        ImGui::Text("Normals:");
+        ImGui::Text("pointer = %d", gNormal);
+        ImGui::Text("size = %d x %d", width_, height_);
+        ImGui::Image((void*)(intptr_t)gNormal,
+          ImVec2((float)width_ / 4.f, (float)height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
 
-      ImGui::Text("Albedo:");
-      ImGui::Text("pointer = %d", gAlbedo);
-      ImGui::Text("size = %d x %d", width_, height_);
-      ImGui::Image((void*)(intptr_t)gAlbedo,
-        ImVec2((float)width_ / 4.f, (float)height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
-
-      ImGui::Text("ShadowMap:");
-      ImGui::Text("pointer = %d", LightManager::depth_map_text_);
-      ImGui::Text("size = %d x %d", width_, height_);
-      ImGui::Image((void*)(intptr_t)LightManager::depth_map_text_,
-        ImVec2((float)LightManager::SHADOW_HEIGHT / 4.f, (float)LightManager::SHADOW_HEIGHT / 4.f), ImVec2(0, 1), ImVec2(1, 0));
-      ImGui::End();
+        ImGui::Text("Albedo:");
+        ImGui::Text("pointer = %d", gAlbedo);
+        ImGui::Text("size = %d x %d", width_, height_);
+        ImGui::Image((void*)(intptr_t)gAlbedo,
+          ImVec2((float)width_ / 4.f, (float)height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
+       
+        ImGui::End();
+      }
     }
   }
 

@@ -35,7 +35,6 @@ namespace al{
   
     uint32_t num_directionals_;
     uint32_t num_points_;
-    uint32_t num_spots_;
 
     // Cubemap
     Program progam_;
