@@ -261,8 +261,8 @@ namespace al{
     }
     glCullFace(GL_BACK);
     // ------------------ Point Shadow ---------------------
-    for (int i = lm.num_directionals_; i < lm.num_directionals_ + lm.num_points_;i++) {
-      int idx = i;
+    for (uint32_t i = lm.num_directionals_; i < lm.num_directionals_ + lm.num_points_;i++) {
+      uint32_t idx = i;
       if (lm.num_directionals_ > 0) {
         idx = i - lm.num_directionals_;
       }
