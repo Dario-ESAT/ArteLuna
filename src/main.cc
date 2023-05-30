@@ -31,6 +31,11 @@ int main() {
     0.1f
   );
 
+  std::shared_ptr<al::Material> material_2 = std::make_shared<al::Material>(
+    "../../deps/arteluna/bin/vertex.glslv",
+    "../../deps/arteluna/bin/fragment.glslf"
+    );
+
   std::shared_ptr<al::Material> material_prueba = std::make_shared<al::Material>(
     "../../deps/arteluna/bin/vertex.glslv",
     "../../deps/arteluna/bin/fragment.glslf"
@@ -63,7 +68,7 @@ int main() {
   al::RenderComponent* d_render = d_light.AddComponent<al::RenderComponent>(em);
   d_render->mesh_ = sonic;
   d_render->material_ = material;
-  /*
+  
    al::Entity& s_light = l_manager.CreatelLight(em,"PointLight", al::LightComponent::Type::Pointlight);
    al::TransformComponent* t_comp_p = s_light.get_component<al::TransformComponent>(em);
    al::LightComponent* l_comp = s_light.get_component<al::LightComponent>(em);
@@ -75,7 +80,7 @@ int main() {
    
    l_render->mesh_ = sonic;
    l_render->material_ = material;
-  */
+  
 
 
 
@@ -120,7 +125,7 @@ int main() {
 
   al::RenderComponent* c_render = c.AddComponent<al::RenderComponent>(em);
   c_render->mesh_ = cubo;
-  c_render->material_ = material;
+  c_render->material_ = material_2;
 
   al::Entity& bobo = sm.Get<al::EntityManager>()->CreateNewEntity("Bobo");
   sm.Get<al::EntityManager>()->DeleteEntity(bobo.id());

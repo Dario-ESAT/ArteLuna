@@ -147,14 +147,7 @@ namespace al{
         lights_aux_.emplace_back(entity->id());
       }
     }
-    for (unsigned long long i = 0; i < lights_.size(); i++){
-      Entity* entity = em.GetEntity(lights_.at(i));
-      LightComponent* light = entity->get_component<LightComponent>(em);
-      if (light->type_ == LightComponent::Spotlight){
-        num_spots_++;
-        lights_aux_.emplace_back(entity->id());
-      }
-    }
+    
     lights_ = lights_aux_;
   }
 }

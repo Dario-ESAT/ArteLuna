@@ -517,9 +517,12 @@ namespace al{
     // EntityManager& em = *sm_->Get<EntityManager>();
     // LightManager& lm = *sm_->Get<LightManager>();
 
-
-    // RenderForward();
-    RenderDeferred();
+    if (camera_.render_mode_) {
+      RenderForward();
+    }
+    else {
+      RenderDeferred();
+    }
     // Render Imgui
     MenuImgui();
     camera_.MenuImgui();

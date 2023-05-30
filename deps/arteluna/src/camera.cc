@@ -36,7 +36,7 @@ namespace al{
     far_ = 10000.0f;
 
     imgui_mode_ = false;
-
+    render_mode_ = false;
     UpdateTransform();
   }
 
@@ -283,6 +283,13 @@ namespace al{
         ImGui::Text("Set ortho size");
         ImGui::DragFloat("Ortho width", &ortho_x_, 0.01f);
         ImGui::DragFloat("Ortho height", &ortho_y_, 0.01f);
+      }
+
+      if (ImGui::Button(render_mode_ == true ? "Forward" : "Deferred")) {
+        if (render_mode_)
+          render_mode_ = false;
+        else
+          render_mode_ = true;
       }
 
       ImGui::End();
