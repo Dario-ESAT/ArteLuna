@@ -131,7 +131,6 @@ namespace al{
     }
 
     for (auto it = material_->user_uniforms_.begin(); it != material_->user_uniforms_.end(); ++it) {
-
       if (it->second.data_) {
         it->second.data_->bind(it->second.location_);
       } else{
@@ -165,10 +164,10 @@ namespace al{
       int texture_unit_index = i + 4; // 4 debido a que hay otras 4 texturas haciendo el bind antes
       uniform_nameBase = "al_point_shadow_cube[" + std::to_string(i) + "]";
 
-      glActiveTexture(GL_TEXTURE0 + texture_unit_index);
+      glActiveTexture(GL_TEXTURE0 + LightManager::pointlight_depth_map_text_.at(i));
       glBindTexture(GL_TEXTURE_CUBE_MAP, LightManager::pointlight_depth_map_text_.at(i));
       uniform = glGetUniformLocation(material_->program_.program(), uniform_nameBase.c_str());
-      glUniform1i(uniform, texture_unit_index);
+      glUniform1i(uniform, LightManager::pointlight_depth_map_text_.at(i));
     }
 
     auto& light= *em.GetEntity(lm.lights_.at(0));

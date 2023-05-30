@@ -78,7 +78,7 @@ namespace al{
     void Active();
 
 
-    unsigned int get_id() { return id_texture_; }
+    uint32_t get_id() { return id_texture_; }
     Format format() { return format_; }
     Type type() { return type_; }
     void set_min_filter(Filter m) { min_filter_ = m; }
@@ -111,7 +111,7 @@ namespace al{
     Format format_;
     Type type_;
 
-    unsigned int id_texture_;
+     uint32_t id_texture_;
   };
 }
 #endif

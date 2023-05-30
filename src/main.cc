@@ -80,7 +80,17 @@ int main() {
    l_render->mesh_ = sonic;
    l_render->material_ = material;
   
-
+  al::Entity& s_light2 = l_manager.CreatelLight(em,"PointLight", al::LightComponent::Type::Pointlight);
+  al::TransformComponent* t_comp_p2 = s_light2.get_component<al::TransformComponent>(em);
+  al::LightComponent* l_comp2 = s_light2.get_component<al::LightComponent>(em);
+  l_comp2->set_color(0, 1, 0);
+  t_comp_p2->set_rotation(1, 0, 0);
+  t_comp_p2->set_position({ 5.f, 10.0f, 0.0f });
+  t_comp_p2->set_scale({ 0.1f, 0.1f, 0.1f });
+  al::RenderComponent* l_render2 = s_light2.AddComponent<al::RenderComponent>(em);
+   
+  l_render2->mesh_ = sonic;
+  l_render2->material_ = material;
 
 
   al::Entity& entity_1 = sm.Get<al::EntityManager>()->CreateNewEntity("Cube");
