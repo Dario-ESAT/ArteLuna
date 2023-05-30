@@ -285,7 +285,7 @@ namespace al{
         ImGui::DragFloat("Ortho height", &ortho_y_, 0.01f);
       }
 
-      if (ImGui::Button(render_mode_ == true ? "Forward" : "Deferred")) {
+      if (ImGui::Button(render_mode_ ? "Forward" : "Deferred")) {
         if (render_mode_)
           render_mode_ = false;
         else
