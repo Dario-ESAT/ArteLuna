@@ -75,11 +75,11 @@ void main() {
   Normal = normalize(Normal);
   vec3 lighting  = Albedo * 0.1;
   // vec3 viewDir = normalize(al_cam_pos - FragPos);
-  float shadow;
+
   for(int i = 0 ; i < al_n_dirLight ; i++){
     vec3 dirLight= CalcDir(al_dirLight[i],Normal,Albedo);
      vec4 fragPosLightSpace = lightSpaceMatrix[i] * vec4(FragPos, 1.0);
-     shadow = ShadowCalculation(fragPosLightSpace, al_dirLight[i], Normal, i);
+    float shadow = ShadowCalculation(fragPosLightSpace, al_dirLight[i], Normal, i);
     vec3 dirLighting = (1.0 - shadow) * dirLight;
 
     dirLighting = max(dirLighting, vec3(0.0, 0.0, 0.0));

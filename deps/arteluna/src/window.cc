@@ -1,4 +1,4 @@
- #define GLFW_INCLUDE_NONE
+#define GLFW_INCLUDE_NONE
 #include "glad/gl.h"
 #include "GLFW/glfw3.h"
 #include "window.h"
@@ -264,8 +264,8 @@ namespace al{
     }
     glCullFace(GL_BACK);
     // ------------------ Point Shadow ---------------------
-    for (uint32_t i = lm.num_directionals_; i < lm.num_directionals_ + lm.num_points_;i++) {
-      uint32_t idx = i;
+    for (int i = lm.num_directionals_; i < lm.num_directionals_ + lm.num_points_;i++) {
+      int idx = i;
       if (lm.num_directionals_ > 0) {
         idx = i - lm.num_directionals_;
       }
@@ -464,6 +464,19 @@ namespace al{
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, gAlbedo);
 
+
+
+
+    // send light relevant uniforms
+    char uniform_name[50] = {'\0'};
+
+    glUniform1i(
+      glGetUniformLocation(lightning_program_.program(),"al_position_tex"),0);
+    glUniform1i(
+      glGetUniformLocation(lightning_program_.program(),"al_normal_tex"),1);
+    glUniform1i(
+      glGetUniformLocation(lightning_program_.program(),"al_albedo_tex"),2);
+
     std::string uniform_nameBase;
     std::string uniform_nameBase2;
     std::string uniform_nameBase3;
@@ -484,19 +497,6 @@ namespace al{
       GLuint uniform = glGetUniformLocation(lightning_program_.program(), uniform_nameBase3.c_str());
       glUniform1i(uniform, 3 + i);
     }
-
-
-    // send light relevant uniforms
-    char uniform_name[50] = {'\0'};
-
-    glUniform1i(
-      glGetUniformLocation(lightning_program_.program(),"al_position_tex"),0);
-    glUniform1i(
-      glGetUniformLocation(lightning_program_.program(),"al_normal_tex"),1);
-    glUniform1i(
-      glGetUniformLocation(lightning_program_.program(),"al_albedo_tex"),2);
-
-
 
 
 
