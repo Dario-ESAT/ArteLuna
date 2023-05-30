@@ -5,8 +5,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 namespace al{
-  static std::unique_ptr<char[]> ReadFile(const char* filename)
-  {
+  static std::unique_ptr<char[]> ReadFile(const char* filename) {
     FILE* in_file = 0;
     int err = fopen_s(&in_file, filename, "rb");
     assert(err == 0 && filename);
@@ -19,6 +18,12 @@ namespace al{
       fclose(in_file);
     }
     return file_contents;
+  }
+
+  static float lerp(float start, float end, float t) {
+    // t = std::max(0.0f, std::min(1.0f, t));
+    
+    return start + t * (end - start);
   }
 }
 #endif

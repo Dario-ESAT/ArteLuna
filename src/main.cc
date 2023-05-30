@@ -10,7 +10,6 @@
 #include "components/light_component.h"
 #include "engine/engine.h"
 #include "engine/entity_manager.h"
-#include "systems/systems.h"
 int main() {
   al::ServiceManager sm;
   al::Engine engine(sm);

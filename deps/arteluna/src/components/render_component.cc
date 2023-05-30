@@ -10,6 +10,8 @@
 #include "engine/material.h"
 #include "engine/mesh.h"
 #include "entity.h"
+#include "utils.h"
+
 namespace al{
   void RenderComponent::ImguiTree(uint32_t id) {
   }
@@ -50,8 +52,14 @@ namespace al{
       }
       sprintf_s(uniform_name,"al_dirLight[%d].color",j);
       al_uniform = al_uniforms.find(uniform_name);
+      
       if (al_uniform != al_uniforms.end()){
-        glUniform3f(al_uniform->second.location_,  light->color().r , light->color().g, light->color().b);
+        float factor = (float)light->brightness() / 255.f;
+
+        glUniform3f(al_uniform->second.location_,
+          lerp(0.f,light->color().r,factor) ,
+          lerp(0.f,light->color().g,factor),
+          lerp(0.f,light->color().b,factor));
       }
 
       sprintf_s(uniform_name, "al_dirLight[%d].diffuse", j);
@@ -88,11 +96,14 @@ namespace al{
       sprintf_s(uniform_name,"al_pointLight[%d].color", idx);
       al_uniform = al_uniforms.find(uniform_name);
       if (al_uniform != al_uniforms.end()){
+        float factor = (float)light->brightness() / 255.f;
+
+
         glUniform3f(
           al_uniform->second.location_,
-          light->color().r,
-          light->color().g,
-          light->color().b
+          lerp(0.f,light->color().r,factor) ,
+          lerp(0.f,light->color().g,factor),
+          lerp(0.f,light->color().b,factor)
         );
       }
       sprintf_s(uniform_name,"al_pointLight[%d].constant", idx);
@@ -143,7 +154,7 @@ namespace al{
       if (al_uniform != al_uniforms.end()){
         glUniform3f(
           al_uniform->second.location_,
-          transform->forward().x, 
+          transform->forward().x,
           transform->forward().y,
           transform->forward().z
         );

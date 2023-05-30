@@ -478,12 +478,14 @@ namespace al{
                       lightning_program_.program(),
                       uniform_name),
         forward.x, forward.y, forward.z);
-
+      float factor = (float)l_light.brightness() / 255.f;
       sprintf_s(uniform_name,"al_dirLight[%d].color",i);
       glUniform3f(glGetUniformLocation(
                       lightning_program_.program(),
                       uniform_name ),
-        l_light.color().x, l_light.color().y, l_light.color().z);
+                      lerp(0.f,l_light.color().r,factor) ,
+                        lerp(0.f,l_light.color().g,factor),
+                        lerp(0.f,l_light.color().b,factor));
       
       sprintf_s(uniform_name,"al_dirLight[%d].diffuse",i);
       glUniform3f(glGetUniformLocation(
