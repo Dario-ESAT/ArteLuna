@@ -67,15 +67,15 @@ int main() {
   al::RenderComponent* d_render = d_light.AddComponent<al::RenderComponent>(em);
   d_render->mesh_ = sonic;
   d_render->material_ = material;
-  
+  /*
   al::Entity& d_light2 = l_manager.CreatelLight(em, "Directional2", al::LightComponent::Type::Directional);
   al::TransformComponent* t_comp2 = d_light2.get_component<al::TransformComponent>(em);
   t_comp2->set_rotation(1.5, 0, 0);
-  t_comp2->set_position({ 0.f, 20.0f, 0.0f });
+  t_comp2->set_position({ 10.f, 20.0f, 0.0f });
   al::RenderComponent* d_render2 = d_light2.AddComponent<al::RenderComponent>(em);
   d_render2->mesh_ = sonic;
   d_render2->material_ = material;
-
+  */
    al::Entity& s_light = l_manager.CreatelLight(em,"PointLight", al::LightComponent::Type::Pointlight);
    al::TransformComponent* t_comp_p = s_light.get_component<al::TransformComponent>(em);
    al::LightComponent* l_comp = s_light.get_component<al::LightComponent>(em);

@@ -420,16 +420,20 @@ namespace al{
 
       //glClear(GL_DEPTH_BUFFER_BIT);
 
-      auto& light = *em.GetEntity(lm.lights_.at(i));
-      glm::mat4x4 light_space = light.get_component<LightComponent>(em)->light_transform(*light.get_component<TransformComponent>(em));
+
+      
       lm.progam_.Use();
 
-      ///light render scene
+      auto& light = *em.GetEntity(lm.lights_.at(i));
       std::string uniform_nameBase2;
-      uniform_nameBase2 = "lightSpaceMatrix[" + std::to_string(i) + "]";
+      glm::mat4x4 light_space = light.get_component<LightComponent>(em)->light_transform(*light.get_component<TransformComponent>(em));
+     
       glUniformMatrix4fv(
-        glGetUniformLocation(lm.progam_.program(), uniform_nameBase2.c_str()),
+        glGetUniformLocation(lm.progam_.program(), "lightSpaceMatrix"),
         1, GL_FALSE, glm::value_ptr(light_space));
+
+      ///light render scene
+      
       GLint model_uniform = glGetUniformLocation(lm.progam_.program(), "model");
       auto* light_components = em.GetComponentVector<LightComponent>();
       glCullFace(GL_FRONT);
@@ -452,7 +456,7 @@ namespace al{
     glViewport(0, 0, width_, height_);
     lightning_program_.Use();
    
-  
+    
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, gPosition);
     glActiveTexture(GL_TEXTURE1);
@@ -462,19 +466,23 @@ namespace al{
 
     std::string uniform_nameBase;
     std::string uniform_nameBase2;
+    std::string uniform_nameBase3;
     for (int i = 0; i < lm.num_directionals_; i++) {
       auto& light = *em.GetEntity(lm.lights_.at(i));
+
       glm::mat4x4 light_space = light.get_component<LightComponent>(em)->light_transform(*light.get_component<TransformComponent>(em));
-      uniform_nameBase = "lightSpaceMatrix[" + std::to_string(i) + "]";
-      uniform_nameBase2 = "al_shadow_texture[" + std::to_string(i) + "]";
-      glActiveTexture(GL_TEXTURE0 + LightManager::depth_map_text_.at(i));
-      glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_.at(i));
+      uniform_nameBase2 = "lightSpaceMatrix[" + std::to_string(i) + "]";
       glUniformMatrix4fv(
-        glGetUniformLocation(lightning_program_.program(), uniform_nameBase.c_str()),
+        glGetUniformLocation(lm.progam_.program(), uniform_nameBase2.c_str()),
         1, GL_FALSE, glm::value_ptr(light_space));
 
-      GLuint uniform = glGetUniformLocation(lightning_program_.program(), uniform_nameBase2.c_str());
-      glUniform1i(uniform, LightManager::depth_map_text_.at(i));
+
+      uniform_nameBase3 = "al_shadow_texture[" + std::to_string(i) + "]";
+      glActiveTexture(GL_TEXTURE0 + 3 + i);
+      glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_.at(i));
+
+      GLuint uniform = glGetUniformLocation(lightning_program_.program(), uniform_nameBase3.c_str());
+      glUniform1i(uniform, 3 + i);
     }
 
 
@@ -582,10 +590,16 @@ namespace al{
           ImVec2((float)width_ / 4.f, (float)height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
        
         ImGui::Text("ShadowTexture:");
-        ImGui::Text("pointer = %d", LightManager::depth_map_text_);
+        ImGui::Text("pointer = %d", LightManager::depth_map_text_.at(0));
         ImGui::Text("size = %d x %d", LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
         ImGui::Image((void*)(intptr_t)LightManager::depth_map_text_.at(0),
           ImVec2((float)width_ / 4.f, (float)height_ / 4.f), ImVec2(0, 1), ImVec2(1, 0));
+        /*
+        ImGui::Text("ShadowTexture2:");
+        ImGui::Text("pointer = %d", LightManager::depth_map_text_.at(1));
+        ImGui::Text("size = %d x %d", LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
+        ImGui::Image((void*)(intptr_t)LightManager::depth_map_text_.at(1),
+          ImVec2((float)width_ / 4.f, (float)height_ / 4.f), ImVec2(0, 1), ImVec2(1, 0));*/
         ImGui::End();
       }
     }

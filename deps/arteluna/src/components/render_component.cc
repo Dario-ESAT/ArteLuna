@@ -180,13 +180,14 @@ namespace al{
       glUniform1i(uniform, LightManager::pointlight_depth_map_text_.at(i));
     }
 
-    auto& light= *em.GetEntity(lm.lights_.at(0));
-    glm::mat4x4 light_space = light.get_component<LightComponent>(em)->light_transform(*light.get_component<TransformComponent>(em));
+
 
 
     std::string uniform_nameBase3;
-    for (int i = 0; i < lm.num_points_; i++) {
-      int texture_unit_index = i + 4; // 4 debido a que hay otras 4 texturas haciendo el bind antes
+    for (int i = 0; i < lm.num_directionals_; i++) {
+      auto& light = *em.GetEntity(lm.lights_.at(i));
+      glm::mat4x4 light_space = light.get_component<LightComponent>(em)->light_transform(*light.get_component<TransformComponent>(em));
+
       uniform_nameBase3 = "lightSpaceMatrix[" + std::to_string(i) + "]";
       glUniformMatrix4fv(glGetUniformLocation(material_->program_.program(), uniform_nameBase3.c_str()),
         1, GL_FALSE, glm::value_ptr(light_space));
