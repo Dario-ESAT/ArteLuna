@@ -35,7 +35,7 @@ in vec4 FragPosLightSpace;
      float currentDepth = projCoords.z;  
      float shadow;
      vec2 texelSize = vec2(0.001,0.001);//1.0f / textureSize(al_shadow_texture, 0);
-/*
+
      for(int x = -1; x <= 1; ++x){
        for(int y = -1; y <= 1; ++y){
            float pcf = texture(al_shadow_texture, projCoords.xy + vec2(x,y) * texelSize).r;
@@ -45,7 +45,7 @@ in vec4 FragPosLightSpace;
      shadow /= 9.0;
      if(projCoords.z > 1)
        return shadow = 0.0;
-*/
+
 
      return shadow;
  }
@@ -77,12 +77,12 @@ void main() {
   float shadow; 
   for(int i = 0 ; i < al_n_dirLight ; i++){
     vec3 dirLight= CalcDir(al_dirLight[i],Normal,Albedo);
-    // vec4 fragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
-    //shadow = ShadowCalculation(fragPosLightSpace, al_dirLight[i], Normal);
-    //vec3 dirLighting = (1.0 - shadow) * dirLight;
+     vec4 fragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
+    shadow = ShadowCalculation(fragPosLightSpace, al_dirLight[i], Normal);
+    vec3 dirLighting = (1.0 - shadow) * dirLight;
 
-    //dirLighting = max(dirLighting, vec3(0.0, 0.0, 0.0));
-    lighting += dirLight;
+    dirLighting = max(dirLighting, vec3(0.0, 0.0, 0.0));
+    lighting += dirLighting;
   }
 
   gl_FragColor = vec4(lighting, 1.0);

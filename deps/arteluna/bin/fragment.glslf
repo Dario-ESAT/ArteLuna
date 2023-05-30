@@ -80,27 +80,6 @@ vec2 ParallaxMapping(vec2 textCoords, vec3 viewdir){
 
 
 
-vec3 CalSpotLight(al_SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
-  vec3 lightDir = normalize(light.position - fragPos);
-  
-  // attenuation
-  float distance    = length(light.position - fragPos);
-  float attenuation = 1.0 / (light.constant + light.linear * distance + 
-            light.quadratic * (distance * distance));
-
-  // combine results
-
-  if(dot(lightDir,normalize(-light.direction)) < light.cutoff){
-    float diff = max(dot(normal, lightDir), 0.0);
-    vec3 diffuse  = light.color * diff * vec3(texture(al_texture, uv));
-
-    diffuse  *= attenuation;
-    return (diffuse);
-  }
-  
-  return vec3(0.0,0.0,0.0);
-}
-
 vec3 CalcPointLight(al_PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
   float intensity = 1.5;
   vec3 lightDir = normalize(light.position - fragPos);
@@ -127,7 +106,7 @@ float CalcPointShadow(al_PointLight light, vec3 fragPos, int index)
     // now get current linear depth as the length between the fragment and light position
     float currentDepth = length(fragToLight);
     // test for shadows
-    float bias = 0.005; // we use a much larger bias since depth is now in [near_plane, far_plane] range
+    float bias = 0.09; // we use a much larger bias since depth is now in [near_plane, far_plane] range
     float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;        
 
     return shadow;
@@ -207,47 +186,11 @@ void main() {
     light_result += pointLightColor;
     //light_result *= diffuse_color;
   }
-  for(int i = 0; i < al_n_spotLight;i++) {
-    //light_result += CalSpotLight(al_spotLight[i],N,FragPos,view_dir);
-  }
 
    vec4 RawColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
- 
-  
-  
-
   vec3 light_res = (1.0 - shadow) * (light_result) * al_dirLight[0].color;
-
-
 
 	gl_FragColor = texture(al_texture, uv) * vec4(light_res,1.0);// * RawColor;// SIN NIEBLA
 	
 } 
-
- //normals_mapping.z = sqrt(1 - normals_mapping.x * normals_mapping.x + normals_mapping.y * normals_mapvping.y);
-  //vec3 N = normalize(normals_mapping * 2.0 - 1.0);
-  //N = normalize(N);
-  //N = TBN * N;
-  //N = normalize(N);
-
-
-
-
-  /*
-   vec3 LD = normalize(al_dirLight[0].direction - FragPos);
-  float i = max(dot(LD, N),0.0f);
-  */
-
-
-
- // vec4 fog_position = vec4(w_pos, 1);
-	//float fog_distance = distance(vec4(CameraPosition, 1.0f), fog_position);
-	// float fog_distance = distance(vec4(al_cam_pos, 1), fog_position);
-	// float alpha = GetFogFactor(fog_distance);
-
-	// gl_FragColor = vec4(u_n_dirLight,u_n_pointLight,u_n_spotLight, 1);
-	//vec4 objectColor = vec4(light_result, 1);// * texture(al_texture, uv);
-	//gl_FragColor = mix(objectColor, VertexIn.color, alpha);// * texture(al_texture, uv);
-
-  // gl_FragColor = mix( vec4(light_result, 1), VertexIn.color, alpha); // CON NIEBLA 

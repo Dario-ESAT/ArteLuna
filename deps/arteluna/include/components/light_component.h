@@ -9,7 +9,6 @@ namespace al{
   
     enum Type{
       Directional,
-      Spotlight,
       Pointlight
     };
     void ImguiTree(uint32_t id) override;

@@ -85,6 +85,7 @@ namespace al{
     glm::mat4x4 view_matrix_;
 
     uint32_t mode_;
+    uint32_t render_mode_;
     bool imgui_mode_;
     friend class Window;
   };

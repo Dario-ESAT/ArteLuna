@@ -20,15 +20,6 @@ namespace al{
 
   
     switch (type_){
-    case Spotlight:{
-      float aux = inner_cone_radius_;
-      ImGui::DragFloat("Inner Cone Radius",&aux,1.f,0.f);
-      set_inner_cone_radius(aux);
-      
-      aux = outer_cone_radius_;
-      ImGui::DragFloat("Outer Cone Radius",&aux,1.f,0.f);
-      set_outer_cone_radius(aux);
-    }
     case Pointlight:{
       ImGui::DragFloat("Constant",&constant_,0.02f,0.f);
       ImGui::DragFloat("Linear",&linear_,0.02f,0.f);
@@ -45,8 +36,8 @@ namespace al{
 
   glm::mat4x4 LightComponent::light_transform(TransformComponent& transform) const {
     ;
-    float near_plane = 1.0f, far_plane = 500;
-    glm::mat4 lightProjection = glm::ortho(-40.f, 40.0f, -40.0f, 40.0f, near_plane, far_plane);  
+    float near_plane = 1.0f, far_plane = 100;
+    glm::mat4 lightProjection = glm::ortho(-20.f, 20.0f, -20.0f, 20.0f, near_plane, far_plane);  
     glm::mat4 lightView = glm::lookAt(transform.position(),
                                     transform.position() + transform.forward(), 
                                     glm::vec3( 0.0f, 1.0f,  0.0f));
