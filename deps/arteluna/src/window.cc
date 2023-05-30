@@ -464,9 +464,6 @@ namespace al{
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, gAlbedo);
 
-
-
-
     // send light relevant uniforms
     char uniform_name[50] = {'\0'};
 
@@ -485,8 +482,10 @@ namespace al{
 
       glm::mat4x4 light_space = light.get_component<LightComponent>(em)->light_transform(*light.get_component<TransformComponent>(em));
       uniform_nameBase2 = "lightSpaceMatrix[" + std::to_string(i) + "]";
-      glUniformMatrix4fv(
-        glGetUniformLocation(lm.progam_.program(), uniform_nameBase2.c_str()),
+      GLuint asd = glGetUniformLocation(lightning_program_.program(), uniform_nameBase2.c_str());
+
+        glUniformMatrix4fv(
+        glGetUniformLocation(lightning_program_.program(), uniform_nameBase2.c_str()),
         1, GL_FALSE, glm::value_ptr(light_space));
 
 
