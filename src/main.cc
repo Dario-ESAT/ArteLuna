@@ -68,6 +68,14 @@ int main() {
   d_render->mesh_ = sonic;
   d_render->material_ = material;
   
+  al::Entity& d_light2 = l_manager.CreatelLight(em, "Directional2", al::LightComponent::Type::Directional);
+  al::TransformComponent* t_comp2 = d_light2.get_component<al::TransformComponent>(em);
+  t_comp2->set_rotation(1.5, 0, 0);
+  t_comp2->set_position({ 0.f, 20.0f, 0.0f });
+  al::RenderComponent* d_render2 = d_light2.AddComponent<al::RenderComponent>(em);
+  d_render2->mesh_ = sonic;
+  d_render2->material_ = material;
+
    al::Entity& s_light = l_manager.CreatelLight(em,"PointLight", al::LightComponent::Type::Pointlight);
    al::TransformComponent* t_comp_p = s_light.get_component<al::TransformComponent>(em);
    al::LightComponent* l_comp = s_light.get_component<al::LightComponent>(em);
@@ -80,7 +88,7 @@ int main() {
    l_render->mesh_ = sonic;
    l_render->material_ = material;
   
-  al::Entity& s_light2 = l_manager.CreatelLight(em,"PointLight", al::LightComponent::Type::Pointlight);
+  al::Entity& s_light2 = l_manager.CreatelLight(em,"PointLight2", al::LightComponent::Type::Pointlight);
   al::TransformComponent* t_comp_p2 = s_light2.get_component<al::TransformComponent>(em);
   al::LightComponent* l_comp2 = s_light2.get_component<al::LightComponent>(em);
   l_comp2->set_color(0, 1, 0);
@@ -91,6 +99,18 @@ int main() {
    
   l_render2->mesh_ = sonic;
   l_render2->material_ = material;
+
+  al::Entity& s_light3 = l_manager.CreatelLight(em, "PointLight3", al::LightComponent::Type::Pointlight);
+  al::TransformComponent* t_comp_p3 = s_light3.get_component<al::TransformComponent>(em);
+  al::LightComponent* l_comp3 = s_light3.get_component<al::LightComponent>(em);
+  l_comp3->set_color(0, 1, 0);
+  t_comp_p3->set_rotation(1, 0, 0);
+  t_comp_p3->set_position({ 5.f, 10.0f, 0.0f });
+  t_comp_p3->set_scale({ 0.1f, 0.1f, 0.1f });
+  al::RenderComponent* l_render3 = s_light3.AddComponent<al::RenderComponent>(em);
+
+  l_render3->mesh_ = sonic;
+  l_render3->material_ = material;
 
 
   al::Entity& entity_1 = sm.Get<al::EntityManager>()->CreateNewEntity("Cube");

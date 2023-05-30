@@ -153,11 +153,21 @@ namespace al{
     uniform = glGetUniformLocation(material_->program_.program(), "al_displacement");
     glUniform1i(uniform, material_->displacement_texture_.get_id());
 
+    std::string uniform_nameBase2;
+    for (int i = 0; i < lm.num_directionals_; i++) {
+      uniform_nameBase2 = "al_shadow_texture[" + std::to_string(i) + "]";
+
+      glActiveTexture(GL_TEXTURE0 + LightManager::depth_map_text_.at(i));
+      glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_.at(i));
+      uniform = glGetUniformLocation(material_->program_.program(), uniform_nameBase2.c_str());
+      glUniform1i(uniform, LightManager::depth_map_text_.at(i));
+    }
+    /*
     glActiveTexture(GL_TEXTURE0 + LightManager::depth_map_text_);
     glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
     uniform = glGetUniformLocation(material_->program_.program(), "al_shadow_texture");
     glUniform1i(uniform, LightManager::depth_map_text_);
-
+    */
 
     std::string uniform_nameBase;
     for (int i = 0; i < lm.num_points_; i++) {
@@ -173,8 +183,15 @@ namespace al{
     auto& light= *em.GetEntity(lm.lights_.at(0));
     glm::mat4x4 light_space = light.get_component<LightComponent>(em)->light_transform(*light.get_component<TransformComponent>(em));
 
-    glUniformMatrix4fv(glGetUniformLocation(material_->program_.program(), "lightSpaceMatrix"),
-      1, GL_FALSE, glm::value_ptr(light_space));
+
+    std::string uniform_nameBase3;
+    for (int i = 0; i < lm.num_points_; i++) {
+      int texture_unit_index = i + 4; // 4 debido a que hay otras 4 texturas haciendo el bind antes
+      uniform_nameBase3 = "lightSpaceMatrix[" + std::to_string(i) + "]";
+      glUniformMatrix4fv(glGetUniformLocation(material_->program_.program(), uniform_nameBase3.c_str()),
+        1, GL_FALSE, glm::value_ptr(light_space));
+     
+    }
 
     glBindVertexArray(mesh_->mesh_buffer());
     glDrawElements(GL_TRIANGLES, (GLsizei)mesh_->indices_.size(),GL_UNSIGNED_INT, nullptr);

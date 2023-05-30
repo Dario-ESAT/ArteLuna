@@ -1,12 +1,13 @@
 #version 330 core
 
+const int MAX_D_LIGHTS = 5;
 uniform sampler2D al_position_tex;
 uniform sampler2D al_normal_tex;
 uniform sampler2D al_albedo_tex;
-uniform sampler2D al_shadow_texture;
+uniform sampler2D al_shadow_texture[MAX_D_LIGHTS];
 
 
-const int MAX_D_LIGHTS = 5;
+
 struct al_DirLight {
   vec3 direction;
   vec3 diffuse;
@@ -15,7 +16,7 @@ struct al_DirLight {
 uniform int al_n_dirLight;
 uniform al_DirLight al_dirLight[MAX_D_LIGHTS];
 
-uniform mat4 lightSpaceMatrix;
+uniform mat4 lightSpaceMatrix[MAX_D_LIGHTS];
 in vec2 UV;
 in vec4 FragPosLightSpace;
 
@@ -24,13 +25,13 @@ in vec4 FragPosLightSpace;
 // uniform vec3 al_cam_pos;
 
 
- float ShadowCalculation(vec4 fragPosLightSpace, al_DirLight light, vec3 normal) {
+ float ShadowCalculation(vec4 fragPosLightSpace, al_DirLight light, vec3 normal, int index) {
      // perform perspective divide
      float bias = max(0.015 * (1.0 - dot(normal, light.direction)), 0.005); 
      vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
      projCoords = projCoords * 0.5 + 0.5; 
  
-     float closestDepth = texture(al_shadow_texture, projCoords.xy).r; 
+     float closestDepth = texture(al_shadow_texture[index], projCoords.xy).r; 
 
      float currentDepth = projCoords.z;  
      float shadow;
@@ -38,7 +39,7 @@ in vec4 FragPosLightSpace;
 
      for(int x = -1; x <= 1; ++x){
        for(int y = -1; y <= 1; ++y){
-           float pcf = texture(al_shadow_texture, projCoords.xy + vec2(x,y) * texelSize).r;
+           float pcf = texture(al_shadow_texture[index], projCoords.xy + vec2(x,y) * texelSize).r;
            shadow += currentDepth - bias > closestDepth  ? 1.0 : 0.0;  
        }
      }
@@ -77,8 +78,8 @@ void main() {
   float shadow; 
   for(int i = 0 ; i < al_n_dirLight ; i++){
     vec3 dirLight= CalcDir(al_dirLight[i],Normal,Albedo);
-     vec4 fragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
-    shadow = ShadowCalculation(fragPosLightSpace, al_dirLight[i], Normal);
+     vec4 fragPosLightSpace = lightSpaceMatrix[i] * vec4(FragPos, 1.0);
+    shadow = ShadowCalculation(fragPosLightSpace, al_dirLight[i], Normal, i);
     vec3 dirLighting = (1.0 - shadow) * dirLight;
 
     dirLighting = max(dirLighting, vec3(0.0, 0.0, 0.0));
