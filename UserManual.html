@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UserManual.html</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><p>UserManual</p>
+<h1 id="user-manual-for-arteluna-engine">User manual for ArteLuna engine</h1>
+<p>In this manual, I will show you how to create an entity and give it transformation, mesh, and material. I will also teach you how to create the three types of lights available in the engine. Of course, in the lighting section, I will explain how to give them specific characteristics based on their light type.</p>
+<h2 id="getting-started">Getting started</h2>
+<p>First we must declare our <strong>ServiceManager</strong>, this class is responsible of handling the *<em>Entity and <em>Light manager</em></em> so please do not forget this steps.</p>
+<pre><code>al::ServiceManager sm;
+
+</code></pre>
+<p>Now we have to declare our <strong>Engine</strong> and pass as parameter our <strong>ServiceManager</strong></p>
+<pre><code>al::Engine engine(sm);
+
+</code></pre>
+<p>Now it is time to create our window, to do that we declare a <strong>Window</strong> variable using <strong>CreateNewWindow</strong>,a static function from our <strong>engine</strong> variable and we pass as parameters the window name and the size.</p>
+<pre><code>al::Window&amp; window = *engine.CreateNewWindow("Aleksander",1600,900);
+
+</code></pre>
+<p>It is important to know that our <strong>window will have the camera</strong>, so everything that we want to apply to the camera we have to do it through our <strong>window</strong> variable.</p>
+<p>For example let’s set a starting position for our camera, we would do it like in this example</p>
+<pre><code>window.camera_.set_position({0,2.5f,-5.f});
+
+</code></pre>
+<p>Now it is time to create our <strong>LightManager</strong>, this is quite an important class that we will have to add it as a service into our <strong>ServiceManager</strong>. The LightManager is in charge of creating and manage all the lights that we want to create. it is also responsible of creating the shadows for the scene.</p>
+<p>To create and add it to our <strong>ServiceManager</strong> we only have to do this:</p>
+<pre><code> al::LightManager l_manager(em);
+ sm.Add(l_manager);
+
+</code></pre>
+<p>And this is it, we have finished setting up the engine and the services to work as intendeed, now i will show how to enjoy the rest of ArteLuna’s features.</p>
+<h3 id="cubemap">Cubemap</h3>
+<p>If we want to have a cubemap it is important to know that we will only be able to have it if we are using <strong>forward render</strong>.</p>
+<p>If we are willing to have it is simple, <strong>after creating our LightManager</strong> we just have to call a <strong>camera</strong> function <strong>InitCubemap()</strong></p>
+<pre><code>window.camera_.InitCubeMap();
+
+</code></pre>
+<p>It is important to know that if we want to change the image of our cubemap we must enter this path from the root of the engine</p>
+<blockquote>
+<p>/deps/arteluna/data/textures/cubemap/default</p>
+</blockquote>
+<p>In that folder we must override the images with the ones that we want.</p>
+<h3 id="create-entities">Create entities</h3>
+<p>To create an entity, we just need to declare a variable of type <strong>Entity</strong> and store the reference passed to us by the <strong>EntityManager</strong> from the <strong>CreateNewEntity</strong> function. The only parameter we need to pass is the name that the entity will have.</p>
+<pre><code>al::Entity&amp; cube_ = sm.Get&lt;al::EntityManager&gt;()-&gt;CreateNewEntity("Cube");
+
+</code></pre>
+<p>With our entity created we can set its <strong>position</strong>, <strong>rotation</strong> and <strong>scale</strong> in order to transform it as we want, to do this all we have to do is call the get_component function using <strong>al::TransformComponent</strong> as template</p>
+<pre><code>  cube_.get_component&lt;al::TransformComponent&gt;(em)-&gt;set_position({ 0,8,0 });
+  cube_.get_component&lt;al::TransformComponent&gt;(em)-&gt;set_scale({ 1,1,1 });
+  cube_.get_component&lt;al::TransformComponent&gt;(em)-&gt;set_rotation({ 0,0,0 });
+
+</code></pre>
+<p>Once we have our <strong>Entity</strong> we might want to add it a <strong>RenderComponent</strong>, this component is in charge of having the <strong>mesh</strong> and <strong>material</strong> of our entity. To do so we have to do something similar to what we did to create our <strong>Entity</strong>, we call the <strong>AddComponent function from our Entity and we pass as template the RenderComponent</strong> and as parameter our <strong>EntityManager</strong> and we store it in a RenderComponent pointer</p>
+<pre><code>al::RenderComponent* cube_render_cmp = cube_.AddComponent&lt;al::RenderComponent&gt;(em);
+
+</code></pre>
+<p>Now that we have a RenderComponent added to our <strong>Entity</strong> we can set it a <strong>Mesh</strong> and a <strong>Material</strong> to see into the scene.</p>
+<p>To do so first we need to create a Mesh and a Material, now i will explain in detail how.</p>
+<h3 id="create-a-mesh">Create a Mesh</h3>
+<p>We start by creating a shared_ptr of a Mesh component, here we will store a shared_ptr of a Mesh from an obj that we want.</p>
+<pre><code>  std::shared_ptr&lt;al::Mesh&gt; sponza = std::make_shared&lt;al::Mesh&gt;("../../deps/arteluna/data/models/sponza.obj");
+
+</code></pre>
+<p>We also have 3 basic default figures, so to test the engine you can create a Mesh with one of these figures in case you do not want to download an obj yet.</p>
+<p>To create one of these default meshes you must do something similar as we did before but this time passing as parameter the shape that you want instead of the route. You can choose between these 3 shapes</p>
+<pre><code> - Cube -&gt; std::shared_ptr&lt;al::Mesh&gt; cubo = std::make_shared&lt;al::Mesh&gt;(al::Mesh::Cube);
+ - Quad -&gt; std::shared_ptr&lt;al::Mesh&gt; quad= std::make_shared&lt;al::Mesh&gt;(al::Mesh::Quad);
+ - Sphere -&gt; std::shared_ptr&lt;al::Mesh&gt; sphere = std::make_shared&lt;al::Mesh&gt;(al::Mesh::Sphere);
+
+</code></pre>
+<p>Now we would be ready to set this mesh to our Entity.</p>
+<pre><code>render_cmp-&gt;mesh_ = cubo;
+
+</code></pre>
+<h3 id="create-a-material">Create a Material</h3>
+<p>To create a material we just have to <strong>make a shared ptr of Material</strong>, we can pass as parameter our shaders, our textures (you can use <strong>3 textures, diffuse, normal and displacement</strong>) and a value for the parallax effect. <strong>Important</strong>, we will only have a Parallax effect in forward render mode.</p>
+<pre><code>  std::shared_ptr&lt;al::Material&gt; material = std::make_shared&lt;al::Material&gt;(
+"../../deps/arteluna/bin/vertex.glslv",
+"../../deps/arteluna/bin/fragment.glslf",
+"../../deps/arteluna/data/textures/bricks2.jpg",
+"../../deps/arteluna/data/textures/bricks2_normal.jpg",
+"../../deps/arteluna/data/textures/bricks2_disp.jpg",
+0.1f
+
+</code></pre>
+<p>);<br>
+Now that we have a material we can set it to our Entity.</p>
+<pre><code>render_cmp-&gt;material_ = material;
+
+</code></pre>
+<h3 id="create-lights">Create lights</h3>
+<p>We can create <strong>3 types</strong> of light in ArteLuna engine</p>
+<ul>
+<li>Directional light</li>
+<li>Point light</li>
+<li>Spot light</li>
+</ul>
+<p>In deferred shading only the directional light will make shadows in the scene, but in forward render we will be able to see shadows from directional and point lights.</p>
+<p>To create a light we only have to declare a <strong>new Entity variable</strong> which will store the reference from our <strong>CreateLight function from LightManager</strong>. We have to pass as parameters our <strong>EntityManager, the name of the light and the type of light we want</strong>.</p>
+<pre><code>al::Entity&amp; d_light = l_manager.CreatelLight(em,"Directional", al::LightComponent::Type::Directional);
+
+</code></pre>
+<p>As we can see lights are basically like entities so we can change their transform as we do with the rest of entities, first we declare a TransformComponent using get_component function from our light variable and then we set the scale, rotation or position.</p>
+<pre><code>al::TransformComponent* t_comp = d_light.get_component&lt;al::TransformComponent&gt;(em);
+t_comp-&gt;set_rotation(1.5, 0, 0);
+t_comp-&gt;set_position({ 0.f, 20.0f, 0.0f });
+
+</code></pre>
+<p>We can set a lot of things for our lights:</p>
+<ul>
+<li>Brightness</li>
+<li>Inner cone radius</li>
+<li>Outer cone radius</li>
+<li>Color</li>
+<li>Constant</li>
+<li>Linear</li>
+<li>Quadratic</li>
+</ul>
+<p>Some of this characteristics will <strong>only be used if it matches the type of light</strong> you are using, you can not set a Constant value for a directional light because it does not use it.</p>
+<h2 id="imgui-menu">ImGui menu</h2>
+<p>In this point i will show you how to use our menu. We have only 2 windows, one is for entities, you can use it to change the transform of any entity and the light options from the lights.</p>
+<p>The other window is for the camera controls in case you want to change the camera speed, fov or even the transform. Also you can use orthograpic perspective in forward render if you want and change the ortho values inside the window.</p>
+<p>The controls of the camera are very simple</p>
+<ul>
+<li>Movement -&gt; WASD</li>
+<li>Increase speed -&gt; Shift</li>
+<li>To look around -&gt; Mouse + Right click</li>
+<li>To go up -&gt; E + Right click</li>
+<li>To go down -&gt; Q + Right click</li>
+</ul>
+<p>You can also create your own ImGui windows by inserting the ImGui code between the Window BeginFrameand EndFramefunctions</p>
+<pre><code>window.BeginFrame();  
+// --------ImGui--------
+window.EndFrame();
+</code></pre>
+<h2 id="imput">Imput</h2>
+<p>You can recive the imput of the window by calling IsKeyDown or IsMouseButtonDown from the Imput class from the Window object</p>
+<pre><code>if(window.input_-&gt;IsKeyDown(al::KEY_2)){  
+// Your code  
+}
+
+if(window.input_-&gt;IsMouseButtonDown(1)){  
+// Your code  
+}```
+</code></pre>
+</div>
+</body>
+
+</html>
