@@ -28,10 +28,11 @@ namespace al{
         transform_component->update_local_transform();
 
         transform_component->update_world_transform(parent->get_component<TransformComponent>(em)->world_transform_);
+      } else{
+        transform_component->update_local_transform();
+        transform_component->update_world_transform(glm::mat4x4(1.0f));
       }
     
-      transform_component->update_local_transform();
-      transform_component->update_world_transform(glm::mat4x4(1.0f));
       return true;
     }
   

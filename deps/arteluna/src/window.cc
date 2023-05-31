@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <gtc/type_ptr.hpp>
+#include <gtx/matrix_decompose.hpp>
 
 #include "imgui.h"
 #include "stdio.h"
@@ -276,24 +277,31 @@ namespace al{
       float aspect = (float)(LightManager::SHADOW_WIDTH / (float)LightManager::SHADOW_HEIGHT);
       glm::mat4 PshadowProjection = glm::perspective(glm::radians(90.f), aspect,
         LightManager::near_, LightManager::far_);
-
+      glm::vec3 scale;
+      glm::quat q_rotation;
+      glm::vec3 translation;
+      glm::vec3 skew;
+      glm::vec4 perspective;
       std::vector<glm::mat4> shadowTransforms;
       lm.point_program_.Use();
       //for (unsigned int i = lm.num_directionals_; i < lm.num_directionals_ + lm.num_points_; i++) {
       Entity* entity = em.GetEntity(lm.lights_[i]);
       const auto* transform = entity->get_component<TransformComponent>(em);
-      shadowTransforms.push_back(PshadowProjection * glm::lookAt(transform->position(),
-        transform->position() + glm::vec3(1, 0, 0), glm::vec3(0, -1, 0)));
-      shadowTransforms.push_back(PshadowProjection * glm::lookAt(transform->position(),
-        transform->position() + glm::vec3(-1, 0, 0), glm::vec3(0, -1, 0)));
-      shadowTransforms.push_back(PshadowProjection * glm::lookAt(transform->position(),
-        transform->position() + glm::vec3(0, 1, 0), glm::vec3(0, 0, 1)));
-      shadowTransforms.push_back(PshadowProjection * glm::lookAt(transform->position(),
-        transform->position() + glm::vec3(0, -1, 0), glm::vec3(0, 0, -1)));
-      shadowTransforms.push_back(PshadowProjection * glm::lookAt(transform->position(),
-        transform->position() + glm::vec3(0, 0, 1), glm::vec3(0, -1, 0)));
-      shadowTransforms.push_back(PshadowProjection * glm::lookAt(transform->position(),
-        transform->position() + glm::vec3(0, 0, -1), glm::vec3(0, -1, 0)));
+      glm::decompose(transform->world_transform(), scale, q_rotation,
+    translation, skew, perspective
+    );
+      shadowTransforms.push_back(PshadowProjection * glm::lookAt(translation,
+        translation + glm::vec3(1, 0, 0), glm::vec3(0, -1, 0)));
+      shadowTransforms.push_back(PshadowProjection * glm::lookAt(translation,
+        translation + glm::vec3(-1, 0, 0), glm::vec3(0, -1, 0)));
+      shadowTransforms.push_back(PshadowProjection * glm::lookAt(translation,
+        translation + glm::vec3(0, 1, 0), glm::vec3(0, 0, 1)));
+      shadowTransforms.push_back(PshadowProjection * glm::lookAt(translation,
+        translation + glm::vec3(0, -1, 0), glm::vec3(0, 0, -1)));
+      shadowTransforms.push_back(PshadowProjection * glm::lookAt(translation,
+        translation + glm::vec3(0, 0, 1), glm::vec3(0, -1, 0)));
+      shadowTransforms.push_back(PshadowProjection * glm::lookAt(translation,
+        translation + glm::vec3(0, 0, -1), glm::vec3(0, -1, 0)));
 
       // Pass model matrix to shader
       std::string uniform_nameBase;

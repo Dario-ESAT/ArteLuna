@@ -309,7 +309,7 @@ namespace al{
       for (unsigned long long i = 1; i < transform_components->size(); i++) {
         auto& t_comp = transform_components->at(i);
         if (t_comp.has_value()) {
-          if (ImGui::TreeNode((void*)(intptr_t)i, "%s", em->entities_.at(i).name().c_str())) {
+          if (ImGui::TreeNode((void*)(intptr_t)i, "%s | id:%d", em->entities_.at(i).name().c_str(),em->entities_.at(i).id() )) {
             if (ImGui::TreeNode(&t_comp, "Transform")){
               t_comp->ImguiTree((uint32_t)i);
               ImGui::TreePop();

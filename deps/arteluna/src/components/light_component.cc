@@ -4,6 +4,7 @@
 
 #include <ext/matrix_clip_space.hpp>
 #include <ext/matrix_transform.hpp>
+#include <gtx/matrix_decompose.hpp>
 
 #include "entity.h"
 #include "imgui.h"
@@ -37,9 +38,18 @@ namespace al{
   glm::mat4x4 LightComponent::light_transform(TransformComponent& transform) const {
     ;
     float near_plane = 1.0f, far_plane = 100;
-    glm::mat4 lightProjection = glm::ortho(-20.f, 20.0f, -20.0f, 20.0f, near_plane, far_plane);  
-    glm::mat4 lightView = glm::lookAt(transform.position(),
-                                    transform.position() + transform.forward(), 
+    glm::mat4 lightProjection = glm::ortho(-20.f, 20.0f, -20.0f, 20.0f, near_plane, far_plane);
+      
+    glm::vec3 scale;
+    glm::quat q_rotation;
+    glm::vec3 translation;
+    glm::vec3 skew;
+    glm::vec4 perspective;
+    glm::decompose(transform.world_transform(), scale, q_rotation,
+  translation, skew, perspective
+  );
+    glm::mat4 lightView = glm::lookAt(translation,
+                                    translation + transform.forward(), 
                                     glm::vec3( 0.0f, 1.0f,  0.0f));
     glm::mat4 lightSpaceMatrix = lightProjection * lightView;
   

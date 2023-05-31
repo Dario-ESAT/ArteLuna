@@ -58,7 +58,7 @@ int main() {
   al::RenderComponent* render_cmp = entity_1.AddComponent<al::RenderComponent>(em);
   render_cmp->mesh_ = cubo;
   render_cmp->material_ = basic_mat;
-  
+
   al::Entity* d_light = &l_manager.CreatelLight(em,"Directional 1", al::LightComponent::Type::Directional);
   al::TransformComponent* t_comp = d_light->get_component<al::TransformComponent>(em);
   d_light->get_component<al::LightComponent>(em)->set_brightness(80);
@@ -82,7 +82,6 @@ int main() {
   d_light->get_component<al::LightComponent>(em)->set_brightness(30);
   t_comp->set_rotation(2.4f, 0.f, 0.f);
   t_comp->set_position({ 0.f, 20.0f, 0.0f });
-
   
   al::Entity* s_light = &l_manager.CreatelLight(em,"PointLight 1", al::LightComponent::Type::Pointlight);
   al::TransformComponent* t_comp_p = s_light->get_component<al::TransformComponent>(em);
@@ -99,7 +98,7 @@ int main() {
   s_light = &l_manager.CreatelLight(em,"PointLight 2", al::LightComponent::Type::Pointlight);
   t_comp_p = s_light->get_component<al::TransformComponent>(em);
   t_comp_p->set_rotation(1, 0, 0);
-  t_comp_p->set_position({ -5.f, 10.0f, 0.0f });
+  t_comp_p->set_position({ -5., 10.0f, 0.0f });
   t_comp_p->set_scale({ 0.3f, 0.3f, 0.3f });
 
   l_render = s_light->AddComponent<al::RenderComponent>(em);
@@ -125,9 +124,12 @@ int main() {
   l_render = s_light->AddComponent<al::RenderComponent>(em);
   l_render->mesh_ = sphere;
   l_render->material_ = basic_mat;
-  
-   al::Entity& cube_ = sm.Get<al::EntityManager>()->CreateNewEntity("Cubo2");
-  cube_.get_component<al::TransformComponent>(em)->set_position({ 0,8,0 });
+  al::Entity& cubes_parent = sm.Get<al::EntityManager>()->CreateNewEntity("Light parent");
+  al::TransformComponent* p_transform = cubes_parent.get_component<al::TransformComponent>(em);
+  p_transform->set_position({ 0.f, 5.0f, 0.0f });
+  auto cubes_parent_id = cubes_parent.id();
+   al::Entity& cube_ = sm.Get<al::EntityManager>()->CreateNewEntity("Cubo2",cubes_parent_id);
+  cube_.get_component<al::TransformComponent>(em)->set_position({ 0,3,0 });
   cube_.get_component<al::TransformComponent>(em)->set_scale({ 1,1,1 });
   cube_.get_component<al::TransformComponent>(em)->set_rotation({ 0,0,0 });
 
@@ -135,8 +137,8 @@ int main() {
   cube_render_cmp->mesh_ = cubo;
   cube_render_cmp->material_ = material;
 
-  al::Entity& c = sm.Get<al::EntityManager>()->CreateNewEntity("Cubo3");
-  c.get_component<al::TransformComponent>(em)->set_position({ 0,3,0 });
+  al::Entity& c = sm.Get<al::EntityManager>()->CreateNewEntity("Cubo3",cubes_parent_id);
+  c.get_component<al::TransformComponent>(em)->set_position({ 0,-3,0 });
   c.get_component<al::TransformComponent>(em)->set_scale({ 1,1,1 });
   c.get_component<al::TransformComponent>(em)->set_rotation({ 0,0,0 });
 
@@ -180,21 +182,29 @@ int main() {
  
     window.BeginFrame();
     // --------ImGui--------
-    if(window.input_->IsKeyDown(al::SPACE)){
+    if(window.input_->IsKeyDown(al::KEY_2)){
       for (size_t i = 2; i < em.EntityCount();i++){
-        al::Entity* entity = em.GetEntity((uint32_t)i);
-        if (entity != nullptr && entity->get_component<al::LightComponent>(em) == nullptr){
-          auto transform = entity->get_component<al::TransformComponent>(em);
-          glm::vec3 rot = transform->rotation();
-          rot.x += (float)window.delta_time();
-          // rot.z += (float)window.delta_time() / 10.f;
-          // rot.y += (float)window.delta_time() * 1.2f;
-          transform->set_rotation(rot);
+        if (i != cubes_parent_id){
+          al::Entity* entity = em.GetEntity((uint32_t)i);
+          if (entity != nullptr && entity->get_component<al::LightComponent>(em) == nullptr){
+            auto transform = entity->get_component<al::TransformComponent>(em);
+            glm::vec3 rot = transform->rotation();
+            rot.x += (float)window.delta_time();
+            // rot.z += (float)window.delta_time() / 10.f;
+            // rot.y += (float)window.delta_time() * 1.2f;
+            transform->set_rotation(rot);
+          }
         }
       }
     }
     // ----------------------
-   
+    if(window.input_->IsKeyDown(al::KEY_1)){
+      al::Entity* entity = em.GetEntity(cubes_parent_id);
+      auto transform = entity->get_component<al::TransformComponent>(em);
+      glm::vec3 rot = transform->rotation();
+      rot.x += (float)window.delta_time();
+      transform->set_rotation(rot);
+    }
     window.EndFrame();
   }
 
