@@ -185,6 +185,7 @@ namespace al{
     }
 
     std::string uniform_nameBase3;
+    /*
     for (int i = 0; i < lm.num_directionals_; i++) {
       auto& light = *em.GetEntity(lm.lights_.at(i));
       glm::mat4x4 light_space = light.get_component<LightComponent>(em)->light_transform(*light.get_component<TransformComponent>(em));
@@ -192,8 +193,11 @@ namespace al{
       uniform_nameBase3 = "lightSpaceMatrix[" + std::to_string(i) + "]";
       glUniformMatrix4fv(glGetUniformLocation(material_->program_.program(), uniform_nameBase3.c_str()),
         1, GL_FALSE, glm::value_ptr(light_space));
-    }
-
+    }*/
+    auto& light = *em.GetEntity(lm.lights_.at(0));
+    glm::mat4x4 light_space = light.get_component<LightComponent>(em)->light_transform(*light.get_component<TransformComponent>(em));
+    glUniformMatrix4fv(glGetUniformLocation(material_->program_.program(), "lightSpaceMatrix"),
+      1, GL_FALSE, glm::value_ptr(light_space));
     glBindVertexArray(mesh_->mesh_buffer());
     glDrawElements(GL_TRIANGLES, (GLsizei)mesh_->indices_.size(),GL_UNSIGNED_INT, nullptr);
 

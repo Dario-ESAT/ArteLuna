@@ -226,9 +226,9 @@ namespace al{
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 
     // Render Shades
-    for (int i = 0; i < lm.num_directionals_; i++) {
+   
       glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
-      glBindFramebuffer(GL_FRAMEBUFFER, LightManager::Directional_depth_map_FBO_.at(i));
+      glBindFramebuffer(GL_FRAMEBUFFER, LightManager::Directional_depth_map_FBO_.at(0));
       glClear(GL_DEPTH_BUFFER_BIT);
 
       //glClear(GL_DEPTH_BUFFER_BIT);
@@ -238,11 +238,11 @@ namespace al{
         ->light_transform(*light.get_component<TransformComponent>(em));
       lm.progam_.Use();
       ///light render scene
-      std::string uniform_nameBase;
-      uniform_nameBase = "lightSpaceMatrix[" + std::to_string(i) + "]";
+      GLint asd = glGetUniformLocation(lm.progam_.program(),"lightSpaceMatrix");
       glUniformMatrix4fv(
-        glGetUniformLocation(lm.progam_.program(), uniform_nameBase.c_str()),
+        asd,
         1, GL_FALSE, glm::value_ptr(light_space));
+
       GLint model_uniform = glGetUniformLocation(lm.progam_.program(), "model");
       auto* render_components = em.GetComponentVector<RenderComponent>();
       auto* transform_components = em.GetComponentVector<TransformComponent>();
@@ -261,7 +261,7 @@ namespace al{
           glDrawElements(GL_TRIANGLES, (GLsizei)render_component.mesh_->indices_.size(), GL_UNSIGNED_INT, 0);
         }
       }
-    }
+    
     glCullFace(GL_BACK);
     // ------------------ Point Shadow ---------------------
     for (int i = lm.num_directionals_; i < lm.num_directionals_ + lm.num_points_;i++) {
@@ -568,7 +568,7 @@ namespace al{
   }
 
   void Window::MenuImgui() {
-    if (!camera_.render_mode_){
+    //if (!camera_.render_mode_){
       ImGui::Begin("Deferred textures");{
         ImGui::Text("Positions:");
         ImGui::Text("pointer = %d", gPosition);
@@ -601,7 +601,7 @@ namespace al{
           ImVec2((float)width_ / 4.f, (float)height_ / 4.f), ImVec2(0, 1), ImVec2(1, 0));*/
         ImGui::End();
       }
-    }
+    //}
   }
 
 }
