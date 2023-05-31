@@ -20,13 +20,13 @@ namespace al{
   
     void DestroyLight(EntityManager& em, size_t index);
 
-    static std::vector<uint32_t> depth_map_FBO_PointLight_;
-    static std::vector<uint32_t> pointlight_depth_map_text_;
+    static std::vector<uint32_t> PointLight_depth_map_FBO_;
+    static std::vector<uint32_t> PointLight_depth_map_text_;
     static float near_;
     static float far_;
 
-    static std::vector<uint32_t> depth_map_FBO_;
-    static std::vector<uint32_t> depth_map_text_;
+    static std::vector<uint32_t> Directional_depth_map_FBO_;
+    static std::vector<uint32_t> Directional_depth_map_text_;
     static const uint32_t SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
   private:
   

@@ -103,16 +103,18 @@ float ShadowCalculation(vec4 fragPosLightSpace, al_DirLight light, vec3 normal, 
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     projCoords = projCoords * 0.5 + 0.5; 
  
-    float closestDepth = texture(al_shadow_texture[index], projCoords.xy).r; 
+    float closestDepth = texture(al_shadow_texture[0], projCoords.xy).r; 
+    // float closestDepth = texture(al_shadow_texture, projCoords.xy).r;
 
-    float currentDepth = projCoords.z;  
+    float currentDepth = projCoords.z;
     float shadow;
     vec2 texelSize = vec2(0.001,0.001);//1.0f / textureSize(al_shadow_texture, 0);
 
     for(int x = -1; x <= 1; ++x){
       for(int y = -1; y <= 1; ++y){
-          float pcf = texture(al_shadow_texture[index], projCoords.xy + vec2(x,y) * texelSize).r;
-          shadow += currentDepth - bias > closestDepth  ? 1.0 : 0.0;  
+          // float pcf = texture(al_shadow_texture, projCoords.xy + vec2(x,y) * texelSize).r;
+          float pcf = texture(al_shadow_texture[0], projCoords.xy + vec2(x,y) * texelSize).r;
+          shadow += currentDepth - bias > closestDepth  ? 1.0 : 0.0;
       }
     }
     shadow /= 9.0;
@@ -158,14 +160,14 @@ void main() {
  
   float shadow; 
 
-  for(int i = 0; i < al_n_dirLight;i++) {
-    light_result = CalcDir(al_dirLight[i],N,view_dir);
-    shadow = ShadowCalculation(fs_in.FragPosLightSpace,al_dirLight[i], N, i/*Nnormal*/);
-  }
+  // for(int i = 0; i < al_n_dirLight;i++) {
+    light_result += CalcDir(al_dirLight[0],N,view_dir);
+    shadow = ShadowCalculation(fs_in.FragPosLightSpace,al_dirLight[0], N, 0);
+  // }
   
   for(int i = 0; i < al_n_pointLight;i++) {
     float pointShadow = CalcPointShadow(al_pointLight[i], FragPos, i);
-    vec3 pointLightColor = CalcPointLight(al_pointLight[i],N/*Nnormal*/,FragPos,view_dir);
+    vec3 pointLightColor = CalcPointLight(al_pointLight[i],N,FragPos,view_dir);
     pointLightColor *= 1.0 - pointShadow;
     light_result += pointLightColor;
     //light_result *= diffuse_color;

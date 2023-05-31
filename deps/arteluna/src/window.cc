@@ -228,7 +228,7 @@ namespace al{
     // Render Shades
     for (int i = 0; i < lm.num_directionals_; i++) {
       glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
-      glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_.at(i));
+      glBindFramebuffer(GL_FRAMEBUFFER, LightManager::Directional_depth_map_FBO_.at(i));
       glClear(GL_DEPTH_BUFFER_BIT);
 
       //glClear(GL_DEPTH_BUFFER_BIT);
@@ -270,7 +270,7 @@ namespace al{
         idx = i - lm.num_directionals_;
       }
       glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
-      glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_PointLight_.at(idx));
+      glBindFramebuffer(GL_FRAMEBUFFER, LightManager::PointLight_depth_map_FBO_.at(idx));
       glClear(GL_DEPTH_BUFFER_BIT);
       
       float aspect = (float)(LightManager::SHADOW_WIDTH / (float)LightManager::SHADOW_HEIGHT);
@@ -415,7 +415,7 @@ namespace al{
     // Shadow mapping
     for (int i = 0; i < lm.num_directionals_; i++) {
       glViewport(0, 0, LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
-      glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_.at(i));
+      glBindFramebuffer(GL_FRAMEBUFFER, LightManager::Directional_depth_map_FBO_.at(i));
       glClear(GL_DEPTH_BUFFER_BIT);
 
       //glClear(GL_DEPTH_BUFFER_BIT);
@@ -491,7 +491,7 @@ namespace al{
 
       uniform_nameBase3 = "al_shadow_texture[" + std::to_string(i) + "]";
       glActiveTexture(GL_TEXTURE0 + 3 + i);
-      glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_.at(i));
+      glBindTexture(GL_TEXTURE_2D, LightManager::Directional_depth_map_text_.at(i));
 
       GLuint uniform = glGetUniformLocation(lightning_program_.program(), uniform_nameBase3.c_str());
       glUniform1i(uniform, 3 + i);
@@ -589,9 +589,9 @@ namespace al{
           ImVec2((float)width_ / 4.f, (float)height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
        
         ImGui::Text("ShadowTexture:");
-        ImGui::Text("pointer = %d", LightManager::depth_map_text_.at(0));
+        ImGui::Text("pointer = %d", LightManager::Directional_depth_map_text_.at(0));
         ImGui::Text("size = %d x %d", LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
-        ImGui::Image((void*)(intptr_t)LightManager::depth_map_text_.at(0),
+        ImGui::Image((void*)(intptr_t)LightManager::Directional_depth_map_text_.at(0),
           ImVec2((float)width_ / 4.f, (float)height_ / 4.f), ImVec2(0, 1), ImVec2(1, 0));
         /*
         ImGui::Text("ShadowTexture2:");

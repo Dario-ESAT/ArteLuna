@@ -24,7 +24,6 @@ namespace al{
     rotate_x_ = 0;
     rotate_y_ = 0;
     fov_ = 90;
-
     position_.x = 0.0f;
     position_.y = 0.0f;
     position_.z = 0.0f;
@@ -36,7 +35,7 @@ namespace al{
     far_ = 10000.0f;
 
     imgui_mode_ = false;
-    render_mode_ = false;
+    render_mode_ = true;
     UpdateTransform();
   }
 

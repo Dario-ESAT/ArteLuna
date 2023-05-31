@@ -156,12 +156,17 @@ namespace al{
     std::string uniform_nameBase2;
     for (int i = 0; i < lm.num_directionals_; i++) {
       uniform_nameBase2 = "al_shadow_texture[" + std::to_string(i) + "]";
-
-      glActiveTexture(GL_TEXTURE0 + LightManager::depth_map_text_.at(i));
-      glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_.at(i));
+      glActiveTexture(GL_TEXTURE0 + LightManager::Directional_depth_map_text_.at(i));
+      glBindTexture(GL_TEXTURE_2D, LightManager::Directional_depth_map_text_.at(i));
       uniform = glGetUniformLocation(material_->program_.program(), uniform_nameBase2.c_str());
-      glUniform1i(uniform, LightManager::depth_map_text_.at(i));
+      glUniform1i(uniform, LightManager::Directional_depth_map_text_.at(i));
     }
+    // uniform_nameBase2 = "al_shadow_texture[0]";
+    // glActiveTexture(GL_TEXTURE0 + LightManager::Directional_depth_map_text_.at(0));
+    // glBindTexture(GL_TEXTURE_2D, LightManager::Directional_depth_map_text_.at(0));
+    // uniform = glGetUniformLocation(material_->program_.program(), uniform_nameBase2.c_str());
+    // glUniform1i(uniform, LightManager::Directional_depth_map_text_.at(0));
+    
     /*
     glActiveTexture(GL_TEXTURE0 + LightManager::depth_map_text_);
     glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_);
@@ -171,17 +176,13 @@ namespace al{
 
     std::string uniform_nameBase;
     for (int i = 0; i < lm.num_points_; i++) {
-      int texture_unit_index = i + 4; // 4 debido a que hay otras 4 texturas haciendo el bind antes
       uniform_nameBase = "al_point_shadow_cube[" + std::to_string(i) + "]";
 
-      glActiveTexture(GL_TEXTURE0 + LightManager::pointlight_depth_map_text_.at(i));
-      glBindTexture(GL_TEXTURE_CUBE_MAP, LightManager::pointlight_depth_map_text_.at(i));
+      glActiveTexture(GL_TEXTURE0 + LightManager::PointLight_depth_map_text_.at(i));
+      glBindTexture(GL_TEXTURE_CUBE_MAP, LightManager::PointLight_depth_map_text_.at(i));
       uniform = glGetUniformLocation(material_->program_.program(), uniform_nameBase.c_str());
-      glUniform1i(uniform, LightManager::pointlight_depth_map_text_.at(i));
+      glUniform1i(uniform, LightManager::PointLight_depth_map_text_.at(i));
     }
-
-
-
 
     std::string uniform_nameBase3;
     for (int i = 0; i < lm.num_directionals_; i++) {
@@ -191,13 +192,13 @@ namespace al{
       uniform_nameBase3 = "lightSpaceMatrix[" + std::to_string(i) + "]";
       glUniformMatrix4fv(glGetUniformLocation(material_->program_.program(), uniform_nameBase3.c_str()),
         1, GL_FALSE, glm::value_ptr(light_space));
-     
     }
 
     glBindVertexArray(mesh_->mesh_buffer());
     glDrawElements(GL_TRIANGLES, (GLsizei)mesh_->indices_.size(),GL_UNSIGNED_INT, nullptr);
 
   }
+
   void RenderComponent::RenderDeferred(EntityManager& em, LightManager& lm) const{
     glBindVertexArray(mesh_->mesh_buffer());
     glDrawElements(GL_TRIANGLES, (GLsizei)mesh_->indices_.size(),GL_UNSIGNED_INT, nullptr);

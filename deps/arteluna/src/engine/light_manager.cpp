@@ -4,21 +4,21 @@
 #include "engine/entity_manager.h"
 #include "glad/gl.h"
 namespace al{
-  std::vector<uint32_t> LightManager::depth_map_FBO_ = std::vector<uint32_t>();
-  std::vector <uint32_t> LightManager::depth_map_text_ = std::vector<uint32_t>();
-  std::vector <uint32_t> LightManager::depth_map_FBO_PointLight_ = std::vector<uint32_t>();
-  std::vector <uint32_t> LightManager::pointlight_depth_map_text_ = std::vector<uint32_t>();
+  std::vector<uint32_t> LightManager::Directional_depth_map_FBO_ = std::vector<uint32_t>();
+  std::vector <uint32_t> LightManager::Directional_depth_map_text_ = std::vector<uint32_t>();
+  std::vector <uint32_t> LightManager::PointLight_depth_map_FBO_ = std::vector<uint32_t>();
+  std::vector <uint32_t> LightManager::PointLight_depth_map_text_ = std::vector<uint32_t>();
   float LightManager::near_ = 0.1f;
   float LightManager::far_ = 25;
 
   static void InitDepthMap() {
     uint32_t idx_aux;
     glGenFramebuffers(1, &idx_aux);
-    LightManager::depth_map_FBO_.push_back(idx_aux);
+    LightManager::Directional_depth_map_FBO_.push_back(idx_aux);
 
     glGenTextures(1, &idx_aux);
-    LightManager::depth_map_text_.push_back(idx_aux);
-    glBindTexture(GL_TEXTURE_2D, LightManager::depth_map_text_.back());
+    LightManager::Directional_depth_map_text_.push_back(idx_aux);
+    glBindTexture(GL_TEXTURE_2D, LightManager::Directional_depth_map_text_.back());
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
       LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT,
       0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
@@ -29,9 +29,9 @@ namespace al{
     float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
     glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_.back());
+    glBindFramebuffer(GL_FRAMEBUFFER, LightManager::Directional_depth_map_FBO_.back());
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-      GL_TEXTURE_2D, LightManager::depth_map_text_.back(), 0);
+      GL_TEXTURE_2D, LightManager::Directional_depth_map_text_.back(), 0);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -45,14 +45,14 @@ namespace al{
       printf("Error creating framebuffer");
       return;
     }
-    LightManager::depth_map_FBO_PointLight_.push_back(idx_aux);
+    LightManager::PointLight_depth_map_FBO_.push_back(idx_aux);
     glGenTextures(1, &idx_aux);
     if (glGetError() != GL_NO_ERROR) {
       printf("Error creating texture");
       return;
     }
-    LightManager::pointlight_depth_map_text_.push_back(idx_aux);
-    glBindTexture(GL_TEXTURE_CUBE_MAP,LightManager::pointlight_depth_map_text_.back());
+    LightManager::PointLight_depth_map_text_.push_back(idx_aux);
+    glBindTexture(GL_TEXTURE_CUBE_MAP,LightManager::PointLight_depth_map_text_.back());
     for (int i = 0; i < 6; i++) {
       glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
         1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL); // Change 1024 for some parameter
@@ -67,9 +67,9 @@ namespace al{
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, LightManager::depth_map_FBO_PointLight_.back());
+    glBindFramebuffer(GL_FRAMEBUFFER, LightManager::PointLight_depth_map_FBO_.back());
     glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 
-                         LightManager::pointlight_depth_map_text_.back(), 0);
+                         LightManager::PointLight_depth_map_text_.back(), 0);
     if (glGetError() != GL_NO_ERROR) {
       printf("Error attaching depth texture to framebuffer");
       return;
