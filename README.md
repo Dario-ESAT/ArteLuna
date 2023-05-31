@@ -11,9 +11,3 @@ Instrucciones de build:
 
 Ejecutar "build-solution.bat"
 
-
-Instrucciones de ejecución:
-
-Al ejecutar el programa, hay una escena con una ventana de ImGui con la que se pueden moficar la transformación de
-los objetos en pantalla. 
-Pulsar el espacio hace que los objetos se muevan en Y.
