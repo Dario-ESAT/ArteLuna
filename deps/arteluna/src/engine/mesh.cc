@@ -341,7 +341,7 @@ namespace al{
 
   Mesh::Mesh(Geometries g) {
     switch (g) {
-    case Mesh::Cube:
+    case Cube:
       // ReadDefaultGeometries("../../deps/arteluna/data/models/ELCUBO.obj");
       CreateDefaultGeometry(
         cube_vertices,sizeof(cube_vertices),
@@ -350,10 +350,10 @@ namespace al{
         cube_indices,sizeof(cube_indices)
         );
       break;
-    case Mesh::Sphere:
+    case Sphere:
       ReadDefaultGeometries("../../deps/arteluna/data/models/wooden_sphere.obj");
       break;
-    case Mesh::Quad:
+    case Quad:
       CreateDefaultGeometry(
         quad_vertices,sizeof(quad_vertices) ,
         quad_normals, sizeof(quad_normals) ,

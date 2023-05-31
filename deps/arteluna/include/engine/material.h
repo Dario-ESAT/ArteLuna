@@ -49,8 +49,8 @@ namespace al{
     Material();
     //Material(const char* frag, const char* vert);
     Material(const char* vert, const char* frag,const char* texture_src = "../../deps/arteluna/data/textures/white.jpg",
-     const char* normal_texture_src = "../../deps/arteluna/data/textures/wavy.jpg",
-     const char* displacement_texture_src = "../../deps/arteluna/data/textures/wavy_DISP.png",
+     const char* normal_texture_src = "../../deps/arteluna/data/textures/white.jpg",
+     const char* displacement_texture_src = "../../deps/arteluna/data/textures/white.jpg",
      float depthScale = 0.1f, Texture::Type t_type = Texture::Type::T_2D, 
      Texture::Filter mag_filter = Texture::Filter::Linear, Texture::Filter min_filter = Texture::Filter::Linear,
      Texture::Wrap ws = Texture::Wrap::Clamp_to_edge, Texture::Wrap wt = Texture::Wrap::Clamp_to_edge, Texture::Wrap wr = Texture::Wrap::Clamp_to_edge);

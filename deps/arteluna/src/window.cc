@@ -568,7 +568,7 @@ namespace al{
   }
 
   void Window::MenuImgui() {
-    //if (!camera_.render_mode_){
+    if (!camera_.render_mode_){
       ImGui::Begin("Deferred textures");{
         ImGui::Text("Positions:");
         ImGui::Text("pointer = %d", gPosition);
@@ -588,12 +588,12 @@ namespace al{
         ImGui::Image((void*)(intptr_t)gAlbedo,
           ImVec2((float)width_ / 4.f, (float)height_ / 4.f),ImVec2(0,1),ImVec2(1,0));
        
+        /*
         ImGui::Text("ShadowTexture:");
         ImGui::Text("pointer = %d", LightManager::Directional_depth_map_text_.at(0));
         ImGui::Text("size = %d x %d", LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
         ImGui::Image((void*)(intptr_t)LightManager::Directional_depth_map_text_.at(0),
           ImVec2((float)width_ / 4.f, (float)height_ / 4.f), ImVec2(0, 1), ImVec2(1, 0));
-        /*
         ImGui::Text("ShadowTexture2:");
         ImGui::Text("pointer = %d", LightManager::depth_map_text_.at(1));
         ImGui::Text("size = %d x %d", LightManager::SHADOW_WIDTH, LightManager::SHADOW_HEIGHT);
@@ -601,7 +601,7 @@ namespace al{
           ImVec2((float)width_ / 4.f, (float)height_ / 4.f), ImVec2(0, 1), ImVec2(1, 0));*/
         ImGui::End();
       }
-    //}
+    }
   }
 
 }

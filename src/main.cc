@@ -1,6 +1,7 @@
 #include "window.h"
 
 #include "entity.h"
+#include "input.h"
 #include "engine/mesh.h"
 #include "engine/material.h"
 #include "components/transform_component.h"
@@ -32,113 +33,100 @@ int main() {
 
   std::shared_ptr<al::Material> material_2 = std::make_shared<al::Material>(
     "../../deps/arteluna/bin/vertex.glslv",
-    "../../deps/arteluna/bin/fragment.glslf"
-    );
+    "../../deps/arteluna/bin/fragment.glslf",
+    "../../deps/arteluna/data/textures/white.jpg",
+    "../../deps/arteluna/data/textures/wavy.jpg",
+    "../../deps/arteluna/data/textures/wavy_DISP.png"
+  );
 
-  std::shared_ptr<al::Material> material_prueba = std::make_shared<al::Material>(
+  std::shared_ptr<al::Material> basic_mat = std::make_shared<al::Material>(
     "../../deps/arteluna/bin/vertex.glslv",
     "../../deps/arteluna/bin/fragment.glslf"
-    );
-
-  std::shared_ptr<al::Material> shadow_material = std::make_shared<al::Material>(
-    "../../deps/arteluna/bin/shadow_render.glslv",
-    "../../deps/arteluna/bin/shadow_render.glslf"
-    );
-
-  std::shared_ptr<al::Mesh> sonic = std::make_shared<al::Mesh>(
-"../../deps/arteluna/data/models/ugandan_sonic.obj");
-  std::shared_ptr<al::Mesh> sponza = std::make_shared<al::Mesh>(
-"../../deps/arteluna/data/models/sponza.obj");
-  std::shared_ptr<al::Mesh> cuke = std::make_shared<al::Mesh>(
-    "../../deps/arteluna/data/models/cuke.obj");
+  );
+  
+  std::shared_ptr<al::Mesh> sphere = std::make_shared<al::Mesh>(al::Mesh::Sphere);
+  
   std::shared_ptr<al::Mesh> cubo = std::make_shared<al::Mesh>(al::Mesh::Cube);
-
-  std::shared_ptr<al::Mesh> quad = std::make_shared<al::Mesh>(al::Mesh::Quad);
-
-   //Entity& p_light = l_manager.CreatelLight(LightComponent::Type::Pointlight);
-  // al::RenderComponent* p_render = p_light.AddComponent<al::RenderComponent>();
-  // p_render->mesh_ = cubo;
-  // p_render->material_ = material;
-  
-  al::Entity& d_light = l_manager.CreatelLight(em,"Directional", al::LightComponent::Type::Directional);
-  al::TransformComponent* t_comp = d_light.get_component<al::TransformComponent>(em);
-  t_comp->set_rotation(1.5, 0, 0);
-  t_comp->set_position({ 0.f, 20.0f, 0.0f });
-  al::RenderComponent* d_render = d_light.AddComponent<al::RenderComponent>(em);
-  d_render->mesh_ = sonic;
-  d_render->material_ = material;
-  
-  al::Entity& d_light2 = l_manager.CreatelLight(em, "Directional2", al::LightComponent::Type::Directional);
-  al::TransformComponent* t_comp2 = d_light2.get_component<al::TransformComponent>(em);
-  t_comp2->set_rotation(1.5, 0, 0);
-  t_comp2->set_position({ 10.f, 20.0f, 0.0f });
-  al::RenderComponent* d_render2 = d_light2.AddComponent<al::RenderComponent>(em);
-  d_render2->mesh_ = sonic;
-  d_render2->material_ = material;
-  
-   al::Entity& s_light = l_manager.CreatelLight(em,"PointLight", al::LightComponent::Type::Pointlight);
-   al::TransformComponent* t_comp_p = s_light.get_component<al::TransformComponent>(em);
-   al::LightComponent* l_comp = s_light.get_component<al::LightComponent>(em);
-   l_comp->set_color(0, 1, 0);
-   t_comp_p->set_rotation(1, 0, 0);
-   t_comp_p->set_position({ 5.f, 10.0f, 0.0f });
-   t_comp_p->set_scale({ 0.1f, 0.1f, 0.1f });
-   al::RenderComponent* l_render = s_light.AddComponent<al::RenderComponent>(em);
-   
-   l_render->mesh_ = sonic;
-   l_render->material_ = material;
-  
-  al::Entity& s_light2 = l_manager.CreatelLight(em,"PointLight2", al::LightComponent::Type::Pointlight);
-  al::TransformComponent* t_comp_p2 = s_light2.get_component<al::TransformComponent>(em);
-  al::LightComponent* l_comp2 = s_light2.get_component<al::LightComponent>(em);
-  l_comp2->set_color(0, 1, 0);
-  t_comp_p2->set_rotation(1, 0, 0);
-  t_comp_p2->set_position({ 5.f, 10.0f, 0.0f });
-  t_comp_p2->set_scale({ 0.1f, 0.1f, 0.1f });
-  al::RenderComponent* l_render2 = s_light2.AddComponent<al::RenderComponent>(em);
-   
-  l_render2->mesh_ = sonic;
-  l_render2->material_ = material;
-
-  al::Entity& s_light3 = l_manager.CreatelLight(em, "PointLight3", al::LightComponent::Type::Pointlight);
-  al::TransformComponent* t_comp_p3 = s_light3.get_component<al::TransformComponent>(em);
-  al::LightComponent* l_comp3 = s_light3.get_component<al::LightComponent>(em);
-  l_comp3->set_color(0, 1, 0);
-  t_comp_p3->set_rotation(1, 0, 0);
-  t_comp_p3->set_position({ 5.f, 10.0f, 0.0f });
-  t_comp_p3->set_scale({ 0.1f, 0.1f, 0.1f });
-  al::RenderComponent* l_render3 = s_light3.AddComponent<al::RenderComponent>(em);
-
-  l_render3->mesh_ = sonic;
-  l_render3->material_ = material;
-
 
   al::Entity& entity_1 = sm.Get<al::EntityManager>()->CreateNewEntity("Cube");
 
   al::TransformComponent* transform_cmp = entity_1.get_component<al::TransformComponent>(em);
-  transform_cmp->set_position({ 0.0 , -26.0f, 0.0f });
-  transform_cmp->set_scale({ 20.f, 20.0f, 20.f });
+  transform_cmp->set_position({ 0.0 , -6.0f, 0.0f });
+  transform_cmp->set_scale({ 20.f, 1.0f, 20.f });
   transform_cmp->set_rotation({ 0.0f, 0.f, 0.0f });
 
   al::RenderComponent* render_cmp = entity_1.AddComponent<al::RenderComponent>(em);
-
   render_cmp->mesh_ = cubo;
+  render_cmp->material_ = basic_mat;
+  
+  al::Entity* d_light = &l_manager.CreatelLight(em,"Directional 1", al::LightComponent::Type::Directional);
+  al::TransformComponent* t_comp = d_light->get_component<al::TransformComponent>(em);
+  d_light->get_component<al::LightComponent>(em)->set_brightness(80);
+  t_comp->set_rotation(1.5708f, 0.f, .8f);
+  t_comp->set_position({ 0.f, 20.0f, 0.0f });
 
-  render_cmp->material_ = material;//material_prueba;
+  d_light = &l_manager.CreatelLight(em,"Directional 2", al::LightComponent::Type::Directional);
+  t_comp = d_light->get_component<al::TransformComponent>(em);
+  d_light->get_component<al::LightComponent>(em)->set_brightness(30);
+  t_comp->set_rotation(1.5708f, 0.f, -.8f);
+  t_comp->set_position({ 0.f, 20.0f, 0.0f });
 
-  // al::Entity& entity_2 = sm.Get<al::EntityManager>()->CreateNewEntity("Quad");
-  // al::TransformComponent* trcmp = entity_2.get_component<al::TransformComponent>(em);
-  // trcmp->set_position({ 5.0 , 5.0f, 0.0f });
-  // trcmp->set_scale({ 5.f, 5.0f, 5.f });
-  // trcmp->set_rotation({ 0.0f, 0.f, 0.0f });
-	
-  /*al::RenderComponent* rcmp = entity_2.AddComponent<al::RenderComponent>(em);
-  rcmp->mesh_ = quad;
-  rcmp->material_ = material;
-  shadow_material->texture_.set_id(al::LightManager::depth_map_text_);
-  glBindTexture(GL_TEXTURE_2D, al::LightManager::depth_map_text_);
-  */
-  al::Entity& cube_ = sm.Get<al::EntityManager>()->CreateNewEntity("Cubo2");
+  d_light = &l_manager.CreatelLight(em,"Directional 3", al::LightComponent::Type::Directional);
+  t_comp = d_light->get_component<al::TransformComponent>(em);
+  d_light->get_component<al::LightComponent>(em)->set_brightness(30);
+  t_comp->set_rotation(0.8f, 0.f, 0.f);
+  t_comp->set_position({ 0.f, 20.0f, 0.0f });
+
+  d_light = &l_manager.CreatelLight(em,"Directional 4", al::LightComponent::Type::Directional);
+  t_comp = d_light->get_component<al::TransformComponent>(em);
+  d_light->get_component<al::LightComponent>(em)->set_brightness(30);
+  t_comp->set_rotation(2.4f, 0.f, 0.f);
+  t_comp->set_position({ 0.f, 20.0f, 0.0f });
+
+  
+  al::Entity* s_light = &l_manager.CreatelLight(em,"PointLight 1", al::LightComponent::Type::Pointlight);
+  al::TransformComponent* t_comp_p = s_light->get_component<al::TransformComponent>(em);
+  al::LightComponent* l_comp = s_light->get_component<al::LightComponent>(em);
+  l_comp->set_color(0, 1, 0);
+  t_comp_p->set_rotation(1, 0, 0);
+  t_comp_p->set_position({ 5.f, 10.0f, 0.0f });
+  t_comp_p->set_scale({ 0.3f, 0.3f, 0.3f });
+
+  al::RenderComponent* l_render = s_light->AddComponent<al::RenderComponent>(em);
+  l_render->mesh_ = sphere;
+  l_render->material_ = basic_mat;
+
+  s_light = &l_manager.CreatelLight(em,"PointLight 2", al::LightComponent::Type::Pointlight);
+  t_comp_p = s_light->get_component<al::TransformComponent>(em);
+  t_comp_p->set_rotation(1, 0, 0);
+  t_comp_p->set_position({ -5.f, 10.0f, 0.0f });
+  t_comp_p->set_scale({ 0.3f, 0.3f, 0.3f });
+
+  l_render = s_light->AddComponent<al::RenderComponent>(em);
+  l_render->mesh_ = sphere;
+  l_render->material_ = basic_mat;
+
+  s_light = &l_manager.CreatelLight(em,"PointLight 3", al::LightComponent::Type::Pointlight);
+  t_comp_p = s_light->get_component<al::TransformComponent>(em);
+  t_comp_p->set_rotation(1, 0, 0);
+  t_comp_p->set_position({ 0.f, 10.0f, 5.0f });
+  t_comp_p->set_scale({ 0.3f, 0.3f, 0.3f });
+
+  l_render = s_light->AddComponent<al::RenderComponent>(em);
+  l_render->mesh_ = sphere;
+  l_render->material_ = basic_mat;
+
+  s_light = &l_manager.CreatelLight(em,"PointLight 4", al::LightComponent::Type::Pointlight);
+  t_comp_p = s_light->get_component<al::TransformComponent>(em);
+  t_comp_p->set_rotation(1, 0, 0);
+  t_comp_p->set_position({ 0.f, 10.0f, -5.0f });
+  t_comp_p->set_scale({ 0.3f, 0.3f, 0.3f });
+
+  l_render = s_light->AddComponent<al::RenderComponent>(em);
+  l_render->mesh_ = sphere;
+  l_render->material_ = basic_mat;
+  
+   al::Entity& cube_ = sm.Get<al::EntityManager>()->CreateNewEntity("Cubo2");
   cube_.get_component<al::TransformComponent>(em)->set_position({ 0,8,0 });
   cube_.get_component<al::TransformComponent>(em)->set_scale({ 1,1,1 });
   cube_.get_component<al::TransformComponent>(em)->set_rotation({ 0,0,0 });
@@ -192,7 +180,19 @@ int main() {
  
     window.BeginFrame();
     // --------ImGui--------
-
+    if(window.input_->IsKeyDown(al::SPACE)){
+      for (size_t i = 2; i < em.EntityCount();i++){
+        al::Entity* entity = em.GetEntity((uint32_t)i);
+        if (entity != nullptr && entity->get_component<al::LightComponent>(em) == nullptr){
+          auto transform = entity->get_component<al::TransformComponent>(em);
+          glm::vec3 rot = transform->rotation();
+          rot.x += (float)window.delta_time();
+          // rot.z += (float)window.delta_time() / 10.f;
+          // rot.y += (float)window.delta_time() * 1.2f;
+          transform->set_rotation(rot);
+        }
+      }
+    }
     // ----------------------
    
     window.EndFrame();

@@ -37,6 +37,7 @@ namespace al{
     Entity& CreateNewEntity(const char* name, uint32_t parent = 0);
 
     Entity* GetEntity(uint32_t pos);
+    size_t EntityCount();
     
     void DeleteEntity(uint32_t id);
     

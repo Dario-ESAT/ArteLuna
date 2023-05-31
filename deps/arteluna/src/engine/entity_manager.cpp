@@ -41,8 +41,15 @@ namespace al{
 
   Entity* EntityManager::GetEntity(uint32_t pos) {
     if (pos >= last_id_) return nullptr;
-  
-    return &entities_.at(pos);
+    Entity* entity = &entities_.at(pos);
+    if (entity->get_component<TransformComponent>(*this) != nullptr){
+      return entity;
+    }
+    return nullptr;
+  }
+
+  size_t EntityManager::EntityCount() {
+    return entities_.size();
   }
 
   void EntityManager::DeleteEntity(uint32_t id) {
