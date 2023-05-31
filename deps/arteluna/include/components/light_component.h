@@ -2,14 +2,13 @@
 #define __SPOTLIGHT_COMPONENT_H__ 1
 
 #include "glm.hpp"
-
 #include "component.h"
+namespace al{
   class LightComponent : public Component {
   public:
   
     enum Type{
       Directional,
-      Spotlight,
       Pointlight
     };
     void ImguiTree(uint32_t id) override;
@@ -17,10 +16,10 @@
     LightComponent();
   
 
-  glm::mat4x4 light_transform(class TransformComponent& transform) const;
+    glm::mat4x4 light_transform(class TransformComponent& transform) const;
 
-  __forceinline uint8_t brightness() const;
-  __forceinline void set_brightness(uint8_t brightness);
+    __forceinline uint8_t brightness() const;
+    __forceinline void set_brightness(uint8_t brightness);
 
 
     __forceinline float inner_cone_radius() const;
@@ -96,5 +95,5 @@
 
   LightComponent::Type LightComponent::type() const { return type_;}
   void LightComponent::set_type(Type type) { type_ = type;}
-
+}
 #endif

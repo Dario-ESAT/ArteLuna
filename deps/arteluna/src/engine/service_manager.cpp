@@ -1,16 +1,16 @@
 #include "engine/service_manager.h"
-
+namespace al{
   ServiceHolder::ServiceHolder() {
     type_ = 0;
     service_ = nullptr;
   }
 
 
-ServiceManager::~ServiceManager() {
- int hola = 9;   
-}
+  ServiceManager::~ServiceManager() {
+    int hola = 9;   
+  }
 
-ServiceManager::ServiceManager() = default;
+  ServiceManager::ServiceManager() = default;
 
   ServiceHolder::~ServiceHolder() {
   }
@@ -19,3 +19,4 @@ ServiceManager::ServiceManager() = default;
     type_ = type;
     service_ = service;
   }
+}

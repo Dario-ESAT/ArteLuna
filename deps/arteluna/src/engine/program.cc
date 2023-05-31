@@ -4,7 +4,7 @@
 #include "stdio.h"
 #include<string>
 #include<iostream>
-
+namespace al{
   Program::Program() {
     id_ = 0;
   }
@@ -61,26 +61,45 @@
       printf("There was an error on the program, invalid shader %d", e);
     }
   }
-/*
-void program::linkProgram(std::string link_log)
-{
-	int linked = 0;
-	glLinkProgram(id_);
-	
-    glGetProgramiv(id_, GL_LINK_STATUS, &linked);
+  void Program::Init(unsigned int vertex_, unsigned int fragment_, unsigned int geometry_)
+  {
+    try {
+      if (vertex_ == 0 || fragment_ == 0) {
+        throw - 1;
+      }
+      id_ = glCreateProgram();
 
-    //if (!link_log.empty()) {
-       
-    //}
-    if (!linked) {
-        glGetProgramInfoLog(id_, link_log.size(), NULL, link_log.data());
+      glAttachShader(id_, vertex_);
+      glAttachShader(id_, fragment_);
+      glAttachShader(id_, geometry_);
+      glLinkProgram(id_);
+      check_program(id_);
     }
-    else {
-        link_log = "Linked";
+    catch (int e) {
+      printf("There was an error on the program, invalid shader %d", e);
     }
+  }
+  /*
+  void program::linkProgram(std::string link_log)
+  {
+    int linked = 0;
+    glLinkProgram(id_);
+    
+      glGetProgramiv(id_, GL_LINK_STATUS, &linked);
+  
+      //if (!link_log.empty()) {
+         
+      //}
+      if (!linked) {
+          glGetProgramInfoLog(id_, link_log.size(), NULL, link_log.data());
+      }
+      else {
+          link_log = "Linked";
+      }
+  }
+  
+  void program::attachShader()
+  {
+  }
+  */
 }
-
-void program::attachShader()
-{
-}
-*/

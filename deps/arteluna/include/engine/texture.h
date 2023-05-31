@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "glad/gl.h"
+namespace al{
   class Texture {
   
   public:
@@ -56,7 +57,7 @@
            char* texture_src, Wrap ws, Wrap wt, Wrap wr );
     ~Texture();
 
-    static unsigned int create_cubemap(const char* right_face, 
+    static Texture create_cubemap(const char* right_face,
                                        const char* left_face, 
                                        const char* top_face,
                                        const char* bottom_face, 
@@ -77,7 +78,7 @@
     void Active();
 
 
-    unsigned int get_id() { return id_texture_; }
+    uint32_t get_id() { return id_texture_; }
     Format format() { return format_; }
     Type type() { return type_; }
     void set_min_filter(Filter m) { min_filter_ = m; }
@@ -93,6 +94,7 @@
     void set_width(int w) { width_ = w; }
     void set_height(int h) { height_ = h; }
     void set_channels(int c) { channels_ = c; }
+
   private:
     int width_;
     int height_;
@@ -102,12 +104,14 @@
     Wrap wrap_t_;
     Wrap wrap_r_;
 
+   
+
     Filter min_filter_;
     Filter mag_filter_;
     Format format_;
     Type type_;
 
-    unsigned int id_texture_;
+     uint32_t id_texture_;
   };
-
+}
 #endif

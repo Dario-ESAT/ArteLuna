@@ -56,10 +56,8 @@ project "ArteLuna"
         "../../deps/arteluna/deps/glfw-3.3.8/include",
         "../../deps/arteluna/include",
         "../../deps/arteluna/deps/glad2/include",
-        -- "../../deps/arteluna/deps/mathlib/include",
         "../../deps/arteluna/deps/imgui",
         "../../deps/arteluna/deps/tinyobjloader",
-        -- "../../deps/arteluna/deps/soloud/include",
         "../../deps/arteluna/deps/glm/",
         "../../deps/arteluna/deps/stb/"
     }
@@ -69,9 +67,7 @@ project "ArteLuna"
         "../../deps/arteluna/src/**.cpp", 
         "../../deps/arteluna/include/**.h"
     }
-    removefiles {
-        -- "../../src/**main.cc", 
-    }
+
     libdirs { 
         "../../deps/arteluna/deps/glfw-3.3.8/lib-vc2019",
         "../../deps/arteluna/deps/openal-1.1/libs/Win64",
@@ -80,10 +76,6 @@ project "ArteLuna"
     }
     
     links {
-        -- "soloud.lib",
-        -- "tinyobjloader.lib",
-        -- "mathlib.lib",
-        -- "OpenAL32.lib",
         "imgui.lib",
         "glad2.lib",
         "opengl32.lib",
@@ -128,23 +120,6 @@ project "glad2"
         "../../deps/arteluna/deps/glad2/include/glad/gl.h"
     }
 
--- project "mathlib"
---     architecture "x64"
---     location "../../ArteLuna/mathlib"
---     kind "StaticLib"
---     language "C++"
---     cppdialect "C++17"
---     targetdir "../../deps/arteluna/bin/%{cfg.buildcfg}"
-
---     includedirs {
---         "../../deps/arteluna/deps/mathlib/include"
---     }
-
---     files {
---         "../../deps/arteluna/deps/mathlib/src/*.cc", 
---         "../../deps/arteluna/deps/mathlib/include/*.h"
---     }
-
 project "imgui"
     architecture "x64"
     location "../../ArteLuna/imgui"
@@ -169,47 +144,3 @@ project "imgui"
     
     -- https://decovar.dev/blog/2019/08/04/glfw-dear-imgui/
 
--- project "tinyobjloader"
---     architecture "x64"
---     location "../../ArteLuna/tinyobjloader"
---     kind "StaticLib"
---     language "C++"
---     cppdialect "C++17"
---     targetdir "../../deps/arteluna/bin/%{cfg.buildcfg}"
-
---     includedirs {
---         "../../deps/arteluna/deps/tinyobjloader",
---     }
-
---     files {
---         "../../deps/arteluna/deps/tinyobjloader/*.cc",
---         "../../deps/arteluna/deps/tinyobjloader/*.h",
---         }
-    
--- project "soloud"
---     architecture "x64"
---     location "../../ArteLuna/soloud"
---     kind "StaticLib"
---     language "C++"
---     cppdialect "C++17"
---     targetdir "../../bin/%{cfg.buildcfg}"
--- 	defines {"WITH_WINMM"}
-    
---     includedirs {
---         "../../deps/soloud/include",
---         "../../deps/soloud/backend/openal",
---         "../../deps/openal-1.1/include",
---     }
---     libdirs { 
---         "../../deps/openal-1.1/libs/Win64",
---     }
-
---     files {
---         "../../deps/soloud/src/backend/winmm/**.c",
---         "../../deps/soloud/src/backend/winmm/**.cpp",
---         "../../deps/soloud/src/audiosource/wav/**.c",
---         "../../deps/soloud/src/audiosource/wav/**.h",
---         "../../deps/soloud/src/audiosource/sfxr/*.c",
---         "../../deps/soloud/src/core/**.cpp",
---         "../../deps/soloud/include/**.h",
---     }

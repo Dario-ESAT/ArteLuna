@@ -1,17 +1,17 @@
 #ifndef __SERVICES_H__
 #define __SERVICES_H__ 1
 #include <cstdint>
+namespace al{
+  class ServiceManager;
 
-class ServiceManager;
 
+  class Systems{
+  public:
+    Systems() = delete;
+    Systems(ServiceManager& sm);
+    void SetServiceManager(ServiceManager& sm);
 
-class Systems{
-public:
-  Systems() = delete;
-  Systems(ServiceManager& sm);
-  void SetServiceManager(ServiceManager& sm);
-
-  ~Systems() = default;
+    ~Systems() = default;
 
     void SystemsUpdate();
 
@@ -24,4 +24,5 @@ public:
     friend class EntityManager;
     friend class Engine;
   };
+}
 #endif

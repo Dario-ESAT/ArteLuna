@@ -1,15 +1,18 @@
 #ifndef __SHADER_H__
 #define __SHADER_H__ 1
 #include <cstdint>
-
-class Shader {
+namespace al{
+  class Shader {
   public:
     Shader();
-    Shader(const char* vertex, const char* fragment);
-    Shader(const char* vertex, const char* fragment, const char* geometry);
+    Shader(const char* vertex_source, const char* fragment_source);
+    Shader(const char* vertex_source, const char* fragment_source, const char* 
+    geometry);
     ~Shader();
-    void Init(const char* vertex, const char* fragment);
-    void Init(const char* vertex, const char* fragment, const char* geometry);
+    void Init(const char* vertex_source, const char* fragment_source);
+    void Init(const char* vertex_source, const char* fragment_source, const 
+    char* 
+    geometry);
     uint32_t vertex() const;
     uint32_t fragment() const;
     uint32_t geometry() const;
@@ -19,5 +22,5 @@ class Shader {
     uint32_t fragment_;
     uint32_t geometry_;
   };
-
+}
 #endif

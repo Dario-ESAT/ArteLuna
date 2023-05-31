@@ -6,22 +6,20 @@
 #include "glm.hpp"
 #include "engine/material.h"
 
-#include "engine/texture.h"
+namespace al{
   class Mesh;
   class Input;
   class ServiceManager;
   class Camera {
   public:
     enum Modes {
-      Perspective,
-      Ortho
+      PERSPECTIVE,
+      ORTHO
     };
 
     Camera();
     ~Camera();
   
-
-
     void MenuImgui();
 
     __forceinline glm::vec3 position() const;
@@ -34,6 +32,7 @@
     __forceinline float near();
     __forceinline float far();
 
+    __forceinline void set_position(glm::vec3 pos);
     __forceinline void set_ortho_x(float m);
     __forceinline void set_ortho_y(float m);
     __forceinline void set_near(float m);
@@ -44,22 +43,26 @@
     float fov_;
   
     void Mode(Modes m);
+    glm::mat4 Perspective(float aspect);
+    glm::mat4 ViewMatrix_Perspective();
+    glm::mat4 Orthographic();
+    glm::mat4 ViewMatrix_Orthographic();
 
-
-  float mouse_displacement_x_;
-  float mouse_displacement_y_;
+    float mouse_displacement_x_;
+    float mouse_displacement_y_;
     
     std::shared_ptr<Material> cubemap_;
-  std::shared_ptr<Mesh> cubemap_mesh_;
-    
-private:
-  void Update(double deltatime, class Input* input);
+    std::shared_ptr<Mesh> cubemap_mesh_;
+    void RenderCubemap(glm::mat4x4& view_matrix, glm::mat4x4& perspective);
+    void InitCubeMap();
+  private:
+    void Update(double deltatime, class Input* input);
   
-  void UpdateFromInput(double deltatime, class Input* input);
-  void UpdateRotation(double deltatime, glm::vec2 cursor_pos);
-  void RenderScene(float aspect);
-  void UpdateTransform();
-  void TransformOrtho(class Input* input);
+    void UpdateFromInput(double deltatime, class Input* input);
+    void UpdateRotation(double deltatime, glm::vec2 cursor_pos);
+    void RenderSceneForward(float aspect);
+    void UpdateTransform();
+    void TransformOrtho(class Input* input);
 
     ServiceManager* sm_;
     
@@ -82,6 +85,7 @@ private:
     glm::mat4x4 view_matrix_;
 
     uint32_t mode_;
+    uint32_t render_mode_;
     bool imgui_mode_;
     friend class Window;
   };
@@ -106,43 +110,39 @@ private:
     return up_;
   }
 
-  inline float Camera::ortho_x()
-  {
+  inline float Camera::ortho_x() {
     return ortho_x_;
   }
 
-  inline float Camera::ortho_y()
-  {
+  inline float Camera::ortho_y() {
     return ortho_y_;
   }
 
-  inline float Camera::near()
-  {
+  inline float Camera::near() {
     return near_;
   }
 
-  inline float Camera::far()
-  {
+  inline float Camera::far() {
     return far_;
   }
+  void Camera::set_position(glm::vec3 pos) {
+    position_ = pos;
+  }
 
-  inline void Camera::set_ortho_x(float x)
-  {
+  inline void Camera::set_ortho_x(float x) {
     ortho_x_ = x;
   }
 
-  inline void Camera::set_ortho_y(float m)
-  {
+  inline void Camera::set_ortho_y(float m) {
     ortho_y_ = m;
   }
 
-  inline void Camera::set_near(float m)
-  {
+  inline void Camera::set_near(float m) {
     near_ = m;
   }
 
-  inline void Camera::set_far(float m)
-  {
+  inline void Camera::set_far(float m) {
     far_ = m;
   }
+}
 #endif

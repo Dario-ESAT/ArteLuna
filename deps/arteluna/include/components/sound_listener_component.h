@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "component.h"
+namespace al{
   class SoundListenerComponent : public Component {
   public:
     
@@ -12,5 +13,5 @@
     SoundListenerComponent();
   protected:
   };
-
+}
 #endif

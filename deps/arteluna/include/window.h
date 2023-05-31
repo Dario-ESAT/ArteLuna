@@ -5,69 +5,86 @@
 
 #include "camera.h"
 #include "stdint.h"
+#include "engine/mesh.h"
 
+namespace al{
+  // class Mesh;
+  class Window{
+  public:
+    Window() = delete;
+    Window( const char* name, int16_t width = 1280, int16_t height = 720,
+        int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
+    );
+    ~Window();
+    Window(Window& other);
   
-class Window{
-public:
+    //Parameters
+    int16_t width();
+    void set_width(int16_t width);
+    int16_t height();
+    void set_height(int16_t heigth);
+    void set_windowed(bool windowed);
+    bool windowed();
 
-  ~Window();
-  Window(Window& other);
+    int posx() const;
+    void set_posx(int posx);
+    int posy() const;
+    void set_posy(int posy);
+
+    void set_service_manager(class ServiceManager& sm);
+
+    void BeginFrame();
+
+    void EndFrame();
+
+    bool ShouldClose();
+
+    void MenuImgui();
+
+
+    static double GetTime();
+
+    __forceinline double delta_time() const;
+
+    struct GLFWwindow* window_;
+    std::unique_ptr<class Input>input_;
   
-  //Parameters
-  int16_t width();
-  void set_width(int16_t width);
-  int16_t height();
-  void set_height(int16_t heigth);
-  void set_windowed(bool windowed);
-  bool windowed();
+    Camera camera_;
 
-  int posx() const;
-  void set_posx(int posx);
-  int posy() const;
-  void set_posy(int posy);
+  protected:
+    void InitDeferredRender();
+    
+    void RenderForward();
 
-  void set_service_manager(class ServiceManager& sm);
-  
-  void BeginFrame();
+    void RenderDeferred();
 
-  void EndFrame();
+    uint32_t gBuffer;
+    uint32_t gAlbedo, gPosition, gNormal;
+    
+    int16_t width_;
+    int16_t height_;
 
-  bool ShouldClose();
+    int posx_;
+    int posy_;
+    bool windowed_;
 
-  static double GetTime();
+    unsigned int rboDepth;
+    double delta_time_;
+    double last_time_;
 
-  __forceinline double delta_time() const;
+    ServiceManager* sm_;
+    Program geometry_program_; 
+    Shader geometry_pass_;
+    Program lightning_program_;
+    Shader lightning_pass_;
+    std::shared_ptr<Mesh> render_quad_;
+    
+    friend class Engine;
+    // friend std::unique_ptr<Window> std::make_unique<Window>();
+  };
 
-  struct GLFWwindow* window_;
-  std::unique_ptr<class Input>input_;
-  
-  Camera camera_;
-
-  Window( const char* name, int16_t width = 1280, int16_t height = 720,
-      int posx = 110, int posy = 110, bool windowed = true, int monitor = 0
-  );
-private:
-
-
-  Window();
-  int16_t width_;
-  int16_t height_;
-
-  int posx_;
-  int posy_;
-  bool windowed_;
-
- 
-  double delta_time_;
-  double last_time_;
-
-  class ServiceManager* sm_;
-  
-  friend class Engine;
-  friend std::unique_ptr<Window> std::make_unique<Window>();
-};
-
-double Window::delta_time() const {
-  return delta_time_;
+  double Window::delta_time() const {
+    return delta_time_;
+  }
 }
 #endif

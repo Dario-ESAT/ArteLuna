@@ -3,18 +3,20 @@
 
 #include <optional>
 #include <vector>
+#include <cvt/wstring>
+
 #include "stdint.h"
 #include "engine/service_manager.h"
 #include "engine/entity_manager.h"
-
+namespace al{
   class Entity {
   public:
     ~Entity();
     Entity(const Entity& other)
-      : id_(other.id_) {}
+      : name_(other.name_), id_(other.id_), gen_(other.gen_) {}
 
     Entity(Entity&& other) noexcept
-      : id_(other.id_) {}
+      : name_(other.name_), id_(other.id_), gen_(other.gen_) {}
 
     Entity& operator=(const Entity& other);
 
@@ -27,14 +29,18 @@
     template<class T> T* get_component(EntityManager& em);
 
   
+    std::string name() const { return name_; }
+    void set_name(const char* name) { name_.assign(name); }
     uint32_t id() const;
 
   protected:
     Entity();
     Entity(uint32_t id);
-  
+    
+    std::string name_;
     uint32_t id_;
-
+    uint32_t gen_;
+    
     friend class EntityManager;
   };
 
@@ -74,5 +80,5 @@
 
     return nullptr;
   }
-  
+}
 #endif
