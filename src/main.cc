@@ -16,7 +16,7 @@ int main() {
   al::Engine engine(sm);
   al::EntityManager& em = *sm.Get<al::EntityManager>();
 
-  al::Window& window = *engine.CreateNewWindow("Aleksander",1600,900);
+  al::Window& window = *engine.CreateNewWindow("ArteLune",1600,900);
   window.camera_.set_position({0,2.5f,-5.f});
   al::LightManager l_manager(em);
   sm.Add(l_manager);
