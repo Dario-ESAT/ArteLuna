@@ -1,4 +1,4 @@
-# 3VGP_ArteLuna
+# ArteLuna
 
 Prerequisitos:
 
